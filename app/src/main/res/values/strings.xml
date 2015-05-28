@@ -1,7 +1,45 @@
 <resources>
-    <string name="app_name">Mars</string>
-
+    <!-- General -->
+    <string name="app_name">可见</string>
     <string name="hello_world">Hello world!</string>
+    <string name="next_step">下一步</string>
+    <string name="friends_list">好友列表</string>
+    <string name="done">完成</string>
+    <string name="communcating_with_server">正在与服务器通信...</string>
+    <string name="connect_server_failed">连接服务器失败！</string>
     <string name="action_settings">Settings</string>
+
+    <!-- For FirstLoginActivity -->
+    <string name="app_name_english">KOOLEW</string>
+    <string name="label_select_login_way">选择以下登陆方式</string>
+
+    <!-- For PhoneLoginActivity -->
+    <string name="title_activity_phone_login">PhoneLoginActivity</string>
+    <string name="label_input_phone_number">请输入手机号</string>
+    <string name="send_dynamic_password">发送动态密码</string>
+    <string name="please_input_correct_phone_num">请输入正确的手机号</string>
+
+    <!-- For InputPasswordActivity -->
+    <string name="send_password_hint1">系统向你的手机</string>
+    <string name="send_password_hint3">发送了一条动态密码</string>
+    <string name="resend_password">重发动态密码</string>
+    <string name="count_down_string">(%d秒)</string>
+    <string name="requesting_password">正在向服务器请求动态密码...</string>
+    
+    <!-- For InitPersonalInfoActivity -->
+    <string name="edit_personal_info">编辑个人信息</string>
+    <string name="your_portrait">你的头像</string>
+    <string name="your_nickname">你的昵称</string>
+    <string name="nickname_over_input_message">昵称不能超过%d个字符！</string>
+    <string name="no_nickname_message">请输入昵称！</string>
+
+    <!-- For ImportPhoneFriendsActivity -->
+    <string name="loading_friends">正在加载好友列表...</string>
+
+    <!-- Divider -->
     <string name="title_activity_video_shoot">VideoShootActivity</string>
+    <string name="title_activity_first_login">FirstLoginActivity</string>
+    <string name="title_activity_input_password">InputPasswordActivity</string>
+    <string name="title_activity_init_personal_info">InitPersonalInfoActivity</string>
+    <string name="title_activity_import_phone_friends">ImportPhoneFriendsActivity</string>
 </resources>

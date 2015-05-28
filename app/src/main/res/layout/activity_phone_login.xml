@@ -1,0 +1,90 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@mipmap/login_background"
+    tools:context="com.koolew.mars.PhoneLoginActivity">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/label_input_phone_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="23dp"
+        android:text="@string/label_input_phone_number"
+        android:textSize="24sp"/>
+
+    <include
+        layout="@layout/horizontal_divider"/>
+
+    <LinearLayout
+        android:id="@+id/input_number_layout"
+        android:layout_width="match_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="29dp"
+            android:paddingRight="17dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/nation_flag_size"
+                android:layout_height="@dimen/nation_flag_size"
+                android:src="@mipmap/national_flag_china"
+                android:layout_gravity="center_vertical"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="+86"
+                android:textSize="18sp"/>
+        </LinearLayout>
+
+        <include
+            layout="@layout/vertical_divider"/>
+
+        <EditText
+            android:id="@+id/et_phone_number"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingLeft="25dp"
+            android:background="@android:color/transparent"
+            android:numeric="integer"/>
+    </LinearLayout>
+
+    <include
+        layout="@layout/horizontal_divider"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/big_round_corner_btn_height"
+        android:layout_marginLeft="@dimen/big_round_corner_btn_lr_margin"
+        android:layout_marginRight="@dimen/big_round_corner_btn_lr_margin"
+        android:background="@drawable/big_round_corner_orange_bg"
+        android:text="@string/send_dynamic_password"
+        android:textSize="@dimen/big_round_corner_btn_text_size"
+        android:textColor="@android:color/white"
+        android:onClick="onClick"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4" />
+</LinearLayout>

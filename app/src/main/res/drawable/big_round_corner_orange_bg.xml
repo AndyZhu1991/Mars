@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            android:shape="rectangle" >
+            <!-- 填充的颜色 -->
+            <solid android:color="@color/koolew_button_orange" />
+            <!-- 设置矩形的四个角为弧形 -->
+            <!-- android:radius 弧形的半径 -->
+            <corners android:radius="@dimen/big_round_corner_btn_radius" />
+        </shape>
+    </item>
+</layer-list>

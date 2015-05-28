@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- General -->
+    <color name="koolew_button_orange">#FFAB4B</color>
+    <color name="koolew_button_blue">#6ED4E4</color>
+    <color name="koolew_gray">#7D8B97</color>
+
+    <!-- For InputPasswordActivity -->
+    <color name="password_color">#7D8B97</color>
+</resources>

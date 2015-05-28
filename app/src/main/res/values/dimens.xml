@@ -1,9 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- General -->
+    <dimen name="big_round_corner_btn_height">45dp</dimen>
+    <dimen name="big_round_corner_btn_radius">22dp</dimen>
+    <dimen name="big_round_corner_btn_lr_margin">20dp</dimen>
+    <dimen name="big_round_corner_btn_text_size">16sp</dimen>
+    <dimen name="friend_select_item_width">50dp</dimen>
+    <dimen name="friend_select_item_height">73dp</dimen>
+
+    <!-- For FirstLoginActivity -->
+    <dimen name="first_login_logo_margin_top">56dp</dimen>
+    <dimen name="first_login_ways_container_height">105dp</dimen>
+    <dimen name="first_login_way_icon_size">45dp</dimen>
+
+    <!-- For PhoneLoginActivity -->
+    <dimen name="nation_flag_size">20dp</dimen>
+
+    <!-- For InputPasswordActivity -->
+    <dimen name="digit_margin_lr">15dp</dimen>
     
     <!-- For VideoShootActivity -->
     <dimen name="video_shoot_progress_height">20dp</dimen>
     <dimen name="only_friends_visible_height">20dp</dimen>
     <dimen name="filter_open_height">20dp</dimen>
+
+    <!-- For InitPersonalInfoActivity -->
+    <dimen name="init_info_view_interval">10dp</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
     
 </resources>

@@ -1,0 +1,91 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@mipmap/blur_background"
+    tools:context="com.koolew.mars.InitPersonalInfoActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="17dp"
+        android:layout_marginBottom="17dp"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/edit_personal_info"
+        android:textSize="20sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/white"/>
+
+    <ImageView
+        android:layout_width="11.98dp"
+        android:layout_height="6.35dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@mipmap/rectangle_solid"/>
+
+    <ImageView
+        android:layout_width="13.35dp"
+        android:layout_height="7.29dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@mipmap/rectangle_line"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/init_info_view_interval"
+        android:layout_marginBottom="@dimen/init_info_view_interval"
+        android:text="@string/your_portrait"
+        android:textSize="14sp"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/avatar"
+        android:layout_width="66dp"
+        android:layout_height="66dp"
+        android:layout_gravity="center_horizontal"
+        android:onClick="onAvatarClick"
+        app:border_width="2dp"
+        app:border_color="#FFFFFF"/>
+
+    <ImageView
+        android:layout_width="13.35dp"
+        android:layout_height="7.29dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/init_info_view_interval"
+        android:src="@mipmap/rectangle_line"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/init_info_view_interval"
+        android:layout_marginBottom="@dimen/init_info_view_interval"
+        android:text="@string/your_nickname"/>
+
+    <EditText
+        android:id="@+id/et_nickname"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/big_round_corner_btn_height"
+        android:layout_marginLeft="@dimen/big_round_corner_btn_lr_margin"
+        android:layout_marginRight="@dimen/big_round_corner_btn_lr_margin"
+        android:gravity="center"
+        android:textSize="19.52sp"
+        android:textColor="@android:color/white"
+        android:background="@drawable/big_round_corner_transp_bg"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/big_round_corner_btn_height"
+        android:layout_marginLeft="@dimen/big_round_corner_btn_lr_margin"
+        android:layout_marginRight="@dimen/big_round_corner_btn_lr_margin"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/big_round_corner_orange_bg"
+        android:text="@string/next_step"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/big_round_corner_btn_text_size"
+        android:onClick="onNextClick"/>
+</LinearLayout>

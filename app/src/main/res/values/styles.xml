@@ -3,6 +3,16 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <item name="android:textViewStyle">@style/KoolewTextViewStyle</item>
+        <item name="android:buttonStyle">@style/KoolewButtonStyle</item>
+    </style>
+
+    <style name="KoolewTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">sans－noto</item>
+    </style>
+
+    <style name="KoolewButtonStyle" parent="android:Widget.Holo.Button">
+        <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
 </resources>

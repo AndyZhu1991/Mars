@@ -29,3 +29,12 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.1.1'
 }
+
+dependencies {
+    // Open source libs
+    compile 'com.loopj.android:android-async-http:1.4.6'
+    compile 'com.mcxiaoke.volley:library:1.0.+'
+    compile 'de.hdodenhof:circleimageview:1.3.0'
+    compile 'com.nostra13.universalimageloader:parent:1.9.3'
+    compile 'com.qiniu:qiniu-android-sdk:7.0.+'
+}
