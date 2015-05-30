@@ -5,7 +5,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" /> sss
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+ sss
 
     <!-- For images from picasa -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -29,6 +30,7 @@
         <activity
             android:name=".FirstLoginActivity"
             android:label="@string/title_activity_first_login"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,10 +60,27 @@
             android:screenOrientation="portrait" >
         </activity>
 
+        <!-- 必须注册在微博授权，分享微博时候用到 -->
+        <activity
+            android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:label="@string/app_name" />
+
         <service
             android:name=".services.UploadAvatarService"
             android:exported="false" >
         </service>
+
+        <activity
+            android:name=".LaunchActivity"
+            android:label="@string/title_activity_launch" >
+        </activity>
     </application>
 
 </manifest>

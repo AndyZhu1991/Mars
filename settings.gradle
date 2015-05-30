@@ -1,1 +1,2 @@
-include ':app', 'Android-Universal-Image_loader-Library'
+include ':app'
+include ':weiboSDK'

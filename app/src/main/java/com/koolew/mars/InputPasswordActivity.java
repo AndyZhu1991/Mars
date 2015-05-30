@@ -23,6 +23,10 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.infos.MyAccountInfo.LOGIN_TYPE;
+import com.koolew.mars.weiboapi.AccessTokenKeeper;
+import com.koolew.mars.wxapi.TokenKeeper;
+import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -229,11 +233,20 @@ public class InputPasswordActivity extends Activity implements View.OnClickListe
 //            }
 //        });
 
-        String url = "http://test.koolew.com/v1/user/login";
+        String url = null;
         JSONObject requestJson = new JSONObject();
         try {
             requestJson.put("phone", MyAccountInfo.getPhoneNumber());
             requestJson.put("code", password);
+            if (MyAccountInfo.getLoginType() == LOGIN_TYPE.MOBILE) {
+                Log.d(TAG, "Login by mobile");
+                url = "http://test.koolew.com/v1/user/login";
+            }
+            else {
+                Log.d(TAG, "Signup by: " + MyAccountInfo.getLoginType().ordinal());
+                url = "http://test.koolew.com/v1/user/signup/sns";
+                addSnsRegisterParams(MyAccountInfo.getLoginType(), requestJson);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -247,18 +260,32 @@ public class InputPasswordActivity extends Activity implements View.OnClickListe
                                 JSONObject result = response.getJSONObject("result");
                                 MyAccountInfo.setToken(result.getString("token"));
                                 MyAccountInfo.setUid(result.getString("uid"));
-                                JSONObject info = result.getJSONObject("info");
-                                MyAccountInfo.setAvatar(info.getString("avatar"));
-                                MyAccountInfo.setNickname(info.getString("nickname"));
-                                MyAccountInfo.setKooNum(info.getInt("koo_num"));
-                                MyAccountInfo.setCoinNum(info.getInt("coin_num"));
-
-                                if (true){//response.getInt("code") == 0) {
-                                    startActivity(new Intent(InputPasswordActivity.this,
-                                            InitPersonalInfoActivity.class));
+                                if (result.has("info")) {
+                                    JSONObject info = result.getJSONObject("info");
+                                    if (MyAccountInfo.getLoginType() == LOGIN_TYPE.MOBILE) {
+                                        MyAccountInfo.setAvatar(info.getString("avatar"));
+                                    }
+                                    MyAccountInfo.setNickname(info.getString("nickname"));
+                                    MyAccountInfo.setKooNum(info.getInt("koo_num"));
+                                    MyAccountInfo.setCoinNum(info.getInt("coin_num"));
                                 }
                                 else {
+                                    // Why no "info" ?
+                                    if (MyAccountInfo.getLoginType() == LOGIN_TYPE.MOBILE) {
+                                        MyAccountInfo.setAvatar(result.getString("avatar"));
+                                    }
+                                    MyAccountInfo.setNickname("");
+                                    MyAccountInfo.setKooNum(0);
+                                    MyAccountInfo.setCoinNum(0);
+                                }
 
+                                if (result.getInt("register") == 0) {
+                                    startActivity(new Intent(InputPasswordActivity.this,
+                                            MainActivity.class));
+                                }
+                                else {
+                                    startActivity(new Intent(InputPasswordActivity.this,
+                                            InitPersonalInfoActivity.class));
                                 }
                             }
                         } catch (JSONException e) {
@@ -281,6 +308,26 @@ public class InputPasswordActivity extends Activity implements View.OnClickListe
             }
         };
         mRequestQueue.add(jsonRequest);
+    }
+
+    private void addSnsRegisterParams(LOGIN_TYPE type, JSONObject requestJson) {
+        try {
+            requestJson.put("type", MyAccountInfo.getLoginType().ordinal());
+            if (type == LOGIN_TYPE.WEIBO) {
+                Oauth2AccessToken token = AccessTokenKeeper.readAccessToken(InputPasswordActivity.this);
+                requestJson.put("open_id", token.getUid());
+                requestJson.put("refresh_token", token);
+                requestJson.put("expires_in", token.getExpiresTime());
+                requestJson.put("union_id", token.getUid());
+            } else if (type == LOGIN_TYPE.WECHAT) {
+                requestJson.put("open_id", TokenKeeper.readOpenId(InputPasswordActivity.this));
+                requestJson.put("refresh_token", TokenKeeper.readRefreshToken(InputPasswordActivity.this));
+                requestJson.put("expires_in", TokenKeeper.readExpiresIn(InputPasswordActivity.this));
+                requestJson.put("union_id", TokenKeeper.readUnionId(InputPasswordActivity.this));
+            }
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
     }
 
     public void onResendPassword(View v) {

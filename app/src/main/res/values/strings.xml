@@ -12,6 +12,8 @@
     <!-- For FirstLoginActivity -->
     <string name="app_name_english">KOOLEW</string>
     <string name="label_select_login_way">选择以下登陆方式</string>
+    <string name="geting_sns_info">正在获取第三方账号信息...</string>
+    <string name="please_bind_mobile">请绑定手机号</string>
 
     <!-- For PhoneLoginActivity -->
     <string name="title_activity_phone_login">PhoneLoginActivity</string>
@@ -42,4 +44,5 @@
     <string name="title_activity_input_password">InputPasswordActivity</string>
     <string name="title_activity_init_personal_info">InitPersonalInfoActivity</string>
     <string name="title_activity_import_phone_friends">ImportPhoneFriendsActivity</string>
+    <string name="title_activity_launch">LaunchActivity</string>
 </resources>
