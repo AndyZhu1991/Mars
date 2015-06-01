@@ -1,17 +1,27 @@
 package com.koolew.mars.infos;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+
 /**
  * Created by jinchangzhu on 5/25/15.
  */
 public class MyAccountInfo {
 
+    private static final String KEY_KOOLEW_PREFERENCES = "koolew preference";
+    private static final String KEY_NICKNAME = "nickname";
+    private static final String KEY_PHONE_NUMBER = "phone number";
+    private static final String KEY_TOKEN = "token";
+
+    private static SharedPreferences sharedPreferences;
     private static String sPhoneNumber;
     private static String sToken;
     private static String sUid;
     private static String sAvatar;
     private static String sNickname;
-    private static int sKooNum;
-    private static int sCoinNum;
+    private static long sKooNum;
+    private static long sCoinNum;
     private static LOGIN_TYPE sLoginType;
     private static String sSnsUid;
     private static String sSnsUnionId;
@@ -20,28 +30,34 @@ public class MyAccountInfo {
         MOBILE, WEIBO, QQ, WECHAT
     }
 
+    public static void init(Context context) {
+        sharedPreferences = context.getSharedPreferences(KEY_KOOLEW_PREFERENCES, Context.MODE_APPEND);
+        sNickname = sharedPreferences.getString(KEY_NICKNAME, null);
+        sPhoneNumber = sharedPreferences.getString(KEY_PHONE_NUMBER, null);
+        sToken = sharedPreferences.getString(KEY_TOKEN, null);
+    }
+
     public static String getAvatar() {
         return sAvatar;
     }
 
     public static void setAvatar(String avatar) {
-        MyAccountInfo.sAvatar = avatar;
+        sAvatar = avatar;
     }
 
-    public static int getCoinNum() {
+    public static long getCoinNum() {
         return sCoinNum;
     }
 
-    public static void setCoinNum(int coinNum) {
-        MyAccountInfo.sCoinNum = coinNum;
+    public static void setCoinNum(long coinNum) {
+        sCoinNum = coinNum;
     }
 
-    public static int getKooNum() {
+    public static long getKooNum() {
         return sKooNum;
     }
 
-    public static void setKooNum(int kooNum) {
-        MyAccountInfo.sKooNum = kooNum;
+    public static void setKooNum(long kooNum) {sKooNum = kooNum;
     }
 
     public static String getNickname() {
@@ -49,6 +65,9 @@ public class MyAccountInfo {
     }
 
     public static void setNickname(String nickname) {
+        Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_NICKNAME, nickname);
+        editor.commit();
         sNickname = nickname;
     }
 
@@ -57,7 +76,10 @@ public class MyAccountInfo {
     }
 
     public static void setToken(String token) {
-        MyAccountInfo.sToken = token;
+        Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_TOKEN, token);
+        editor.commit();
+        sToken = token;
     }
 
     public static String getUid() {
@@ -73,6 +95,9 @@ public class MyAccountInfo {
     }
 
     public static void setPhoneNumber(String phoneNumber) {
+        Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_PHONE_NUMBER, phoneNumber);
+        editor.commit();
         sPhoneNumber = phoneNumber;
     }
 

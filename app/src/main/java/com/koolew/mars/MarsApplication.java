@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.koolew.mars.infos.MyAccountInfo;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -23,7 +24,8 @@ public class MarsApplication extends Application {
         long start = System.currentTimeMillis();
 
         initImageLoader(getApplicationContext());
-        com.koolew.mars.wxapi.Api.initApi(this);
+        com.koolew.mars.wxapi.Api.initApi(getApplicationContext());
+        MyAccountInfo.init(getApplicationContext());
 
         Log.d(TAG, "Init in MarsApplication takes: " + (System.currentTimeMillis() - start));
     }
