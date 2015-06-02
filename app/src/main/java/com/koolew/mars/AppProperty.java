@@ -8,4 +8,8 @@ public class AppProperty {
     public static int getNicknameMaxLen() {
         return 10;
     }
+
+    public static int getTopicMaxReturnParterCount() {
+        return 10;
+    }
 }

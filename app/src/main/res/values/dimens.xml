@@ -7,6 +7,7 @@
     <dimen name="big_round_corner_btn_text_size">16sp</dimen>
     <dimen name="friend_select_item_width">50dp</dimen>
     <dimen name="friend_select_item_height">73dp</dimen>
+    <dimen name="avatar_border_width">2dp</dimen>
 
     <!-- For FirstLoginActivity -->
     <dimen name="first_login_logo_margin_top">56dp</dimen>
@@ -26,6 +27,12 @@
 
     <!-- For InitPersonalInfoActivity -->
     <dimen name="init_info_view_interval">10dp</dimen>
+
+    <!-- For topic & invitation card item -->
+    <dimen name="topic_invitation_card_margin">5dp</dimen>
+    <dimen name="topic_invitation_card_padding">5dp</dimen>
+    <dimen name="topic_parter_size">34dp</dimen>
+    <dimen name="topic_parter_half_interval">6dp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>

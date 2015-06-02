@@ -11,6 +11,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class WebApiUtil {
 
+    private static final String BASE_URL = "http://test.koolew.com/v1/";
+
+    public static final String FEEDS_TOPIC_URL = BASE_URL + "feeds/topic";
+
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
 
