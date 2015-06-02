@@ -1,12 +1,12 @@
 package com.koolew.mars;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -41,7 +41,7 @@ import org.json.JSONObject;
 import java.util.Map;
 
 
-public class MainActivity extends ActionBarActivity
+public class MainActivity extends FragmentActivity
         implements MainBaseFragment.OnFragmentInteractionListener {
 
     private static final String TAG = "koolew-MainActivity";
@@ -58,6 +58,8 @@ public class MainActivity extends ActionBarActivity
     private PhoneNumberView mPhoneNumber;
     private TextView mCountKoo;
     private TextView mCountCoin;
+
+    private Fragment[] fragments = new Fragment[4];
 
     private RequestQueue mRequestQueue;
 
@@ -95,6 +97,11 @@ public class MainActivity extends ActionBarActivity
 
         getUserInfo();
 
+        fragments[0] = KoolewFragment.newInstance();
+        fragments[1] = MessageFragment.newInstance();
+        fragments[2] = FriendFragment.newInstance();
+        fragments[3] = SettingsFragment.newInstance();
+
         switchFragment(0);
         configureToolbar();
         configureDrawer();
@@ -102,8 +109,6 @@ public class MainActivity extends ActionBarActivity
 
     private void configureToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Sliding");
 
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,24 +225,8 @@ public class MainActivity extends ActionBarActivity
     private void switchFragment(int position) {
         mAdapter.checkedPosition = position;
         mAdapter.notifyDataSetChanged();
-        Fragment fragment = null;
-        switch (position) {
-            case 0:
-                fragment = KoolewFragment.newInstance();
-                break;
-            case 1:
-                fragment = MessageFragment.newInstance();
-                break;
-            case 2:
-                fragment = FriendFragment.newInstance();
-                break;
-            case 3:
-                fragment = SettingsFragment.newInstance();
-                break;
-            default:
-                break;
-        }
-        FragmentManager fragmentManager = getFragmentManager();
+        Fragment fragment = fragments[position];
+        FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment).commit();
 

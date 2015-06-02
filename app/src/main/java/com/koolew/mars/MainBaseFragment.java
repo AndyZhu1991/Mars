@@ -1,8 +1,8 @@
 package com.koolew.mars;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 
 /**
  * Created by jinchangzhu on 5/31/15.
