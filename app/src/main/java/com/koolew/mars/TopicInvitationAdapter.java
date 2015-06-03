@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -36,6 +37,13 @@ public class TopicInvitationAdapter extends BaseAdapter {
     public static final int TYPE_TOPIC = 0;
     public static final int TYPE_INVITATION = 1;
     public static final int TYPE_COUNT = 2; // This is COUNT
+
+    static DisplayImageOptions imgDisplayOptions = new DisplayImageOptions.Builder()
+            //.showStubImage(R.drawable.stub_image)
+            .cacheInMemory(true)
+            .cacheOnDisk(true)
+            //.imageScaleType(ImageScaleType.EXACT)
+            .build();
 
     private Context mContext;
     private LayoutInflater mInflater;
@@ -114,7 +122,8 @@ public class TopicInvitationAdapter extends BaseAdapter {
             JSONArray parters = itemJson.getJSONArray("parters");
             ViewHolderTopic holder = (ViewHolderTopic) convertView.getTag();
 
-            ImageLoader.getInstance().displayImage(topic.getString("thumb_url"), holder.thumb);
+            ImageLoader.getInstance().displayImage(topic.getString("thumb_url"),
+                    holder.thumb, imgDisplayOptions);
             holder.topicTitle.setText(topic.getString("content"));
             holder.videoCount.setText(
                     mContext.getString(R.string.video_count_label, topic.getInt("video_cnt")));
@@ -124,7 +133,8 @@ public class TopicInvitationAdapter extends BaseAdapter {
             }
             for (int i = 0; i < parters.length(); i++) {
                 ImageLoader.getInstance().
-                        displayImage(((JSONObject) parters.get(i)).getString("avatar"), holder.parters[i]);
+                        displayImage(((JSONObject) parters.get(i)).getString("avatar"),
+                        holder.parters[i], imgDisplayOptions);
                 holder.parters[i].setVisibility(View.VISIBLE);
             }
         } catch (JSONException e) {
