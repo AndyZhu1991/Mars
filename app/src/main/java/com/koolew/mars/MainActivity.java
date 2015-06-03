@@ -42,7 +42,8 @@ import java.util.Map;
 
 
 public class MainActivity extends FragmentActivity
-        implements MainBaseFragment.OnFragmentInteractionListener {
+        implements MainBaseFragment.OnFragmentInteractionListener,
+                   KoolewFragment.MainColorChangedListener{
 
     private static final String TAG = "koolew-MainActivity";
 
@@ -236,6 +237,11 @@ public class MainActivity extends FragmentActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onMainColorChanged(int color) {
+        mToolbar.setBackgroundColor(color);
     }
 
     class DrawerListAdapter extends BaseAdapter {

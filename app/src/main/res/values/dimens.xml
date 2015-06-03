@@ -34,6 +34,10 @@
     <dimen name="topic_parter_size">34dp</dimen>
     <dimen name="topic_parter_half_interval">6dp</dimen>
 
+    <!-- For KoolewViewPagerIndicator -->
+    <dimen name="indicator_title_text_size">16sp</dimen>
+    <dimen name="underline_height">2dp</dimen>
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>

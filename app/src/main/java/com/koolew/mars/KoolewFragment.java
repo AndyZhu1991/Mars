@@ -1,6 +1,6 @@
 package com.koolew.mars;
 
-import android.net.Uri;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,6 +9,8 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.koolew.mars.view.KoolewViewPagerIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,9 @@ public class KoolewFragment extends MainBaseFragment {
 
     private ViewPager mViewPager;
     private KoolewFragmentPagerAdapter mAdapter;
+    private KoolewViewPagerIndicator mViewPagerIndicator;
+
+    private MainColorChangedListener mMainColorChangedListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -59,27 +64,68 @@ public class KoolewFragment extends MainBaseFragment {
         mViewPager = (ViewPager) root.findViewById(R.id.view_pager);
         mAdapter = new KoolewFragmentPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(mAdapter);
+        mViewPagerIndicator = (KoolewViewPagerIndicator) root.findViewById(R.id.indicator);
+        mViewPagerIndicator.setViewPager(mViewPager, new int[] {
+                getResources().getColor(R.color.koolew_light_orange),
+                getResources().getColor(R.color.koolew_deep_orange),
+                getResources().getColor(R.color.koolew_light_blue),
+                getResources().getColor(R.color.koolew_deep_blue),
+                getResources().getColor(R.color.koolew_purple)
+        });
+        mViewPagerIndicator.setOnBackgroundColorChangedListener(
+                new KoolewViewPagerIndicator.OnBackgroundColorChangedListener() {
+                    @Override
+                    public void onBackgroundColorChanged(int color) {
+                        mMainColorChangedListener.onMainColorChanged(color);
+                    }
+                }
+        );
 
         return root;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mMainColorChangedListener = (MainColorChangedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement MainColorChangedListener");
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mMainColorChangedListener = null;
     }
 
     class KoolewFragmentPagerAdapter extends FragmentPagerAdapter {
 
         private List<Fragment> fragmentList;
+        private List<String> fragmentTitles;
 
         public KoolewFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
             // TODO Auto-generated constructor stub
             fragmentList = new ArrayList<Fragment>();
+            fragmentTitles = new ArrayList<String>();
+
             fragmentList.add(KoolewNewsFragment.newInstance());
+            fragmentTitles.add(getString(R.string.koolew_news_title));
+
             fragmentList.add(KoolewRelatedMeFragment.newInstance());
+            fragmentTitles.add(getString(R.string.koolew_related_me_title));
+
+            fragmentList.add(KoolewHotFragment.newInstance());
+            fragmentTitles.add(getString(R.string.koolew_hot_title));
+
+            fragmentList.add(KoolewMeetFragment.newInstance());
+            fragmentTitles.add(getString(R.string.koolew_meet_title));
+
+            fragmentList.add(KoolewFavoriteFragment.newInstance());
+            fragmentTitles.add(getString(R.string.koolew_favorite_title));
         }
 
         @Override
@@ -91,6 +137,15 @@ public class KoolewFragment extends MainBaseFragment {
         public int getCount() {
             return fragmentList.size();
         }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return fragmentTitles.get(position);
+        }
+    }
+
+    public interface MainColorChangedListener {
+        public void onMainColorChanged(int color);
     }
 
 }
