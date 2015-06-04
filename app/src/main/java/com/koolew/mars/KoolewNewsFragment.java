@@ -63,6 +63,9 @@ public class KoolewNewsFragment extends Fragment {
         // Inflate the layout for this fragment
         View root =  inflater.inflate(R.layout.fragment_koolew_news, container, false);
         mListView = (ListView) root.findViewById(R.id.list_view);
+        if (mAdapter != null) {
+            mListView.setAdapter(mAdapter);
+        }
         return root;
     }
 
@@ -80,7 +83,9 @@ public class KoolewNewsFragment extends Fragment {
                             for (int i = 0; i < length; i++) {
                                 mAdapter.mData.add(cards.getJSONObject(i));
                             }
-                            mListView.setAdapter(mAdapter);
+                            if (mListView != null) {
+                                mListView.setAdapter(mAdapter);
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
