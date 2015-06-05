@@ -14,9 +14,14 @@ public class WebApiUtil {
     private static final String BASE_URL = "http://test.koolew.com/v1/";
 
     public static final String FEEDS_TOPIC_URL = BASE_URL + "feeds/topic";
+    private static final String TOPIC_VIDEO_FRIEND_URL = BASE_URL + "feeds";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
+
+    public static String getTopicVideoFriendUrl(String topicId) {
+        return TOPIC_VIDEO_FRIEND_URL + "?topic_id=" + topicId;
+    }
 
     public static Map<String, String> getStandardPostHeaders() {
         HashMap<String, String> headers = new HashMap<String, String>();

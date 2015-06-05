@@ -164,7 +164,13 @@ public class KoolewViewPagerIndicator extends LinearLayout
 
     @Override
     public void onClick(View v) {
-
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            if (getChildAt(i) == v) {
+                mViewPager.setCurrentItem(i, true);
+                return;
+            }
+        }
     }
 
     public interface OnBackgroundColorChangedListener {

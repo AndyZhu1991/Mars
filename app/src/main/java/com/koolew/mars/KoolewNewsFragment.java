@@ -1,11 +1,13 @@
 package com.koolew.mars;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.Request;
@@ -23,7 +25,7 @@ import org.json.JSONObject;
 import java.util.Map;
 
 
-public class KoolewNewsFragment extends Fragment {
+public class KoolewNewsFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private static final String TAG = "koolew-KoolewNewsF";
 
@@ -63,6 +65,7 @@ public class KoolewNewsFragment extends Fragment {
         // Inflate the layout for this fragment
         View root =  inflater.inflate(R.layout.fragment_koolew_news, container, false);
         mListView = (ListView) root.findViewById(R.id.list_view);
+        mListView.setOnItemClickListener(this);
         if (mAdapter != null) {
             mListView.setAdapter(mAdapter);
         }
@@ -105,4 +108,15 @@ public class KoolewNewsFragment extends Fragment {
         mRequestQueue.add(jsonObjectRequest);
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        try {
+            String topicId = mAdapter.mData.get(position).getJSONObject("topic").getString("topic_id");
+            Intent intent = new Intent(getActivity(), TopicActivity.class);
+            intent.putExtra(TopicActivity.KEY_TOPIC_ID, topicId);
+            startActivity(intent);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }

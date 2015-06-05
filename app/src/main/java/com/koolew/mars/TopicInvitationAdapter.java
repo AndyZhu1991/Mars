@@ -2,19 +2,17 @@ package com.koolew.mars;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.koolew.mars.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -216,17 +214,12 @@ public class TopicInvitationAdapter extends BaseAdapter {
             return maxShowTopicParterCount;
         }
 
-        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        DisplayMetrics outMetrics = new DisplayMetrics ();
-        display.getMetrics(outMetrics);
-
         Resources res = mContext.getResources();
         int topicMargin = res.getDimensionPixelSize(R.dimen.topic_invitation_card_margin);
         int topicPadding = res.getDimensionPixelSize(R.dimen.topic_invitation_card_padding);
         int topicParterSize = res.getDimensionPixelSize(R.dimen.topic_parter_size);
         int topicParterHalfInterval = res.getDimensionPixelSize(R.dimen.topic_parter_half_interval);
-        int screenWidth = outMetrics.widthPixels;
+        int screenWidth = Utils.getScreenWidthPixel(mContext);
 
         int count = (screenWidth - topicMargin * 2 - topicPadding * 2)
                          / (topicParterSize + topicParterHalfInterval * 2);
