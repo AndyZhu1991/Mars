@@ -3,7 +3,6 @@ package com.koolew.mars.utils;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.VideoView;
 
 import com.koolew.mars.downloadmanager.DownloadRequest;
 import com.koolew.mars.downloadmanager.DownloadStatusListener;
@@ -15,6 +14,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
+
+import tv.danmaku.ijk.media.widget.VideoView;
 
 /**
  * Created by jinchangzhu on 6/5/15.
@@ -49,7 +50,7 @@ public class VideoLoader implements DownloadStatusListener {
         }
         else {
             // TODO: Download this video
-            if (mCurrentDownload.url.equals(url)) {
+            if (mCurrentDownload != null && mCurrentDownload.url.equals(url)) {
                 return;
             }
 

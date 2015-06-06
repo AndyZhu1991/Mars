@@ -1,7 +1,6 @@
 package com.koolew.mars;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.VideoView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -21,10 +19,11 @@ import com.android.volley.toolbox.Volley;
 import com.koolew.mars.utils.VideoLoader;
 import com.koolew.mars.utils.WebApiUtil;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
+
+import tv.danmaku.ijk.media.widget.VideoView;
 
 
 public class TopicActivity extends ActionBarActivity implements AbsListView.OnScrollListener {
@@ -41,8 +40,8 @@ public class TopicActivity extends ActionBarActivity implements AbsListView.OnSc
 
     private VideoView mVideoView;
     private boolean isFirstPlay = true;
-    private int mCurrentVideoIndex = -1;
     private FrameLayout mCurrentVideoLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,18 +94,21 @@ public class TopicActivity extends ActionBarActivity implements AbsListView.OnSc
 
         if (scrollState == SCROLL_STATE_IDLE) {
             int newVideoIndex = getCurrentVideoIndex();
-            if (mListView.getChildAt(newVideoIndex) != mCurrentVideoLayout) {
+            if (mCurrentVideoLayout == ((VideoCardAdapter.ViewHolder)
+                    mListView.getChildAt(newVideoIndex).getTag()).videoLayout) {
+                if (!mVideoView.isPlaying()) {
+                    mCurrentVideoLayout.findViewById(R.id.video_thumb).setVisibility(View.INVISIBLE);
+                    mVideoView.resume();
+                }
+            }
+            else {
                 Log.d(TAG, "newVideoIndex: " + newVideoIndex);
                 mCurrentVideoLayout.removeView(mVideoView);
+                mCurrentVideoLayout.findViewById(R.id.video_thumb).setVisibility(View.VISIBLE);
                 mCurrentVideoLayout = ((VideoCardAdapter.ViewHolder)
                         mListView.getChildAt(newVideoIndex).getTag()).videoLayout;
-                mCurrentVideoLayout.addView(mVideoView);
-            }
-            //if (mVideoView.getVisibility() == View.INVISIBLE) {
-            if (!mVideoView.isPlaying()) {
-                Log.d(TAG, "restart play");
-                mVideoView.setVisibility(View.VISIBLE);
-                mVideoView.pause();
+                mCurrentVideoLayout.addView(mVideoView, 0);
+                mCurrentVideoLayout.findViewById(R.id.video_thumb).setVisibility(View.INVISIBLE);
                 playVideo((String) mCurrentVideoLayout.getTag());
             }
         }
@@ -115,72 +117,29 @@ public class TopicActivity extends ActionBarActivity implements AbsListView.OnSc
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
+        // First play.
         if (isFirstPlay && visibleItemCount > 0) {
             Log.d(TAG, "first play");
             mCurrentVideoLayout = ((VideoCardAdapter.ViewHolder) mListView.getChildAt(0).getTag()).videoLayout;
-            mCurrentVideoLayout.addView(mVideoView);
+            mCurrentVideoLayout.addView(mVideoView, 0);
+            mCurrentVideoLayout.findViewById(R.id.video_thumb).setVisibility(View.INVISIBLE);
             playVideo((String) mCurrentVideoLayout.getTag());
             isFirstPlay = false;
         }
 
-        if (mVideoView != null && !mVideoView.isPlaying()) { //.getVisibility() == View.INVISIBLE) {
-            return;
-        }
+        if (mAdapter == null) return;
 
-        int newVideoIndex;
-        if (visibleItemCount == 0) {
-            newVideoIndex = -1;
-        }
-        else if (visibleItemCount == 1) {
-            newVideoIndex = firstVisibleItem;
-        }
-        else {
-            newVideoIndex = getCurrentVideoIndex();
-        }
-
-        if (newVideoIndex != -1 &&
-                ((VideoCardAdapter.ViewHolder) mListView.getChildAt(newVideoIndex).getTag())
-                        .videoLayout != mCurrentVideoLayout) {
-            Log.d(TAG, "Stop play, newVideoIndex: " + newVideoIndex);
-            mVideoView.stopPlayback();
-            mVideoView.setVisibility(View.INVISIBLE);
-            Log.d("stdzhu", "pause");
-            long start = System.currentTimeMillis();
-            //mVideoView.pause();
-            mVideoView.stopPlayback();
-            Log.d("stdzhu", "" + (System.currentTimeMillis() - start));
+        int currentPosition = mAdapter.getPositionByVideoLayout(mCurrentVideoLayout);
+        Log.d(TAG, "firstVisible: " + firstVisibleItem + ", lastVisible: " + mListView.getLastVisiblePosition() + ", current: " + currentPosition);
+        if ((currentPosition < firstVisibleItem || currentPosition > mListView.getLastVisiblePosition())
+                && mVideoView != null && mVideoView.isPlaying()) {
+            mVideoView.pause();
+            mCurrentVideoLayout.findViewById(R.id.video_thumb).setVisibility(View.VISIBLE);
         }
     }
 
     private void playVideo(String url) {
         mVideoLoader.playVideo(mVideoView, url);
-        //mVideoView.setVideoPath("/sdcard/1.mp4");
-        //mVideoView.start();
-    }
-
-    private void resetVideoIndex(int newVideoIndex) {
-
-        long start = System.currentTimeMillis();
-        mCurrentVideoIndex = newVideoIndex;
-        if (mCurrentVideoLayout != null) {
-            mCurrentVideoLayout.removeView(mVideoView);
-        }
-        Log.d(TAG, "removeView: " + (System.currentTimeMillis() - start));
-        mCurrentVideoLayout = ((VideoCardAdapter.ViewHolder)
-                mListView.getChildAt(mCurrentVideoIndex).getTag()).videoLayout;
-        mCurrentVideoLayout.addView(mVideoView);
-        Log.d(TAG, "addView: " + (System.currentTimeMillis() - start));
-
-        try {
-            String newViderUrl = ((JSONObject) mAdapter.getItem(mCurrentVideoIndex))
-                    .getString("video_url");
-            Log.d(TAG, "Play: " + newViderUrl);
-            mVideoView.setVideoURI(Uri.parse("/sdcard/1.mp4"));
-            mVideoView.start();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "switch VideoView: " + (System.currentTimeMillis() - start));
     }
 
     private int getCurrentVideoIndex() {

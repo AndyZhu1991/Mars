@@ -100,7 +100,6 @@ public class VideoCardAdapter extends BaseAdapter {
             convertView.setTag(holder);
             holder.videoLayout = (FrameLayout) convertView.findViewById(R.id.video_layout);
             holder.videoLayout.getLayoutParams().height = getVideoCardVideoHeight();
-            //holder.videoView = (VideoView) convertView.findViewById(R.id.video_view);
             holder.videoThumb = (ImageView) convertView.findViewById(R.id.video_thumb);
             holder.avatar = (CircleImageView) convertView.findViewById(R.id.avatar);
             holder.nickname = (TextView) convertView.findViewById(R.id.nickname);
@@ -131,6 +130,22 @@ public class VideoCardAdapter extends BaseAdapter {
         int screenWidth = Utils.getScreenWidthPixel(mContext);
         // The video  width:height == 4:3
         return (screenWidth - videoCardPadding * 2) / 4 * 3;
+    }
+
+    public int getPositionByVideoLayout(FrameLayout videoLayout) {
+        String video_url = (String) videoLayout.getTag();
+        int count = mData.size();
+        for (int i = 0; i < count; i++) {
+            try {
+                if (mData.get(i).getString("video_url").equals(video_url)) {
+                    return i;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return -1;
     }
 
     public static class ViewHolder {
