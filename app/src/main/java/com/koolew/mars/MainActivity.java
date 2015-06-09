@@ -179,7 +179,7 @@ public class MainActivity extends FragmentActivity
     }
 
     private void getUserInfo() {
-        String url = "http://test.koolew.com/v1/user/info";
+        String url = WebApiUtil.USER_INFO_URL;
         JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.GET, url,
                 new Response.Listener<JSONObject>() {
                     @Override

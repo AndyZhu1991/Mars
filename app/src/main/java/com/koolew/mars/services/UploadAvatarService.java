@@ -13,6 +13,7 @@ import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.utils.BitmapUtil;
+import com.koolew.mars.utils.WebApiUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
@@ -164,7 +165,7 @@ public class UploadAvatarService extends IntentService {
 
     private String getQiniuToken() {
 
-        String url = "http://test.koolew.com/v1/qiniu/uptoken?type=avatar";
+        String url = WebApiUtil.REQUEST_QINIU_TOKEN_URL;
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonObjectRequest jsonObjectRequest =
                 new JsonObjectRequest(url, null, future, future) {

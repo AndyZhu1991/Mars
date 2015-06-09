@@ -90,7 +90,7 @@ public class InitPersonalInfoActivity extends Activity {
         }
 
         mLoginingDialog.show();
-        String url = "http://test.koolew.com/v1/user/info";
+        String url = WebApiUtil.USER_INFO_URL;
         JSONObject requestJson = new JSONObject();
         try {
             requestJson.put("nickname", mEtNickname.getText().toString());

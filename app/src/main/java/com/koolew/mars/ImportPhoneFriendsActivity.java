@@ -92,7 +92,7 @@ public class ImportPhoneFriendsActivity extends Activity {
 
         // Start another Activity here
 
-        String url = "http://test.koolew.com/v1/friend/apply";
+        String url = WebApiUtil.ADD_FRIEND_URL;
         JSONObject requestJson = new JSONObject();
         try {
             JSONArray friendUids = new JSONArray();
@@ -264,7 +264,7 @@ public class ImportPhoneFriendsActivity extends Activity {
                 }
             }
 
-            String url = "http://test.koolew.com/v1/contact/address";
+            String url = WebApiUtil.FRIEND_RECOMMEND_URL;
             RequestFuture<JSONObject> future = RequestFuture.newFuture();
             JSONObject requestJson = new JSONObject();
             try {

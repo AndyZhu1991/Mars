@@ -24,6 +24,7 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.infos.MyAccountInfo.LOGIN_TYPE;
+import com.koolew.mars.utils.WebApiUtil;
 import com.koolew.mars.weiboapi.AccessTokenKeeper;
 import com.koolew.mars.wxapi.TokenKeeper;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
@@ -116,7 +117,7 @@ public class InputPasswordActivity extends Activity implements View.OnClickListe
         // Just 4 debug
         //if (true) return;
 
-        String url = "http://test.koolew.com/v1/user/code?phone=" + MyAccountInfo.getPhoneNumber();
+        String url = WebApiUtil.getRequestPasswordUrl(MyAccountInfo.getPhoneNumber());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Method.GET, url,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -240,11 +241,11 @@ public class InputPasswordActivity extends Activity implements View.OnClickListe
             requestJson.put("code", password);
             if (MyAccountInfo.getLoginType() == LOGIN_TYPE.MOBILE) {
                 Log.d(TAG, "Login by mobile");
-                url = "http://test.koolew.com/v1/user/login";
+                url = WebApiUtil.LOGIN_URL;
             }
             else {
                 Log.d(TAG, "Signup by: " + MyAccountInfo.getLoginType().ordinal());
-                url = "http://test.koolew.com/v1/user/signup/sns";
+                url = WebApiUtil.SNS_SIGNUP_URL;
                 addSnsRegisterParams(MyAccountInfo.getLoginType(), requestJson);
             }
         } catch (JSONException e) {
