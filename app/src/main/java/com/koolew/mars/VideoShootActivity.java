@@ -2,19 +2,23 @@ package com.koolew.mars;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.ImageFormat;
 import android.hardware.Camera;
-import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
-import com.koolew.mars.camerautils.CameraPreview;
+import com.koolew.mars.camerautils.CameraSurfacePreview;
+import com.koolew.mars.camerautils.CameraWrapper;
+import com.koolew.mars.media.YUV420VideoEncoder;
+import com.koolew.mars.utils.YUV420Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,116 +27,196 @@ import java.util.Date;
 import java.util.List;
 
 public class VideoShootActivity extends Activity
-        implements OnClickListener{
+        implements OnClickListener, CameraWrapper.CamOpenOverCallback{
 
     private final static String TAG = "koolew-VideoShootA";
 
-    private CameraPreview mPreview;
-    private MediaRecorder mMediaRecorder;
+    private FrameLayout mPreviewFrame;
+    //private CameraSurfacePreview mPreview;
+    private CameraSurfacePreview mPreview;
+    private YUV420VideoEncoder mEncoder;
     private Camera mCamera;
+    private int previewWidth;
+    private int previewHeight;
 
     private boolean isRecording = false;
+
+    private byte[] YUV420RotateBuffer;
 
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_video_shoot);
 
-        Log.d(TAG, "FFmpeg version: " + getAvcodecVersion());
+        mEncoder = new YUV420VideoEncoder(
+                AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
 
-        //mMediaRecorder = new MediaRecorder();
-        FrameLayout previewFrame = (FrameLayout) findViewById(R.id.preview_frame);
-        ViewGroup.LayoutParams lp = previewFrame.getLayoutParams();
-        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        int width = wm.getDefaultDisplay().getWidth();
-        Log.d(TAG, "width: " + width + "height: " + lp.height);
-        lp.height = width / 4 * 3;
-        previewFrame.setLayoutParams(lp);
+        initViews();
+    }
 
-        // Create an instance of Camera
-        mCamera = getCameraInstance();
-        mCamera.setDisplayOrientation(90);
-        Camera.Parameters param = mCamera.getParameters();
-        //param.setRotation(90);
-        param.setPreviewSize(640, 480);
-        if (param.getSupportedFocusModes().contains(
-                Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
-            param.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
-        }
-        mCamera.setParameters(param);
-        List<Camera.Size> sizes = mCamera.getParameters().getSupportedPreviewSizes();
-        for (Camera.Size s: sizes) {
-            Log.d(TAG, "width:" + s.width + ", height:" + s.height);
-        }
+    private void initViews() {
+        mPreviewFrame = (FrameLayout) findViewById(R.id.preview_frame);
+
         // Create our Preview view and set it as the content of our activity.
-        mPreview = new CameraPreview(this, mCamera);
-        previewFrame.addView(mPreview);
+        mPreview = (CameraSurfacePreview) findViewById(R.id.camera_preview);
 
         findViewById(R.id.start_record).setOnClickListener(this);
         findViewById(R.id.stop_record).setOnClickListener(this);
     }
 
-    /** A safe way to get an instance of the Camera object. */
-    public static Camera getCameraInstance(){
-        Camera c = null;
-        try {
-            c = Camera.open(); // attempt to get a Camera instance
-        }
-        catch (Exception e){
-            // Camera is not available (in use or does not exist)
-        }
-        return c; // returns null if camera is unavailable
+    private void initLayoutParams() {
+        //initBestCameraPreviewSize(CameraWrapper.getInstance().getCamera().getParameters());
+
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mPreviewFrame.getLayoutParams();
+        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        int width = wm.getDefaultDisplay().getWidth();
+        Log.d(TAG, "width: " + width + "height: " + lp.height);
+        lp.height = width * previewWidth / previewHeight;
+        int visiblePreviewHeight = width * AppProperty.RECORD_VIDEO_HEIGHT / AppProperty.RECORD_VIDEO_WIDTH;
+        lp.topMargin = 0 - (lp.height - visiblePreviewHeight) / 2;
+        mPreviewFrame.setLayoutParams(lp);
+
+        LinearLayout bottomLayout = (LinearLayout) findViewById(R.id.bottom_layout);
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) bottomLayout.getLayoutParams();
+        params.topMargin = visiblePreviewHeight;
+        bottomLayout.setLayoutParams(params);
     }
 
-    private boolean prepareVideoRecorder(){
-
-        //omCamera = getCameraInstance();
-        mMediaRecorder = new MediaRecorder();
-
-        // Step 1: Unlock and set camera to MediaRecorder
-        mCamera.unlock();
-        mMediaRecorder.setCamera(mCamera);
-
-        mMediaRecorder.setOrientationHint(90);
-
-        // Step 2: Set sources
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-
-        // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
-        //mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
-
-        // Set output file format
-        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-
-        // 这两项需要放在setOutputFormat之后
-        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-
-        mMediaRecorder.setVideoSize(640, 480);
-        mMediaRecorder.setVideoFrameRate(30);
-        mMediaRecorder.setVideoEncodingBitRate(2000 * 1024);
-
-        // Step 4: Set output file
-        mMediaRecorder.setOutputFile(getOutputMediaFile(MEDIA_TYPE_VIDEO).toString());
-
-        // Step 5: Set the preview output
-        mMediaRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());
-
-        // Step 6: Prepare configured MediaRecorder
-        try {
-            mMediaRecorder.prepare();
-        } catch (IllegalStateException e) {
-            Log.d(TAG, "IllegalStateException preparing MediaRecorder: " + e.getMessage());
-            releaseMediaRecorder();
-            return false;
-        } catch (IOException e) {
-            Log.d(TAG, "IOException preparing MediaRecorder: " + e.getMessage());
-            releaseMediaRecorder();
-            return false;
+    public void doOpenCamera() {
+        Log.i(TAG, "Camera open....");
+        int numCameras = Camera.getNumberOfCameras();
+        Camera.CameraInfo info = new Camera.CameraInfo();
+        for (int i = 0; i < numCameras; i++) {
+            Camera.getCameraInfo(i, info);
+            if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                mCamera = Camera.open(i);
+                break;
+            }
         }
-        return true;
+        if (mCamera == null) {
+            Log.d(TAG, "No front-facing camera found; opening default");
+            mCamera = Camera.open();    // opens first back-facing camera
+        }
+        if (mCamera == null) {
+            throw new RuntimeException("Unable to open camera");
+        }
+        Log.i(TAG, "Camera open over....");
+        cameraHasOpened();
+    }
+
+    public void doStartPreview(SurfaceHolder holder) {
+        Log.i(TAG, "doStartPreview...");
+
+        try {
+            this.mCamera.setPreviewDisplay(holder);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        initCamera();
+    }
+
+    public void doStopCamera() {
+        Log.i(TAG, "doStopCamera, mCamera is null: " + (mCamera == null));
+        if (this.mCamera != null) {
+            //mCameraPreviewCallback.close();
+            this.mCamera.setPreviewCallback(null);
+            this.mCamera.stopPreview();
+            this.mCamera.release();
+            this.mCamera = null;
+        }
+    }
+
+    private void initCamera() {
+        if (this.mCamera != null) {
+            Camera.Parameters params = this.mCamera.getParameters();
+            params.setPreviewFormat(ImageFormat.NV21);
+            params.setPreviewFrameRate(AppProperty.RECORD_VIDEO_FPS);
+            params.setFlashMode("off");
+            params.setWhiteBalance(Camera.Parameters.WHITE_BALANCE_AUTO);
+            params.setSceneMode(Camera.Parameters.SCENE_MODE_AUTO);
+            params.setPreviewSize(previewWidth, previewHeight);
+            this.mCamera.setDisplayOrientation(90);
+            mCamera.addCallbackBuffer(new byte[previewWidth * previewHeight * 3 / 2]);
+            mCamera.setPreviewCallbackWithBuffer(new MyPreviewCallback());
+            List<String> focusModes = params.getSupportedFocusModes();
+            if (focusModes.contains("continuous-video")) {
+                params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+            }
+            this.mCamera.setParameters(params);
+            this.mCamera.startPreview();
+        }
+    }
+
+    private void initBestCameraPreviewSize(Camera.Parameters params) {
+        List<Camera.Size> sizes = params.getSupportedPreviewSizes();
+        int count = sizes.size();
+        int minSizeDiff = 0x7FFFFFFF;
+        int bestSizeIndex = -1;
+        for (int i = 0; i < count; i++) {
+            Camera.Size size = sizes.get(i);
+            Log.d(TAG, "width:" + size.width + ", height:" + size.height);
+            if (Math.abs(size.height - AppProperty.RECORD_VIDEO_WIDTH) < minSizeDiff) {
+                minSizeDiff = Math.abs(size.height - AppProperty.RECORD_VIDEO_WIDTH);
+                bestSizeIndex = i;
+                if (minSizeDiff == 0) {
+                    break;
+                }
+            }
+        }
+
+        if (bestSizeIndex != -1) {
+            Camera.Size bestSize = sizes.get(bestSizeIndex);
+            previewHeight = bestSize.height;
+            previewWidth = bestSize.width;
+        }
+    }
+
+    @Override
+    public void cameraHasOpened() {
+        initBestCameraPreviewSize(mCamera.getParameters());
+        YUV420RotateBuffer = new byte[previewWidth * previewHeight * 3 / 2];
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                initLayoutParams();
+            }
+        });
+//        SurfaceTexture surface = mPreview.getSurfaceTexture();
+//        CameraWrapper.getInstance().doStartPreview(surface);
+        SurfaceHolder holder = mPreview.getSurfaceHolder();
+        doStartPreview(holder);
+    }
+
+    class MyPreviewCallback implements Camera.PreviewCallback {
+        @Override
+        public void onPreviewFrame(byte[] data, Camera camera) {
+            Log.d(TAG, "onPreviewFrame, isRecording: " + isRecording);
+            if (isRecording) {
+                YUV420VideoEncoder.NV21Frame frame = mEncoder.obtainFrame();
+                frame.frameNanoTime = System.nanoTime();
+                YUV420Utils.rotateYUV420Degree90(data, YUV420RotateBuffer, previewWidth, previewHeight);
+                YUV420Utils.cropYUV420VerticalCenter(YUV420RotateBuffer, frame.data,
+                        previewHeight, previewWidth, AppProperty.RECORD_VIDEO_HEIGHT);
+                mEncoder.putNV21Frame(frame);
+            }
+
+            camera.addCallbackBuffer(data);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        new Thread() {
+            @Override
+            public void run() {
+                doOpenCamera();
+            }
+        }.start();
     }
 
     @Override
@@ -143,18 +227,9 @@ public class VideoShootActivity extends Activity
     @Override
     protected void onPause() {
         super.onPause();
-        releaseMediaRecorder();       // if you are using MediaRecorder, release it first
         releaseCamera();
     }
 
-    private void releaseMediaRecorder(){
-        if (mMediaRecorder != null) {
-            mMediaRecorder.reset();   // clear recorder configuration
-            mMediaRecorder.release(); // release the recorder object
-            mMediaRecorder = null;
-            mCamera.lock();           // lock camera for later use
-        }
-    }
 
     private void releaseCamera(){
         if (mCamera != null){
@@ -164,29 +239,17 @@ public class VideoShootActivity extends Activity
     }
 
     private void startRecord() {
-        // initialize video camera
-        if (prepareVideoRecorder()) {
-            // Camera is available and unlocked, MediaRecorder is prepared,
-            // now you can start recording
-            mMediaRecorder.start();
-
-            // inform the user that recording has started
+        if (isRecording == false) {
+            mEncoder.startEncoding();
             isRecording = true;
-        } else {
-            // prepare didn't work, release the camera
-            releaseMediaRecorder();
-            // inform user
         }
     }
 
     private void stopRecord() {
-        // stop recording and release camera
-        mMediaRecorder.stop();  // stop the recording
-        releaseMediaRecorder(); // release the MediaRecorder object
-        mCamera.lock();         // take camera access back from MediaRecorder
-
-        // inform the user that recording has stopped
-        isRecording = false;
+        if (isRecording) {
+            isRecording = false;
+            mEncoder.closeSync();
+        }
     }
 
     @Override
@@ -243,17 +306,4 @@ public class VideoShootActivity extends Activity
         Log.d(TAG, mediaFile.getAbsolutePath());
         return mediaFile;
     }
-
-    static {
-        System.loadLibrary("ffmpegbridge");
-        System.loadLibrary("avcodec-56");
-        System.loadLibrary("avformat-56");
-        System.loadLibrary("avutil-54");
-        System.loadLibrary("avfilter-5");
-        System.loadLibrary("swresample-1");
-        System.loadLibrary("swscale-3");
-    }
-
-    public native int getAvcodecVersion();
-
 }

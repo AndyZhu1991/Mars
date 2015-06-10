@@ -1,5 +1,6 @@
 package com.koolew.mars;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -88,6 +89,8 @@ public class MainActivity extends FragmentActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 4) {
                     // 添加话题卡
+                    // Test
+                    startActivity(new Intent(MainActivity.this, VideoShootActivity.class));
                 } else {
                     switchFragment(position);
                 }

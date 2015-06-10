@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,59 +8,66 @@
     <FrameLayout
         android:id="@+id/preview_frame"
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="match_parent">
 
-        <SurfaceView
+        <com.koolew.mars.camerautils.CameraSurfacePreview
             android:id="@+id/camera_preview"
             android:layout_width="match_parent"
-            android:layout_height="100dp" />
+            android:layout_height="match_parent" />
     </FrameLayout>
 
-    <FrameLayout
+    <LinearLayout
+        android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/video_shoot_progress_height">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <View
-            android:id="@+id/video_shot_progress_bar"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#00FF00"/>
-    </FrameLayout>
+            android:layout_height="@dimen/video_shoot_progress_height">
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+            <View
+                android:id="@+id/video_shot_progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#00FF00" />
+        </FrameLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-        <LinearLayout
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/only_friends_visible_height">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/start_record"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/only_friends_visible_height">
+            android:layout_height="wrap_content"
+            android:text="start" />
 
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical" />
-        </LinearLayout>
-    </RelativeLayout>
-
-    <Button
-        android:id="@+id/start_record"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="start"/>
-    <Button
-        android:id="@+id/stop_record"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="stop"/>
-
-</LinearLayout>
+        <Button
+            android:id="@+id/stop_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="stop" />
+    </LinearLayout>
+</FrameLayout>
