@@ -17,6 +17,10 @@ import android.widget.LinearLayout;
 
 import com.koolew.mars.camerautils.CameraSurfacePreview;
 import com.koolew.mars.camerautils.CameraWrapper;
+import com.koolew.mars.media.MediaAudioEncoder;
+import com.koolew.mars.media.MediaEncoder;
+import com.koolew.mars.media.MediaMuxerWrapper;
+import com.koolew.mars.media.MediaVideoEncoder;
 import com.koolew.mars.media.YUV420VideoEncoder;
 import com.koolew.mars.utils.YUV420Utils;
 
@@ -42,6 +46,9 @@ public class VideoShootActivity extends Activity
     private boolean isRecording = false;
 
     private byte[] YUV420RotateBuffer;
+
+    private MediaMuxerWrapper mMuxer;
+    private MediaVideoEncoder mVideoEncoder;
 
 
     @Override
@@ -194,13 +201,13 @@ public class VideoShootActivity extends Activity
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
             Log.d(TAG, "onPreviewFrame, isRecording: " + isRecording);
-            if (isRecording) {
-                YUV420VideoEncoder.NV21Frame frame = mEncoder.obtainFrame();
+            if (isRecording){//mVideoEncoder != null && mVideoEncoder.isEncoding == true) {
+                MediaVideoEncoder.NV21Frame frame = mVideoEncoder.obtainFrame();
                 frame.frameNanoTime = System.nanoTime();
                 YUV420Utils.rotateYUV420Degree90(data, YUV420RotateBuffer, previewWidth, previewHeight);
                 YUV420Utils.cropYUV420VerticalCenter(YUV420RotateBuffer, frame.data,
                         previewHeight, previewWidth, AppProperty.RECORD_VIDEO_HEIGHT);
-                mEncoder.putNV21Frame(frame);
+                mVideoEncoder.putNV21Frame(frame);
             }
 
             camera.addCallbackBuffer(data);
@@ -239,16 +246,44 @@ public class VideoShootActivity extends Activity
     }
 
     private void startRecord() {
-        if (isRecording == false) {
-            mEncoder.startEncoding();
-            isRecording = true;
+        try {
+            mMuxer = new MediaMuxerWrapper(".mp4");	// if you record audio only, ".m4a" is also OK.
+
+            if (true) {
+                // for video capturing
+                mVideoEncoder = new MediaVideoEncoder(mMuxer, mMediaEncoderListener,
+                        AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
+            }
+            if (true) {
+                // for audio capturing
+                new MediaAudioEncoder(mMuxer, mMediaEncoderListener);
+            }
+            mMuxer.prepare();
+            mMuxer.startRecording();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+    private final MediaEncoder.MediaEncoderListener mMediaEncoderListener = new MediaEncoder.MediaEncoderListener() {
+        @Override
+        public void onPrepared(final MediaEncoder encoder) {
+            if (encoder == mVideoEncoder) {
+                isRecording = true;
+            }
+        }
+        @Override
+        public void onStopped(final MediaEncoder encoder) {
+            if (encoder == mVideoEncoder) {
+                isRecording = false;
+            }
+        }
+    };
 
     private void stopRecord() {
-        if (isRecording) {
-            isRecording = false;
-            mEncoder.closeSync();
+        if (mMuxer != null) {
+            mMuxer.stopRecording();
+            mMuxer = null;
+            // you should not wait here
         }
     }
 
