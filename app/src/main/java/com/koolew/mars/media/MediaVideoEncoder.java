@@ -47,8 +47,8 @@ public class MediaVideoEncoder extends MediaEncoder {
     private final int mHeight;
 
 	private VideoThread mVideoThread;
-	private NV21FramePool mFramePool = new NV21FramePool();
-	private ArrayBlockingQueue<NV21Frame> mFrameQueue = new ArrayBlockingQueue<NV21Frame>(FRAME_QUEUE_SIZE);
+	private YUV420SPFramePool mFramePool = new YUV420SPFramePool();
+	private ArrayBlockingQueue<YUV420SPFrame> mFrameQueue = new ArrayBlockingQueue<YUV420SPFrame>(FRAME_QUEUE_SIZE);
 
 
 	public MediaVideoEncoder(final MediaMuxerWrapper muxer, final MediaEncoderListener listener, final int width, final int height) {
@@ -58,46 +58,47 @@ public class MediaVideoEncoder extends MediaEncoder {
 		mHeight = height;
 	}
 
-	public NV21Frame obtainFrame() {
+	public YUV420SPFrame obtainFrame() {
 		return mFramePool.obtainFrame();
 	}
 
-	public static class NV21Frame {
+	public static class YUV420SPFrame {
 		public byte[] data;
 		public long frameNanoTime;
 
-		private NV21Frame(byte[] data, long frameNanoTime) {
+		private YUV420SPFrame(byte[] data, long frameNanoTime) {
 			this.data = data;
 			this.frameNanoTime = frameNanoTime;
 		}
 	}
 
-	public class NV21FramePool {
-		private Stack<NV21Frame> mStack;
+	public class YUV420SPFramePool {
+		private Stack<YUV420SPFrame> mStack;
 
-		public NV21FramePool() {
-			mStack = new Stack<NV21Frame>();
+		public YUV420SPFramePool() {
+			mStack = new Stack<YUV420SPFrame>();
 		}
 
-		public NV21Frame obtainFrame() {
+		public YUV420SPFrame obtainFrame() {
 			synchronized (this) {
 				if (mStack.isEmpty()) {
-					return new NV21Frame(new byte[mWidth * mHeight * 3 / 2], 0l);
+					return new YUV420SPFrame(new byte[mWidth * mHeight * 3 / 2], 0l);
 				} else {
 					return mStack.pop();
 				}
 			}
 		}
 
-		public void returnFrame(NV21Frame frame) {
+		public void returnFrame(YUV420SPFrame frame) {
 			synchronized (this) {
 				mStack.push(frame);
 			}
 		}
 	}
 
-	public void putNV21Frame(NV21Frame frame) {
+	public void putYUV420SPFrame(YUV420SPFrame frame) {
 		try {
+			frame.frameNanoTime = getPTSUs();
 			mFrameQueue.put(frame);
 		}
 		catch (InterruptedException ie) {
@@ -128,7 +129,7 @@ public class MediaVideoEncoder extends MediaEncoder {
                     final ByteBuffer buf = ByteBuffer.allocateDirect(mWidth * mHeight * 3 / 2);
                     for (; mIsCapturing && !mRequestStop && !mIsEOS; ) {
                         // read audio data from internal mic
-                        NV21Frame frame = mFrameQueue.take();
+                        YUV420SPFrame frame = mFrameQueue.take();
                         //readBytes = audioRecord.read(buf, SAMPLES_PER_FRAME);
                         if (frame != null && frame.data != null && frame.data.length != 0) {
                             buf.clear();

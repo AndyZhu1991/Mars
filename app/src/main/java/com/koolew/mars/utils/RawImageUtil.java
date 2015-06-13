@@ -5,9 +5,9 @@ import android.util.Log;
 /**
  * Created by jinchangzhu on 6/10/15.
  */
-public class YUV420Utils {
+public class RawImageUtil {
 
-    private static final String TAG = "koolew-YUV420Utils";
+    private static final String TAG = "koolew-RawImageUtil";
 
     public static byte[] cropYUV420VerticalCenter
             (byte[] data, byte[] outData, int imageW, int imageH, int newImageH) {
@@ -56,5 +56,21 @@ public class YUV420Utils {
         }
         Log.d(TAG, "Rotate a YUV420 90 degree: " + (System.currentTimeMillis() - start));
         return outData;
+    }
+
+    /**
+     * NV21 is a 4:2:0 YCbCr, For 1 NV21 pixel: YYYYYYYY VUVU I420YUVSemiPlanar
+     * is a 4:2:0 YUV, For a single I420 pixel: YYYYYYYY UVUV Apply NV21 to
+     * I420YUVSemiPlanar(NV12) Refer to https://wiki.videolan.org/YUV/
+     */
+    public static void NV21toI420SemiPlanar(byte[] nv21bytes, byte[] i420bytes,
+                                            int width, int height) {
+        long start = System.currentTimeMillis();
+        System.arraycopy(nv21bytes, 0, i420bytes, 0, width * height);
+        for (int i = width * height; i < nv21bytes.length; i += 2) {
+            i420bytes[i] = nv21bytes[i + 1];
+            i420bytes[i + 1] = nv21bytes[i];
+        }
+        Log.d(TAG, "NV21toI420SemiPlanar: " + (System.currentTimeMillis() - start));
     }
 }

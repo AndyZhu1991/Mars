@@ -22,7 +22,7 @@ import com.koolew.mars.media.MediaEncoder;
 import com.koolew.mars.media.MediaMuxerWrapper;
 import com.koolew.mars.media.MediaVideoEncoder;
 import com.koolew.mars.media.YUV420VideoEncoder;
-import com.koolew.mars.utils.YUV420Utils;
+import com.koolew.mars.utils.RawImageUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +46,7 @@ public class VideoShootActivity extends Activity
     private boolean isRecording = false;
 
     private byte[] YUV420RotateBuffer;
+    private byte[] YUV420CropBuffer;
 
     private MediaMuxerWrapper mMuxer;
     private MediaVideoEncoder mVideoEncoder;
@@ -145,6 +146,7 @@ public class VideoShootActivity extends Activity
             params.setSceneMode(Camera.Parameters.SCENE_MODE_AUTO);
             params.setPreviewSize(previewWidth, previewHeight);
             this.mCamera.setDisplayOrientation(90);
+            params.setRecordingHint(true);
             mCamera.addCallbackBuffer(new byte[previewWidth * previewHeight * 3 / 2]);
             mCamera.setPreviewCallbackWithBuffer(new MyPreviewCallback());
             List<String> focusModes = params.getSupportedFocusModes();
@@ -184,6 +186,7 @@ public class VideoShootActivity extends Activity
     public void cameraHasOpened() {
         initBestCameraPreviewSize(mCamera.getParameters());
         YUV420RotateBuffer = new byte[previewWidth * previewHeight * 3 / 2];
+        YUV420CropBuffer = new byte[AppProperty.RECORD_VIDEO_WIDTH * AppProperty.RECORD_VIDEO_HEIGHT * 3 / 2];
 
         runOnUiThread(new Runnable() {
             @Override
@@ -202,12 +205,14 @@ public class VideoShootActivity extends Activity
         public void onPreviewFrame(byte[] data, Camera camera) {
             Log.d(TAG, "onPreviewFrame, isRecording: " + isRecording);
             if (isRecording){//mVideoEncoder != null && mVideoEncoder.isEncoding == true) {
-                MediaVideoEncoder.NV21Frame frame = mVideoEncoder.obtainFrame();
+                MediaVideoEncoder.YUV420SPFrame frame = mVideoEncoder.obtainFrame();
                 frame.frameNanoTime = System.nanoTime();
-                YUV420Utils.rotateYUV420Degree90(data, YUV420RotateBuffer, previewWidth, previewHeight);
-                YUV420Utils.cropYUV420VerticalCenter(YUV420RotateBuffer, frame.data,
+                RawImageUtil.rotateYUV420Degree90(data, YUV420RotateBuffer, previewWidth, previewHeight);
+                RawImageUtil.cropYUV420VerticalCenter(YUV420RotateBuffer, YUV420CropBuffer,
                         previewHeight, previewWidth, AppProperty.RECORD_VIDEO_HEIGHT);
-                mVideoEncoder.putNV21Frame(frame);
+                RawImageUtil.NV21toI420SemiPlanar(YUV420CropBuffer, frame.data,
+                        AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
+                mVideoEncoder.putYUV420SPFrame(frame);
             }
 
             camera.addCallbackBuffer(data);
