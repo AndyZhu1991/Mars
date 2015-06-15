@@ -60,6 +60,11 @@
     <string name="video_count_label">视频总数：%d个</string>
     <string name="invited_label">你被%s点名</string>
 
+    <!-- For VideoShootActivity -->
+    <string name="import_video">导入</string>
+    <string name="capture_video">长按拍摄</string>
+    <string name="time_text">%.1f秒</string>
+
     <!-- Divider -->
     <string name="title_activity_video_shoot">VideoShootActivity</string>
     <string name="title_activity_first_login">FirstLoginActivity</string>

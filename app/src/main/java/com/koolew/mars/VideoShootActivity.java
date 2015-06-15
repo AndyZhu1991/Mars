@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -22,12 +20,12 @@ import com.koolew.mars.media.MediaEncoder;
 import com.koolew.mars.media.MediaMuxerWrapper;
 import com.koolew.mars.media.MediaVideoEncoder;
 import com.koolew.mars.media.YUV420VideoEncoder;
+import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.RawImageUtil;
+import com.koolew.mars.view.VideosProgressView;
 
-import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 public class VideoShootActivity extends Activity
@@ -43,7 +41,13 @@ public class VideoShootActivity extends Activity
     private int previewWidth;
     private int previewHeight;
 
+    private VideosProgressView mVideosProgressView;
+
+    private String currentRecordingDir = "/sdcard/";
+    private List<String> mRecordedVideos = new LinkedList<String>();
+    private String mCurrentRecodingFile;
     private boolean isRecording = false;
+    private boolean isEncoding = false;
 
     private byte[] YUV420RotateBuffer;
     private byte[] YUV420CropBuffer;
@@ -65,13 +69,14 @@ public class VideoShootActivity extends Activity
     }
 
     private void initViews() {
+        mVideosProgressView = (VideosProgressView) findViewById(R.id.videos_progress);
         mPreviewFrame = (FrameLayout) findViewById(R.id.preview_frame);
 
         // Create our Preview view and set it as the content of our activity.
         mPreview = (CameraSurfacePreview) findViewById(R.id.camera_preview);
 
-        findViewById(R.id.start_record).setOnClickListener(this);
-        findViewById(R.id.stop_record).setOnClickListener(this);
+        findViewById(R.id.image_record).setOnClickListener(this);
+        findViewById(R.id.record_complete).setOnClickListener(this);
     }
 
     private void initLayoutParams() {
@@ -204,7 +209,7 @@ public class VideoShootActivity extends Activity
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
             Log.d(TAG, "onPreviewFrame, isRecording: " + isRecording);
-            if (isRecording){//mVideoEncoder != null && mVideoEncoder.isEncoding == true) {
+            if (isEncoding){//mVideoEncoder != null && mVideoEncoder.isEncoding == true) {
                 MediaVideoEncoder.YUV420SPFrame frame = mVideoEncoder.obtainFrame();
                 frame.frameNanoTime = System.nanoTime();
                 RawImageUtil.rotateYUV420Degree90(data, YUV420RotateBuffer, previewWidth, previewHeight);
@@ -239,6 +244,9 @@ public class VideoShootActivity extends Activity
     @Override
     protected void onPause() {
         super.onPause();
+        if (isRecording) {
+            stopRecord();
+        }
         releaseCamera();
     }
 
@@ -252,37 +260,21 @@ public class VideoShootActivity extends Activity
 
     private void startRecord() {
         try {
-            mMuxer = new MediaMuxerWrapper(".mp4");	// if you record audio only, ".m4a" is also OK.
-
-            if (true) {
-                // for video capturing
-                mVideoEncoder = new MediaVideoEncoder(mMuxer, mMediaEncoderListener,
+            mCurrentRecodingFile = currentRecordingDir + System.currentTimeMillis() + ".mp4";
+            mMuxer = new MediaMuxerWrapper(mCurrentRecodingFile);
+            mVideoEncoder = new MediaVideoEncoder(mMuxer, mMediaEncoderListener,
                         AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
-            }
-            if (true) {
-                // for audio capturing
-                new MediaAudioEncoder(mMuxer, mMediaEncoderListener);
-            }
+            new MediaAudioEncoder(mMuxer, mMediaEncoderListener);
             mMuxer.prepare();
             mMuxer.startRecording();
+
+            mVideosProgressView.start();
+
+            isRecording = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    private final MediaEncoder.MediaEncoderListener mMediaEncoderListener = new MediaEncoder.MediaEncoderListener() {
-        @Override
-        public void onPrepared(final MediaEncoder encoder) {
-            if (encoder == mVideoEncoder) {
-                isRecording = true;
-            }
-        }
-        @Override
-        public void onStopped(final MediaEncoder encoder) {
-            if (encoder == mVideoEncoder) {
-                isRecording = false;
-            }
-        }
-    };
 
     private void stopRecord() {
         if (mMuxer != null) {
@@ -290,60 +282,51 @@ public class VideoShootActivity extends Activity
             mMuxer = null;
             // you should not wait here
         }
+        mRecordedVideos.add(mCurrentRecodingFile);
+
+        mVideosProgressView.finish();
+
+        isRecording = false;
     }
+
+    private final MediaEncoder.MediaEncoderListener mMediaEncoderListener = new MediaEncoder.MediaEncoderListener() {
+        @Override
+        public void onPrepared(final MediaEncoder encoder) {
+            if (encoder == mVideoEncoder) {
+                isEncoding = true;
+            }
+        }
+        @Override
+        public void onStopped(final MediaEncoder encoder) {
+            if (encoder == mVideoEncoder) {
+                isEncoding = false;
+            }
+        }
+    };
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.start_record:
-                startRecord();
+            case R.id.image_record:
+                if (!isRecording) {
+                    startRecord();
+                }
+                else {
+                    stopRecord();
+                }
                 break;
-            case R.id.stop_record:
-                stopRecord();
+            case R.id.record_complete:
+                if (isRecording) {
+                    return;
+                }
+                try {
+                    Mp4ParserUtil.mp4Cat(mRecordedVideos, "/sdcard/concated.mp4");
+                    finish();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }
 
-    public static final int MEDIA_TYPE_IMAGE = 1;
-    public static final int MEDIA_TYPE_VIDEO = 2;
-
-    /** Create a file Uri for saving an image or video */
-    private static Uri getOutputMediaFileUri(int type){
-        return Uri.fromFile(getOutputMediaFile(type));
-    }
-
-    /** Create a File for saving an image or video */
-    private static File getOutputMediaFile(int type){
-        // To be safe, you should check that the SDCard is mounted
-        // using Environment.getExternalStorageState() before doing this.
-
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "MyCameraApp");
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
-
-        // Create the storage directory if it does not exist
-        if (! mediaStorageDir.exists()){
-            if (! mediaStorageDir.mkdirs()){
-                Log.d("MyCameraApp", "failed to create directory");
-                return null;
-            }
-        }
-
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile;
-        if (type == MEDIA_TYPE_IMAGE){
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "IMG_"+ timeStamp + ".jpg");
-        } else if(type == MEDIA_TYPE_VIDEO) {
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "VID_"+ timeStamp + ".mp4");
-        } else {
-            return null;
-        }
-
-        Log.d(TAG, mediaFile.getAbsolutePath());
-        return mediaFile;
-    }
 }

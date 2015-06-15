@@ -39,9 +39,9 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:appcompat-v7:22+'
     compile files('libs/libammsdk.jar')
-    compile 'com.android.support:support-v13:22.1.1'
+    compile 'com.android.support:support-v13:22+'
     compile files('libs/universal-image-loader-1.9.3.jar')
     compile files('libs/ijkplayer.jar')
     compile files('libs/ijkmediawidget.jar')
@@ -54,4 +54,5 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:1.3.0'
     compile 'com.qiniu:qiniu-android-sdk:7.0.+'
     compile 'com.makeramen:roundedimageview:2.1.0'
+    compile 'com.googlecode.mp4parser:isoparser:1.0.6+'
 }
