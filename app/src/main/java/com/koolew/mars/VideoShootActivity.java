@@ -5,12 +5,17 @@ import android.content.Context;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.koolew.mars.camerautils.CameraSurfacePreview;
@@ -22,7 +27,9 @@ import com.koolew.mars.media.MediaVideoEncoder;
 import com.koolew.mars.media.YUV420VideoEncoder;
 import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.RawImageUtil;
+import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.VideosProgressView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -41,10 +48,12 @@ public class VideoShootActivity extends Activity
     private int previewWidth;
     private int previewHeight;
 
+    private RecyclerView mRecyclerView;
+    private VideoItemAdapter mAdapter;
     private VideosProgressView mVideosProgressView;
 
-    private String currentRecordingDir = "/sdcard/";
-    private List<String> mRecordedVideos = new LinkedList<String>();
+    private String currentRecordingDir;
+    private List<VideoItemInfo> mRecordedVideos = new LinkedList<VideoItemInfo>();
     private String mCurrentRecodingFile;
     private boolean isRecording = false;
     private boolean isEncoding = false;
@@ -65,10 +74,22 @@ public class VideoShootActivity extends Activity
         mEncoder = new YUV420VideoEncoder(
                 AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
 
+        initMembers();
         initViews();
     }
 
+    private void initMembers() {
+        currentRecordingDir = Utils.getCacheDir(this);
+    }
+
     private void initViews() {
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mAdapter = new VideoItemAdapter();
+        mAdapter.setData(mRecordedVideos);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         mVideosProgressView = (VideosProgressView) findViewById(R.id.videos_progress);
         mPreviewFrame = (FrameLayout) findViewById(R.id.preview_frame);
 
@@ -282,7 +303,8 @@ public class VideoShootActivity extends Activity
             mMuxer = null;
             // you should not wait here
         }
-        mRecordedVideos.add(mCurrentRecodingFile);
+        mRecordedVideos.add(new VideoItemInfo(mCurrentRecodingFile));
+        mAdapter.notifyItemInserted(mRecordedVideos.size() - 1);
 
         mVideosProgressView.finish();
 
@@ -320,12 +342,63 @@ public class VideoShootActivity extends Activity
                     return;
                 }
                 try {
-                    Mp4ParserUtil.mp4Cat(mRecordedVideos, "/sdcard/concated.mp4");
+                    List<String> videoPathList = new LinkedList<String>();
+                    for (VideoItemInfo info: mRecordedVideos) {
+                        videoPathList.add(info.path);
+                    }
+                    Mp4ParserUtil.mp4Cat(videoPathList, currentRecordingDir + "concated.mp4");
                     finish();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 break;
+        }
+    }
+
+    static class VideoItemInfo {
+        String path;
+
+        VideoItemInfo(String path) {
+            this.path = path;
+        }
+    }
+
+    static class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.ViewHolder> {
+
+        private List<VideoItemInfo> mData;
+
+        void setData(List<VideoItemInfo> data) {
+            mData = data;
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+            View itemView = LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.record_video_item, viewGroup, false);
+            return new ViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder viewHolder, int i) {
+            ImageLoader.getInstance().displayImage("file://" + mData.get(i).path,
+                    viewHolder.thumbImage, null, null, null);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mData.size();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+
+            ImageView thumbImage;
+            ImageView dragHandle;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+                thumbImage = (ImageView) itemView.findViewById(R.id.video_thumb);
+                dragHandle = (ImageView) itemView.findViewById(R.id.drag_handle);
+            }
         }
     }
 

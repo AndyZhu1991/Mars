@@ -2,10 +2,13 @@ package com.koolew.mars;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.koolew.mars.imageloader.VideoThumbDecoder;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
@@ -41,7 +44,14 @@ public class MarsApplication extends Application {
         config.diskCacheFileNameGenerator(new Md5FileNameGenerator());
         config.diskCacheSize(50 * 1024 * 1024); // 50 MiB
         config.tasksProcessingOrder(QueueProcessingType.LIFO);
+        config.imageDecoder(new VideoThumbDecoder(true));
         config.writeDebugLogs(); // Remove for release app
+        config.defaultDisplayImageOptions(new DisplayImageOptions.Builder()
+                                              .cacheInMemory(true)
+                                              .cacheOnDisk(true)
+                                              .considerExifParams(true)
+                                              .bitmapConfig(Bitmap.Config.RGB_565)
+                                              .build());
 
         // Initialize ImageLoader with configuration.
         ImageLoader.getInstance().init(config.build());

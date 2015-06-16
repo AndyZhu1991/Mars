@@ -35,4 +35,8 @@ public class Utils {
     public static float dpToPixels(final Context context, final float dp) {
         return dp * context.getResources().getDisplayMetrics().density;
     }
+
+    public static String getCacheDir(Context context) {
+        return context.getExternalCacheDir().getAbsolutePath();
+    }
 }

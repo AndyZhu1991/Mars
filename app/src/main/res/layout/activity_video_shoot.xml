@@ -20,37 +20,39 @@
         android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="#534F50">
 
         <com.koolew.mars.view.VideosProgressView
             android:id="@+id/videos_progress"
             android:layout_width="match_parent"
             android:layout_height="@dimen/video_shoot_progress_height" />
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
 
-            <LinearLayout
+            <RadioButton
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/only_friends_visible_height">
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical" />
-            </LinearLayout>
-        </RelativeLayout>
+                android:layout_height="wrap_content"
+                android:text="@string/only_friend_visible"
+                android:textColor="#D8D8D8"
+                android:textSize="14sp"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/public_visible"
+                android:textColor="#D8D8D8"
+                android:textSize="14sp"/>
+        </RadioGroup>
 
         <LinearLayout
             android:layout_width="match_parent"
