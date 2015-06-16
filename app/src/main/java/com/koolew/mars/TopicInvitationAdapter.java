@@ -129,7 +129,7 @@ public class TopicInvitationAdapter extends BaseAdapter {
             for (int i = 0; i < holder.parters.length; i++) {
                 holder.parters[i].setVisibility(View.GONE);
             }
-            for (int i = 0; i < parters.length(); i++) {
+            for (int i = 0; i < parters.length() && i < holder.parters.length; i++) {
                 ImageLoader.getInstance().
                         displayImage(((JSONObject) parters.get(i)).getString("avatar"),
                         holder.parters[i], imgDisplayOptions);

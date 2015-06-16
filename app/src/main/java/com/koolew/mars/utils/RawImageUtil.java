@@ -9,23 +9,41 @@ public class RawImageUtil {
 
     private static final String TAG = "koolew-RawImageUtil";
 
-    public static byte[] cropYUV420VerticalCenter
-            (byte[] data, byte[] outData, int imageW, int imageH, int newImageH) {
+    public static byte[] cropYUV420VerticalCenter(byte[] data, byte[] outData,
+                                                  int imageW, int imageH,
+                                                  int newImageH) {
+        return cropYUV420Vertical(data, outData, imageW, imageH,
+                                  (imageH - newImageH) / 2, (imageH + newImageH) / 2);
+    }
+
+    /**
+     * Crop YUV420 image vertical [startY, endY)
+     *
+     * @param data    Original YUV420 data
+     * @param outData Buffer will filled by croped data
+     * @param imageW  Image width
+     * @param imageH  Image height
+     * @param startY  Start Y
+     * @param endY    End Y
+     * @return        Same as outData(not null) or new buffer
+     */
+    public static byte[] cropYUV420Vertical(byte[] data, byte[] outData,
+                                            int imageW, int imageH,
+                                            int startY, int endY) {
         long start = System.currentTimeMillis();
 
+        int newImageHeight = endY - startY;
         if (outData == null) {
-            outData = new byte[imageW*newImageH*3/2];
+            outData = new byte[imageW * newImageHeight * 3 / 2];
         }
 
-        int cropH = (imageH - newImageH)/2;
-
-        int copyedCount = newImageH * imageW;
-        System.arraycopy(data, cropH * imageW, outData, 0, newImageH * imageW);
-        System.arraycopy(data, (imageH + cropH / 2) * imageW,
+        int copyedCount = newImageHeight * imageW;
+        System.arraycopy(data, startY * imageW, outData, 0, newImageHeight * imageW);
+        System.arraycopy(data, (imageH + startY / 2) * imageW,
                          outData, copyedCount,
-                         newImageH / 2 * imageW);
+                         newImageHeight / 2 * imageW);
 
-        Log.d(TAG, "crop a YUV420 imager: " + (System.currentTimeMillis() - start));
+        Log.d(TAG, "crop a YUV420 image: " + (System.currentTimeMillis() - start));
         return outData;
     }
 
@@ -57,6 +75,66 @@ public class RawImageUtil {
         Log.d(TAG, "Rotate a YUV420 90 degree: " + (System.currentTimeMillis() - start));
         return outData;
     }
+
+    public static byte[] rotateYUV420Degree180(byte[] data, byte[] outData,
+                                               int imageWidth, int imageHeight) {
+        if (outData == null) {
+            outData = new byte[imageWidth * imageHeight * 3 / 2];
+        }
+        int i = 0;
+        int count = 0;
+
+        for (i = imageWidth * imageHeight - 1; i >= 0; i--) {
+            outData[count] = data[i];
+            count++;
+        }
+
+        for (i = imageWidth * imageHeight * 3 / 2 - 1; i >= imageWidth
+                * imageHeight; i -= 2) {
+            outData[count++] = data[i - 1];
+            outData[count++] = data[i];
+        }
+        return outData;
+    }
+
+
+    public static byte[] rotateYUV420Degree270(byte[] data, byte[] outData,
+                                               int imageWidth, int imageHeight) {
+        byte[] yuv = new byte[imageWidth * imageHeight * 3 / 2];
+        int nWidth = 0, nHeight = 0;
+        int wh = 0;
+        int uvHeight = 0;
+        if (imageWidth != nWidth || imageHeight != nHeight) {
+            nWidth = imageWidth;
+            nHeight = imageHeight;
+            wh = imageWidth * imageHeight;
+            uvHeight = imageHeight >> 1;//uvHeight = height / 2
+        }
+
+        //旋转Y
+        int k = 0;
+        for (int i = 0; i < imageWidth; i++) {
+            int nPos = 0;
+            for (int j = 0; j < imageHeight; j++) {
+                yuv[k] = data[nPos + i];
+                k++;
+                nPos += imageWidth;
+            }
+        }
+
+        for (int i = 0; i < imageWidth; i += 2) {
+            int nPos = wh;
+            for (int j = 0; j < uvHeight; j++) {
+                yuv[k] = data[nPos + i];
+                yuv[k + 1] = data[nPos + i + 1];
+                k += 2;
+                nPos += imageWidth;
+            }
+        }
+
+        return rotateYUV420Degree180(yuv, outData, imageWidth, imageHeight);
+    }
+
 
     /**
      * NV21 is a 4:2:0 YCbCr, For 1 NV21 pixel: YYYYYYYY VUVU I420YUVSemiPlanar

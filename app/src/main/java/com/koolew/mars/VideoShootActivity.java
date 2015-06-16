@@ -45,6 +45,7 @@ public class VideoShootActivity extends Activity
     private CameraSurfacePreview mPreview;
     private YUV420VideoEncoder mEncoder;
     private Camera mCamera;
+    private int mCurrentCamera;
     private int previewWidth;
     private int previewHeight;
 
@@ -79,6 +80,7 @@ public class VideoShootActivity extends Activity
     }
 
     private void initMembers() {
+        mCurrentCamera = Camera.CameraInfo.CAMERA_FACING_BACK;
         currentRecordingDir = Utils.getCacheDir(this);
     }
 
@@ -98,19 +100,26 @@ public class VideoShootActivity extends Activity
 
         findViewById(R.id.image_record).setOnClickListener(this);
         findViewById(R.id.record_complete).setOnClickListener(this);
+        findViewById(R.id.close_layout).setOnClickListener(this);
+        findViewById(R.id.change_camera).setOnClickListener(this);
     }
 
     private void initLayoutParams() {
         //initBestCameraPreviewSize(CameraWrapper.getInstance().getCamera().getParameters());
 
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mPreviewFrame.getLayoutParams();
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mPreview.getLayoutParams();
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         int width = wm.getDefaultDisplay().getWidth();
-        Log.d(TAG, "width: " + width + "height: " + lp.height);
         lp.height = width * previewWidth / previewHeight;
         int visiblePreviewHeight = width * AppProperty.RECORD_VIDEO_HEIGHT / AppProperty.RECORD_VIDEO_WIDTH;
-        lp.topMargin = 0 - (lp.height - visiblePreviewHeight) / 2;
-        mPreviewFrame.setLayoutParams(lp);
+        if (mCurrentCamera == Camera.CameraInfo.CAMERA_FACING_BACK) {
+            lp.topMargin = 0 - (lp.height - visiblePreviewHeight) / 2;
+        }
+        else {
+            lp.topMargin = 0;
+        }
+        Log.d(TAG, "set preview layout params. topMargin: " + lp.topMargin + ", height: " + lp.height);
+        mPreview.setLayoutParams(lp);
 
         LinearLayout bottomLayout = (LinearLayout) findViewById(R.id.bottom_layout);
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) bottomLayout.getLayoutParams();
@@ -118,13 +127,18 @@ public class VideoShootActivity extends Activity
         bottomLayout.setLayoutParams(params);
     }
 
-    public void doOpenCamera() {
+    /**
+     *
+     * @param which Camera.CameraInfo.CAMERA_FACING_BACK for back camera
+     *              Camera.CameraInfo.CAMERA_FACING_FRONT for front camera
+     */
+    public void doOpenCamera(int which) {
         Log.i(TAG, "Camera open....");
         int numCameras = Camera.getNumberOfCameras();
         Camera.CameraInfo info = new Camera.CameraInfo();
         for (int i = 0; i < numCameras; i++) {
             Camera.getCameraInfo(i, info);
-            if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+            if (info.facing == which) {
                 mCamera = Camera.open(i);
                 break;
             }
@@ -138,6 +152,18 @@ public class VideoShootActivity extends Activity
         }
         Log.i(TAG, "Camera open over....");
         cameraHasOpened();
+    }
+
+    private void switchCamera() {
+        if (mCurrentCamera == Camera.CameraInfo.CAMERA_FACING_BACK) {
+            mCurrentCamera = Camera.CameraInfo.CAMERA_FACING_FRONT;
+        }
+        else {
+            mCurrentCamera = Camera.CameraInfo.CAMERA_FACING_BACK;
+        }
+
+        releaseCamera();
+        doOpenCamera(mCurrentCamera);
     }
 
     public void doStartPreview(SurfaceHolder holder) {
@@ -233,9 +259,18 @@ public class VideoShootActivity extends Activity
             if (isEncoding){//mVideoEncoder != null && mVideoEncoder.isEncoding == true) {
                 MediaVideoEncoder.YUV420SPFrame frame = mVideoEncoder.obtainFrame();
                 frame.frameNanoTime = System.nanoTime();
-                RawImageUtil.rotateYUV420Degree90(data, YUV420RotateBuffer, previewWidth, previewHeight);
-                RawImageUtil.cropYUV420VerticalCenter(YUV420RotateBuffer, YUV420CropBuffer,
-                        previewHeight, previewWidth, AppProperty.RECORD_VIDEO_HEIGHT);
+                if (mCurrentCamera == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                    RawImageUtil.rotateYUV420Degree90(data, YUV420RotateBuffer,
+                                                      previewWidth, previewHeight);
+                    RawImageUtil.cropYUV420VerticalCenter(YUV420RotateBuffer, YUV420CropBuffer,
+                            previewHeight, previewWidth, AppProperty.RECORD_VIDEO_HEIGHT);
+                }
+                else {
+                    RawImageUtil.rotateYUV420Degree270(data, YUV420RotateBuffer,
+                                                       previewWidth, previewHeight);
+                    RawImageUtil.cropYUV420Vertical(YUV420RotateBuffer, YUV420CropBuffer,
+                            previewHeight, previewWidth, 0, AppProperty.RECORD_VIDEO_HEIGHT);
+                }
                 RawImageUtil.NV21toI420SemiPlanar(YUV420CropBuffer, frame.data,
                         AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
                 mVideoEncoder.putYUV420SPFrame(frame);
@@ -252,7 +287,7 @@ public class VideoShootActivity extends Activity
         new Thread() {
             @Override
             public void run() {
-                doOpenCamera();
+                doOpenCamera(mCurrentCamera);
             }
         }.start();
     }
@@ -352,7 +387,21 @@ public class VideoShootActivity extends Activity
                     e.printStackTrace();
                 }
                 break;
+            case R.id.close_layout:
+                onCloseClick();
+                break;
+            case R.id.change_camera:
+                onCameraChangeClick();
+                break;
         }
+    }
+
+    private void onCloseClick() {
+        finish();
+    }
+
+    private void onCameraChangeClick() {
+        switchCamera();
     }
 
     static class VideoItemInfo {
