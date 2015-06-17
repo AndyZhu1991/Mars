@@ -5,6 +5,8 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
+import java.io.File;
+
 /**
  * Created by jinchangzhu on 6/4/15.
  */
@@ -37,6 +39,25 @@ public class Utils {
     }
 
     public static String getCacheDir(Context context) {
-        return context.getExternalCacheDir().getAbsolutePath();
+        return context.getExternalCacheDir().getAbsolutePath() + "/";
+    }
+
+    public static boolean deleteFileOrDir(String name) {
+        return deleteFileOrDir(new File(name));
+    }
+
+    public static boolean deleteFileOrDir(File file) {
+        if (file.isFile()) {
+            return file.delete();
+        }
+
+        File subFiles[] = file.listFiles();
+        for (File f: subFiles) {
+            if (f.delete() == false) {
+                return false;
+            }
+        }
+
+        return file.delete();
     }
 }

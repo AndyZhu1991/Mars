@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -29,14 +31,19 @@ import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.VideosProgressView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 public class VideoShootActivity extends Activity
-        implements OnClickListener {
+        implements OnClickListener, MediaPlayer.OnPreparedListener,
+        MediaPlayer.OnCompletionListener, MediaPlayer.OnSeekCompleteListener {
 
     private final static String TAG = "koolew-VideoShootA";
+
+    private static final int MODE_PREVIEW = 0;
+    private static final int MODE_PLAYBACK = 1;
 
     private FrameLayout mPreviewFrame;
     //private CameraSurfacePreview mPreview;
@@ -49,6 +56,7 @@ public class VideoShootActivity extends Activity
     private RecyclerView mRecyclerView;
     private VideoItemAdapter mAdapter;
     private VideosProgressView mVideosProgressView;
+    private ImageView mChangeCamera;
 
     private String currentRecordingDir;
     private List<VideoItemInfo> mRecordedVideos = new LinkedList<VideoItemInfo>();
@@ -61,6 +69,14 @@ public class VideoShootActivity extends Activity
 
     private MediaMuxerWrapper mMuxer;
     private MediaVideoEncoder mVideoEncoder;
+
+    // MODE_PREVIEW or MODE_PLAYBACK
+    private int mCurrentSurfaceMode;
+    private int mCurrentPlayedIndex;
+    private SurfaceView mPlaybackSurface;
+    private MediaPlayer mMediaPlayer;
+    private ImageView mVideoThumb;
+    private ImageView mPlayImage;
 
 
     @Override
@@ -77,26 +93,62 @@ public class VideoShootActivity extends Activity
     protected void onStart() {
         super.onStart();
 
-        new Thread() {
-            @Override
-            public void run() {
-                doOpenCamera(mCurrentCamera);
-            }
-        }.start();
+        if (mCurrentSurfaceMode == MODE_PREVIEW) {
+            new Thread() {
+                @Override
+                public void run() {
+                    doOpenCamera(mCurrentCamera);
+                }
+            }.start();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mCurrentSurfaceMode == MODE_PREVIEW) {
+        }
+        else { // mCurrentSurfaceMode == MODE_PLAYBACK
+        }
     }
 
     @Override
     protected void onPause() {
+        Log.d("stdzhu", "onPause");
         super.onPause();
-        if (isRecording) {
-            stopRecord();
+
+        if (mCurrentSurfaceMode == MODE_PREVIEW) {
+            if (isRecording) {
+                stopRecord();
+            }
+            releaseCamera();
         }
-        releaseCamera();
+        else { // mCurrentSurfaceMode == MODE_PLAYBACK
+            if (mMediaPlayer.isPlaying()) {
+                mMediaPlayer.pause();
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        new Thread() {
+            @Override public void run() {
+                for (VideoItemInfo info: mRecordedVideos) {
+                    new File(info.path).delete();
+                }
+            }
+        }.start();
     }
 
     private void initMembers() {
         mCurrentCamera = Camera.CameraInfo.CAMERA_FACING_BACK;
         currentRecordingDir = Utils.getCacheDir(this);
+        Log.d(TAG, "current recording dir :" + currentRecordingDir);
+        mCurrentSurfaceMode = MODE_PREVIEW;
     }
 
     private void initViews() {
@@ -109,15 +161,34 @@ public class VideoShootActivity extends Activity
 
         mVideosProgressView = (VideosProgressView) findViewById(R.id.videos_progress);
         mPreviewFrame = (FrameLayout) findViewById(R.id.preview_frame);
+        mChangeCamera = (ImageView) findViewById(R.id.change_camera);
 
         // Create our Preview view and set it as the content of our activity.
         mPreview = (CameraSurfacePreview) findViewById(R.id.camera_preview);
 
+        mVideoThumb = (ImageView) findViewById(R.id.video_thumb);
+        FrameLayout.LayoutParams vtlp = (FrameLayout.LayoutParams) mVideoThumb.getLayoutParams();
+        vtlp.height = Utils.getScreenWidthPixel(this) / 4 * 3;
+        mVideoThumb.setLayoutParams(vtlp);
+
+        mPlayImage = (ImageView) findViewById(R.id.play);
+        FrameLayout.LayoutParams pilp = (FrameLayout.LayoutParams) mPlayImage.getLayoutParams();
+        pilp.topMargin = (int) ((Utils.getScreenWidthPixel(this) / 4 * 3 - Utils.dpToPixels(this, 39)) / 2);
+        mPlayImage.setLayoutParams(pilp);
+
+        mPlaybackSurface = (SurfaceView) findViewById(R.id.playback_surface);
+        FrameLayout.LayoutParams pvlp = (FrameLayout.LayoutParams) mPlaybackSurface.getLayoutParams();
+        pvlp.height = Utils.getScreenWidthPixel(this) / 4 * 3;
+        mPlaybackSurface.setLayoutParams(pvlp);
+        mPlaybackSurface.getHolder().addCallback(mPlaybackSurfaceCallback);
+
         findViewById(R.id.image_record).setOnClickListener(this);
         findViewById(R.id.record_complete).setOnClickListener(this);
         findViewById(R.id.close_layout).setOnClickListener(this);
-        findViewById(R.id.change_camera).setOnClickListener(this);
+        mChangeCamera.setOnClickListener(this);
+        mPlayImage.setOnClickListener(this);
     }
+
 
     private void initLayoutParams() {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mPreview.getLayoutParams();
@@ -289,6 +360,106 @@ public class VideoShootActivity extends Activity
     }
 
 
+    private void switchToPlaybackMode() {
+        if (mCurrentSurfaceMode == MODE_PLAYBACK) {
+            return;
+        }
+        mCurrentSurfaceMode = MODE_PLAYBACK;
+
+        releaseCamera();
+
+        mPreview.setVisibility(View.INVISIBLE);
+        mPlaybackSurface.setVisibility(View.VISIBLE);
+        mChangeCamera.setVisibility(View.INVISIBLE);
+        mVideoThumb.setVisibility(View.VISIBLE);
+        mPlayImage.setVisibility(View.VISIBLE);
+    }
+
+    private void switchToPreviewMode() {
+        if (mCurrentSurfaceMode == MODE_PREVIEW) {
+            return;
+        }
+        mCurrentSurfaceMode = MODE_PREVIEW;
+
+        mPlaybackSurface.setVisibility(View.INVISIBLE);
+        mPreview.setVisibility(View.VISIBLE);
+        mChangeCamera.setVisibility(View.VISIBLE);
+        mVideoThumb.setVisibility(View.INVISIBLE);
+        mPlayImage.setVisibility(View.INVISIBLE);
+
+        doOpenCamera(mCurrentCamera);
+    }
+
+    private void setSelectedVideo(int position) {
+        ImageLoader.getInstance().displayImage("file://" + mRecordedVideos.get(position).path,
+                mVideoThumb, null, null, null);
+    }
+
+    private void playVideoList() {
+        mCurrentPlayedIndex = 0;
+        try {
+            mMediaPlayer.setDataSource(mRecordedVideos.get(0).path);
+            mMediaPlayer.prepareAsync();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        mCurrentPlayedIndex++;
+        mMediaPlayer.reset();
+
+        if (mCurrentPlayedIndex < mRecordedVideos.size()) {
+            try {
+                mMediaPlayer.setDataSource(mRecordedVideos.get(mCurrentPlayedIndex).path);
+                mMediaPlayer.prepareAsync();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            mPlayImage.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        if (mCurrentPlayedIndex == 0) {
+            mVideoThumb.setVisibility(View.INVISIBLE);
+            mPlayImage.setVisibility(View.INVISIBLE);
+        }
+        mMediaPlayer.start();
+    }
+
+    @Override
+    public void onSeekComplete(MediaPlayer mp) {
+        mMediaPlayer.start();
+        Log.d("stdzhu", "seek complete");
+    }
+
+    private SurfaceHolder.Callback mPlaybackSurfaceCallback = new SurfaceHolder.Callback() {
+        @Override
+        public void surfaceCreated(SurfaceHolder holder) {
+            mMediaPlayer = new MediaPlayer();
+            mMediaPlayer.setOnPreparedListener(VideoShootActivity.this);
+            mMediaPlayer.setOnCompletionListener(VideoShootActivity.this);
+            mMediaPlayer.setOnSeekCompleteListener(VideoShootActivity.this);
+            mMediaPlayer.setDisplay(mPlaybackSurface.getHolder());
+        }
+
+        @Override
+        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+        }
+
+        @Override
+        public void surfaceDestroyed(SurfaceHolder holder) {
+
+        }
+    };
+
+
 
     private void startRecord() {
         try {
@@ -344,27 +515,10 @@ public class VideoShootActivity extends Activity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_record:
-                if (!isRecording) {
-                    startRecord();
-                }
-                else {
-                    stopRecord();
-                }
+                onRecordClick();
                 break;
             case R.id.record_complete:
-                if (isRecording) {
-                    return;
-                }
-                try {
-                    List<String> videoPathList = new LinkedList<String>();
-                    for (VideoItemInfo info: mRecordedVideos) {
-                        videoPathList.add(info.path);
-                    }
-                    Mp4ParserUtil.mp4Cat(videoPathList, currentRecordingDir + "concated.mp4");
-                    finish();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                onRecordCompleteClick();
                 break;
             case R.id.close_layout:
                 onCloseClick();
@@ -372,6 +526,42 @@ public class VideoShootActivity extends Activity
             case R.id.change_camera:
                 onCameraChangeClick();
                 break;
+            case R.id.play:
+                playVideoList();
+                break;
+        }
+    }
+
+    private void onRecordClick() {
+        if (mCurrentSurfaceMode == MODE_PLAYBACK) {
+            if (mMediaPlayer.isPlaying()) {
+                mMediaPlayer.stop();
+            }
+
+            switchToPreviewMode();
+        }
+        else {
+            if (!isRecording) {
+                startRecord();
+            } else {
+                stopRecord();
+            }
+        }
+    }
+
+    private void onRecordCompleteClick() {
+        if (isRecording) {
+            return;
+        }
+        try {
+            List<String> videoPathList = new LinkedList<String>();
+            for (VideoItemInfo info: mRecordedVideos) {
+                videoPathList.add(info.path);
+            }
+            Mp4ParserUtil.mp4Cat(videoPathList, currentRecordingDir + "concated.mp4");
+            finish();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -385,6 +575,25 @@ public class VideoShootActivity extends Activity
 
 
 
+    private OnClickListener videoThumbClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int position = (Integer) v.getTag();
+
+            if (mCurrentSurfaceMode == MODE_PLAYBACK) {
+                setSelectedVideo(position);
+                return;
+            }
+
+            if (isRecording) {
+                stopRecord();
+            }
+
+            switchToPlaybackMode();
+            setSelectedVideo(position);
+        }
+    };
+
     static class VideoItemInfo {
         String path;
 
@@ -393,7 +602,7 @@ public class VideoShootActivity extends Activity
         }
     }
 
-    static class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.ViewHolder> {
+    class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.ViewHolder> {
 
         private List<VideoItemInfo> mData;
 
@@ -405,13 +614,17 @@ public class VideoShootActivity extends Activity
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             View itemView = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.record_video_item, viewGroup, false);
-            return new ViewHolder(itemView);
+
+            ViewHolder viewHolder = new ViewHolder(itemView);
+            viewHolder.thumbImage.setOnClickListener(videoThumbClickListener);
+            return viewHolder;
         }
 
         @Override
         public void onBindViewHolder(ViewHolder viewHolder, int i) {
             ImageLoader.getInstance().displayImage("file://" + mData.get(i).path,
                     viewHolder.thumbImage, null, null, null);
+            viewHolder.thumbImage.setTag(new Integer(i));
         }
 
         @Override

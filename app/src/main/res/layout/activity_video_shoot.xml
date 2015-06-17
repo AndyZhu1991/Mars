@@ -15,6 +15,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <SurfaceView
+            android:id="@+id/playback_surface"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"/>
+
         <LinearLayout
             android:id="@+id/close_layout"
             android:layout_width="wrap_content"
@@ -44,6 +50,20 @@
             android:layout_marginTop="20dp"
             android:layout_gravity="right"
             android:src="@mipmap/ic_change_camera"/>
+
+        <ImageView
+            android:id="@+id/video_thumb"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"/>
+
+        <ImageView
+            android:id="@+id/play"
+            android:layout_width="30dp"
+            android:layout_height="39dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@mipmap/ic_play"
+            android:visibility="invisible"/>
     </FrameLayout>
 
     <LinearLayout
