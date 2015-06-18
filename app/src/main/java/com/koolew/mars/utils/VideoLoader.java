@@ -15,12 +15,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
 
-import tv.danmaku.ijk.media.widget.VideoView;
-
 /**
  * Created by jinchangzhu on 6/5/15.
  */
-public class VideoLoader implements DownloadStatusListener {
+public abstract class VideoLoader implements DownloadStatusListener {
 
     private static final String TAG = "koolew-VideoLoader";
 
@@ -28,7 +26,7 @@ public class VideoLoader implements DownloadStatusListener {
 
     private Context mContext;
 
-    private VideoView mVideoView;
+    private Object mPlayer;
 
     private ThinDownloadManager mDownloadManager;
     private DownloadEvent mCurrentDownload;
@@ -41,12 +39,12 @@ public class VideoLoader implements DownloadStatusListener {
         mOtherDownloads = new LinkedList<DownloadEvent>();
     }
 
-    public void playVideo(VideoView videoView, String url) {
+    public void loadVideo(Object player, String url) {
 
-        mVideoView = videoView;
+        mPlayer = player;
         if (new File(url2LocalFile(url)).exists()) {
             // TODO: Play this video
-            realPlayVideo(url2LocalFile(url));
+            loadComplete(mPlayer, url2LocalFile(url));
         }
         else {
             // TODO: Download this video
@@ -76,10 +74,7 @@ public class VideoLoader implements DownloadStatusListener {
         }
     }
 
-    private void realPlayVideo(String filePath) {
-        mVideoView.setVideoPath(filePath);
-        mVideoView.start();
-    }
+    public abstract void loadComplete(Object player, String filePath);
 
     private DownloadEvent startDownload(String url) {
         DownloadEvent event = new DownloadEvent();
@@ -140,7 +135,7 @@ public class VideoLoader implements DownloadStatusListener {
     public void onDownloadComplete(int id) {
         if (id == mCurrentDownload.id) {
             Log.d(TAG, mCurrentDownload.url + " completed");
-            realPlayVideo(mCurrentDownload.localPath);
+            loadComplete(mPlayer, mCurrentDownload.localPath);
         }
         else {
             for (DownloadEvent event: mOtherDownloads) {
@@ -150,8 +145,8 @@ public class VideoLoader implements DownloadStatusListener {
                 }
             }
             DownloadEvent event = findEventFromOtherList(id);
-            Log.d(TAG, event.url + " completed");
             if (event != null) {
+                Log.d(TAG, event.url + " completed");
                 mOtherDownloads.remove(event);
             }
         }

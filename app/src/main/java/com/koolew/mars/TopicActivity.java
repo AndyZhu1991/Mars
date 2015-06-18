@@ -1,9 +1,14 @@
 package com.koolew.mars;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -21,12 +26,15 @@ import com.koolew.mars.utils.WebApiUtil;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Map;
 
-import tv.danmaku.ijk.media.widget.VideoView;
+import tv.danmaku.ijk.media.player.IMediaPlayer;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 
-public class TopicActivity extends ActionBarActivity implements AbsListView.OnScrollListener {
+public class TopicActivity extends ActionBarActivity implements AbsListView.OnScrollListener,
+        IMediaPlayer.OnPreparedListener, IMediaPlayer.OnCompletionListener {
 
     private static final String TAG = "koolew-TopicActivity";
 
@@ -38,7 +46,10 @@ public class TopicActivity extends ActionBarActivity implements AbsListView.OnSc
     private RequestQueue mRequestQueue;
     private VideoLoader mVideoLoader;
 
-    private VideoView mVideoView;
+    private SurfaceView mPlaySurface;
+    private IjkMediaPlayer mIjkPlayer;
+    private String mCurrentVideoPath;
+    private String mCurrentVideoUrl;
     private boolean isFirstPlay = true;
     private FrameLayout mCurrentVideoLayout;
 
@@ -50,16 +61,41 @@ public class TopicActivity extends ActionBarActivity implements AbsListView.OnSc
 
         mListView = (ListView) findViewById(R.id.list_view);
         mListView.setOnScrollListener(this);
-        mVideoView = new VideoView(this);
-        mVideoView.setLayoutParams(new FrameLayout.LayoutParams(
+        mPlaySurface = new SurfaceView(this);
+        mPlaySurface.setLayoutParams(new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mPlaySurface.getHolder().addCallback(mPlaybackSurfaceCallback);
 
         mRequestQueue = Volley.newRequestQueue(this);
-        mVideoLoader = new VideoLoader(this);
+        mVideoLoader = new TopicVideoLoader(this);
+
+        mIjkPlayer = new IjkMediaPlayer();
+        mIjkPlayer.setOnPreparedListener(TopicActivity.this);
+        mIjkPlayer.setOnCompletionListener(TopicActivity.this);
 
         Intent intent = getIntent();
         String topicId = intent.getStringExtra(KEY_TOPIC_ID);
         getTopicVideo(topicId);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mIjkPlayer.start();
+    }
+
+    @Override
+    protected void onPause() {
+        mIjkPlayer.pause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mIjkPlayer != null) {
+            mIjkPlayer.release();
+        }
     }
 
     private void getTopicVideo(String topicId) {
@@ -94,21 +130,26 @@ public class TopicActivity extends ActionBarActivity implements AbsListView.OnSc
 
         if (scrollState == SCROLL_STATE_IDLE) {
             int newVideoIndex = getCurrentVideoIndex();
-            if (mCurrentVideoLayout == ((VideoCardAdapter.ViewHolder)
-                    mListView.getChildAt(newVideoIndex).getTag()).videoLayout) {
-                if (!mVideoView.isPlaying()) {
+            FrameLayout newVideoLayout = ((VideoCardAdapter.ViewHolder)
+                    mListView.getChildAt(newVideoIndex).getTag()).videoLayout;
+            if (mCurrentVideoLayout.getTag().toString().equals(mCurrentVideoUrl) // Url 还是原来的
+                    && mCurrentVideoLayout == newVideoLayout) { // VideoLayout 也是原来的
+                if (!mIjkPlayer.isPlaying()) {
+                    try {
+                        mIjkPlayer.start();
+                    }
+                    catch (IllegalStateException ise) {
+                        Log.e(TAG, "Catch a fatal exception:\n" + ise);
+                        return;
+                    }
                     mCurrentVideoLayout.findViewById(R.id.video_thumb).setVisibility(View.INVISIBLE);
-                    mVideoView.resume();
                 }
             }
             else {
-                Log.d(TAG, "newVideoIndex: " + newVideoIndex);
-                mCurrentVideoLayout.removeView(mVideoView);
                 mCurrentVideoLayout.findViewById(R.id.video_thumb).setVisibility(View.VISIBLE);
+                mCurrentVideoLayout.removeView(mPlaySurface);
                 mCurrentVideoLayout = ((VideoCardAdapter.ViewHolder)
                         mListView.getChildAt(newVideoIndex).getTag()).videoLayout;
-                mCurrentVideoLayout.addView(mVideoView, 0);
-                mCurrentVideoLayout.findViewById(R.id.video_thumb).setVisibility(View.INVISIBLE);
                 playVideo((String) mCurrentVideoLayout.getTag());
             }
         }
@@ -121,8 +162,8 @@ public class TopicActivity extends ActionBarActivity implements AbsListView.OnSc
         if (isFirstPlay && visibleItemCount > 0) {
             Log.d(TAG, "first play");
             mCurrentVideoLayout = ((VideoCardAdapter.ViewHolder) mListView.getChildAt(0).getTag()).videoLayout;
-            mCurrentVideoLayout.addView(mVideoView, 0);
-            mCurrentVideoLayout.findViewById(R.id.video_thumb).setVisibility(View.INVISIBLE);
+            //mCurrentVideoLayout.addView(mPlaySurface, 0);
+            //mCurrentVideoLayout.findViewById(R.id.video_thumb).setVisibility(View.INVISIBLE);
             playVideo((String) mCurrentVideoLayout.getTag());
             isFirstPlay = false;
         }
@@ -132,14 +173,15 @@ public class TopicActivity extends ActionBarActivity implements AbsListView.OnSc
         int currentPosition = mAdapter.getPositionByVideoLayout(mCurrentVideoLayout);
         Log.d(TAG, "firstVisible: " + firstVisibleItem + ", lastVisible: " + mListView.getLastVisiblePosition() + ", current: " + currentPosition);
         if ((currentPosition < firstVisibleItem || currentPosition > mListView.getLastVisiblePosition())
-                && mVideoView != null && mVideoView.isPlaying()) {
-            mVideoView.pause();
+                && mIjkPlayer != null && mIjkPlayer.isPlaying()) {
+            mIjkPlayer.pause();
             mCurrentVideoLayout.findViewById(R.id.video_thumb).setVisibility(View.VISIBLE);
         }
     }
 
     private void playVideo(String url) {
-        mVideoLoader.playVideo(mVideoView, url);
+        mCurrentVideoUrl = url;
+        mVideoLoader.loadVideo(mIjkPlayer, url);
     }
 
     private int getCurrentVideoIndex() {
@@ -156,8 +198,6 @@ public class TopicActivity extends ActionBarActivity implements AbsListView.OnSc
 
             VideoCardAdapter.ViewHolder holder = (VideoCardAdapter.ViewHolder) child.getTag();
             FrameLayout videoLayout = holder.videoLayout;
-            //Log.d(TAG, "child" + i + ". top: " + child.getTop() + ", bottom: " + child.getBottom());
-            //Log.d(TAG, "videoLayout" + i + ". top: " + videoLayout.getTop() + ", bottom: " + videoLayout.getBottom());
 
             int listViewHeight = mListView.getHeight();
             int videoLayoutTopInList = child.getTop() + videoLayout.getTop();
@@ -181,5 +221,65 @@ public class TopicActivity extends ActionBarActivity implements AbsListView.OnSc
         }
 
         return videoIndex;
+    }
+
+    class TopicVideoLoader extends VideoLoader {
+        public TopicVideoLoader(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void loadComplete(Object player, final String filePath) {
+            mCurrentVideoPath = filePath;
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... params) {
+                    // reset() 函数执行要 1000+ 毫秒
+                    mIjkPlayer.reset();
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    // 如果 file != mCurrentVideoPath 表明执行了多次 removeView()、
+                    // 多次 loadComplete(), 下面的代码也会执行多次
+                    if (filePath == mCurrentVideoPath) {
+                        try {
+                            mIjkPlayer.setDataSource(filePath);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        mIjkPlayer.prepareAsync();
+                        mCurrentVideoLayout.addView(mPlaySurface, 0);
+                    }
+                }
+            }.execute();
+        }
+    }
+
+    private SurfaceHolder.Callback mPlaybackSurfaceCallback = new SurfaceHolder.Callback() {
+        @Override
+        public void surfaceCreated(SurfaceHolder holder) {
+            mIjkPlayer.setDisplay(mPlaySurface.getHolder());
+        }
+
+        @Override public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
+        @Override public void surfaceDestroyed(SurfaceHolder holder) {}
+    };
+
+    @Override
+    public void onCompletion(IMediaPlayer iMediaPlayer) {
+        iMediaPlayer.start();
+    }
+
+    @Override
+    public void onPrepared(IMediaPlayer iMediaPlayer) {
+        mIjkPlayer.start();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mCurrentVideoLayout.findViewById(R.id.video_thumb).setVisibility(View.INVISIBLE);
+            }
+        }, 120);
     }
 }
