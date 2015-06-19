@@ -124,6 +124,10 @@ public class VideoCardAdapter extends BaseAdapter {
         return convertView;
     }
 
+    public JSONObject getItemData(int position) {
+        return mData.get(position);
+    }
+
     private int getVideoCardVideoHeight() {
         Resources res = mContext.getResources();
         int videoCardPadding = res.getDimensionPixelSize(R.dimen.video_card_padding);

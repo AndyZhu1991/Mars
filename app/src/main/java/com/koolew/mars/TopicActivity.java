@@ -21,9 +21,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.koolew.mars.danmaku.DanmakuItemInfo;
+import com.koolew.mars.danmaku.DanmakuShowManager;
 import com.koolew.mars.utils.VideoLoader;
 import com.koolew.mars.utils.WebApiUtil;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -52,6 +56,9 @@ public class TopicActivity extends ActionBarActivity implements AbsListView.OnSc
     private String mCurrentVideoUrl;
     private boolean isFirstPlay = true;
     private FrameLayout mCurrentVideoLayout;
+
+    private DanmakuShowManager mDanmakuManager;
+    private DanmakuThread mDanmakuThread;
 
 
     @Override
@@ -146,6 +153,7 @@ public class TopicActivity extends ActionBarActivity implements AbsListView.OnSc
                 }
             }
             else {
+                stopDanmaku();
                 mCurrentVideoLayout.findViewById(R.id.video_thumb).setVisibility(View.VISIBLE);
                 mCurrentVideoLayout.removeView(mPlaySurface);
                 mCurrentVideoLayout = ((VideoCardAdapter.ViewHolder)
@@ -281,5 +289,77 @@ public class TopicActivity extends ActionBarActivity implements AbsListView.OnSc
                 mCurrentVideoLayout.findViewById(R.id.video_thumb).setVisibility(View.INVISIBLE);
             }
         }, 120);
+
+        startDanmaku();
+    }
+
+    private void startDanmaku() {
+        try {
+            int currentPosition = mAdapter.getPositionByVideoLayout(mCurrentVideoLayout);
+            JSONObject currentItemData = mAdapter.getItemData(currentPosition);
+            JSONArray danmakuArray = currentItemData.getJSONArray("comment");
+            mDanmakuManager = new DanmakuShowManager(this, mCurrentVideoLayout,
+                    DanmakuItemInfo.fromJSONArray(danmakuArray));
+            mDanmakuThread = new DanmakuThread();
+            mDanmakuThread.start();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stopDanmaku() {
+        if (mDanmakuThread != null) {
+            mDanmakuThread.stopDanmaku();
+            mDanmakuThread = null;
+        }
+    }
+
+    class DanmakuThread extends Thread {
+        private long lastPosition;
+        private boolean runDanmaku;
+
+        @Override
+        public void run() {
+            lastPosition = 0;
+            runDanmaku = true;
+            while (runDanmaku) {
+                if (mIjkPlayer != null && mIjkPlayer.isPlaying()) {
+                    long currentPosition = mIjkPlayer.getCurrentPosition();
+                    if (currentPosition < lastPosition) {
+                        danmakuManagerClear();
+                    }
+                    danmakuManagerUpdate((int) currentPosition);
+                    lastPosition = currentPosition;
+                }
+
+                try {
+                    Thread.sleep(40); // 40ms is 1 frame
+                } catch (InterruptedException e) {
+                }
+            }
+            danmakuManagerClear();
+        }
+
+        void stopDanmaku() {
+            runDanmaku = false;
+        }
+
+        private void danmakuManagerClear() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mDanmakuManager.clear();
+                }
+            });
+        }
+
+        private void danmakuManagerUpdate(final int millis) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mDanmakuManager.update(millis);
+                }
+            });
+        }
     }
 }
