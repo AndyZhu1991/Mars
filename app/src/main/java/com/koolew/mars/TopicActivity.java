@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -283,12 +282,31 @@ public class TopicActivity extends ActionBarActivity implements AbsListView.OnSc
     @Override
     public void onPrepared(IMediaPlayer iMediaPlayer) {
         mIjkPlayer.start();
-        new Handler().postDelayed(new Runnable() {
+
+        new Thread() {
             @Override
             public void run() {
-                mCurrentVideoLayout.findViewById(R.id.video_thumb).setVisibility(View.INVISIBLE);
+                while (mIjkPlayer != null && mIjkPlayer.isPlaying()) {
+                    try {
+                        Thread.sleep(40); // 40ms == 1frame, 25fps
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Log.d("stdzhu", "current position: " + mIjkPlayer.getCurrentPosition());
+                    if (mIjkPlayer.getCurrentPosition() > 0) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mCurrentVideoLayout.findViewById(R.id.video_thumb)
+                                        .setVisibility(View.INVISIBLE);
+                            }
+                        });
+
+                        break; // break while
+                    }
+                }
             }
-        }, 120);
+        }.start();
 
         startDanmaku();
     }
