@@ -8,6 +8,7 @@
     <dimen name="friend_select_item_width">50dp</dimen>
     <dimen name="friend_select_item_height">73dp</dimen>
     <dimen name="avatar_border_width">2dp</dimen>
+    <dimen name="toolbar_title_text_size">20sp</dimen>
 
     <!-- For FirstLoginActivity -->
     <dimen name="first_login_logo_margin_top">56dp</dimen>
@@ -43,6 +44,13 @@
 
     <!-- For VideosProgressView -->
 
+    <!-- For DrawerArrowDrawable -->
+    <dimen name="ldrawer_drawableSize">50dp</dimen>
+    <dimen name="ldrawer_barSize">18dp</dimen>
+    <dimen name="ldrawer_topBottomBarArrowSize">11dp</dimen>
+    <dimen name="ldrawer_thickness">2dp</dimen>
+    <dimen name="ldrawer_gapBetweenBars">3dp</dimen>
+    <dimen name="ldrawer_middleBarArrowSize">16dp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>

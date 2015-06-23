@@ -1,19 +1,15 @@
 package com.koolew.mars;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -33,6 +29,7 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.utils.WebApiUtil;
+import com.koolew.mars.view.DrawerToggleView;
 import com.koolew.mars.view.PhoneNumberView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -49,8 +46,8 @@ public class MainActivity extends FragmentActivity
     private static final String TAG = "koolew-MainActivity";
 
     private DrawerLayout mDrawerLayout;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private Toolbar mToolbar;
+    private DrawerToggleView mToggleView;
+    private View mMyToolbar;
     private FrameLayout mContentFrame;
     private LinearLayout mLeftDrawer;
     private ListView mDrawerList;
@@ -73,6 +70,8 @@ public class MainActivity extends FragmentActivity
         mRequestQueue = Volley.newRequestQueue(this);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mMyToolbar = findViewById(R.id.my_toolbar);
+        mToggleView = (DrawerToggleView) findViewById(R.id.my_drawer_toggle);
         mContentFrame = (FrameLayout) findViewById(R.id.content_frame);
         mLeftDrawer = (LinearLayout) findViewById(R.id.left_drawer);
         mDrawerList = (ListView) findViewById(R.id.drawer_list);
@@ -107,74 +106,26 @@ public class MainActivity extends FragmentActivity
         fragments[3] = SettingsFragment.newInstance();
 
         switchFragment(0);
-        configureToolbar();
         configureDrawer();
-    }
-
-    private void configureToolbar() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
-                    mDrawerLayout.closeDrawer(Gravity.START);
-
-                } else {
-                    mDrawerLayout.openDrawer(Gravity.START);
-                }
-            }
-        });
     }
 
     private void configureDrawer() {
         // Configure drawer
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                mToolbar,
-                R.string.drawer_open,
-                R.string.drawer_closed) {
-
-            public void onDrawerClosed(View view) {
-                supportInvalidateOptionsMenu();
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        mDrawerLayout.setDrawerListener(mToggleView);
+        mToggleView.setDrawer(mDrawerLayout);
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
-            mDrawerLayout.closeDrawer(Gravity.START);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         }
         else {
             super.onBackPressed();
@@ -244,7 +195,7 @@ public class MainActivity extends FragmentActivity
 
     @Override
     public void onMainColorChanged(int color) {
-        mToolbar.setBackgroundColor(color);
+        mMyToolbar.setBackgroundColor(color);
     }
 
     class DrawerListAdapter extends BaseAdapter {
