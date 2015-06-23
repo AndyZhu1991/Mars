@@ -68,9 +68,6 @@ public class KoolewFragment extends MainBaseFragment {
         mViewPagerIndicator.setViewPager(mViewPager, new int[] {
                 getResources().getColor(R.color.koolew_light_orange),
                 getResources().getColor(R.color.koolew_deep_orange),
-                getResources().getColor(R.color.koolew_light_blue),
-                getResources().getColor(R.color.koolew_deep_blue),
-                getResources().getColor(R.color.koolew_purple)
         });
         mViewPagerIndicator.setOnBackgroundColorChangedListener(
                 new KoolewViewPagerIndicator.OnBackgroundColorChangedListener() {
@@ -117,15 +114,6 @@ public class KoolewFragment extends MainBaseFragment {
 
             fragmentList.add(KoolewRelatedMeFragment.newInstance());
             fragmentTitles.add(getString(R.string.koolew_related_me_title));
-
-            fragmentList.add(KoolewHotFragment.newInstance());
-            fragmentTitles.add(getString(R.string.koolew_hot_title));
-
-            fragmentList.add(KoolewMeetFragment.newInstance());
-            fragmentTitles.add(getString(R.string.koolew_meet_title));
-
-            fragmentList.add(KoolewFavoriteFragment.newInstance());
-            fragmentTitles.add(getString(R.string.koolew_favorite_title));
         }
 
         @Override

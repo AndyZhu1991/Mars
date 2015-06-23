@@ -1,10 +1,10 @@
 package com.koolew.mars;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -24,6 +24,7 @@ import com.koolew.mars.danmaku.DanmakuItemInfo;
 import com.koolew.mars.danmaku.DanmakuShowManager;
 import com.koolew.mars.utils.VideoLoader;
 import com.koolew.mars.utils.WebApiUtil;
+import com.koolew.mars.view.TitleBarView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,14 +37,18 @@ import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 
-public class TopicActivity extends ActionBarActivity implements AbsListView.OnScrollListener,
-        IMediaPlayer.OnPreparedListener, IMediaPlayer.OnCompletionListener {
+public class TopicActivity extends Activity implements AbsListView.OnScrollListener,
+        IMediaPlayer.OnPreparedListener, IMediaPlayer.OnCompletionListener, View.OnClickListener,
+        TitleBarView.OnLayoutClickListener{
 
     private static final String TAG = "koolew-TopicActivity";
 
     public static final String KEY_TOPIC_ID = "topic_id";
 
+    private TitleBarView mTitleBar;
     private ListView mListView;
+    private View mCaptureView;
+    private View mSendInvitationView;
 
     private VideoCardAdapter mAdapter;
     private RequestQueue mRequestQueue;
@@ -65,8 +70,15 @@ public class TopicActivity extends ActionBarActivity implements AbsListView.OnSc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic);
 
+        mTitleBar = (TitleBarView) findViewById(R.id.title_bar);
+        mTitleBar.setOnLayoutClickListener(this);
         mListView = (ListView) findViewById(R.id.list_view);
         mListView.setOnScrollListener(this);
+        mCaptureView = findViewById(R.id.capture);
+        mCaptureView.setOnClickListener(this);
+        mSendInvitationView = findViewById(R.id.send_invitation);
+        mSendInvitationView.setOnClickListener(this);
+
         mPlaySurface = new SurfaceView(this);
         mPlaySurface.setLayoutParams(new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -229,6 +241,25 @@ public class TopicActivity extends ActionBarActivity implements AbsListView.OnSc
 
         return videoIndex;
     }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.capture:
+                break;
+            case R.id.send_invitation:
+                break;
+        }
+    }
+
+    // TitleBarView.OnLayoutClickListener
+    @Override
+    public void onBackLayoutClick() {
+        onBackPressed();
+    }
+    @Override
+    public void onRightLayoutClick() {}
+
 
     class TopicVideoLoader extends VideoLoader {
         public TopicVideoLoader(Context context) {

@@ -62,6 +62,9 @@
     <string name="video_count_label">视频总数：%d个</string>
     <string name="invited_label">你被%s点名</string>
 
+    <!-- For TopicActivity -->
+    <string name="send_invitation">发起点名</string>
+
     <!-- For VideoShootActivity -->
     <string name="import_video">导入</string>
     <string name="capture_video">长按拍摄</string>
