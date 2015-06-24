@@ -22,6 +22,12 @@
     <color name="title_text_color_unindicate">#B2FFFFFF</color>
     <color name="indicator_underline">@android:color/white</color>
 
+    <!-- For drawer list -->
+    <color name="drawer_list_koolew_select">#FFD180</color>
+    <color name="drawer_list_friend_select">#83DDEA</color>
+    <color name="drawer_list_settings_select">#87C1F5</color>
+    <color name="drawer_list_add_select">#51C47D</color>
+
     <!-- For danmaku -->
     <color name="danmaku_green">#80DFA6</color>
     <color name="danmaku_purple">#DB8AFF</color>

@@ -60,7 +60,7 @@ public class MainActivity extends FragmentActivity
     private TextView mCountKoo;
     private TextView mCountCoin;
 
-    private Fragment[] fragments = new Fragment[4];
+    private Fragment[] fragments = new Fragment[3];
 
     private RequestQueue mRequestQueue;
 
@@ -89,7 +89,7 @@ public class MainActivity extends FragmentActivity
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 4) {
+                if (position == 3) {
                     // 添加话题卡
                     // Test
                     startActivity(new Intent(MainActivity.this, VideoShootActivity.class));
@@ -104,9 +104,8 @@ public class MainActivity extends FragmentActivity
         getUserInfo();
 
         fragments[0] = KoolewFragment.newInstance();
-        fragments[1] = MessageFragment.newInstance();
-        fragments[2] = FriendFragment.newInstance();
-        fragments[3] = SettingsFragment.newInstance();
+        fragments[1] = FriendFragment.newInstance();
+        fragments[2] = SettingsFragment.newInstance();
 
         switchFragment(0);
         configureDrawer();
@@ -210,22 +209,25 @@ public class MainActivity extends FragmentActivity
 
         private int[] listIcons = {
                 R.mipmap.ic_drawer_list_koolew,
-                R.mipmap.ic_drawer_list_msg,
                 R.mipmap.ic_drawer_list_friend,
                 R.mipmap.ic_drawer_list_settings,
                 R.mipmap.ic_drawer_list_add };
         private int[] listIconsSelected = {
                 R.mipmap.ic_drawer_list_koolew_selected,
-                R.mipmap.ic_drawer_list_msg_selected,
                 R.mipmap.ic_drawer_list_friend_selected,
                 R.mipmap.ic_drawer_list_settings_selected,
                 R.mipmap.ic_drawer_list_add_selected };
         private int[] listTexts = {
                 R.string.drawer_item_koolew,
-                R.string.drawer_item_msg,
                 R.string.drawer_item_friend,
                 R.string.drawer_item_settings,
                 R.string.drawer_item_add };
+        private int[] selectedColor = {
+                R.color.drawer_list_koolew_select,
+                R.color.drawer_list_friend_select,
+                R.color.drawer_list_settings_select,
+                R.color.drawer_list_add_select,
+        };
 
         DrawerListAdapter() {
             inflater = LayoutInflater.from(MainActivity.this);
@@ -233,7 +235,7 @@ public class MainActivity extends FragmentActivity
 
         @Override
         public int getCount() {
-            return 5;
+            return 4;
         }
 
         @Override
@@ -264,7 +266,7 @@ public class MainActivity extends FragmentActivity
 
             if (position == checkedPosition) {
                 holder.icon.setImageDrawable(getResources().getDrawable(listIconsSelected[position]));
-                holder.text.setTextColor(getResources().getColor(R.color.koolew_light_orange));
+                holder.text.setTextColor(getResources().getColor(selectedColor[position]));
             }
             else {
                 holder.icon.setImageDrawable(getResources().getDrawable(listIcons[position]));
