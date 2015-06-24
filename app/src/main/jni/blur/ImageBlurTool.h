@@ -1,0 +1,1 @@
+int* StackBlur(int* pix, int w, int h, int radius);

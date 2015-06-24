@@ -27,6 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
+import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.utils.WebApiUtil;
 import com.koolew.mars.view.DrawerToggleView;
@@ -50,6 +51,7 @@ public class MainActivity extends FragmentActivity
     private View mMyToolbar;
     private FrameLayout mContentFrame;
     private LinearLayout mLeftDrawer;
+    private ImageView mInfoBackground;
     private ListView mDrawerList;
     private DrawerListAdapter mAdapter;
     private ImageView mAvatar;
@@ -74,6 +76,7 @@ public class MainActivity extends FragmentActivity
         mToggleView = (DrawerToggleView) findViewById(R.id.my_drawer_toggle);
         mContentFrame = (FrameLayout) findViewById(R.id.content_frame);
         mLeftDrawer = (LinearLayout) findViewById(R.id.left_drawer);
+        mInfoBackground = (ImageView) findViewById(R.id.info_background);
         mDrawerList = (ListView) findViewById(R.id.drawer_list);
         mAvatar = (ImageView) findViewById(R.id.avatar);
         mNickname = (TextView) findViewById(R.id.nickname);
@@ -153,6 +156,7 @@ public class MainActivity extends FragmentActivity
                                 mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
                                 mCountCoin.setText("" + MyAccountInfo.getCoinNum());
                                 ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(), mAvatar);
+                                new DisplayBlurImage(mInfoBackground, MyAccountInfo.getAvatar()).execute();
                                 mNickname.setText(MyAccountInfo.getNickname());
                                 mCountKoo.setText("" + MyAccountInfo.getKooNum());
                             }

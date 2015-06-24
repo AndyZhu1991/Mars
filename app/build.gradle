@@ -18,6 +18,12 @@ android {
             moduleName "ffmpegbridge"
             ldLibs "log", "z", "m", "jnigraphics", "android"
         }
+        ndk {
+            abiFilter "armeabi-v7a"
+            abiFilter "x86"
+            moduleName "imageblurtool"
+            ldLibs "log", "m", "jnigraphics"
+        }
     }
     buildTypes {
         release {

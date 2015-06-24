@@ -44,111 +44,129 @@
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:paddingBottom="8dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:clickable="true"
+        android:background="#F8F9FB">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="22dp"
-            android:orientation="vertical">
+            android:background="@android:color/black">
 
-            <RelativeLayout
-                android:id="@+id/basic_info"
+            <ImageView
+                android:id="@+id/info_background"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="22dp"
-                android:layout_marginBottom="22dp"
-                android:layout_marginLeft="16dp">
+                android:layout_height="match_parent"
+                android:alpha="0.3" />
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/avatar"
-                    android:layout_width="66dp"
-                    android:layout_height="66dp"
-                    app:border_width="2dp"
-                    app:border_color="@android:color/white"/>
-
-                <TextView
-                    android:id="@+id/nickname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_toRightOf="@id/avatar"
-                    android:textSize="18sp"
-                    android:textColor="@android:color/white"/>
-
-                <com.koolew.mars.view.PhoneNumberView
-                    android:id="@+id/phone_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_toRightOf="@id/avatar"
-                    android:layout_below="@id/nickname"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/white" />
-            </RelativeLayout>
-
-            <include layout="@layout/horizontal_divider" />
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:orientation="horizontal"
-                android:padding="6dp">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="22dp"
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:gravity="center">
+                <RelativeLayout
+                    android:id="@+id/basic_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="22dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="22dp">
 
-                    <ImageView
-                        android:layout_width="14dp"
-                        android:layout_height="12dp"
-                        android:src="@mipmap/ic_count_koo"/>
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/avatar"
+                        android:layout_width="66dp"
+                        android:layout_height="66dp"
+                        app:border_color="@android:color/white"
+                        app:border_width="2dp" />
+
                     <TextView
-                        android:id="@+id/count_koo"
+                        android:id="@+id/nickname"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="2dp"
-                        android:text="0"
-                        android:textSize="14sp"
-                        android:textColor="@android:color/white"/>
-                </LinearLayout>
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_toRightOf="@id/avatar"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp" />
 
-                <include layout="@layout/vertical_divider" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:layout_width="14dp"
-                        android:layout_height="12dp"
-                        android:src="@mipmap/ic_count_coin"/>
-                    <TextView
-                        android:id="@+id/count_coin"
+                    <com.koolew.mars.view.PhoneNumberView
+                        android:id="@+id/phone_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="2dp"
-                        android:text="0"
-                        android:textSize="14sp"
-                        android:textColor="@android:color/white"/>
+                        android:layout_below="@id/nickname"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_toRightOf="@id/avatar"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp" />
+                </RelativeLayout>
+
+                <include layout="@layout/horizontal_divider" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="12dp"
+                            android:src="@mipmap/ic_count_koo" />
+
+                        <TextView
+                            android:id="@+id/count_koo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="2dp"
+                            android:text="0"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <include layout="@layout/vertical_divider" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="12dp"
+                            android:src="@mipmap/ic_count_coin" />
+
+                        <TextView
+                            android:id="@+id/count_coin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="2dp"
+                            android:text="0"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp" />
+                    </LinearLayout>
                 </LinearLayout>
+
+                <include layout="@layout/horizontal_divider" />
             </LinearLayout>
-            <include layout="@layout/horizontal_divider" />
-        </LinearLayout>
+        </FrameLayout>
 
         <ListView
             android:id="@+id/drawer_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
             android:divider="@null"/>
     </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

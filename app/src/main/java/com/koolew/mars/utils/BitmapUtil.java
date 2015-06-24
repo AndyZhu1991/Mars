@@ -33,4 +33,35 @@ public class BitmapUtil {
 
         return scaledBitmap;
     }
+
+    public static Bitmap getClipedScaledBitmap(Bitmap originBitmap, int width, int height) {
+        int srcWidth = originBitmap.getWidth();
+        int srcHeight = originBitmap.getHeight();
+        float srcRatio = 1.0f * srcWidth / srcHeight;
+
+        float ratio = 1.0f * width / height;
+
+        int x = 0;
+        int y = 0;
+        int dstWidth = srcWidth;
+        int dstHeight = srcHeight;
+        if (srcRatio < ratio) {
+            dstHeight = (int) (srcWidth / ratio);
+            y = (srcHeight - dstHeight) / 2;
+        }
+        else {
+            dstWidth = (int) (srcHeight * ratio);
+            x = (srcWidth - dstWidth) / 2;
+        }
+        Bitmap clipedBitmap = Bitmap.createBitmap(originBitmap, x, y, dstWidth, dstHeight);
+        Bitmap scaledBitmap;
+        if (dstWidth > width) {
+            scaledBitmap = Bitmap.createScaledBitmap(clipedBitmap, width, height, false);
+        }
+        else {
+            scaledBitmap = clipedBitmap;
+        }
+
+        return scaledBitmap;
+    }
 }
