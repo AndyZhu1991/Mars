@@ -146,6 +146,21 @@ public class KoolewViewPagerIndicator extends LinearLayout
 
             invalidate();
         }
+        else if (position == childCount - 1) {
+            View selectedTitle = getChildAt(position);
+            underlineLeft = selectedTitle.getLeft();
+            underlineRight = selectedTitle.getRight();
+
+            if (backgroundColors != null && backgroundColors.length != 0) {
+                int backgroundColor = backgroundColors[position];
+                setBackgroundColor(backgroundColor);
+                if (mOnBackgroundColorChangedListener != null) {
+                    mOnBackgroundColorChangedListener.onBackgroundColorChanged(backgroundColor);
+                }
+            }
+
+            invalidate();
+        }
     }
 
     @Override
