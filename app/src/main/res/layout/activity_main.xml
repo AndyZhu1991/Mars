@@ -22,7 +22,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/drawer_item_koolew"
             android:textColor="@android:color/white"
             android:textSize="@dimen/toolbar_title_text_size"
             android:layout_marginLeft="15dp"

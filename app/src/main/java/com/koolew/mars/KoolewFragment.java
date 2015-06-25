@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,11 +27,11 @@ public class KoolewFragment extends MainBaseFragment {
 
     private static final String TAG = "koolew-KoolewFragment";
 
+    private static int[] subPageColors = null;
+
     private ViewPager mViewPager;
     private KoolewFragmentPagerAdapter mAdapter;
     private KoolewViewPagerIndicator mViewPagerIndicator;
-
-    private MainColorChangedListener mMainColorChangedListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -53,6 +52,8 @@ public class KoolewFragment extends MainBaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mToolbarInterface.setToolbarTitle(R.string.title_koolew);
+        initSubPageColors();
     }
 
     @Override
@@ -65,37 +66,27 @@ public class KoolewFragment extends MainBaseFragment {
         mAdapter = new KoolewFragmentPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(mAdapter);
         mViewPagerIndicator = (KoolewViewPagerIndicator) root.findViewById(R.id.indicator);
-        mViewPagerIndicator.setViewPager(mViewPager, new int[] {
-                getResources().getColor(R.color.koolew_light_orange),
-                getResources().getColor(R.color.koolew_deep_orange),
-        });
+        mViewPagerIndicator.setViewPager(mViewPager, subPageColors);
         mViewPagerIndicator.setOnBackgroundColorChangedListener(
                 new KoolewViewPagerIndicator.OnBackgroundColorChangedListener() {
                     @Override
                     public void onBackgroundColorChanged(int color) {
-                        mMainColorChangedListener.onMainColorChanged(color);
+                        mToolbarInterface.setToolbarColor(color);
                     }
                 }
         );
 
+
         return root;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mMainColorChangedListener = (MainColorChangedListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement MainColorChangedListener");
+    private void initSubPageColors() {
+        if (subPageColors == null) {
+            subPageColors = new int[]{
+                    getResources().getColor(R.color.koolew_light_orange),
+                    getResources().getColor(R.color.koolew_deep_orange),
+            };
         }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mMainColorChangedListener = null;
     }
 
     class KoolewFragmentPagerAdapter extends FragmentPagerAdapter {
@@ -131,9 +122,4 @@ public class KoolewFragment extends MainBaseFragment {
             return fragmentTitles.get(position);
         }
     }
-
-    public interface MainColorChangedListener {
-        public void onMainColorChanged(int color);
-    }
-
 }

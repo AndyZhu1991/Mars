@@ -1,11 +1,18 @@
 package com.koolew.mars;
 
 import android.app.Fragment;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.koolew.mars.view.KoolewViewPagerIndicator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -18,7 +25,12 @@ import android.view.ViewGroup;
  */
 public class FriendFragment extends MainBaseFragment {
 
-    private OnFragmentInteractionListener mListener;
+    private static final String TAG = "koolew-KoolewFragment";
+
+    private ViewPager mViewPager;
+    private FriendFragmentPagerAdapter mAdapter;
+    private KoolewViewPagerIndicator mViewPagerIndicator;
+
 
     /**
      * Use this factory method to create a new instance of
@@ -39,20 +51,69 @@ public class FriendFragment extends MainBaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mToolbarInterface.setToolbarTitle(R.string.title_friend);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_friend, container, false);
+        View root = inflater.inflate(R.layout.fragment_friend, container, false);
+
+        mViewPager = (ViewPager) root.findViewById(R.id.view_pager);
+        mAdapter = new FriendFragmentPagerAdapter(getChildFragmentManager());
+        mViewPager.setAdapter(mAdapter);
+        mViewPagerIndicator = (KoolewViewPagerIndicator) root.findViewById(R.id.indicator);
+        mViewPagerIndicator.setViewPager(mViewPager);
+        mViewPagerIndicator.setOnBackgroundColorChangedListener(
+                new KoolewViewPagerIndicator.OnBackgroundColorChangedListener() {
+                    @Override
+                    public void onBackgroundColorChanged(int color) {
+                        mToolbarInterface.setToolbarColor(color);
+                    }
+                }
+        );
+
+        return root;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+    class FriendFragmentPagerAdapter extends FragmentPagerAdapter {
+
+        private List<android.support.v4.app.Fragment> fragmentList;
+        private List<String> fragmentTitles;
+
+        public FriendFragmentPagerAdapter(FragmentManager fm) {
+            super(fm);
+            // TODO Auto-generated constructor stub
+            fragmentList = new ArrayList<android.support.v4.app.Fragment>();
+            fragmentTitles = new ArrayList<String>();
+
+            fragmentList.add(FriendMeetFragment.newInstance());
+            fragmentTitles.add(getString(R.string.friend_meet_title));
+
+            fragmentList.add(FriendContactFragment.newInstance());
+            fragmentTitles.add(getString(R.string.friend_contact_title));
+
+            fragmentList.add(FriendWeiboFragment.newInstance());
+            fragmentTitles.add(getString(R.string.friend_weibo_title));
+
+            fragmentList.add(FriendCurrentFragment.newInstance());
+            fragmentTitles.add(getString(R.string.friend_current_title));
+        }
+
+        @Override
+        public android.support.v4.app.Fragment getItem(int position) {
+            return fragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return fragmentList.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return fragmentTitles.get(position);
         }
     }
-
 }

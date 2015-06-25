@@ -42,13 +42,14 @@ import java.util.Map;
 
 public class MainActivity extends FragmentActivity
         implements MainBaseFragment.OnFragmentInteractionListener,
-                   KoolewFragment.MainColorChangedListener{
+                   MainBaseFragment.ToolbarOperateInterface{
 
     private static final String TAG = "koolew-MainActivity";
 
     private DrawerLayout mDrawerLayout;
     private DrawerToggleView mToggleView;
     private View mMyToolbar;
+    private TextView mTitleView;
     private FrameLayout mContentFrame;
     private LinearLayout mLeftDrawer;
     private ImageView mInfoBackground;
@@ -73,6 +74,7 @@ public class MainActivity extends FragmentActivity
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mMyToolbar = findViewById(R.id.my_toolbar);
+        mTitleView = (TextView) findViewById(R.id.title);
         mToggleView = (DrawerToggleView) findViewById(R.id.my_drawer_toggle);
         mContentFrame = (FrameLayout) findViewById(R.id.content_frame);
         mLeftDrawer = (LinearLayout) findViewById(R.id.left_drawer);
@@ -101,14 +103,14 @@ public class MainActivity extends FragmentActivity
         mNickname.setText(MyAccountInfo.getNickname());
         mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
 
-        getUserInfo();
-
         fragments[0] = KoolewFragment.newInstance();
         fragments[1] = FriendFragment.newInstance();
         fragments[2] = SettingsFragment.newInstance();
 
         switchFragment(0);
         configureDrawer();
+
+        getUserInfo();
     }
 
     private void configureDrawer() {
@@ -197,8 +199,18 @@ public class MainActivity extends FragmentActivity
     }
 
     @Override
-    public void onMainColorChanged(int color) {
+    public void setToolbarColor(int color) {
         mMyToolbar.setBackgroundColor(color);
+    }
+
+    @Override
+    public void setToolbarTitle(String title) {
+        mTitleView.setText(title);
+    }
+
+    @Override
+    public void setToolbarTitle(int titleResId) {
+        mTitleView.setText(titleResId);
     }
 
     class DrawerListAdapter extends BaseAdapter {
@@ -218,10 +230,10 @@ public class MainActivity extends FragmentActivity
                 R.mipmap.ic_drawer_list_settings_selected,
                 R.mipmap.ic_drawer_list_add_selected };
         private int[] listTexts = {
-                R.string.drawer_item_koolew,
-                R.string.drawer_item_friend,
-                R.string.drawer_item_settings,
-                R.string.drawer_item_add };
+                R.string.title_koolew,
+                R.string.title_friend,
+                R.string.title_settings,
+                R.string.title_add };
         private int[] selectedColor = {
                 R.color.drawer_list_koolew_select,
                 R.color.drawer_list_friend_select,

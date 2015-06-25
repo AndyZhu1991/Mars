@@ -16,11 +16,10 @@
     <string name="drawer_closed">Close</string>
 
     <!-- For MainActivity -->
-    <string name="drawer_item_koolew">可见</string>
-    <string name="drawer_item_msg">消息</string>
-    <string name="drawer_item_friend">好友</string>
-    <string name="drawer_item_settings">设置</string>
-    <string name="drawer_item_add">添加话题卡</string>
+    <string name="title_koolew">可见</string>
+    <string name="title_friend">好友</string>
+    <string name="title_settings">设置</string>
+    <string name="title_add">添加话题卡</string>
     <string name="got">获得</string>
     <string name="coin_count">金币数量</string>
 
@@ -59,6 +58,12 @@
     <string name="koolew_hot_title">热门</string>
     <string name="koolew_meet_title">遇见</string>
     <string name="koolew_favorite_title">收藏</string>
+
+    <!-- For FriendFragment -->
+    <string name="friend_meet_title">遇见</string>
+    <string name="friend_contact_title">通讯录好友</string>
+    <string name="friend_weibo_title">微博好友</string>
+    <string name="friend_current_title">现有好友</string>
 
     <!-- For TopicInvitationList -->
     <string name="video_count_label">视频总数：%d个</string>

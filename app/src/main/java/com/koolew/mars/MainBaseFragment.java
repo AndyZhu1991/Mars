@@ -10,15 +10,18 @@ import android.support.v4.app.Fragment;
 public class MainBaseFragment extends Fragment {
 
     protected OnFragmentInteractionListener mListener;
+    protected ToolbarOperateInterface mToolbarInterface;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
             mListener = (OnFragmentInteractionListener) activity;
+            mToolbarInterface = (ToolbarOperateInterface) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnFragmentInteractionListener"
+                    + " and ToolbarOperateInterface");
         }
     }
 
@@ -26,6 +29,7 @@ public class MainBaseFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        mToolbarInterface = null;
     }
 
     /**
@@ -41,5 +45,13 @@ public class MainBaseFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+    public interface ToolbarOperateInterface {
+        void setToolbarColor(int color);
+
+        void setToolbarTitle(String title);
+
+        void setToolbarTitle(int titleResId);
     }
 }

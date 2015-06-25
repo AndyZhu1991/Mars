@@ -135,11 +135,13 @@ public class KoolewViewPagerIndicator extends LinearLayout
             underlineRight = (int) (selectedTitle.getRight() * (1.0f - positionOffset)
                     + nextTitle.getRight() * positionOffset);
 
-            int backgroundColor = getTransitionColor(
-                    backgroundColors[position], backgroundColors[position + 1], positionOffset);
-            setBackgroundColor(backgroundColor);
-            if (mOnBackgroundColorChangedListener != null) {
-                mOnBackgroundColorChangedListener.onBackgroundColorChanged(backgroundColor);
+            if (backgroundColors != null && backgroundColors.length != 0) {
+                int backgroundColor = getTransitionColor(
+                        backgroundColors[position], backgroundColors[position + 1], positionOffset);
+                setBackgroundColor(backgroundColor);
+                if (mOnBackgroundColorChangedListener != null) {
+                    mOnBackgroundColorChangedListener.onBackgroundColorChanged(backgroundColor);
+                }
             }
 
             invalidate();
