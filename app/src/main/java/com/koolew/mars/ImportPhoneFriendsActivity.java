@@ -31,7 +31,7 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.infos.FriendInfo;
-import com.koolew.mars.utils.WebApiUtil;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -92,7 +92,7 @@ public class ImportPhoneFriendsActivity extends Activity {
 
         // Start another Activity here
 
-        String url = WebApiUtil.ADD_FRIEND_URL;
+        String url = UrlHelper.ADD_FRIEND_URL;
         JSONObject requestJson = new JSONObject();
         try {
             JSONArray friendUids = new JSONArray();
@@ -145,7 +145,7 @@ public class ImportPhoneFriendsActivity extends Activity {
         ) {
             @Override
             public Map<String, String> getHeaders() {
-                return WebApiUtil.getStandardPostHeaders();
+                return UrlHelper.getStandardPostHeaders();
             }
         };
         mRequestQueue.add(jsonRequest);
@@ -264,7 +264,7 @@ public class ImportPhoneFriendsActivity extends Activity {
                 }
             }
 
-            String url = WebApiUtil.FRIEND_RECOMMEND_URL;
+            String url = UrlHelper.FRIEND_RECOMMEND_URL;
             RequestFuture<JSONObject> future = RequestFuture.newFuture();
             JSONObject requestJson = new JSONObject();
             try {
@@ -276,14 +276,14 @@ public class ImportPhoneFriendsActivity extends Activity {
                     Request.Method.POST, url, requestJson, future, future) {
                 @Override
                 public Map<String, String> getHeaders() {
-                    return WebApiUtil.getStandardPostHeaders();
+                    return UrlHelper.getStandardPostHeaders();
                 }
             };
             mRequestQueue.add(jsonRequest);
 
             JSONObject response = null;
             try {
-                response = future.get(WebApiUtil.REQUEST_TIMEOUT, WebApiUtil.TIME_UNIT);
+                response = future.get(UrlHelper.REQUEST_TIMEOUT, UrlHelper.TIME_UNIT);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {

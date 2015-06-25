@@ -29,7 +29,7 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.infos.MyAccountInfo;
-import com.koolew.mars.utils.WebApiUtil;
+import com.koolew.mars.webapi.UrlHelper;
 import com.koolew.mars.view.DrawerToggleView;
 import com.koolew.mars.view.PhoneNumberView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -137,7 +137,7 @@ public class MainActivity extends FragmentActivity
     }
 
     private void getUserInfo() {
-        String url = WebApiUtil.USER_INFO_URL;
+        String url = UrlHelper.USER_INFO_URL;
         JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.GET, url,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -176,7 +176,7 @@ public class MainActivity extends FragmentActivity
         ) {
             @Override
             public Map<String, String> getHeaders() {
-                return WebApiUtil.getStandardPostHeaders();
+                return UrlHelper.getStandardPostHeaders();
             }
         };
         mRequestQueue.add(jsonRequest);

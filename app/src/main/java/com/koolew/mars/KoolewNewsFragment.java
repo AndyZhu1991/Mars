@@ -16,7 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.koolew.mars.utils.WebApiUtil;
+import com.koolew.mars.webapi.UrlHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,7 +73,7 @@ public class KoolewNewsFragment extends Fragment implements AdapterView.OnItemCl
     }
 
     private void requestFeedsTopic() {
-        String url = WebApiUtil.FEEDS_TOPIC_URL;
+        String url = UrlHelper.FEEDS_TOPIC_URL;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -102,7 +102,7 @@ public class KoolewNewsFragment extends Fragment implements AdapterView.OnItemCl
         ) {
             @Override
             public Map<String, String> getHeaders() {
-                return WebApiUtil.getStandardPostHeaders();
+                return UrlHelper.getStandardPostHeaders();
             }
         };
         mRequestQueue.add(jsonObjectRequest);

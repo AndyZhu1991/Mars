@@ -1,4 +1,4 @@
-package com.koolew.mars.utils;
+package com.koolew.mars.webapi;
 
 import com.koolew.mars.infos.MyAccountInfo;
 
@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by jinchangzhu on 5/27/15.
  */
-public class WebApiUtil {
+public class UrlHelper {
 
     private static final String BASE_URL = "http://test.koolew.cn/v1/";
 

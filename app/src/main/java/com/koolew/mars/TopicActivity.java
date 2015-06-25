@@ -23,7 +23,7 @@ import com.android.volley.toolbox.Volley;
 import com.koolew.mars.danmaku.DanmakuItemInfo;
 import com.koolew.mars.danmaku.DanmakuShowManager;
 import com.koolew.mars.utils.VideoLoader;
-import com.koolew.mars.utils.WebApiUtil;
+import com.koolew.mars.webapi.UrlHelper;
 import com.koolew.mars.view.TitleBarView;
 
 import org.json.JSONArray;
@@ -117,7 +117,7 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
     }
 
     private void getTopicVideo(String topicId) {
-        String url = WebApiUtil.getTopicVideoFriendUrl(topicId);
+        String url = UrlHelper.getTopicVideoFriendUrl(topicId);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -136,7 +136,7 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
         ) {
             @Override
             public Map<String, String> getHeaders() {
-                return WebApiUtil.getStandardPostHeaders();
+                return UrlHelper.getStandardPostHeaders();
             }
         };
         mRequestQueue.add(jsonObjectRequest);

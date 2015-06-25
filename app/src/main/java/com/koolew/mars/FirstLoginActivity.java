@@ -18,7 +18,7 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.infos.MyAccountInfo.LOGIN_TYPE;
-import com.koolew.mars.utils.WebApiUtil;
+import com.koolew.mars.webapi.UrlHelper;
 import com.koolew.mars.weiboapi.AccessTokenKeeper;
 import com.koolew.mars.weiboapi.Constants;
 import com.koolew.mars.weiboapi.UsersAPI;
@@ -188,7 +188,7 @@ public class FirstLoginActivity extends Activity {
                             long expiresIn, final String unionId) {
         mProgressDialog.setMessage(getString(R.string.geting_sns_info));
         mProgressDialog.show();
-        String url = WebApiUtil.SNS_LOGIN_URL;
+        String url = UrlHelper.SNS_LOGIN_URL;
         JSONObject requestJson = new JSONObject();
         try {
             requestJson.put("type", type.ordinal());

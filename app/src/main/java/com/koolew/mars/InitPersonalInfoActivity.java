@@ -21,7 +21,7 @@ import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.services.UploadAvatarService;
 import com.koolew.mars.utils.MaxLengthWatcher;
 import com.koolew.mars.utils.PictureSelectUtil;
-import com.koolew.mars.utils.WebApiUtil;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
@@ -90,7 +90,7 @@ public class InitPersonalInfoActivity extends Activity {
         }
 
         mLoginingDialog.show();
-        String url = WebApiUtil.USER_INFO_URL;
+        String url = UrlHelper.USER_INFO_URL;
         JSONObject requestJson = new JSONObject();
         try {
             requestJson.put("nickname", mEtNickname.getText().toString());
@@ -129,7 +129,7 @@ public class InitPersonalInfoActivity extends Activity {
         ) {
             @Override
             public Map<String, String> getHeaders() {
-                return WebApiUtil.getStandardPostHeaders();
+                return UrlHelper.getStandardPostHeaders();
             }
         };
         mRequestQueue.add(jsonRequest);
