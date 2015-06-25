@@ -59,6 +59,9 @@
     <string name="koolew_meet_title">遇见</string>
     <string name="koolew_favorite_title">收藏</string>
 
+    <!-- For KoolewRelatedMeFragment -->
+    <string name="joined_video">参与视频</string>
+
     <!-- For FriendFragment -->
     <string name="friend_meet_title">遇见</string>
     <string name="friend_contact_title">通讯录好友</string>
