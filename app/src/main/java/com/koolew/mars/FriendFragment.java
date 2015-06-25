@@ -74,6 +74,8 @@ public class FriendFragment extends MainBaseFragment {
                 }
         );
 
+        mToolbarInterface.setToolbarColor(getResources().getColor(R.color.koolew_light_blue));
+
         return root;
     }
 

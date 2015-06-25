@@ -76,6 +76,7 @@ public class KoolewFragment extends MainBaseFragment {
                 }
         );
 
+        mToolbarInterface.setToolbarColor(subPageColors[mViewPager.getCurrentItem()]);
 
         return root;
     }

@@ -6,8 +6,8 @@
     <color name="koolew_gray">#7D8B97</color>
     <color name="koolew_light_orange">#FFD180</color>
     <color name="koolew_deep_orange">#FFC282</color>
-    <color name="koolew_light_blue">#80D8FF</color>
-    <color name="koolew_deep_blue">#82B1FF</color>
+    <color name="koolew_light_blue">#83DDEA</color>
+    <color name="koolew_deep_blue">#87C1F5</color>
     <color name="koolew_purple">#9575CD</color>
     <color name="koolew_light_green">#80DFA6</color>
     <color name="koolew_deep_green">#51C47D</color>
@@ -23,9 +23,9 @@
     <color name="indicator_underline">@android:color/white</color>
 
     <!-- For drawer list -->
-    <color name="drawer_list_koolew_select">#FFD180</color>
-    <color name="drawer_list_friend_select">#83DDEA</color>
-    <color name="drawer_list_settings_select">#87C1F5</color>
+    <color name="drawer_list_koolew_select">@color/koolew_light_orange</color>
+    <color name="drawer_list_friend_select">@color/koolew_light_blue</color>
+    <color name="drawer_list_settings_select">@color/koolew_deep_blue</color>
     <color name="drawer_list_add_select">#51C47D</color>
 
     <!-- For danmaku -->
