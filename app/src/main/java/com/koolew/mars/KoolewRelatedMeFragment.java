@@ -11,6 +11,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.koolew.mars.webapi.ApiWorker;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -49,23 +56,43 @@ public class KoolewRelatedMeFragment extends Fragment {
 
         mListView = (ListView) root.findViewById(R.id.list_view);
         mAdapter = new RelatedMeAdapter();
-        generateTestData(mAdapter.mData);
         mListView.setAdapter(mAdapter);
+
+        ApiWorker.getInstance().requestInvolve(0, new InvolveListener(), null);
 
         return root;
     }
 
-    private void generateTestData(List<RelatedMeItem> list) {
-        for (int i = 0; i < 100; i++) {
-            list.add(new RelatedMeItem("title " + i, i));
+    class InvolveListener implements Response.Listener<JSONObject> {
+        @Override
+        public void onResponse(JSONObject jsonObject) {
+            try {
+                if (jsonObject.getInt("code") != 0) {
+                    return;
+                }
+
+                JSONArray cards = jsonObject.getJSONObject("result").getJSONArray("cards");
+                int count = cards.length();
+                for (int i = 0; i < count; i++) {
+                    JSONObject topic = cards.getJSONObject(i).getJSONObject("topic");
+                    RelatedMeItem item = new RelatedMeItem(topic.getString("topic_id"),
+                            topic.getString("content"), topic.getInt("video_cnt"));
+                    mAdapter.mData.add(item);
+                }
+                mAdapter.notifyDataSetChanged();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     class RelatedMeItem {
+        String topicId;
         String title;
         int videoCount;
 
-        RelatedMeItem(String title, int videoCount) {
+        RelatedMeItem(String topicId, String title, int videoCount) {
+            this.topicId = topicId;
             this.title = title;
             this.videoCount = videoCount;
         }
