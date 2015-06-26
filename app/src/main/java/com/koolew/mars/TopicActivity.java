@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -14,24 +15,22 @@ import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.danmaku.DanmakuItemInfo;
 import com.koolew.mars.danmaku.DanmakuShowManager;
 import com.koolew.mars.utils.VideoLoader;
-import com.koolew.mars.webapi.UrlHelper;
+import com.koolew.mars.view.LoadMoreFooter;
 import com.koolew.mars.view.TitleBarView;
+import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Map;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
@@ -39,14 +38,19 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 public class TopicActivity extends Activity implements AbsListView.OnScrollListener,
         IMediaPlayer.OnPreparedListener, IMediaPlayer.OnCompletionListener, View.OnClickListener,
-        TitleBarView.OnLayoutClickListener{
+        TitleBarView.OnLayoutClickListener, LoadMoreFooter.OnLoadListener,
+        SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "koolew-TopicActivity";
 
     public static final String KEY_TOPIC_ID = "topic_id";
 
+    private String mTopicId;
+
     private TitleBarView mTitleBar;
     private ListView mListView;
+    private SwipeRefreshLayout mRefreshLayout;
+    private LoadMoreFooter mListFooter;
     private View mCaptureView;
     private View mSendInvitationView;
 
@@ -64,6 +68,9 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
     private DanmakuShowManager mDanmakuManager;
     private DanmakuThread mDanmakuThread;
 
+    private JsonObjectRequest mRefreshRequest;
+    private JsonObjectRequest mLoadMoreRequest;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +80,14 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
         mTitleBar = (TitleBarView) findViewById(R.id.title_bar);
         mTitleBar.setOnLayoutClickListener(this);
         mListView = (ListView) findViewById(R.id.list_view);
-        mListView.setOnScrollListener(this);
+        //mListView.setOnScrollListener(this);
+        mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
+        mRefreshLayout.setOnRefreshListener(this);
+        mListFooter = (LoadMoreFooter) getLayoutInflater().inflate(R.layout.load_more_footer, null);
+        mListView.addFooterView(mListFooter);
+        mListFooter.setup(mListView, this);
+        mListFooter.setOnLoadListener(this);
+
         mCaptureView = findViewById(R.id.capture);
         mCaptureView.setOnClickListener(this);
         mSendInvitationView = findViewById(R.id.send_invitation);
@@ -92,8 +106,15 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
         mIjkPlayer.setOnCompletionListener(TopicActivity.this);
 
         Intent intent = getIntent();
-        String topicId = intent.getStringExtra(KEY_TOPIC_ID);
-        getTopicVideo(topicId);
+        mTopicId = intent.getStringExtra(KEY_TOPIC_ID);
+
+        mRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mRefreshLayout.setRefreshing(true);
+                onRefresh();
+            }
+        });
     }
 
     @Override
@@ -116,31 +137,51 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
         }
     }
 
-    private void getTopicVideo(String topicId) {
-        String url = UrlHelper.getTopicVideoFriendUrl(topicId);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, "response: " + response);
-                        mAdapter = new VideoCardAdapter(TopicActivity.this);
-                        mAdapter.setData(response);
-                        mListView.setAdapter(mAdapter);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                    }
-                }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() {
-                return UrlHelper.getStandardPostHeaders();
-            }
-        };
-        mRequestQueue.add(jsonObjectRequest);
+    private void doRefresh() {
+        if (mLoadMoreRequest != null) {
+            mLoadMoreRequest.cancel();
+        }
+        mRefreshRequest = ApiWorker.getInstance().requestTopicVideo(mTopicId, mRefreshListener, null);
     }
+
+    private void doLoadMore() {
+        if (mRefreshRequest != null) {
+            mRefreshRequest.cancel();
+        }
+        mLoadMoreRequest = ApiWorker.getInstance().requestTopicVideo(
+                mTopicId, mAdapter.getOldestVideoTime(), mLoadMoreListener, null);
+    }
+
+    private Response.Listener<JSONObject> mRefreshListener = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            if (!isFirstPlay) {
+                mCurrentVideoLayout.removeView(mPlaySurface);
+            }
+
+            mRefreshRequest = null;
+            mAdapter = new VideoCardAdapter(TopicActivity.this);
+            mAdapter.setData(response);
+            isFirstPlay = true;
+            mListView.setAdapter(mAdapter);
+
+            mRefreshLayout.setRefreshing(false);
+        }
+    };
+
+    private Response.Listener<JSONObject> mLoadMoreListener = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            mLoadMoreRequest = null;
+            int loadedCount = mAdapter.addData(response);
+            mAdapter.notifyDataSetChanged();
+
+            mListFooter.loadComplete();
+            if (loadedCount == 0) {
+                mListFooter.haveNoMore();
+            }
+        }
+    };
 
 
     @Override
@@ -211,7 +252,7 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
         int count = mListView.getChildCount();
         for (int i = 0; i < count; i++) {
             View child = mListView.getChildAt(i);
-            if (child.getVisibility() != View.VISIBLE) {
+            if (child.getVisibility() != View.VISIBLE || child == mListFooter) {
                 continue;
             }
 
@@ -260,6 +301,18 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
     @Override
     public void onRightLayoutClick() {}
 
+    // Here to load more
+    @Override
+    public void onLoad() {
+        doLoadMore();
+    }
+
+    // Here to refresh
+    @Override
+    public void onRefresh() {
+        doRefresh();
+    }
+
 
     class TopicVideoLoader extends VideoLoader {
         public TopicVideoLoader(Context context) {
@@ -288,7 +341,12 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
                             e.printStackTrace();
                         }
                         mIjkPlayer.prepareAsync();
-                        mCurrentVideoLayout.addView(mPlaySurface, 0);
+                        try {
+                            mCurrentVideoLayout.addView(mPlaySurface, 0);
+                        }
+                        catch (IllegalStateException ise) {
+                            Log.e(TAG, "A fatal error: " + ise);
+                        }
                     }
                 }
             }.execute();
@@ -323,7 +381,6 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Log.d("stdzhu", "current position: " + mIjkPlayer.getCurrentPosition());
                     if (mIjkPlayer.getCurrentPosition() > 0) {
                         runOnUiThread(new Runnable() {
                             @Override

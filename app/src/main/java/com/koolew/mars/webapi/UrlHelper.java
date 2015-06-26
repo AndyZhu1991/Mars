@@ -37,7 +37,12 @@ public class UrlHelper {
 
     // v1 api
     public static String getTopicVideoFriendUrl(String topicId) {
-        return TOPIC_VIDEO_FRIEND_URL + "?topic_id=" + topicId;
+        return new StringBuilder().append(TOPIC_VIDEO_FRIEND_URL)
+                .append("?topic_id=").append(topicId).toString();
+    }
+    public static String getTopicVideoFriendUrl(String topicId, long beforeTime) {
+        return new StringBuilder().append(getTopicVideoFriendUrl(topicId))
+                .append("&time=").append(beforeTime).toString();
     }
 
     public static String getRequestPasswordUrl(String phoneNum) {

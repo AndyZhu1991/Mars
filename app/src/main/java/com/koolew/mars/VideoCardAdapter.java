@@ -49,6 +49,11 @@ public class VideoCardAdapter extends BaseAdapter {
     }
 
     public void setData(JSONObject jsonObject) {
+        mData.clear();
+        addData(jsonObject);
+    }
+
+    public int addData(JSONObject jsonObject) {
 
         int code;
         try {
@@ -63,16 +68,27 @@ public class VideoCardAdapter extends BaseAdapter {
                     String.format("The \"code\" field is %d, expected: 0.", code));
         }
 
+        int length;
         try {
             JSONObject result = jsonObject.getJSONObject("result");
             JSONArray videos = result.getJSONArray("videos");
-            int length = videos.length();
+            length = videos.length();
             for (int i = 0; i < length; i++) {
                 mData.add((JSONObject) videos.get(i));
             }
         } catch (JSONException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("JSONObject error:\n" + jsonObject);
+        }
+
+        return length;
+    }
+
+    public long getOldestVideoTime() {
+        try {
+            return mData.get(mData.size() - 1).getLong("create_time");
+        } catch (JSONException e) {
+            throw new RuntimeException("Can not get create_time!");
         }
     }
 

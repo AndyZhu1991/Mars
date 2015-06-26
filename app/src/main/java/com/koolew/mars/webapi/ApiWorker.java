@@ -58,6 +58,46 @@ public class ApiWorker {
         mRequestQueue.add(jsonObjectRequest);
     }
 
+    public JsonObjectRequest requestTopicVideo(String topicId,
+                                               Response.Listener<JSONObject> listener,
+                                               Response.ErrorListener errorListener) {
+        if (errorListener == null) {
+            errorListener = mErrorListener;
+        }
+
+        String url = UrlHelper.getTopicVideoFriendUrl(topicId);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
+                listener, errorListener) {
+            @Override
+            public Map<String, String> getHeaders() {
+                return UrlHelper.getStandardPostHeaders();
+            }
+        };
+        mRequestQueue.add(jsonObjectRequest);
+
+        return jsonObjectRequest;
+    }
+
+    public JsonObjectRequest requestTopicVideo(String topicId, long beforeTime,
+                                               Response.Listener<JSONObject> listener,
+                                               Response.ErrorListener errorListener) {
+        if (errorListener == null) {
+            errorListener = mErrorListener;
+        }
+
+        String url = UrlHelper.getTopicVideoFriendUrl(topicId, beforeTime);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
+                listener, errorListener) {
+            @Override
+            public Map<String, String> getHeaders() {
+                return UrlHelper.getStandardPostHeaders();
+            }
+        };
+        mRequestQueue.add(jsonObjectRequest);
+
+        return jsonObjectRequest;
+    }
+
     class StdErrorListener implements Response.ErrorListener {
         @Override
         public void onErrorResponse(VolleyError volleyError) {
