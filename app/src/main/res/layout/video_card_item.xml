@@ -95,4 +95,12 @@
             android:layout_height="12dp"
             android:src="@mipmap/ic_comment"/>
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_below="@id/video_date"
+        android:background="@mipmap/horizontal_dash_line"/>
 </RelativeLayout>
