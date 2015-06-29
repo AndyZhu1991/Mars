@@ -15,13 +15,16 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_closed">Close</string>
     <string name="there_is_no_more">下面已经什么都没有啦</string>
+    <string name="remove">移除</string>
+    <string name="add">添加</string>
+    <string name="accept">接受</string>
 
     <!-- For MainActivity -->
     <string name="title_koolew">可见</string>
     <string name="title_friend">好友</string>
     <string name="title_settings">设置</string>
     <string name="title_add">添加话题卡</string>
-    <string name="got">获得</string>
+    <string name="got_koo">获得Koo</string>
     <string name="coin_count">金币数量</string>
 
     <!-- For FirstLoginActivity -->
@@ -82,6 +85,13 @@
     <string name="time_text">%.1f秒</string>
     <string name="only_friend_visible">仅好友可见</string>
     <string name="public_visible">公开</string>
+
+    <!-- For friend meet item -->
+    <string name="common_topic">共同话题</string>
+    <string name="common_friend">共同好友（%d人）</string>
+    <string name="padding_friend_label">待接受好友申请</string>
+    <string name="recommend_friend_label">可能认识</string>
+    <string name="contact_friend">通讯录好友</string>
 
     <!-- Divider -->
     <string name="title_activity_video_shoot">VideoShootActivity</string>

@@ -35,4 +35,9 @@
 
     <!-- For VideosProgressView -->
     <color name="progressing_color">#67D08E</color>
+
+    <!-- For friend meet item -->
+    <color name="friend_item_common_text_color">#ADBBC7</color>
+    <color name="friend_item_big_num_color">@color/koolew_gray</color>
+    <color name="avatar_gray_border">#D8D8D8</color>
 </resources>

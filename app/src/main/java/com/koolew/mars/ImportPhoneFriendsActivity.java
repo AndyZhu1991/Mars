@@ -264,7 +264,7 @@ public class ImportPhoneFriendsActivity extends Activity {
                 }
             }
 
-            String url = UrlHelper.FRIEND_RECOMMEND_URL;
+            String url = UrlHelper.CONTACT_FRIEND_RECOMMEND_URL;
             RequestFuture<JSONObject> future = RequestFuture.newFuture();
             JSONObject requestJson = new JSONObject();
             try {

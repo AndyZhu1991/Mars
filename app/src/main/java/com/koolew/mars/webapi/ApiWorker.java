@@ -98,6 +98,30 @@ public class ApiWorker {
         return jsonObjectRequest;
     }
 
+    public JsonObjectRequest requestRecommendFriend(Response.Listener<JSONObject> listener,
+                                                    Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.FRIEND_RECOMMEND_URL, listener, errorListener);
+    }
+
+    private JsonObjectRequest standardGetRequest(String url,
+                                                 Response.Listener<JSONObject> listener,
+                                                 Response.ErrorListener errorListener) {
+        if (errorListener == null) {
+            errorListener = mErrorListener;
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
+                listener, errorListener) {
+            @Override
+            public Map<String, String> getHeaders() {
+                return UrlHelper.getStandardPostHeaders();
+            }
+        };
+        mRequestQueue.add(jsonObjectRequest);
+
+        return jsonObjectRequest;
+    }
+
     class StdErrorListener implements Response.ErrorListener {
         @Override
         public void onErrorResponse(VolleyError volleyError) {

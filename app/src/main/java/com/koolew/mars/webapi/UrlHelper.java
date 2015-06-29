@@ -21,7 +21,7 @@ public class UrlHelper {
     private static final String TOPIC_VIDEO_FRIEND_URL = V1_URL + "feeds";
     public static final String SNS_LOGIN_URL = V1_URL + "user/login/sns";
     public static final String ADD_FRIEND_URL = V1_URL + "friend/apply";
-    public static final String FRIEND_RECOMMEND_URL = V1_URL + "contact/address";
+    public static final String CONTACT_FRIEND_RECOMMEND_URL = V1_URL + "contact/address";
     public static final String USER_INFO_URL = V1_URL + "user/info";
     private static final String REQUEST_PASSWORD_URL = V1_URL + "user/code";
     public static final String LOGIN_URL = V1_URL + "user/login";
@@ -30,6 +30,7 @@ public class UrlHelper {
 
     // v2 api
     public static final String INVOLVE_URL = V2_URL + "feeds/involve";
+    public static final String FRIEND_RECOMMEND_URL = V2_URL + "friend/recommend";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;

@@ -12,6 +12,10 @@ import java.io.File;
  */
 public class Utils {
 
+    public static float getScreenWidthDp(Context context) {
+        return pixelsToDp(context, getScreenWidthPixel(context));
+    }
+
     public static int getScreenWidthPixel(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();

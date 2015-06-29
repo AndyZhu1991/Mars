@@ -133,7 +133,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="15dp"
-                                android:text="@string/got"
+                                android:text="@string/got_koo"
                                 android:textSize="12sp"
                                 android:textColor="@android:color/white"/>
                         </LinearLayout>
