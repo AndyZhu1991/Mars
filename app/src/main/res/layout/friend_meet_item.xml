@@ -6,23 +6,27 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="328dp"
-        android:layout_margin="5dp">
+        android:layout_height="339dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
 
         <TextView
             android:id="@+id/explain_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="14dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="19dp"
             android:text="@string/padding_friend_label"
             android:textColor="@color/koolew_gray"
             android:textSize="14sp" />
 
-        <FrameLayout
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp">
+            android:layout_marginTop="40dp"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="5dp"
+            app:cardUseCompatPadding="true">
 
             <LinearLayout
                 android:id="@+id/info_layout"
@@ -228,14 +232,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/friend_meet_padding_green_border"/>
-        </FrameLayout>
+        </android.support.v7.widget.CardView>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/avatar"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
             app:border_color="@color/koolew_light_green"
-            app:border_width="3dp" />
+            app:border_width="3dp"
+            android:translationZ="5dp"/>
     </RelativeLayout>
 </RelativeLayout>
