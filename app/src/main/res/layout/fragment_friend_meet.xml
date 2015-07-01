@@ -11,7 +11,14 @@
             android:id="@+id/list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingTop="@dimen/shadow_height"
+            android:clipToPadding="false"
             android:divider="@null"/>
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/shadow_height"
+        android:background="@mipmap/shadow"/>
 
 </FrameLayout>

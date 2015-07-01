@@ -9,6 +9,7 @@
     <dimen name="friend_select_item_height">73dp</dimen>
     <dimen name="avatar_border_width">2dp</dimen>
     <dimen name="toolbar_title_text_size">20sp</dimen>
+    <dimen name="shadow_height">8dp</dimen>
 
     <!-- For FirstLoginActivity -->
     <dimen name="first_login_logo_margin_top">56dp</dimen>

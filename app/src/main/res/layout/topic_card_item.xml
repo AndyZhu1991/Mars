@@ -10,8 +10,9 @@
     android:layout_height="200dp"
     android:minHeight="200dp"
     android:layout_marginLeft="@dimen/topic_invitation_card_margin"
-    android:layout_marginTop="@dimen/topic_invitation_card_margin"
+    android:layout_marginTop="2.5dp"
     android:layout_marginRight="@dimen/topic_invitation_card_margin"
+    android:layout_marginBottom="2.5dp"
     android:padding="@dimen/topic_invitation_card_padding"
     android:background="@drawable/topic_card_out_shape">
 
