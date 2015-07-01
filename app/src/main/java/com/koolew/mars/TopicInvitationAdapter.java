@@ -45,13 +45,39 @@ public class TopicInvitationAdapter extends BaseAdapter {
 
     private Context mContext;
     private LayoutInflater mInflater;
-    public List<JSONObject> mData;
+    private List<JSONObject> mData;
 
     TopicInvitationAdapter(Context context) {
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
 
         mData = new ArrayList<JSONObject>();
+    }
+
+    public void setData(JSONArray cards) {
+        mData.clear();
+        addData(cards);
+    }
+
+    public int addData(JSONArray cards) {
+        int length = cards.length();
+        try {
+            for (int i = 0; i < length; i++) {
+                mData.add(cards.getJSONObject(i));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return length;
+    }
+
+    public long getOldestCardTime() {
+        try {
+            return mData.get(mData.size() - 1).getJSONObject("topic").getLong("update_time");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new RuntimeException(TAG + ": Can not get oldest card time !");
+        }
     }
 
     @Override

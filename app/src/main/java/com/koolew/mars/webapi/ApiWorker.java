@@ -133,6 +133,17 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.CURRENT_FRIEND_URL, listener, errorListener);
     }
 
+    public JsonObjectRequest requestFeedsTopic(Response.Listener<JSONObject> listener,
+                                               Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.FEEDS_TOPIC_URL, listener, errorListener);
+    }
+
+    public JsonObjectRequest requestFeedsTopic(long before,
+                                               Response.Listener<JSONObject> listener,
+                                               Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getFeedsTopicUrl(before), listener, errorListener);
+    }
+
 
     private JsonObjectRequest standardGetRequest(String url,
                                                  Response.Listener<JSONObject> listener,

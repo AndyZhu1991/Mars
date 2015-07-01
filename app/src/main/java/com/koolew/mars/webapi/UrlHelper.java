@@ -51,6 +51,10 @@ public class UrlHelper {
         return REQUEST_PASSWORD_URL + "?phone=" + phoneNum;
     }
 
+    public static String getFeedsTopicUrl(long before) {
+        return new StringBuilder(FEEDS_TOPIC_URL).append("?before=").append(before).toString();
+    }
+
 
     // v2 api
     public static String getInvolveUrl(int page) {
