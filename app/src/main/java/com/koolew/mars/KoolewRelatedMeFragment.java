@@ -1,5 +1,6 @@
 package com.koolew.mars;
 
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -25,7 +28,8 @@ import java.util.List;
 
 
 public class KoolewRelatedMeFragment extends Fragment
-        implements SwipeRefreshLayout.OnRefreshListener, LoadMoreFooter.OnLoadListener {
+        implements SwipeRefreshLayout.OnRefreshListener, LoadMoreFooter.OnLoadListener,
+                   AbsListView.OnItemClickListener {
 
     private SwipeRefreshLayout mRefreshLayout;
     private ListView mListView;
@@ -61,6 +65,7 @@ public class KoolewRelatedMeFragment extends Fragment
         View root = inflater.inflate(R.layout.fragment_koolew_related_me, container, false);
 
         mListView = (ListView) root.findViewById(R.id.list_view);
+        mListView.setOnItemClickListener(this);
 
         mListFooter = (LoadMoreFooter) getActivity().getLayoutInflater()
                 .inflate(R.layout.load_more_footer, null);
@@ -102,6 +107,14 @@ public class KoolewRelatedMeFragment extends Fragment
     private void doRefresh() {
         mCurrentPage = 0;
         ApiWorker.getInstance().requestInvolve(mCurrentPage, mRefreshListener, null);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        String topicId = ((RelatedMeItem) mAdapter.getItem(position)).topicId;
+        Intent intent = new Intent(getActivity(), TopicActivity.class);
+        intent.putExtra(TopicActivity.KEY_TOPIC_ID, topicId);
+        startActivity(intent);
     }
 
     private Response.Listener<JSONObject> mRefreshListener = new Response.Listener<JSONObject>() {
