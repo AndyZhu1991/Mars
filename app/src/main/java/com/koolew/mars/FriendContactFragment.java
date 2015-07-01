@@ -108,6 +108,9 @@ public class FriendContactFragment extends Fragment implements SwipeRefreshLayou
                 e.printStackTrace();
             }
 
+            if (getActivity() == null) {
+                return;
+            }
             mAdapter = new FriendContactAdapter(getActivity(), mContacts);
             try {
                 JSONArray relations = jsonObject.getJSONObject("result").getJSONArray("relations");
