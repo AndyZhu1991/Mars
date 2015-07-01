@@ -166,6 +166,7 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
             mListView.setAdapter(mAdapter);
 
             mRefreshLayout.setRefreshing(false);
+            mListFooter.haveMore(true);
         }
     };
 
