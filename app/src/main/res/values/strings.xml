@@ -18,6 +18,8 @@
     <string name="remove">移除</string>
     <string name="add">添加</string>
     <string name="accept">接受</string>
+    <string name="comma">，</string>
+    <string name="invite">邀请</string>
 
     <!-- For MainActivity -->
     <string name="title_koolew">可见</string>
@@ -92,6 +94,12 @@
     <string name="padding_friend_label">待接受好友申请</string>
     <string name="recommend_friend_label">可能认识</string>
     <string name="contact_friend">通讯录好友</string>
+
+    <!-- For friend simple item -->
+    <string name="phone_contact_name">手机通讯录：%s</string>
+    <string name="request_for_friend">请求加你为好友</string>
+    <string name="waiting_for_accept">等待通过</string>
+    <string name="sent_invitation">已发送好友申请</string>
 
     <!-- Divider -->
     <string name="title_activity_video_shoot">VideoShootActivity</string>
