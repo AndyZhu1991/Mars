@@ -128,6 +128,11 @@ public class ApiWorker {
                 requestJson, listener, errorListener);
     }
 
+    public JsonObjectRequest requestCurrentFriend(Response.Listener<JSONObject> listener,
+                                                  Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.CURRENT_FRIEND_URL, listener, errorListener);
+    }
+
 
     private JsonObjectRequest standardGetRequest(String url,
                                                  Response.Listener<JSONObject> listener,
