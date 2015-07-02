@@ -43,4 +43,8 @@
 
     <!-- For friend simple item -->
     <color name="friend_simple_item_nickname_color">#3E5467</color>
+
+    <!-- For settings -->
+    <color name="settings_item_text_color">#9B9B9B</color>
+    <color name="setting_background">#F5F5F5</color>
 </resources>

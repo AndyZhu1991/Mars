@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/settings_item_height"
+    android:minHeight="@dimen/settings_item_height"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/setting_item_left_margin"
+        android:layout_centerVertical="true"
+        android:textSize="14sp"
+        android:textColor="@color/settings_item_text_color"/>
+
+    <Switch
+        android:id="@+id/switcher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/setting_item_right_margin"
+        android:layout_centerVertical="true"/>
+</RelativeLayout>

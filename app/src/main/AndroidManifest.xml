@@ -85,7 +85,11 @@
         <activity
             android:name=".TopicActivity"
             android:label="@string/title_activity_topic"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".PushSettingsActivity"
+            android:label="@string/title_activity_push_settings" >
         </activity>
     </application>
 

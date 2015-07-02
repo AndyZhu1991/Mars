@@ -1,5 +1,6 @@
 package com.koolew.mars.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
@@ -73,6 +74,9 @@ public class TitleBarView extends FrameLayout implements View.OnClickListener {
             case R.id.back_layout:
                 if (mLayoutClickListener != null) {
                     mLayoutClickListener.onBackLayoutClick();
+                }
+                else {
+                    ((Activity) getContext()).onBackPressed();
                 }
                 break;
             case R.id.right_layout:

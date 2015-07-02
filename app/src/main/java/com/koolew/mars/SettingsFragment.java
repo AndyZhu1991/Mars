@@ -1,11 +1,19 @@
 package com.koolew.mars;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+
+import com.koolew.mars.preference.PreferenceAdapter;
+import com.koolew.mars.preference.PreferenceGroupTitle;
+import com.koolew.mars.preference.PreferenceHelper;
+import com.koolew.mars.preference.SwitchPreference;
+import com.koolew.mars.preference.TreePreference;
 
 
 /**
@@ -17,6 +25,9 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class SettingsFragment extends MainBaseFragment {
+
+    private ListView mListView;
+    private PreferenceAdapter mAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -40,13 +51,23 @@ public class SettingsFragment extends MainBaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mToolbarInterface.setToolbarTitle(R.string.title_settings);
+        mToolbarInterface.setToolbarColor(getResources().getColor(R.color.koolew_deep_blue));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        View root = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        mListView = (ListView) root.findViewById(R.id.list_view);
+        if (mAdapter == null) {
+            setupAdapter();
+        }
+        mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(mAdapter);
+
+        return root;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -56,4 +77,21 @@ public class SettingsFragment extends MainBaseFragment {
         }
     }
 
+    private void setupAdapter() {
+        Context context = getActivity();
+        mAdapter = new PreferenceAdapter(context);
+
+        mAdapter.add(new PreferenceGroupTitle(context, R.string.intelligent));
+        mAdapter.add(new TreePreference(context, R.string.push_settings, PushSettingsActivity.class));
+        mAdapter.add(new SwitchPreference(context, R.string.intelligent_save_data_mode,
+                PreferenceHelper.KEY_INTEL_SAVE_DATA, PreferenceHelper.DEFAULT_INTEL_SAVE_DATA));
+
+        mAdapter.add(new PreferenceGroupTitle(context, R.string.service));
+        mAdapter.add(new TreePreference(context, R.string.official_wechat, null));
+        mAdapter.add(new TreePreference(context, R.string.contact_koolew_service, null));
+
+        mAdapter.add(new PreferenceGroupTitle(context, R.string.about));
+        mAdapter.add(new TreePreference(context, R.string.want_talk, null));
+        mAdapter.add(new TreePreference(context, R.string.privacy_policy, null));
+    }
 }
