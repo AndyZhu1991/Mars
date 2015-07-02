@@ -135,7 +135,12 @@ public class FriendContactFragment extends Fragment implements SwipeRefreshLayou
         @Override
         protected void onPostExecute(List<ContactUtil.SimpleContactInfo> simpleContactInfos) {
             mContacts = simpleContactInfos;
-            requestContactFriend();
+            if (mContacts == null || mContacts.size() == 0) {
+                mRefreshLayout.setRefreshing(false);
+            }
+            else {
+                requestContactFriend();
+            }
         }
     }
 }
