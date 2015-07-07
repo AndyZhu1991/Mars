@@ -25,7 +25,8 @@ public class TitleBarView extends FrameLayout implements View.OnClickListener {
     private ImageView mRightImage;
     private TextView mRightText;
 
-    private OnLayoutClickListener mLayoutClickListener;
+    private OnBackClickListener mBackClickListener;
+    private OnRightLayoutClickListener mRightLayoutClickListener;
 
     public TitleBarView(Context context) {
         this(context, null);
@@ -64,31 +65,38 @@ public class TitleBarView extends FrameLayout implements View.OnClickListener {
         mRightLayout.setOnClickListener(this);
     }
 
-    public void setOnLayoutClickListener(OnLayoutClickListener listener) {
-        mLayoutClickListener = listener;
+    public void setOnBackClickListener(OnBackClickListener listener) {
+        mBackClickListener = listener;
+    }
+
+    public void setOnRightLayoutClickListener(OnRightLayoutClickListener listener) {
+        mRightLayoutClickListener = listener;
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back_layout:
-                if (mLayoutClickListener != null) {
-                    mLayoutClickListener.onBackLayoutClick();
+                if (mBackClickListener != null) {
+                    mBackClickListener.onBackClick();
                 }
                 else {
                     ((Activity) getContext()).onBackPressed();
                 }
                 break;
             case R.id.right_layout:
-                if (mLayoutClickListener != null) {
-                    mLayoutClickListener.onRightLayoutClick();
+                if (mRightLayoutClickListener != null) {
+                    mRightLayoutClickListener.onRightLayoutClick();
                 }
                 break;
         }
     }
 
-    public interface OnLayoutClickListener {
-        void onBackLayoutClick();
+    public interface OnBackClickListener {
+        void onBackClick();
+    }
+
+    public interface OnRightLayoutClickListener {
         void onRightLayoutClick();
     }
 }

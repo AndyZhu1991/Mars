@@ -117,7 +117,7 @@ public class InputPasswordActivity extends Activity implements View.OnClickListe
         // Just 4 debug
         //if (true) return;
 
-        String url = UrlHelper.getRequestPasswordUrl(MyAccountInfo.getPhoneNumber());
+        String url = UrlHelper.getRequestPasswordMessageUrl(MyAccountInfo.getPhoneNumber());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Method.GET, url,
                 new Response.Listener<JSONObject>() {
                     @Override

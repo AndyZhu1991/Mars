@@ -47,8 +47,13 @@ public class UrlHelper {
                 .append("&time=").append(beforeTime).toString();
     }
 
-    public static String getRequestPasswordUrl(String phoneNum) {
-        return REQUEST_PASSWORD_URL + "?phone=" + phoneNum;
+    public static String getRequestPasswordMessageUrl(String phoneNum) {
+        return new StringBuilder(REQUEST_PASSWORD_URL).append("?phone=").append(phoneNum).toString();
+    }
+
+    public static String getRequestPasswordCallUrl(String phoneNum) {
+        return new StringBuilder(REQUEST_PASSWORD_URL)
+                .append("?phone=").append(phoneNum).append("&type=1").toString();
     }
 
     public static String getFeedsTopicUrl(long before) {

@@ -42,9 +42,11 @@ import java.util.Map;
 
 public class MainActivity extends FragmentActivity
         implements MainBaseFragment.OnFragmentInteractionListener,
-                   MainBaseFragment.ToolbarOperateInterface{
+                   MainBaseFragment.ToolbarOperateInterface, View.OnClickListener{
 
     private static final String TAG = "koolew-MainActivity";
+
+    public static final int REQUEST_CODE_CHANGE_INFO = 1;
 
     private DrawerLayout mDrawerLayout;
     private DrawerToggleView mToggleView;
@@ -81,6 +83,7 @@ public class MainActivity extends FragmentActivity
         mInfoBackground = (ImageView) findViewById(R.id.info_background);
         mDrawerList = (ListView) findViewById(R.id.drawer_list);
         mAvatar = (ImageView) findViewById(R.id.avatar);
+        mAvatar.setOnClickListener(this);
         mNickname = (TextView) findViewById(R.id.nickname);
         mPhoneNumber = (PhoneNumberView) findViewById(R.id.phone_number);
         mCountKoo = (TextView) findViewById(R.id.count_koo);
@@ -211,6 +214,30 @@ public class MainActivity extends FragmentActivity
     @Override
     public void setToolbarTitle(int titleResId) {
         mTitleView.setText(titleResId);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.avatar:
+                Intent intent = new Intent(MainActivity.this, ChangeInfoActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_CHANGE_INFO);
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_CHANGE_INFO:
+                if (resultCode == RESULT_OK) {
+                    mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
+                    mNickname.setText(MyAccountInfo.getNickname());
+                    ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(), mAvatar);
+                    new DisplayBlurImage(mInfoBackground, MyAccountInfo.getAvatar()).execute();
+                }
+                break;
+        }
     }
 
     class DrawerListAdapter extends BaseAdapter {

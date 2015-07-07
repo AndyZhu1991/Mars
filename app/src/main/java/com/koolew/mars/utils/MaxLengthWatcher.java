@@ -4,6 +4,9 @@ import android.text.Editable;
 import android.text.Selection;
 import android.text.TextWatcher;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.koolew.mars.R;
 
 /**
  * Created by jinchangzhu on 5/27/15.
@@ -59,5 +62,9 @@ public class MaxLengthWatcher implements TextWatcher {
     }
 
     // Override it if you want do something when text over inputted
-    public void onTextOverInput() {}
+    public void onTextOverInput() {
+        Toast.makeText(editText.getContext(),
+                editText.getContext().getString(R.string.nickname_over_input_message,
+                maxLen), Toast.LENGTH_SHORT).show();
+    }
 }

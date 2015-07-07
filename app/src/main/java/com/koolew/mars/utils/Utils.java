@@ -4,8 +4,12 @@ import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by jinchangzhu on 6/4/15.
@@ -63,5 +67,33 @@ public class Utils {
         }
 
         return file.delete();
+    }
+
+    public static void showSoftKeyInput(final EditText editText, int delay) {
+        editText.requestFocus();
+        new Timer().schedule(new TimerTask() {
+            public void run() {
+                InputMethodManager inputManager = (InputMethodManager) editText.getContext()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.showSoftInput(editText, 0);
+            }
+        }, delay);
+    }
+
+    public static boolean isChinaPhoneNumber(String num) {
+
+        if (num.length() != 11) {
+            return false;
+        }
+        if (!num.startsWith("1")) {
+            return false;
+        }
+        for (int i = 0; i < 11; i++) {
+            if (!Character.isDigit(num.charAt(i))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -91,6 +91,18 @@
             android:name=".PushSettingsActivity"
             android:label="@string/title_activity_push_settings" >
         </activity>
+        <activity
+            android:name=".ChangeInfoActivity"
+            android:label="@string/title_activity_change_info" >
+        </activity>
+        <activity
+            android:name=".ChangeNicknameActivity"
+            android:label="@string/title_activity_change_nickname" >
+        </activity>
+        <activity
+            android:name=".ChangePhoneNumberActivity"
+            android:label="@string/title_activity_modify_phone_number" >
+        </activity>
     </application>
 
 </manifest>

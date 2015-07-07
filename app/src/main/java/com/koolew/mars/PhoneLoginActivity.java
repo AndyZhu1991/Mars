@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.utils.Utils;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -45,29 +46,12 @@ public class PhoneLoginActivity extends Activity {
 
     public void onClick(View v) {
 
-        if (!isChinaPhoneNumber(mPhoneNumberEdit.getText().toString())) {
+        if (!Utils.isChinaPhoneNumber(mPhoneNumberEdit.getText().toString())) {
             Toast.makeText(this, R.string.please_input_correct_phone_num, Toast.LENGTH_SHORT).show();
             return;
         }
 
         MyAccountInfo.setPhoneNumber(mPhoneNumberEdit.getText().toString());
         startActivity(new Intent(this, InputPasswordActivity.class));
-    }
-
-    private boolean isChinaPhoneNumber(String num) {
-
-        if (num.length() != 11) {
-            return false;
-        }
-        if (!num.startsWith("1")) {
-            return false;
-        }
-        for (int i = 0; i < 11; i++) {
-            if (!Character.isDigit(num.charAt(i))) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

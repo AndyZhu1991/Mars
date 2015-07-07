@@ -38,8 +38,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 public class TopicActivity extends Activity implements AbsListView.OnScrollListener,
         IMediaPlayer.OnPreparedListener, IMediaPlayer.OnCompletionListener, View.OnClickListener,
-        TitleBarView.OnLayoutClickListener, LoadMoreFooter.OnLoadListener,
-        SwipeRefreshLayout.OnRefreshListener {
+        LoadMoreFooter.OnLoadListener, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "koolew-TopicActivity";
 
@@ -47,7 +46,6 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
 
     private String mTopicId;
 
-    private TitleBarView mTitleBar;
     private ListView mListView;
     private SwipeRefreshLayout mRefreshLayout;
     private LoadMoreFooter mListFooter;
@@ -77,8 +75,6 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic);
 
-        mTitleBar = (TitleBarView) findViewById(R.id.title_bar);
-        mTitleBar.setOnLayoutClickListener(this);
         mListView = (ListView) findViewById(R.id.list_view);
         //mListView.setOnScrollListener(this);
         mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
@@ -294,13 +290,6 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
         }
     }
 
-    // TitleBarView.OnLayoutClickListener
-    @Override
-    public void onBackLayoutClick() {
-        onBackPressed();
-    }
-    @Override
-    public void onRightLayoutClick() {}
 
     // Here to load more
     @Override

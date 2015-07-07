@@ -144,6 +144,45 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.getFeedsTopicUrl(before), listener, errorListener);
     }
 
+    public JsonObjectRequest updateNickname(String newNickname,
+                                            Response.Listener<JSONObject> listener,
+                                            Response.ErrorListener errorListener) {
+        JSONObject requestJson = new JSONObject();
+        try {
+            requestJson.put("nickname", newNickname);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.USER_INFO_URL, requestJson, listener, errorListener);
+    }
+
+    public JsonObjectRequest updatePhoneNumber(String newPhoneNumber, String code,
+                                               Response.Listener<JSONObject> listener,
+                                               Response.ErrorListener errorListener) {
+        JSONObject requestJson = new JSONObject();
+        try {
+            requestJson.put("phone", newPhoneNumber);
+            requestJson.put("code", code);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.USER_INFO_URL, requestJson, listener, errorListener);
+    }
+
+    public JsonObjectRequest requestPasswordMessage(String phoneNumber,
+                                                    Response.Listener<JSONObject> listener,
+                                                    Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getRequestPasswordMessageUrl(phoneNumber),
+                listener, errorListener);
+    }
+
+    public JsonObjectRequest requestPasswordCall(String phoneNumber,
+                                                 Response.Listener<JSONObject> listener,
+                                                 Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getRequestPasswordCallUrl(phoneNumber),
+                listener, errorListener);
+    }
+
 
     private JsonObjectRequest standardGetRequest(String url,
                                                  Response.Listener<JSONObject> listener,

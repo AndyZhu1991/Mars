@@ -1,0 +1,59 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:TitleBarView="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.koolew.mars.ChangePhoneNumberActivity">
+
+    <com.koolew.mars.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/koolew_deep_blue"
+        TitleBarView:title_text="@string/modify_phone_number"
+        TitleBarView:right_text="@string/save"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/original_number"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:text="@string/original_number_is"
+                android:textSize="18sp"
+                android:textColor="#ADBBC7"
+                android:gravity="center"/>
+
+            <include android:id="@+id/edit_number"
+                layout="@layout/change_info_edit_text"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp"/>
+
+            <include android:id="@+id/edit_password"
+                layout="@layout/change_info_edit_text"/>
+
+            <fragment class="com.koolew.mars.RequestPasswordFragment"
+                android:id="@+id/request_password_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shadow_height"
+            android:background="@mipmap/shadow"/>
+    </FrameLayout>
+
+</LinearLayout>

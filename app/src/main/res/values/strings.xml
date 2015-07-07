@@ -20,6 +20,8 @@
     <string name="accept">接受</string>
     <string name="comma">，</string>
     <string name="invite">邀请</string>
+    <string name="save">保存</string>
+    <string name="failed">失败了</string>
 
     <!-- For MainActivity -->
     <string name="title_koolew">可见</string>
@@ -118,6 +120,21 @@
     <string name="danmakued_by_friend">好友弹幕了我</string>
     <string name="i_got_koo">我获得了Koo</string>
 
+    <!-- For ChangeInfoActivity & EditNicknameActivity & ChangePhoneNumberActivity -->
+    <string name="login_account">登录账号</string>
+    <string name="edit_nickname">编辑昵称</string>
+    <string name="original_name_is">原名为：%s</string>
+    <string name="input_new_nickname_hint">输入新名称</string>
+    <string name="modify_phone_number">修改手机号</string>
+    <string name="original_number_is">原手机号为：%s</string>
+    <string name="input_new_phone_number_hint">输入新手机号</string>
+    <string name="input_password_hint">输入验证码</string>
+
+    <!-- For RequestPasswordFragment -->
+    <string name="verify_by_call">电话验证</string>
+    <string name="verify_by_message">短信验证</string>
+    <string name="resend_password_waiting">重发动态密码（%d秒）</string>
+
     <!-- Divider -->
     <string name="title_activity_video_shoot">VideoShootActivity</string>
     <string name="title_activity_first_login">FirstLoginActivity</string>
@@ -130,4 +147,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_topic">TopicActivity</string>
     <string name="title_activity_push_settings">PushSettingsActivity</string>
+    <string name="title_activity_change_info">ChangeInfoActivity</string>
+    <string name="title_activity_change_nickname">ChangeNicknameActivity</string>
+    <string name="title_activity_modify_phone_number">ModifyPhoneNumberActivity</string>
 </resources>
