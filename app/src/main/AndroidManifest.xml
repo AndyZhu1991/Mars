@@ -103,6 +103,10 @@
             android:name=".ChangePhoneNumberActivity"
             android:label="@string/title_activity_modify_phone_number" >
         </activity>
+        <activity
+            android:name=".CoinRuleActivity"
+            android:label="@string/title_activity_coin_rule" >
+        </activity>
     </application>
 
 </manifest>

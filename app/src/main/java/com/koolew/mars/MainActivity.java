@@ -88,6 +88,7 @@ public class MainActivity extends FragmentActivity
         mPhoneNumber = (PhoneNumberView) findViewById(R.id.phone_number);
         mCountKoo = (TextView) findViewById(R.id.count_koo);
         mCountCoin = (TextView) findViewById(R.id.count_coin);
+        findViewById(R.id.coin_layout).setOnClickListener(this);
 
         mAdapter = new DrawerListAdapter();
         mDrawerList.setAdapter(mAdapter);
@@ -223,7 +224,15 @@ public class MainActivity extends FragmentActivity
                 Intent intent = new Intent(MainActivity.this, ChangeInfoActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_CHANGE_INFO);
                 break;
+            case R.id.coin_layout:
+                startCoinRuleActivity();
+                break;
         }
+    }
+
+    private void startCoinRuleActivity() {
+        Intent intent = new Intent(this, CoinRuleActivity.class);
+        startActivity(intent);
     }
 
     @Override

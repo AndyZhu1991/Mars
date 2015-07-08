@@ -5,4 +5,9 @@
         <attr name="right_image_src" format="reference" />
         <attr name="right_text" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="CoinRuleItem">
+        <attr name="description_text" format="string" />
+        <attr name="coin_count" format="integer" />
+    </declare-styleable>
 </resources>
