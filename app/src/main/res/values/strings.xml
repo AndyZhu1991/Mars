@@ -143,6 +143,13 @@
     <string name="friend_accept_invitation">一个好友接受你的点名：</string>
     <string name="go_black_market">进入黑市</string>
 
+    <!-- For KooRankActivity -->
+    <string name="koo_you_mostly">"Koo 你最多的好友"</string>
+    <string name="best_friend">最佳好友</string>
+    <string name="top_num">"Top %02d"</string>
+    <string name="no_koo_info1">还没有好友Koo你</string>
+    <string name="no_koo_info2">赶紧发布新的话题吧</string>
+
     <!-- Divider -->
     <string name="title_activity_video_shoot">VideoShootActivity</string>
     <string name="title_activity_first_login">FirstLoginActivity</string>
@@ -159,4 +166,5 @@
     <string name="title_activity_change_nickname">ChangeNicknameActivity</string>
     <string name="title_activity_modify_phone_number">ModifyPhoneNumberActivity</string>
     <string name="title_activity_coin_rule">CoinRuleActivity</string>
+    <string name="title_activity_koo_detail">KooDetailActivity</string>
 </resources>

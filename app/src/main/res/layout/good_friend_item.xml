@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="53dp"
+    android:minHeight="53dp">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="9dp"
+        android:layout_marginRight="9dp"
+        android:background="@mipmap/horizontal_dash_line"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/avatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="17dp"
+        android:layout_centerVertical="true"
+        app:border_color="#D8D8D8"
+        app:border_width="3dp"/>
+
+    <ImageView
+        android:id="@+id/crown"
+        android:layout_width="26dp"
+        android:layout_height="22dp"
+        android:layout_marginLeft="9dp"
+        android:src="@mipmap/ic_crown"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/avatar"
+        android:layout_marginLeft="10dp"
+        android:textSize="14sp"
+        android:textColor="@color/koolew_gray"/>
+
+    <TextView
+        android:id="@+id/top_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="17dp"
+        android:layout_centerVertical="true"
+        android:text="@string/top_num"
+        android:textSize="14sp"
+        android:textColor="#FC8D8E"/>
+
+    <TextView
+        android:id="@+id/best_friend"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_toLeftOf="@id/top_text"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="13dp"
+        android:gravity="center"
+        android:text="@string/best_friend"
+        android:textSize="10sp"
+        android:textColor="#FC8D8E"
+        android:background="@drawable/best_friend_bg"
+        android:visibility="gone"/>
+</RelativeLayout>

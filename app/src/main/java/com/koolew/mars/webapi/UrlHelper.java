@@ -28,6 +28,7 @@ public class UrlHelper {
     public static final String SNS_SIGNUP_URL = V1_URL + "user/signup/sns";
     public static final String REQUEST_QINIU_TOKEN_URL = V1_URL + "qiniu/uptoken?type=avatar";
     public static final String CURRENT_FRIEND_URL = V1_URL + "friend";
+    public static final String KOO_RANK_URL = V1_URL + "koo/rank";
 
     // v2 api
     public static final String INVOLVE_URL = V2_URL + "feeds/involve";

@@ -89,6 +89,7 @@ public class MainActivity extends FragmentActivity
         mCountKoo = (TextView) findViewById(R.id.count_koo);
         mCountCoin = (TextView) findViewById(R.id.count_coin);
         findViewById(R.id.coin_layout).setOnClickListener(this);
+        findViewById(R.id.koo_layout).setOnClickListener(this);
 
         mAdapter = new DrawerListAdapter();
         mDrawerList.setAdapter(mAdapter);
@@ -227,11 +228,19 @@ public class MainActivity extends FragmentActivity
             case R.id.coin_layout:
                 startCoinRuleActivity();
                 break;
+            case R.id.koo_layout:
+                startKooRankActivity();
+                break;
         }
     }
 
     private void startCoinRuleActivity() {
         Intent intent = new Intent(this, CoinRuleActivity.class);
+        startActivity(intent);
+    }
+
+    private void startKooRankActivity() {
+        Intent intent = new Intent(this, KooRankActivity.class);
         startActivity(intent);
     }
 

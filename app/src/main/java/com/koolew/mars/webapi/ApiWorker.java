@@ -183,6 +183,11 @@ public class ApiWorker {
                 listener, errorListener);
     }
 
+    public JsonObjectRequest requestKooRank(Response.Listener<JSONObject> listener,
+                                            Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.KOO_RANK_URL, listener, errorListener);
+    }
+
 
     private JsonObjectRequest standardGetRequest(String url,
                                                  Response.Listener<JSONObject> listener,

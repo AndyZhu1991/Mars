@@ -107,6 +107,10 @@
             android:name=".CoinRuleActivity"
             android:label="@string/title_activity_coin_rule" >
         </activity>
+        <activity
+            android:name=".KooRankActivity"
+            android:label="@string/title_activity_koo_detail" >
+        </activity>
     </application>
 
 </manifest>

@@ -1,0 +1,105 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.koolew.mars.KooRankActivity">
+    
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="176dp"
+        android:background="@drawable/koo_detail_top_bg">
+
+        <View
+            android:layout_width="340dp"
+            android:layout_height="110dp"
+            android:layout_gravity="center"
+            android:background="@mipmap/koo_detail_count_bg"/>
+        
+        <TextView
+            android:id="@+id/count_koo"
+            android:layout_width="200dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="0"
+            android:textSize="26dp"
+            android:textColor="#FC8D8E"
+            android:background="@mipmap/koo_detail_count_bubble"/>
+        
+        <com.koolew.mars.view.TitleBarView
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"/>
+    </FrameLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="-6dp"
+        android:background="@drawable/coin_rule_bg">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/no_koo_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible">
+
+                <ImageView
+                    android:id="@+id/cry"
+                    android:layout_width="117dp"
+                    android:layout_height="120dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="50dp"
+                    android:src="@mipmap/cry_no_koo" />
+
+                <TextView
+                    android:id="@+id/no_koo_info1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/cry"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/no_koo_info1"
+                    android:textColor="#9EADB7"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/no_koo_info1"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/no_koo_info2"
+                    android:textColor="#9EADB7"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/koo_rank_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="invisible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="17dp"
+                    android:text="@string/koo_you_mostly"
+                    android:textColor="@color/koolew_gray"
+                    android:textSize="16sp" />
+
+                <ListView
+                    android:id="@+id/list_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="12dp"
+                    android:divider="@null"/>
+            </LinearLayout>
+        </FrameLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>
