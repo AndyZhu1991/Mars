@@ -33,7 +33,7 @@
     <!-- For topic & invitation card item -->
     <dimen name="topic_invitation_card_margin">5dp</dimen>
     <dimen name="topic_invitation_card_padding">5dp</dimen>
-    <dimen name="topic_parter_size">34dp</dimen>
+    <dimen name="topic_parter_size">35dp</dimen>
     <dimen name="topic_parter_half_interval">6dp</dimen>
 
     <!-- For video card item -->

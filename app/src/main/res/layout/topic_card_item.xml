@@ -1,82 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@color/koolew_list_background">
-
-<FrameLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
-    android:minHeight="200dp"
-    android:layout_marginLeft="@dimen/topic_invitation_card_margin"
-    android:layout_marginTop="2.5dp"
-    android:layout_marginRight="@dimen/topic_invitation_card_margin"
-    android:layout_marginBottom="2.5dp"
-    android:padding="@dimen/topic_invitation_card_padding"
-    android:background="@drawable/topic_card_out_shape">
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/topic_invitation_card_padding"
+    android:paddingRight="@dimen/topic_invitation_card_padding"
+    android:paddingTop="@dimen/topic_invitation_card_padding">
 
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/thumb"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:alpha="0.1"
-        app:riv_corner_radius="3dp"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/topic_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="14sp"
-            android:maxLines="3"/>
+        android:layout_height="wrap_content"
+        android:background="@drawable/topic_card_bg">
 
         <LinearLayout
-            android:id="@+id/video_count_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="11dp"
-                android:layout_height="8dp"
-                android:layout_gravity="center_vertical"
-                android:src="@mipmap/ic_video"/>
-            <TextView
-                android:id="@+id/video_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="10sp"/>
+            <FrameLayout
+                android:id="@+id/video_frame"
+                android:layout_width="match_parent"
+                android:layout_height="262.5dp">
+
+                <ImageView
+                    android:id="@+id/thumb"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <RelativeLayout
+                    android:id="@+id/info_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="131dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/topic_card_info_bg">
+
+                    <ImageView
+                        android:layout_width="8dp"
+                        android:layout_height="4dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="-1dp"
+                        android:layout_marginLeft="30dp"
+                        android:src="@mipmap/top_triangle" />
+
+                    <LinearLayout
+                        android:id="@+id/video_count_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginLeft="16dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="11dp"
+                            android:layout_height="8dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@mipmap/ic_video" />
+
+                        <TextView
+                            android:id="@+id/video_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dp"
+                            android:textColor="@android:color/white"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/topic_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/video_count_layout"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="40dp"
+                        android:maxLines="3"
+                        android:textColor="@android:color/white"
+                        android:textSize="20sp" />
+
+                    <ImageView
+                        android:layout_width="7dp"
+                        android:layout_height="12dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="40dp"
+                        android:layout_marginRight="15dp"
+                        android:src="@mipmap/into_arrow" />
+                </RelativeLayout>
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/parters_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/topic_parter_size"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:orientation="horizontal" />
         </LinearLayout>
+    </FrameLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <LinearLayout
-            android:id="@+id/parters_layout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/topic_parter_size"
-            android:layout_marginBottom="10dp"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-        </LinearLayout>
-    </LinearLayout>
-</FrameLayout>
-
-</FrameLayout>
+</RelativeLayout>

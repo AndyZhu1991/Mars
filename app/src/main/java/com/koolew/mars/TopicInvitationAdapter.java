@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -115,14 +116,26 @@ public class TopicInvitationAdapter extends BaseAdapter {
             convertView = mInflater.inflate(R.layout.topic_card_item, null);
             ViewHolderTopic holder = new ViewHolderTopic();
             convertView.setTag(holder);
+
+            Resources res = mContext.getResources();
+
+            holder.videoFrame = (FrameLayout) convertView.findViewById(R.id.video_frame);
+            ViewGroup.LayoutParams lp = holder.videoFrame.getLayoutParams();
+            int cardWidth = Utils.getScreenWidthPixel(mContext)
+                    - res.getDimensionPixelSize(R.dimen.topic_invitation_card_padding) * 2;
+            lp.height = cardWidth / 4 * 3;
+            holder.videoFrame.setLayoutParams(lp);
+
+            convertView.findViewById(R.id.info_layout).getLayoutParams().height = lp.height / 2;
+
             holder.thumb = (ImageView) convertView.findViewById(R.id.thumb);
             holder.topicTitle = (TextView) convertView.findViewById(R.id.topic_title);
             holder.videoCount = (TextView) convertView.findViewById(R.id.video_count);
+
             holder.partersLayout = (LinearLayout) convertView.findViewById(R.id.parters_layout);
             holder.parters = new CircleImageView[getMaxShowTopicParterCount()];
             for (int i = 0; i < holder.parters.length; i++) {
                 CircleImageView avatar = new CircleImageView(mContext);
-                Resources res = mContext.getResources();
                 int avatarSize = res.getDimensionPixelSize(R.dimen.topic_parter_size);
                 int avatarMarginLr = res.getDimensionPixelOffset(R.dimen.topic_parter_half_interval);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(avatarSize, avatarSize);
@@ -133,7 +146,7 @@ public class TopicInvitationAdapter extends BaseAdapter {
                     avatar.setBorderColorResource(R.color.koolew_light_green);
                 }
                 else {
-                    avatar.setBorderColorResource(R.color.koolew_gray);
+                    avatar.setBorderColorResource(R.color.avatar_gray_border);
                 }
                 holder.parters[i] = avatar;
                 holder.partersLayout.addView(avatar);
@@ -241,13 +254,12 @@ public class TopicInvitationAdapter extends BaseAdapter {
         }
 
         Resources res = mContext.getResources();
-        int topicMargin = res.getDimensionPixelSize(R.dimen.topic_invitation_card_margin);
         int topicPadding = res.getDimensionPixelSize(R.dimen.topic_invitation_card_padding);
         int topicParterSize = res.getDimensionPixelSize(R.dimen.topic_parter_size);
         int topicParterHalfInterval = res.getDimensionPixelSize(R.dimen.topic_parter_half_interval);
         int screenWidth = Utils.getScreenWidthPixel(mContext);
 
-        int count = (screenWidth - topicMargin * 2 - topicPadding * 2)
+        int count = (screenWidth - topicPadding * 2)
                          / (topicParterSize + topicParterHalfInterval * 2);
 
         maxShowTopicParterCount = Math.min(count, AppProperty.getTopicMaxReturnParterCount());
@@ -255,6 +267,7 @@ public class TopicInvitationAdapter extends BaseAdapter {
     }
 
     class ViewHolderTopic {
+        FrameLayout videoFrame;
         ImageView thumb;
         TextView topicTitle;
         TextView videoCount;
