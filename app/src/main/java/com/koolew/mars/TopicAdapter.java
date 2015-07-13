@@ -2,17 +2,16 @@ package com.koolew.mars;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.koolew.mars.infos.BaseFriendInfo;
 import com.koolew.mars.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -29,13 +28,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by jinchangzhu on 6/2/15.
  */
-public class TopicInvitationAdapter extends BaseAdapter {
+public abstract class TopicAdapter extends BaseAdapter {
 
-    private static final String TAG = "koolew-TopicInvitAdpt";
-
-    public static final int TYPE_TOPIC = 0;
-    public static final int TYPE_INVITATION = 1;
-    public static final int TYPE_COUNT = 2; // This is COUNT
+    private static final String TAG = "koolew-TopicAdapter";
 
     static DisplayImageOptions imgDisplayOptions = new DisplayImageOptions.Builder()
             //.showStubImage(R.drawable.stub_image)
@@ -46,13 +41,13 @@ public class TopicInvitationAdapter extends BaseAdapter {
 
     private Context mContext;
     private LayoutInflater mInflater;
-    private List<JSONObject> mData;
+    private List<TopicItem> mData;
 
-    TopicInvitationAdapter(Context context) {
+    TopicAdapter(Context context) {
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
 
-        mData = new ArrayList<JSONObject>();
+        mData = new ArrayList<TopicItem>();
     }
 
     public void setData(JSONArray cards) {
@@ -64,7 +59,7 @@ public class TopicInvitationAdapter extends BaseAdapter {
         int length = cards.length();
         try {
             for (int i = 0; i < length; i++) {
-                mData.add(cards.getJSONObject(i));
+                mData.add(jsonObject2TopicItem(cards.getJSONObject(i)));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -73,12 +68,7 @@ public class TopicInvitationAdapter extends BaseAdapter {
     }
 
     public long getOldestCardTime() {
-        try {
-            return mData.get(mData.size() - 1).getJSONObject("topic").getLong("update_time");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new RuntimeException(TAG + ": Can not get oldest card time !");
-        }
+        return mData.get(mData.size() - 1).updateTime;
     }
 
     @Override
@@ -99,22 +89,9 @@ public class TopicInvitationAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        int type = getItemViewType(position);
-
-        if (type == TYPE_TOPIC) {
-            return getTopicView(position, convertView, parent);
-        }
-        else if (type == TYPE_INVITATION) {
-            return getInvitationView(position, convertView, parent);
-        }
-        return null;
-    }
-
-    private View getTopicView(int position, View convertView, ViewGroup parent) {
-
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.topic_card_item, null);
-            ViewHolderTopic holder = new ViewHolderTopic();
+            ViewHolder holder = new ViewHolder();
             convertView.setTag(holder);
 
             Resources res = mContext.getResources();
@@ -133,6 +110,7 @@ public class TopicInvitationAdapter extends BaseAdapter {
             holder.videoCount = (TextView) convertView.findViewById(R.id.video_count);
 
             holder.partersLayout = (LinearLayout) convertView.findViewById(R.id.parters_layout);
+            holder.partersArrow = (ImageView) convertView.findViewById(R.id.parters_arrow);
             holder.parters = new CircleImageView[getMaxShowTopicParterCount()];
             for (int i = 0; i < holder.parters.length; i++) {
                 CircleImageView avatar = new CircleImageView(mContext);
@@ -153,99 +131,39 @@ public class TopicInvitationAdapter extends BaseAdapter {
             }
         }
 
-        try {
-            JSONObject itemJson = mData.get(position);
-            JSONObject topic = itemJson.getJSONObject("topic");
-            JSONArray parters = itemJson.getJSONArray("parters");
-            ViewHolderTopic holder = (ViewHolderTopic) convertView.getTag();
+        TopicItem topicItem = mData.get(position);
+        ViewHolder holder = (ViewHolder) convertView.getTag();
 
-            ImageLoader.getInstance().displayImage(topic.getString("thumb_url"),
-                    holder.thumb, imgDisplayOptions);
-            holder.topicTitle.setText(topic.getString("content"));
-            holder.videoCount.setText(
-                    mContext.getString(R.string.video_count_label, topic.getInt("video_cnt")));
+        ImageLoader.getInstance().displayImage(topicItem.thumb, holder.thumb, imgDisplayOptions);
+        holder.topicTitle.setText(topicItem.title);
+        holder.videoCount.setText(
+                mContext.getString(R.string.video_count_label, topicItem.videoCount));
+
+        if (holder.parters != null && holder.parters.length != 0 &&
+                topicItem.parters != null && topicItem.parters.length != 0) {
+
+            holder.partersLayout.setVisibility(View.VISIBLE);
+            holder.partersArrow.setVisibility(View.VISIBLE);
 
             for (int i = 0; i < holder.parters.length; i++) {
                 holder.parters[i].setVisibility(View.GONE);
             }
-            for (int i = 0; i < parters.length() && i < holder.parters.length; i++) {
-                ImageLoader.getInstance().
-                        displayImage(((JSONObject) parters.get(i)).getString("avatar"),
+
+            for (int i = 0; i < topicItem.parters.length && i < holder.parters.length; i++) {
+                ImageLoader.getInstance().displayImage(topicItem.parters[i].getAvatar(),
                         holder.parters[i], imgDisplayOptions);
                 holder.parters[i].setVisibility(View.VISIBLE);
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Log.e(TAG, "");
+        }
+        else {
+            holder.partersLayout.setVisibility(View.GONE);
+            holder.partersArrow.setVisibility(View.GONE);
         }
 
         return convertView;
     }
 
-    private View getInvitationView(int position, View convertView, ViewGroup parent) {
-
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.invitation_card_item, null);
-            ViewHolderInvitation holder = new ViewHolderInvitation();
-            convertView.setTag(holder);
-            holder.invitationTitle = (TextView) convertView.findViewById(R.id.invitation_title);
-            holder.topicTitle = (TextView) convertView.findViewById(R.id.topic_title);
-            holder.videoCount = (TextView) convertView.findViewById(R.id.video_count);
-            holder.acceptBtn = (ImageButton) convertView.findViewById(R.id.btn_accept);
-        }
-
-        try {
-            JSONObject itemJson = mData.get(position);
-            JSONObject topic = itemJson.getJSONObject("topic");
-            JSONArray parters = itemJson.getJSONArray("parters");
-            ViewHolderInvitation holder = (ViewHolderInvitation) convertView.getTag();
-
-            holder.topicTitle.setText(topic.getString("content"));
-            holder.videoCount.setText(
-                    mContext.getString(R.string.video_count_label, topic.getInt("video_cnt")));
-
-            String inviter = ((JSONObject) parters.get(0)).getString("nickname");
-            int partersLength = parters.length();
-            int i = 1;
-            for (; i < partersLength && i < 3; i++) {
-                inviter += "、" +((JSONObject) parters.get(i)).getString("nickname");
-            }
-            if (i < partersLength) {
-                inviter += "……";
-            }
-            holder.invitationTitle.setText(mContext.getString(R.string.invited_label, inviter));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return convertView;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        int type = TYPE_TOPIC;
-        JSONObject jsonObject = mData.get(position);
-        try {
-            switch (jsonObject.getInt("type")) {
-                case 0:
-                    type = TYPE_INVITATION;
-                    break;
-                case 1:
-                    type = TYPE_TOPIC;
-                    break;
-                default:
-                    break;
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return type;
-    }
-
-    @Override
-    public int getViewTypeCount() {
-        return TYPE_COUNT;
-    }
+    public abstract TopicItem jsonObject2TopicItem(JSONObject jsonObject);
 
     private static int maxShowTopicParterCount = -1;
     private int getMaxShowTopicParterCount() {
@@ -266,19 +184,39 @@ public class TopicInvitationAdapter extends BaseAdapter {
         return maxShowTopicParterCount;
     }
 
-    class ViewHolderTopic {
+    public class TopicItem {
+        public String topicId;
+        public String title;
+        public String thumb;
+        public int videoCount;
+        public long updateTime;
+        public BaseFriendInfo[] parters;
+
+        public TopicItem() {
+        }
+
+        public TopicItem(String topicId, String title, String thumb, int videoCount, long updateTime) {
+            this(topicId, title, thumb, videoCount, updateTime, null);
+        }
+
+        public TopicItem(String topicId, String title, String thumb, int videoCount, long updateTime,
+                         BaseFriendInfo[] parters) {
+            this.topicId = topicId;
+            this.title = title;
+            this.thumb = thumb;
+            this.videoCount = videoCount;
+            this.updateTime = updateTime;
+            this.parters = parters;
+        }
+    }
+
+    class ViewHolder {
         FrameLayout videoFrame;
         ImageView thumb;
         TextView topicTitle;
         TextView videoCount;
         LinearLayout partersLayout;
         CircleImageView[] parters;
-    }
-
-    class ViewHolderInvitation {
-        TextView invitationTitle;
-        TextView topicTitle;
-        TextView videoCount;
-        ImageButton acceptBtn;
+        ImageView partersArrow;
     }
 }

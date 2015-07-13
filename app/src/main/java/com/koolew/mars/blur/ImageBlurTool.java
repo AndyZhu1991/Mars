@@ -263,4 +263,11 @@ public class ImageBlurTool {
         bitmap.setPixels(pix, 0, w, 0, 0, w, h);
         return (bitmap);
     }
+
+    public static Bitmap doBlur(Bitmap sentBitmap, int radius, int scale) {
+        Bitmap scaledBmp = Bitmap.createScaledBitmap
+                (sentBitmap, sentBitmap.getWidth(), sentBitmap.getHeight(), false);
+        Bitmap bluredBmp = doBlur(scaledBmp, radius / scale > 0 ? radius / scale : 1, false);
+        return Bitmap.createScaledBitmap(bluredBmp, sentBitmap.getWidth(), sentBitmap.getHeight(), false);
+    }
 }

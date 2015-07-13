@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="description_text" format="string"/>
+
     <declare-styleable name="TitleBarView">
         <attr name="title_text" format="string" />
         <attr name="right_image_src" format="reference" />
@@ -7,7 +9,21 @@
     </declare-styleable>
 
     <declare-styleable name="CoinRuleItem">
-        <attr name="description_text" format="string" />
+        <attr name="description_text" />
         <attr name="coin_count" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="AvatarLinearContainer">
+        <attr name="avatar_margin_lr" format="dimension" />
+        <attr name="avatar_border_width" format="dimension" />
+        <attr name="avatar_border_color" format="color" />
+        <attr name="avatar_border_special_color" format="color" />
+        <attr name="avatar_clickable" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="BigCountView">
+        <attr name="description_text" />
+        <attr name="description_image" format="reference" />
+        <attr name="solid_color" format="color" />
     </declare-styleable>
 </resources>

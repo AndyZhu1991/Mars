@@ -14,25 +14,18 @@ public class BaseFriendInfo {
 
     public BaseFriendInfo(JSONObject jsonObject) {
         try {
-            uid = jsonObject.getString("uid");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            phoneNumber = jsonObject.getString("phone");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            nickname = jsonObject.getString("nickname");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            avatar = jsonObject.getString("avatar");
+            if (jsonObject.has("uid")) {
+                uid = jsonObject.getString("uid");
+            }
+            if (jsonObject.has("phone")) {
+                phoneNumber = jsonObject.getString("phone");
+            }
+            if (jsonObject.has("nickname")) {
+                nickname = jsonObject.getString("nickname");
+            }
+            if (jsonObject.has("avatar")) {
+                avatar = jsonObject.getString("avatar");
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

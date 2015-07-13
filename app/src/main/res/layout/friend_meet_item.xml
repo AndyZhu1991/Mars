@@ -53,7 +53,8 @@
                             android:background="@drawable/btn_bg_remove"
                             android:text="@string/remove"
                             android:textColor="@color/friend_item_common_text_color"
-                            android:textSize="@dimen/friend_item_common_text_size" />
+                            android:textSize="@dimen/friend_item_common_text_size"
+                            android:focusable="false"/>
 
                         <Button
                             android:id="@+id/btn_accept_add"
@@ -63,7 +64,8 @@
                             android:background="@drawable/btn_bg_accept_solid"
                             android:text="@string/accept"
                             android:textColor="@android:color/white"
-                            android:textSize="@dimen/friend_item_common_text_size" />
+                            android:textSize="@dimen/friend_item_common_text_size"
+                            android:focusable="false"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"

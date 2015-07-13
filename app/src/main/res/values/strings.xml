@@ -150,6 +150,9 @@
     <string name="no_koo_info1">还没有好友Koo你</string>
     <string name="no_koo_info2">赶紧发布新的话题吧</string>
 
+    <!-- For FriendInfoActivity -->
+    <string name="other_joined_topic">其他参与话题</string>
+
     <!-- Divider -->
     <string name="title_activity_video_shoot">VideoShootActivity</string>
     <string name="title_activity_first_login">FirstLoginActivity</string>
@@ -167,4 +170,5 @@
     <string name="title_activity_modify_phone_number">ModifyPhoneNumberActivity</string>
     <string name="title_activity_coin_rule">CoinRuleActivity</string>
     <string name="title_activity_koo_detail">KooDetailActivity</string>
+    <string name="title_activity_friend_info">FriendInfoActivity</string>
 </resources>

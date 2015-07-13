@@ -34,6 +34,7 @@
                     android:background="@drawable/topic_card_info_bg">
 
                     <ImageView
+                        android:id="@+id/parters_arrow"
                         android:layout_width="8dp"
                         android:layout_height="4dp"
                         android:layout_alignParentBottom="true"

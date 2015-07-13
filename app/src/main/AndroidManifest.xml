@@ -111,6 +111,10 @@
             android:name=".KooRankActivity"
             android:label="@string/title_activity_koo_detail" >
         </activity>
+        <activity
+            android:name=".FriendInfoActivity"
+            android:label="@string/title_activity_friend_info" >
+        </activity>
     </application>
 
 </manifest>

@@ -33,6 +33,7 @@ public class UrlHelper {
     // v2 api
     public static final String INVOLVE_URL = V2_URL + "feeds/involve";
     public static final String FRIEND_RECOMMEND_URL = V2_URL + "friend/recommend";
+    private static final String FRIEND_PROFILE_URL = V2_URL + "profile";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
@@ -65,6 +66,10 @@ public class UrlHelper {
     // v2 api
     public static String getInvolveUrl(int page) {
         return INVOLVE_URL + "?page=" + page;
+    }
+
+    public static String getFriendProfileUrl(String uid) {
+        return new StringBuilder(FRIEND_PROFILE_URL).append("?uid=").append(uid).toString();
     }
 
 

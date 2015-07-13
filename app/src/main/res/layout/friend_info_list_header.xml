@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:AvatarLinearContainer="http://schemas.android.com/apk/res-auto"
+    xmlns:BigCountView="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="180dp"
+        android:background="@drawable/top_corner_bg"
+        android:orientation="horizontal"
+        android:padding="15dp">
+
+        <com.koolew.mars.view.BigCountView
+            android:id="@+id/count_koo"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            BigCountView:description_image="@mipmap/ic_count_koo"
+            BigCountView:description_text="@string/got_koo" />
+
+        <com.koolew.mars.view.BigCountView
+            android:id="@+id/count_common_topic"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            BigCountView:description_text="@string/common_topic" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#F5F5F5"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/common_friend_title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:background="#F9F9F9"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/common_friend_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/common_friend"
+                android:textColor="@color/koolew_light_gray"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="7dp"
+                android:src="@mipmap/down_arrow" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@mipmap/horizontal_dash_line" />
+
+        <com.koolew.mars.view.AvatarLinearContainer
+            android:id="@+id/avatar_container"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="13dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            AvatarLinearContainer:avatar_clickable="true"
+            AvatarLinearContainer:avatar_margin_lr="6dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/friend_profile_gradient_bg"
+            android:gravity="center"
+            android:paddingBottom="15dp"
+            android:paddingTop="20dp"
+            android:text="@string/other_joined_topic"
+            android:textColor="@color/koolew_light_gray"
+            android:textSize="12sp" />
+    </LinearLayout>
+</LinearLayout>

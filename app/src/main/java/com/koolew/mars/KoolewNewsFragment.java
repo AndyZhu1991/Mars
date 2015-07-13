@@ -1,9 +1,11 @@
 package com.koolew.mars;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import android.widget.ListView;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.infos.BaseFriendInfo;
 import com.koolew.mars.view.LoadMoreFooter;
 import com.koolew.mars.webapi.ApiWorker;
 
@@ -28,7 +31,7 @@ public class KoolewNewsFragment extends Fragment implements AdapterView.OnItemCl
     private SwipeRefreshLayout mRefreshLayout;
     private ListView mListView;
     private LoadMoreFooter mListFooter;
-    private TopicInvitationAdapter mAdapter;
+    private TopicAdapter mAdapter;
 
     private JsonObjectRequest mRefreshRequest;
     private JsonObjectRequest mLoadMoreRequest;
@@ -109,12 +112,43 @@ public class KoolewNewsFragment extends Fragment implements AdapterView.OnItemCl
                 mAdapter.getOldestCardTime(), mLoadMoreListener, null);
     }
 
+    class FeedsTopicAdapter extends TopicAdapter {
+        FeedsTopicAdapter(Context context) {
+            super(context);
+        }
+
+        @Override
+        public TopicItem jsonObject2TopicItem(JSONObject jsonObject) {
+            try {
+                JSONObject topic = jsonObject.getJSONObject("topic");
+                JSONArray parters = jsonObject.getJSONArray("parters");
+                int parterCount = parters.length();
+                BaseFriendInfo[] parterInfos = new BaseFriendInfo[parterCount];
+                for (int i = 0; i < parterCount; i++) {
+                    parterInfos[i] = new BaseFriendInfo(parters.getJSONObject(i));
+                }
+
+                return new TopicItem(
+                        topic.getString("topic_id"),
+                        topic.getString("content"),
+                        topic.getString("thumb_url"),
+                        topic.getInt("video_cnt"),
+                        topic.getLong("update_time"),
+                        parterInfos);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.e(TAG, "JsonObject get field error!");
+            }
+            return null;
+        }
+    }
+
     private Response.Listener<JSONObject> mRefreshListener = new Response.Listener<JSONObject>() {
         @Override
         public void onResponse(JSONObject response) {
             try {
                 mRefreshRequest = null;
-                mAdapter = new TopicInvitationAdapter(getActivity());
+                mAdapter = new FeedsTopicAdapter(getActivity());
                 JSONArray cards = response.getJSONObject("result").getJSONArray("cards");
                 mAdapter.setData(cards);
             } catch (JSONException e) {
@@ -148,14 +182,9 @@ public class KoolewNewsFragment extends Fragment implements AdapterView.OnItemCl
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        try {
-            String topicId = ((JSONObject) mAdapter.getItem(position))
-                    .getJSONObject("topic").getString("topic_id");
-            Intent intent = new Intent(getActivity(), TopicActivity.class);
-            intent.putExtra(TopicActivity.KEY_TOPIC_ID, topicId);
-            startActivity(intent);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        String topicId = ((TopicAdapter.TopicItem) mAdapter.getItem(position)).topicId;
+        Intent intent = new Intent(getActivity(), TopicActivity.class);
+        intent.putExtra(TopicActivity.KEY_TOPIC_ID, topicId);
+        startActivity(intent);
     }
 }

@@ -1,11 +1,14 @@
 package com.koolew.mars;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -27,7 +30,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
 
     private ListView mListView;
     private FriendMeetAdapter mAdapter;
@@ -63,6 +66,7 @@ public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.O
         View root = inflater.inflate(R.layout.fragment_friend_meet, container, false);
 
         mListView = (ListView) root.findViewById(R.id.list_view);
+        mListView.setOnItemClickListener(this);
         mRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.refresh_layout);
         mRefreshLayout.setColorSchemeResources(R.color.koolew_light_blue);
         mRefreshLayout.setOnRefreshListener(this);
@@ -139,6 +143,22 @@ public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.O
         public void onClick(View v) {
         }
     };
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d("stdzhu", "item click");
+        JSONObject jsonObject = (JSONObject) mAdapter.getItem(position);
+        try {
+            Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
+            intent.putExtra(FriendInfoActivity.KEY_UID, jsonObject.getString("uid"));
+            intent.putExtra(FriendInfoActivity.KEY_AVATAR, jsonObject.getString("avatar"));
+            intent.putExtra(FriendInfoActivity.KEY_NICKNAME, jsonObject.getString("nickname"));
+            startActivity(intent);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new RuntimeException(jsonObject + " not contiant uid, avatar and nickname");
+        }
+    }
 
 
     private static final int TYPE_PADDING = 0;
