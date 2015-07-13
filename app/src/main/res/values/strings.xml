@@ -152,6 +152,7 @@
 
     <!-- For FriendInfoActivity -->
     <string name="other_joined_topic">其他参与话题</string>
+    <string name="part_video_count">参与视频数：%d个</string>
 
     <!-- Divider -->
     <string name="title_activity_video_shoot">VideoShootActivity</string>
@@ -171,4 +172,5 @@
     <string name="title_activity_coin_rule">CoinRuleActivity</string>
     <string name="title_activity_koo_detail">KooDetailActivity</string>
     <string name="title_activity_friend_info">FriendInfoActivity</string>
+    <string name="title_activity_common_topic">CommonTopicActivity</string>
 </resources>

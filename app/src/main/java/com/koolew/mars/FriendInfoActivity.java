@@ -79,6 +79,7 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
         mListView.addHeaderView(header);
         mKooCountView = (BigCountView) header.findViewById(R.id.count_koo);
         mCommonTopicCountView = (BigCountView) header.findViewById(R.id.count_common_topic);
+        mCommonTopicCountView.setOnClickListener(this);
         mCommonFriendTitle = (TextView) header.findViewById(R.id.common_friend_title);
         mAvatarContainer = (AvatarLinearContainer) header.findViewById(R.id.avatar_container);
     }
@@ -129,6 +130,9 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
     }
 
     private void onCommonTopicClick() {
+        Intent intent = new Intent(this, CommonTopicActivity.class);
+        intent.putExtra(CommonTopicActivity.KEY_UID, mUid);
+        startActivity(intent);
     }
 
     private void onCommonFriendClick() {
@@ -160,6 +164,9 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
             View root = super.getView(position, convertView, parent);
 
             root.setBackgroundColor(0xFFF5F5F5);
+
+            ((ViewHolder) root.getTag()).videoCount.setText(
+                    getString(R.string.part_video_count, ((TopicItem) getItem(position)).videoCount));
 
             return root;
         }

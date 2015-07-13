@@ -115,6 +115,10 @@
             android:name=".FriendInfoActivity"
             android:label="@string/title_activity_friend_info" >
         </activity>
+        <activity
+            android:name=".CommonTopicActivity"
+            android:label="@string/title_activity_common_topic" >
+        </activity>
     </application>
 
 </manifest>

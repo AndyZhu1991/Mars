@@ -29,6 +29,8 @@ public class UrlHelper {
     public static final String REQUEST_QINIU_TOKEN_URL = V1_URL + "qiniu/uptoken?type=avatar";
     public static final String CURRENT_FRIEND_URL = V1_URL + "friend";
     public static final String KOO_RANK_URL = V1_URL + "koo/rank";
+    private static final String COMMON_TOPIC_URL = V1_URL + "profile/topic/common";
+    private static final String COMMON_FRIEND_URL = V1_URL + "profile/friend/common";
 
     // v2 api
     public static final String INVOLVE_URL = V2_URL + "feeds/involve";
@@ -60,6 +62,18 @@ public class UrlHelper {
 
     public static String getFeedsTopicUrl(long before) {
         return new StringBuilder(FEEDS_TOPIC_URL).append("?before=").append(before).toString();
+    }
+
+    public static String getCommonTopicUrl(String uid) {
+        return new GetUrlBuilder(COMMON_TOPIC_URL)
+                .addParameter("uid", uid)
+                .build();
+    }
+
+    public static String getCommonFriendUrl(String uid) {
+        return new GetUrlBuilder(COMMON_FRIEND_URL)
+                .addParameter("uid", uid)
+                .build();
     }
 
 
