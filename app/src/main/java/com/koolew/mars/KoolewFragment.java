@@ -78,6 +78,10 @@ public class KoolewFragment extends MainBaseFragment {
 
         mToolbarInterface.setToolbarColor(subPageColors[mViewPager.getCurrentItem()]);
 
+        mToolbarInterface.setTopIconCount(2);
+        mToolbarInterface.setTopIconImageResource(0, R.mipmap.ic_danmaku);
+        mToolbarInterface.setTopIconImageResource(1, R.mipmap.ic_task);
+
         return root;
     }
 

@@ -3,7 +3,6 @@ package com.koolew.mars;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -29,9 +28,9 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.infos.MyAccountInfo;
-import com.koolew.mars.webapi.UrlHelper;
 import com.koolew.mars.view.DrawerToggleView;
 import com.koolew.mars.view.PhoneNumberView;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
@@ -63,7 +62,12 @@ public class MainActivity extends FragmentActivity
     private TextView mCountKoo;
     private TextView mCountCoin;
 
-    private Fragment[] fragments = new Fragment[3];
+    private MainBaseFragment[] fragments = new MainBaseFragment[3];
+    private MainBaseFragment mCurFragment;
+
+    private FrameLayout[] mTopIconLayouts = new FrameLayout[2];
+    private ImageView[] mTopIcons = new ImageView[2];
+    private View[] mTopNotifications = new View[2];
 
     private RequestQueue mRequestQueue;
 
@@ -111,6 +115,14 @@ public class MainActivity extends FragmentActivity
         fragments[0] = KoolewFragment.newInstance();
         fragments[1] = FriendFragment.newInstance();
         fragments[2] = SettingsFragment.newInstance();
+        mCurFragment = fragments[0];
+
+        mTopIconLayouts[0]   = (FrameLayout) findViewById(R.id.top_icon_layout1);
+        mTopIcons[0]         = (ImageView) findViewById(R.id.top_icon1);
+        mTopNotifications[0] = findViewById(R.id.top_notification1);
+        mTopIconLayouts[1]   = (FrameLayout) findViewById(R.id.top_icon_layout2);
+        mTopIcons[1]         = (ImageView) findViewById(R.id.top_icon2);
+        mTopNotifications[1] = findViewById(R.id.top_notification2);
 
         switchFragment(0);
         configureDrawer();
@@ -190,10 +202,10 @@ public class MainActivity extends FragmentActivity
     private void switchFragment(int position) {
         mAdapter.checkedPosition = position;
         mAdapter.notifyDataSetChanged();
-        Fragment fragment = fragments[position];
+        mCurFragment = fragments[position];
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment).commit();
+                .replace(R.id.content_frame, mCurFragment).commit();
 
         mDrawerLayout.closeDrawer(mLeftDrawer);
     }
@@ -219,6 +231,28 @@ public class MainActivity extends FragmentActivity
     }
 
     @Override
+    public void setTopIconCount(int count) {
+        for (int i = 0; i < mTopIconLayouts.length; i++) {
+            if (i < count) {
+                mTopIconLayouts[i].setVisibility(View.VISIBLE);
+            }
+            else {
+                mTopIconLayouts[i].setVisibility(View.INVISIBLE);
+            }
+        }
+    }
+
+    @Override
+    public void setTopIconImageResource(int position, int resource) {
+        mTopIcons[position].setImageResource(resource);
+    }
+
+    @Override
+    public void notifyTopIcon(int position) {
+        mTopNotifications[position].setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.avatar:
@@ -230,6 +264,12 @@ public class MainActivity extends FragmentActivity
                 break;
             case R.id.koo_layout:
                 startKooRankActivity();
+                break;
+            case R.id.top_icon_layout1:
+                mCurFragment.onTopIconClick(0);
+                break;
+            case R.id.top_icon_layout2:
+                mCurFragment.onTopIconClick(1);
                 break;
         }
     }

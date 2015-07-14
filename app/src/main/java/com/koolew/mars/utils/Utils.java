@@ -1,6 +1,7 @@
 package com.koolew.mars.utils;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
@@ -95,5 +96,24 @@ public class Utils {
         }
 
         return true;
+    }
+
+    public static Rect getMaxCenterSquare(Rect rect) {
+        int x = rect.left;
+        int y = rect.top;
+        int width = rect.width();
+        int height = rect.height();
+
+        int size;
+        if (width > height) {
+            size = height;
+            x += (width - height) / 2;
+        }
+        else {
+            size = width;
+            y += (height - width) / 2;
+        }
+
+        return new Rect(x, y, x + size, y + size);
     }
 }

@@ -76,6 +76,9 @@ public class FriendFragment extends MainBaseFragment {
 
         mToolbarInterface.setToolbarColor(getResources().getColor(R.color.koolew_light_blue));
 
+        mToolbarInterface.setTopIconCount(1);
+        mToolbarInterface.setTopIconImageResource(0, R.mipmap.ic_search);
+
         return root;
     }
 

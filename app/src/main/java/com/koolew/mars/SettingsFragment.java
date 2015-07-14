@@ -67,6 +67,8 @@ public class SettingsFragment extends MainBaseFragment {
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(mAdapter);
 
+        mToolbarInterface.setTopIconCount(0);
+
         return root;
     }
 

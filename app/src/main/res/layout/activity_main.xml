@@ -5,28 +5,70 @@
     android:layout_height="match_parent"
     android:id="@+id/sample_main_layout">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:orientation="horizontal">
+        android:layout_height="?attr/actionBarSize">
 
         <com.koolew.mars.view.DrawerToggleView
             android:id="@+id/my_drawer_toggle"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_gravity="center_vertical"/>
+            android:layout_centerVertical="true"/>
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_toRightOf="@+id/my_drawer_toggle"
             android:textColor="@android:color/white"
             android:textSize="@dimen/toolbar_title_text_size"
             android:layout_marginLeft="15dp"
-            android:layout_gravity="center_vertical"/>
-    </LinearLayout>
+            android:layout_centerVertical="true"/>
+
+        <FrameLayout
+            android:id="@+id/top_icon_layout1"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="16dp"
+            android:layout_centerVertical="true"
+            android:visibility="invisible">
+
+            <ImageView
+                android:id="@+id/top_icon1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <com.koolew.mars.view.NotificationPointView
+                android:id="@+id/top_notification1"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_gravity="top|right"
+                android:visibility="invisible"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/top_icon_layout2"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_toLeftOf="@id/top_icon_layout1"
+            android:layout_marginRight="20dp"
+            android:layout_centerVertical="true"
+            android:visibility="invisible">
+
+            <ImageView
+                android:id="@+id/top_icon2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <com.koolew.mars.view.NotificationPointView
+                android:id="@+id/top_notification2"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_gravity="top|right"
+                android:visibility="invisible"/>
+        </FrameLayout>
+    </RelativeLayout>
 
 <android.support.v4.widget.DrawerLayout
     android:id="@+id/drawer_layout"

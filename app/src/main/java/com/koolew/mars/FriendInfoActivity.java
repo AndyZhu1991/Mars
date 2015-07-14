@@ -104,7 +104,7 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
                 mAdapter.setData(topic);
                 mListView.setAdapter(mAdapter);
 
-                JSONObject common = result.getJSONObject("common");
+                JSONObject common = user.getJSONObject("common");
                 mCommonTopicCountView.setCount(common.getInt("common_topic"));
                 JSONArray commonFriend = common.getJSONArray("common_friend");
                 int commonFriendCount = commonFriend.length();

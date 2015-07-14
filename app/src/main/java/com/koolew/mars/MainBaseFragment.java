@@ -32,6 +32,9 @@ public class MainBaseFragment extends Fragment {
         mToolbarInterface = null;
     }
 
+    public void onTopIconClick(int position) {
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -53,5 +56,11 @@ public class MainBaseFragment extends Fragment {
         void setToolbarTitle(String title);
 
         void setToolbarTitle(int titleResId);
+
+        void setTopIconCount(int count);
+
+        void setTopIconImageResource(int position, int resource);
+
+        void notifyTopIcon(int position);
     }
 }
