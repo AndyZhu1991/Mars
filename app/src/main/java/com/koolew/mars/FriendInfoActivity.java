@@ -82,6 +82,8 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
         mCommonTopicCountView.setOnClickListener(this);
         mCommonFriendTitle = (TextView) header.findViewById(R.id.common_friend_title);
         mAvatarContainer = (AvatarLinearContainer) header.findViewById(R.id.avatar_container);
+
+        findViewById(R.id.common_friend_title_layout).setOnClickListener(this);
     }
 
     private void doRefresh() {
@@ -136,6 +138,9 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
     }
 
     private void onCommonFriendClick() {
+        Intent intent = new Intent(this, CommonFriendActivity.class);
+        intent.putExtra(CommonTopicActivity.KEY_UID, mUid);
+        startActivity(intent);
     }
 
     class FriendProfileTopicAdapter extends TopicAdapter {

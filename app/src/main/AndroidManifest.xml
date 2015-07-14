@@ -119,6 +119,10 @@
             android:name=".CommonTopicActivity"
             android:label="@string/title_activity_common_topic" >
         </activity>
+        <activity
+            android:name=".CommonFriendActivity"
+            android:label="@string/title_activity_common_friend" >
+        </activity>
     </application>
 
 </manifest>

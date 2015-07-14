@@ -154,6 +154,9 @@
     <string name="other_joined_topic">其他参与话题</string>
     <string name="part_video_count">参与视频数：%d个</string>
 
+    <!-- CommonFriendActivity -->
+    <string name="common_friend_title">共同好友</string>
+
     <!-- Divider -->
     <string name="title_activity_video_shoot">VideoShootActivity</string>
     <string name="title_activity_first_login">FirstLoginActivity</string>
@@ -173,4 +176,5 @@
     <string name="title_activity_koo_detail">KooDetailActivity</string>
     <string name="title_activity_friend_info">FriendInfoActivity</string>
     <string name="title_activity_common_topic">CommonTopicActivity</string>
+    <string name="title_activity_common_friend">CommonFriendActivity</string>
 </resources>

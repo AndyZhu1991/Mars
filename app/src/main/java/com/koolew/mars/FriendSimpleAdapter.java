@@ -27,6 +27,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class FriendSimpleAdapter extends BaseAdapter {
 
+    public static final int TYPE_UNKNOWN         = -1;
     public static final int TYPE_SELF            = 0;  // Not used now.
     public static final int TYPE_STRANGER        = 1;
     public static final int TYPE_SENT_INVITATION = 2;
@@ -73,7 +74,13 @@ public class FriendSimpleAdapter extends BaseAdapter {
             int count = relations.length();
             for (int i = 0; i < count; i++) {
                 JSONObject friend = (JSONObject) relations.get(i);
-                int type = friend.getInt("type");
+                int type;
+                if (friend.has("type")) {
+                    type = friend.getInt("type");
+                }
+                else {
+                    type = TYPE_UNKNOWN;
+                }
                 if (friendTypeFilter(type)) {
                     add(friend);
                 }
@@ -169,7 +176,12 @@ public class FriendSimpleAdapter extends BaseAdapter {
             FriendInfo info = (FriendInfo) getItem(position);
             ImageLoader.getInstance().displayImage(info.avatar, holder.avatar);
             holder.nickname.setText(info.nickname);
-            holder.summary.setText(info.summary);
+            if (info.summary == null || info.summary.length() == 0) {
+                holder.summary.setVisibility(View.GONE);
+            }
+            else {
+                holder.summary.setText(info.summary);
+            }
         }
 
         return convertView;
