@@ -18,7 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
-import com.koolew.mars.utils.BannerUriProcesser;
+import com.koolew.mars.utils.UriProcessor;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.BannerPagerIndicator;
 import com.koolew.mars.view.LoadMoreFooter;
@@ -49,7 +49,7 @@ public class TaskActivity extends Activity
     private ListView mListView;
     private TaskAdapter mListAdapter;
 
-    private BannerUriProcesser mUriProcesser;
+    private UriProcessor mUriProcesser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +58,7 @@ public class TaskActivity extends Activity
 
         initView();
 
-        mUriProcesser = new BannerUriProcesser(this);
+        mUriProcesser = new UriProcessor(this);
 
         mRefreshLayout.post(new Runnable() {
             @Override

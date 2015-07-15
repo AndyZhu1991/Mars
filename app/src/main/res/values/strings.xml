@@ -185,4 +185,7 @@
     <string name="title_activity_common_topic">CommonTopicActivity</string>
     <string name="title_activity_common_friend">CommonFriendActivity</string>
     <string name="title_activity_task">TaskActivity</string>
+    <string name="title_activity_web">WebActivity</string>
+    <string name="title_activity_feeds">FeedsActivity</string>
+    <string name="title_activity_push_wrapper">PushWrapperActivity</string>
 </resources>

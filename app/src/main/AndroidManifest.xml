@@ -127,6 +127,18 @@
             android:name=".TaskActivity"
             android:label="@string/title_activity_task" >
         </activity>
+        <activity
+            android:name=".WebActivity"
+            android:label="@string/title_activity_web" >
+        </activity>
+        <activity
+            android:name=".FeedsActivity"
+            android:label="@string/title_activity_feeds" >
+        </activity>
+        <activity
+            android:name=".PushWrapperActivity"
+            android:label="@string/title_activity_push_wrapper" >
+        </activity>
     </application>
 
 </manifest>
