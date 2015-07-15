@@ -15,6 +15,7 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_closed">Close</string>
     <string name="there_is_no_more">下面已经什么都没有啦</string>
+    <string name="loading">正在加载</string>
     <string name="remove">移除</string>
     <string name="add">添加</string>
     <string name="accept">接受</string>
@@ -22,6 +23,7 @@
     <string name="invite">邀请</string>
     <string name="save">保存</string>
     <string name="failed">失败了</string>
+    <string name="counter_ge">"%d个"</string>
 
     <!-- For MainActivity -->
     <string name="title_koolew">可见</string>
@@ -157,6 +159,11 @@
     <!-- CommonFriendActivity -->
     <string name="common_friend_title">共同好友</string>
 
+    <!-- For TaskActivity -->
+    <string name="title_task">我的任务</string>
+    <string name="friend_task_todo">待完成好友任务</string>
+    <string name="you_have_no_task">你还没有任务呢</string>
+
     <!-- Divider -->
     <string name="title_activity_video_shoot">VideoShootActivity</string>
     <string name="title_activity_first_login">FirstLoginActivity</string>
@@ -177,4 +184,5 @@
     <string name="title_activity_friend_info">FriendInfoActivity</string>
     <string name="title_activity_common_topic">CommonTopicActivity</string>
     <string name="title_activity_common_friend">CommonFriendActivity</string>
+    <string name="title_activity_task">TaskActivity</string>
 </resources>

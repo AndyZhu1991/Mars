@@ -97,6 +97,11 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
                 JSONObject result = jsonObject.getJSONObject("result");
 
                 JSONObject user = result.getJSONObject("user");
+                String avatar = user.getString("avatar");
+                ImageLoader.getInstance().displayImage(avatar, mAvatar);
+                new DisplayBlurImage(mBlurAvatar, avatar).execute();
+                mNickname.setText(user.getString("nickname"));
+
                 mKooCountView.setCount(user.getInt("koo_num"));
 
                 JSONArray topic = result.getJSONArray("topic");

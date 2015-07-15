@@ -5,11 +5,25 @@
     android:layout_height="30dp"
     android:minHeight="30dp">
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        android:layout_gravity="center"/>
+    <LinearLayout
+        android:id="@+id/progress_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="15dp"
+            android:layout_height="15dp"/>
+        <TextView
+            android:id="@+id/loading_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loading"
+            android:textSize="14sp"
+            android:textColor="@android:color/white"/>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/no_more_hint_label"

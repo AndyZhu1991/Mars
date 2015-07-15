@@ -1,6 +1,7 @@
 package com.koolew.mars.utils;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -115,5 +116,11 @@ public class Utils {
         }
 
         return new Rect(x, y, x + size, y + size);
+    }
+
+    public static float getTextWidth(String text, float textSize) {
+        Paint paint = new Paint();
+        paint.setTextSize(textSize);
+        return paint.measureText(text);
     }
 }

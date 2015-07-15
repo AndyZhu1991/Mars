@@ -2,11 +2,11 @@ package com.koolew.mars.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.koolew.mars.R;
 
@@ -24,6 +24,9 @@ public class LoadMoreFooter extends FrameLayout implements AbsListView.OnScrollL
     private View mProgressFrame;
     private View mNoMoreHintFrame;
 
+    private TextView mLoadingText;
+    private TextView mNoMoreText;
+
     public LoadMoreFooter(Context context) {
         this(context, null);
     }
@@ -39,10 +42,18 @@ public class LoadMoreFooter extends FrameLayout implements AbsListView.OnScrollL
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mProgressFrame = findViewById(R.id.progress);
+        mProgressFrame = findViewById(R.id.progress_frame);
         mNoMoreHintFrame = findViewById(R.id.no_more_hint_label);
+
+        mLoadingText = (TextView) findViewById(R.id.loading_text);
+        mNoMoreText = (TextView) mNoMoreHintFrame;
     }
 
+
+    public void setTextColor(int color) {
+        mLoadingText.setTextColor(color);
+        mNoMoreText.setTextColor(color);
+    }
 
     public void setup(ListView listView) {
         setup(listView, null);

@@ -1,5 +1,6 @@
 package com.koolew.mars;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -83,6 +84,15 @@ public class KoolewFragment extends MainBaseFragment {
         mToolbarInterface.setTopIconImageResource(1, R.mipmap.ic_task);
 
         return root;
+    }
+
+    @Override
+    public void onTopIconClick(int position) {
+        if (position == 0) {
+        }
+        else if (position == 1) {
+            startActivity(new Intent(getActivity(), TaskActivity.class));
+        }
     }
 
     private void initSubPageColors() {

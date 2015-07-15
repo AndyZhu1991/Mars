@@ -124,6 +124,9 @@ public class MainActivity extends FragmentActivity
         mTopIcons[1]         = (ImageView) findViewById(R.id.top_icon2);
         mTopNotifications[1] = findViewById(R.id.top_notification2);
 
+        mTopIconLayouts[0].setOnClickListener(this);
+        mTopIconLayouts[1].setOnClickListener(this);
+
         switchFragment(0);
         configureDrawer();
 

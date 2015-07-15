@@ -72,6 +72,18 @@
     <dimen name="request_password_button_corner_radius">20dp</dimen>
     <dimen name="request_password_text_size">16sp</dimen>
 
+    <!-- For TaskActivity -->
+    <dimen name="task_activity_bg_corner_radius">4dp</dimen>
+
+    <!-- For task item -->
+    <dimen name="task_item_margin">5dp</dimen>
+    <dimen name="task_item_bottom_left_padding">23dp</dimen>
+    <dimen name="task_item_bottom_right_padding">18dp</dimen>
+    <dimen name="task_item_topic_item_right_margin">5dp</dimen>
+    <dimen name="task_item_topic_item_lr_padding">5dp</dimen>
+    <dimen name="task_item_topic_item_min_width">40dp</dimen>
+    <dimen name="task_item_topic_item_text_size">12sp</dimen>
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>

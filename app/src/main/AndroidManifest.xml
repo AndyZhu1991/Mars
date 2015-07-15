@@ -123,6 +123,10 @@
             android:name=".CommonFriendActivity"
             android:label="@string/title_activity_common_friend" >
         </activity>
+        <activity
+            android:name=".TaskActivity"
+            android:label="@string/title_activity_task" >
+        </activity>
     </application>
 
 </manifest>
