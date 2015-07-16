@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.utils.UriProcessor;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.BannerPagerIndicator;
@@ -49,6 +52,9 @@ public class TaskActivity extends Activity
     private ListView mListView;
     private TaskAdapter mListAdapter;
 
+    private JsonObjectRequest mRefreshRequest;
+    private JsonObjectRequest mLoadMoreRequest;
+
     private UriProcessor mUriProcesser;
 
     @Override
@@ -74,6 +80,7 @@ public class TaskActivity extends Activity
         mRefreshLayout.setColorSchemeResources(R.color.koolew_light_green);
         mRefreshLayout.setOnRefreshListener(this);
         mListView = (ListView) findViewById(R.id.list_view);
+        mListView.setOnItemClickListener(mOnFriendTasksClickListener);
 
         mHeaderView = LayoutInflater.from(this).inflate(R.layout.task_activity_list_header, null);
         mViewPager = (ViewPager) mHeaderView.findViewById(R.id.view_pager);
@@ -104,7 +111,11 @@ public class TaskActivity extends Activity
     }
 
     private void doRefresh() {
-        ApiWorker.getInstance().requestTask(mRefreshListener, null);
+        if (mLoadMoreRequest != null) {
+            mLoadMoreRequest.cancel();
+            mLoadMoreRequest = null;
+        }
+        mRefreshRequest = ApiWorker.getInstance().requestTask(mRefreshListener, null);
     }
 
     @Override
@@ -114,13 +125,21 @@ public class TaskActivity extends Activity
 
     @Override
     public void onLoad() {
-        ApiWorker.getInstance().requestTask(mListAdapter.getLastCardTime(), mLoadMoreListener, null);
+        if (mRefreshRequest != null) {
+            mRefreshRequest.cancel();
+            mRefreshRequest = null;
+        }
+        mLoadMoreRequest = ApiWorker.getInstance().
+                requestTask(mListAdapter.getLastCardTime(), mLoadMoreListener, null);
     }
 
     private Response.Listener<JSONObject> mRefreshListener = new Response.Listener<JSONObject>() {
         @Override
         public void onResponse(JSONObject jsonObject) {
-            mRefreshLayout.setRefreshing(false);
+            if (mRefreshRequest != null) {
+                mRefreshLayout.setRefreshing(false);
+                mRefreshRequest = null;
+            }
 
             try {
                 if (jsonObject.getInt("code") == 0) {
@@ -156,7 +175,11 @@ public class TaskActivity extends Activity
     private Response.Listener<JSONObject> mLoadMoreListener = new Response.Listener<JSONObject>() {
         @Override
         public void onResponse(JSONObject jsonObject) {
-            mListFooter.loadComplete();
+            if (mLoadMoreRequest != null) {
+                mListFooter.loadComplete();
+                mLoadMoreRequest = null;
+            }
+
             try {
                 if (jsonObject.getInt("code") == 0) {
                     JSONObject result = jsonObject.getJSONObject("result");
@@ -186,9 +209,21 @@ public class TaskActivity extends Activity
         }
     };
 
-    private View.OnClickListener mOnFriendTasksClickListener = new View.OnClickListener() {
+    private AbsListView.OnItemClickListener mOnFriendTasksClickListener = new AbsListView.OnItemClickListener() {
         @Override
-        public void onClick(View v) {
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            position--; // Header?
+            if (position < mListAdapter.getCount()) {
+                Intent intent = new Intent(TaskActivity.this, FriendTaskActivity.class);
+                try {
+                    JSONObject user = ((JSONObject) mListAdapter.getItem(position)).getJSONObject("user");
+                    intent.putExtra(FriendTaskActivity.KEY_UID, user.getString("uid"));
+                    intent.putExtra(FriendTaskActivity.KEY_NICKNAME, user.getString("nickname"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                startActivity(intent);
+            }
         }
     };
 
@@ -252,6 +287,7 @@ public class TaskActivity extends Activity
         }
     }
 
+
     class TaskAdapter extends BaseAdapter {
 
         private List<JSONObject> mData = new ArrayList<JSONObject>();
@@ -310,7 +346,6 @@ public class TaskActivity extends Activity
                 holder.topicLayout = (LinearLayout) convertView.findViewById(R.id.topic_layout);
                 convertView.setTag(holder);
 
-                convertView.setOnClickListener(mOnFriendTasksClickListener);
                 holder.avatar.setOnClickListener(mOnAvatarClickListener);
             }
 

@@ -139,6 +139,10 @@
             android:name=".PushWrapperActivity"
             android:label="@string/title_activity_push_wrapper" >
         </activity>
+        <activity
+            android:name=".FriendTaskActivity"
+            android:label="@string/title_activity_friend_task" >
+        </activity>
     </application>
 
 </manifest>

@@ -217,6 +217,18 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.getTaskUrl(before), listener, errorListener);
     }
 
+    public JsonObjectRequest requestTaskDetail(String uid,
+                                               Response.Listener<JSONObject> listener,
+                                               Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getTaskDetailUrl(uid), listener, errorListener);
+    }
+
+    public JsonObjectRequest requestTaskDetail(String uid, long before,
+                                               Response.Listener<JSONObject> listener,
+                                               Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getTaskDetailUrl(uid, before), listener, errorListener);
+    }
+
 
     private JsonObjectRequest standardGetRequest(String url,
                                                  Response.Listener<JSONObject> listener,

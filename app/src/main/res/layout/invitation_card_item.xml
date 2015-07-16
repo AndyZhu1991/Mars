@@ -1,84 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@color/koolew_list_background">
-
-<LinearLayout
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="160dp"
-    android:minHeight="160dp"
-    android:layout_marginLeft="@dimen/topic_invitation_card_margin"
-    android:layout_marginTop="@dimen/topic_invitation_card_margin"
-    android:layout_marginRight="@dimen/topic_invitation_card_margin"
-    android:padding="@dimen/topic_invitation_card_padding"
-    android:background="@drawable/topic_card_out_shape">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_marginBottom="2.5dp"
+        android:layout_marginLeft="@dimen/topic_invitation_card_margin"
+        android:layout_marginRight="@dimen/topic_invitation_card_margin"
+        android:layout_marginTop="2.5dp"
         android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:background="@drawable/topic_item_inner_shape">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:id="@+id/invitation_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/koolew_deep_green"/>
-
-        <TextView
-            android:id="@+id/topic_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="14sp"
-            android:maxLines="3"/>
+        android:background="@drawable/topic_card_out_shape"
+        android:padding="@dimen/topic_invitation_card_padding">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:background="@drawable/invitation_item_inner_bg"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="11dp"
-                android:layout_height="8dp"
-                android:src="@mipmap/ic_video"
-                android:layout_gravity="center_vertical"/>
             <TextView
-                android:id="@+id/video_count"
+                android:id="@+id/topic_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="7dp"
+                android:gravity="center_horizontal"
+                android:maxLines="3"
+                android:textSize="14sp"
+                android:textColor="@color/koolew_gray"/>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="10sp"/>
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="11dp"
+                    android:layout_height="8dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@mipmap/ic_video_gray" />
+
+                <TextView
+                    android:id="@+id/video_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="10sp"
+                    android:textColor="#9EADB7"/>
+            </LinearLayout>
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_height="1dp"
+            android:background="@mipmap/horizontal_dash_line"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="66dp">
+
+            <ImageView
+                android:id="@+id/btn_accept"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_centerInParent="true"
+                android:background="@android:color/transparent"
+                android:src="@mipmap/btn_accept_invitation" />
+        </RelativeLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="66dp"
-        android:gravity="center">
-
-        <ImageButton
-            android:id="@+id/btn_accept"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:background="@android:color/transparent"
-            android:src="@mipmap/btn_accept_invitation"/>
-    </LinearLayout>
-</LinearLayout>
-
-</RelativeLayout>
+    <ImageView
+        android:id="@+id/btn_remove"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="2.5dp"
+        android:src="@mipmap/ic_remove"/>
+</FrameLayout>
