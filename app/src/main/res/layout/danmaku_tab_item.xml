@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:RoundedImageView="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="2.5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="2.5dp"
+        android:padding="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/danmaku_tab_item_bg">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/thumb"
+            android:layout_width="60dp"
+            android:layout_height="45dp"
+            android:scaleType="centerCrop"
+            RoundedImageView:riv_corner_radius="4dp"/>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:textSize="12sp"
+            android:textColor="@color/koolew_gray"/>
+
+        <com.koolew.mars.view.NotificationPointView
+            android:id="@+id/notify_count"
+            android:layout_width="15dp"
+            android:layout_height="15dp" />
+
+        <ImageView
+            android:layout_width="7dp"
+            android:layout_height="12dp"
+            android:layout_marginLeft="5dp"
+            android:src="@mipmap/into_arrow"/>
+    </LinearLayout>
+</RelativeLayout>

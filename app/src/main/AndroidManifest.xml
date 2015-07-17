@@ -143,6 +143,10 @@
             android:name=".SendDanmakuActivity"
             android:label="@string/title_activity_send_danmaku" >
         </activity>
+        <activity
+            android:name=".DanmakuTabActivity"
+            android:label="@string/title_activity_danmaku_tab" >
+        </activity>
     </application>
 
 </manifest>

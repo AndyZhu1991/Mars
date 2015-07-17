@@ -89,6 +89,7 @@ public class KoolewFragment extends MainBaseFragment {
     @Override
     public void onTopIconClick(int position) {
         if (position == 0) {
+            startActivity(new Intent(getActivity(), DanmakuTabActivity.class));
         }
         else if (position == 1) {
             startActivity(new Intent(getActivity(), TaskActivity.class));

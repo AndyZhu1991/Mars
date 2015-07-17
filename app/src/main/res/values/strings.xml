@@ -25,6 +25,7 @@
     <string name="failed">失败了</string>
     <string name="counter_ge">"%d个"</string>
     <string name="cancel">取消</string>
+    <string name="danmaku">弹幕</string>
 
     <!-- For MainActivity -->
     <string name="title_koolew">可见</string>
@@ -201,4 +202,5 @@
     <string name="title_activity_push_wrapper">PushWrapperActivity</string>
     <string name="title_activity_friend_task">FriendTaskActivity</string>
     <string name="title_activity_send_danmaku">SendDanmakuActivity</string>
+    <string name="title_activity_danmaku_tab">DanmakuTabActivity</string>
 </resources>

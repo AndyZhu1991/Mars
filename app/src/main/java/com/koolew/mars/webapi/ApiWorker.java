@@ -229,6 +229,17 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.getTaskDetailUrl(uid, before), listener, errorListener);
     }
 
+    public JsonObjectRequest requestDanmakuTab(Response.Listener<JSONObject> listener,
+                                               Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.DANMAKU_TAB_URL, listener, errorListener);
+    }
+
+    public JsonObjectRequest requestDanmakuTab(long before,
+                                               Response.Listener<JSONObject> listener,
+                                               Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getDanmakuTabUrl(before), listener, errorListener);
+    }
+
     public JsonObjectRequest sendDanmaku(String content, String videoId, float showTime,
                                          float x, float y,
                                          Response.Listener<JSONObject> listener,

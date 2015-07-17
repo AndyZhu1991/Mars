@@ -39,6 +39,7 @@ public class UrlHelper {
     private static final String FRIEND_PROFILE_URL = V2_URL + "profile";
     public static final String TASK_URL = V2_URL + "task";
     private static final String TASK_DETAIL_URL = V2_URL + "task/detail";
+    public static final String DANMAKU_TAB_URL = V2_URL + "activity/comment";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
@@ -104,6 +105,12 @@ public class UrlHelper {
     public static String getTaskDetailUrl(String uid, long before) {
         return new GetUrlBuilder(TASK_DETAIL_URL)
                 .addParameter("uid", uid)
+                .addParameter("before", before)
+                .build();
+    }
+
+    public static String getDanmakuTabUrl(long before) {
+        return new GetUrlBuilder(DANMAKU_TAB_URL)
                 .addParameter("before", before)
                 .build();
     }
