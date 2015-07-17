@@ -229,6 +229,25 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.getTaskDetailUrl(uid, before), listener, errorListener);
     }
 
+    public JsonObjectRequest sendDanmaku(String content, String videoId, float showTime,
+                                         float x, float y,
+                                         Response.Listener<JSONObject> listener,
+                                         Response.ErrorListener errorListener) {
+        JSONObject requestJson = new JSONObject();
+        try {
+            requestJson.put("content", content);
+            requestJson.put("video_id", videoId);
+            requestJson.put("show_time", showTime);
+            JSONObject position = new JSONObject();
+            position.put("x", x);
+            position.put("y", y);
+            requestJson.put("position", position);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.SEND_DANMAKU_URL, requestJson, listener, errorListener);
+    }
+
 
     private JsonObjectRequest standardGetRequest(String url,
                                                  Response.Listener<JSONObject> listener,

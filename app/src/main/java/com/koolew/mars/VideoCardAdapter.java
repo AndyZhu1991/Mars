@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.koolew.mars.utils.Utils;
@@ -40,6 +41,8 @@ public class VideoCardAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
     private List<JSONObject> mData;
+
+    private OnDanmakuSendListener mDanmakuSendListener;
 
 
     public VideoCardAdapter(Context context) {
@@ -120,6 +123,8 @@ public class VideoCardAdapter extends BaseAdapter {
             holder.avatar = (CircleImageView) convertView.findViewById(R.id.avatar);
             holder.nickname = (TextView) convertView.findViewById(R.id.nickname);
             holder.videoDate = (TextView) convertView.findViewById(R.id.video_date);
+            holder.danmakuSendLayout = (LinearLayout) convertView.findViewById(R.id.danmaku_send_layout);
+            holder.danmakuSendLayout.setOnClickListener(mOnDanmakuSendClickListener);
         }
 
         try {
@@ -133,6 +138,8 @@ public class VideoCardAdapter extends BaseAdapter {
             holder.videoDate.setText(new SimpleDateFormat("yyyy-MM-dd").
                     format(new Date(mData.get(position).getLong("create_time"))));
             holder.videoLayout.setTag(mData.get(position).getString("video_url"));
+
+            holder.danmakuSendLayout.setTag(mData.get(position));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -168,6 +175,23 @@ public class VideoCardAdapter extends BaseAdapter {
         return -1;
     }
 
+    public void setOnDanmakuSendListener(OnDanmakuSendListener listener) {
+        mDanmakuSendListener = listener;
+    }
+
+    private View.OnClickListener mOnDanmakuSendClickListener  = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (mDanmakuSendListener != null) {
+                mDanmakuSendListener.onDanmakuSend((JSONObject) v.getTag());
+            }
+        }
+    };
+
+    interface OnDanmakuSendListener {
+        void onDanmakuSend(JSONObject videoItem);
+    }
+
     public static class ViewHolder {
 
         public FrameLayout videoLayout;
@@ -176,5 +200,7 @@ public class VideoCardAdapter extends BaseAdapter {
         public CircleImageView avatar;
         public TextView nickname;
         public TextView videoDate;
+
+        public LinearLayout danmakuSendLayout;
     }
 }

@@ -1,14 +1,10 @@
 package com.koolew.mars.danmaku;
 
-import android.animation.Animator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,26 +33,20 @@ public class DanmakuShowManager {
     private static final int GRADUAL_OUT_TIME = 500;
     private static final int DANMAKU_TOTAL_TIME = GRADUAL_IN_TIME + KEEP_TIME + GRADUAL_OUT_TIME;
 
-    private FrameLayout mContainer;
+    private ViewGroup mContainer;
     private Context mContext;
     private ArrayList<DanmakuItemInfo> mDanmakuList;
     private View[] mDanmakuViews;
-
-    private int containerWidth;
-    private int containerHeight;
 
     private LayoutInflater mInflater;
 
     private DanmakuViewPool mViewPool;
 
-    public DanmakuShowManager(Context context, FrameLayout container,
+    public DanmakuShowManager(Context context, ViewGroup container,
             ArrayList<DanmakuItemInfo> danmakuList) {
         mContainer = container;
         mContext = context;
         mDanmakuList = danmakuList;
-
-        containerWidth = mContainer.getWidth();
-        containerHeight = mContainer.getHeight();
 
         mDanmakuViews = new View[mDanmakuList.size()];
         mInflater = LayoutInflater.from(mContext);
@@ -128,12 +118,11 @@ public class DanmakuShowManager {
         }
         holder.message.setTextColor(danmakuColor);
 
-        FrameLayout.LayoutParams dlp = new FrameLayout.LayoutParams(
+        ViewGroup.LayoutParams dlp = new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dlp.leftMargin = (int) (containerWidth * info.x);
-        dlp.topMargin = (int) (containerHeight * info.y);
-        Log.d(TAG, containerWidth + ", " + info.x + ", " + containerHeight + ", " + info.y);
         danmakuView.setLayoutParams(dlp);
+        danmakuView.setX(mContainer.getWidth() * info.x);
+        danmakuView.setY(mContainer.getHeight() * info.y);
 
         mContainer.addView(danmakuView);
     }
@@ -160,59 +149,6 @@ public class DanmakuShowManager {
         else {
             return 0.0f;
         }
-    }
-
-    private void showDanmaku(DanmakuItemInfo danmakuInfo) {
-        View danmaku = mInflater.inflate(R.layout.danmaku_item, null);
-        ImageLoader.getInstance().displayImage(danmakuInfo.avatar,
-                (ImageView) danmaku.findViewById(R.id.avatar));
-        TextView messageView = (TextView) danmaku.findViewById(R.id.message);
-        messageView.setText(danmakuInfo.content);
-
-        ViewGroup.LayoutParams containerLp = mContainer.getLayoutParams();
-        FrameLayout.LayoutParams danmakuLp = new FrameLayout.LayoutParams(danmaku.getLayoutParams());
-        danmakuLp.leftMargin = (int) (containerLp.width * danmakuInfo.x);
-        danmakuLp.topMargin = (int) (containerLp.height * danmakuInfo.y);
-
-        mContainer.addView(danmaku, danmakuLp);
-        setupAnimation(danmaku);
-    }
-
-    private void setupAnimation(final View danmaku) {
-        ValueAnimator va = ValueAnimator.ofInt(0, GRADUAL_IN_TIME + KEEP_TIME + GRADUAL_OUT_TIME);
-        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int value = (Integer) animation.getAnimatedValue();
-                if (value < GRADUAL_IN_TIME) {
-                    danmaku.setAlpha(1.0f * value / GRADUAL_IN_TIME);
-                }
-                else if (value > GRADUAL_IN_TIME + KEEP_TIME) {
-                    danmaku.setAlpha(1.0f - 1.0f * (value - (GRADUAL_IN_TIME + KEEP_TIME)) / GRADUAL_OUT_TIME);
-                }
-            }
-        });
-        va.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mContainer.removeView(danmaku);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
     }
 
     class ViewHolder {

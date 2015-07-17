@@ -107,8 +107,8 @@
     <orderEntry type="library" exported="" name="support-v4-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="weibosdkcore_v3.0.1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.2.0" level="project" />
-    <orderEntry type="library" exported="" name="isoparser-1.0.6" level="project" />
     <orderEntry type="library" exported="" name="qiniu-android-sdk-7.0.6.1" level="project" />
+    <orderEntry type="library" exported="" name="isoparser-1.0.6" level="project" />
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.3" level="project" />
   </component>
 </module>

@@ -16,8 +16,8 @@ import com.koolew.mars.R;
  * */
 public class MaxLengthWatcher implements TextWatcher {
 
-    private int maxLen = 0;
-    private EditText editText = null;
+    protected int maxLen = 0;
+    protected EditText editText = null;
 
 
     public MaxLengthWatcher(int maxLen, EditText editText) {

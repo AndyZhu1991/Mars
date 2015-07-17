@@ -11,6 +11,8 @@ public class AppProperty {
 
     public static final String DEFAULT_AVATAR_URL = "http://avatar.koolew.com/default_avatar.jpg";
 
+    public static final int DANMAKU_MAX_WORD = 15;
+
     public static int getNicknameMaxLen() {
         return 10;
     }

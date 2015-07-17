@@ -76,13 +76,15 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/danmaku_send_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="15dp"
         android:layout_marginTop="33dp"
         android:layout_alignParentRight="true"
         android:layout_below="@id/video_layout"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:clickable="true">
 
         <TextView
             android:layout_width="wrap_content"

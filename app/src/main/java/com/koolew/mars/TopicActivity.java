@@ -21,9 +21,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.danmaku.DanmakuItemInfo;
 import com.koolew.mars.danmaku.DanmakuShowManager;
+import com.koolew.mars.danmaku.DanmakuThread;
 import com.koolew.mars.utils.VideoLoader;
 import com.koolew.mars.view.LoadMoreFooter;
-import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONArray;
@@ -38,7 +38,8 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 public class TopicActivity extends Activity implements AbsListView.OnScrollListener,
         IMediaPlayer.OnPreparedListener, IMediaPlayer.OnCompletionListener, View.OnClickListener,
-        LoadMoreFooter.OnLoadListener, SwipeRefreshLayout.OnRefreshListener {
+        LoadMoreFooter.OnLoadListener, SwipeRefreshLayout.OnRefreshListener,
+        VideoCardAdapter.OnDanmakuSendListener {
 
     private static final String TAG = "koolew-TopicActivity";
 
@@ -158,6 +159,7 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
             mRefreshRequest = null;
             mAdapter = new VideoCardAdapter(TopicActivity.this);
             mAdapter.setData(response);
+            mAdapter.setOnDanmakuSendListener(TopicActivity.this);
             isFirstPlay = true;
             mListView.setAdapter(mAdapter);
 
@@ -304,6 +306,12 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
     }
 
 
+    public void onDanmakuSend(JSONObject videoItem) {
+        Intent intent = new Intent(this, SendDanmakuActivity.class);
+        intent.putExtra(SendDanmakuActivity.KEY_VIDEO_JSON, videoItem.toString());
+        startActivity(intent);
+    }
+
     class TopicVideoLoader extends VideoLoader {
         public TopicVideoLoader(Context context) {
             super(context);
@@ -396,7 +404,17 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
             JSONArray danmakuArray = currentItemData.getJSONArray("comment");
             mDanmakuManager = new DanmakuShowManager(this, mCurrentVideoLayout,
                     DanmakuItemInfo.fromJSONArray(danmakuArray));
-            mDanmakuThread = new DanmakuThread();
+            mDanmakuThread = new DanmakuThread(this, mDanmakuManager, new DanmakuThread.PlayerWrapper() {
+                @Override
+                public long getCurrentPosition() {
+                    return mIjkPlayer.getCurrentPosition();
+                }
+
+                @Override
+                public boolean isPlaying() {
+                    return mIjkPlayer.isPlaying();
+                }
+            });
             mDanmakuThread.start();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -407,55 +425,6 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
         if (mDanmakuThread != null) {
             mDanmakuThread.stopDanmaku();
             mDanmakuThread = null;
-        }
-    }
-
-    class DanmakuThread extends Thread {
-        private long lastPosition;
-        private boolean runDanmaku;
-
-        @Override
-        public void run() {
-            lastPosition = 0;
-            runDanmaku = true;
-            while (runDanmaku) {
-                if (mIjkPlayer != null && mIjkPlayer.isPlaying()) {
-                    long currentPosition = mIjkPlayer.getCurrentPosition();
-                    if (currentPosition < lastPosition) {
-                        danmakuManagerClear();
-                    }
-                    danmakuManagerUpdate((int) currentPosition);
-                    lastPosition = currentPosition;
-                }
-
-                try {
-                    Thread.sleep(40); // 40ms is 1 frame
-                } catch (InterruptedException e) {
-                }
-            }
-            danmakuManagerClear();
-        }
-
-        void stopDanmaku() {
-            runDanmaku = false;
-        }
-
-        private void danmakuManagerClear() {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mDanmakuManager.clear();
-                }
-            });
-        }
-
-        private void danmakuManagerUpdate(final int millis) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mDanmakuManager.update(millis);
-                }
-            });
         }
     }
 }

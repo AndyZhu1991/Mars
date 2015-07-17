@@ -31,6 +31,7 @@ public class UrlHelper {
     public static final String KOO_RANK_URL = V1_URL + "koo/rank";
     private static final String COMMON_TOPIC_URL = V1_URL + "profile/topic/common";
     private static final String COMMON_FRIEND_URL = V1_URL + "profile/friend/common";
+    public static final String SEND_DANMAKU_URL = V1_URL + "comment";
 
     // v2 api
     public static final String INVOLVE_URL = V2_URL + "feeds/involve";
