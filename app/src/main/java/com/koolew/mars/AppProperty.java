@@ -5,6 +5,7 @@ package com.koolew.mars;
  */
 public class AppProperty {
 
+    public static final float RECORD_VIDEO_MAX_LEN = 9.0f; // second
     public static final int RECORD_VIDEO_WIDTH = 480;
     public static final int RECORD_VIDEO_HEIGHT = 360;
     public static final int RECORD_VIDEO_FPS = 25;

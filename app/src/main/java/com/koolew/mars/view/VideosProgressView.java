@@ -5,14 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
+import com.koolew.mars.AppProperty;
 import com.koolew.mars.R;
 import com.koolew.mars.utils.Utils;
+import com.koolew.mars.video.VideoRecordingSession;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,9 +22,11 @@ public class VideosProgressView extends View {
 
     private static final String TAG = "koolew-VideosProgressV";
 
-    private static final float TOTAL_LENGTH = 9.0f; // second
+    private static final long TOTAL_LENGTH = (long) (AppProperty.RECORD_VIDEO_MAX_LEN * 1000);
 
-    private List<ProgressItem> mVideosTime;
+    private VideoRecordingSession mRecordingSession;
+
+    private long mCurrentRecordingStartMillis = 0;
 
     private Paint mProgressPaint;
     private Paint mDividerPaint;
@@ -45,7 +46,6 @@ public class VideosProgressView extends View {
 
         setBackgroundColor(getResources().getColor(android.R.color.black));
 
-        mVideosTime = new LinkedList<ProgressItem>();
         mProgressPaint = new Paint();
         mProgressPaint.setColor(getResources().getColor(R.color.progressing_color));
         mDividerPaint = new Paint();
@@ -57,8 +57,12 @@ public class VideosProgressView extends View {
         dividerWidth = 1; // px
     }
 
+    public void setRecordingSession(VideoRecordingSession recordingSession) {
+        mRecordingSession = recordingSession;
+    }
+
     public void start() {
-        mVideosTime.add(new ProgressItem(System.currentTimeMillis()));
+        mCurrentRecordingStartMillis = System.currentTimeMillis();
         mTimer = new Timer();
         mTimer.schedule(new TimerTask() {
             @Override
@@ -70,9 +74,8 @@ public class VideosProgressView extends View {
 
     public void finish() {
         mTimer.cancel();
-        ProgressItem lastProgress = mVideosTime.get(mVideosTime.size() - 1);
-        if (lastProgress.endMillis == 0) {
-            lastProgress.endMillis = System.currentTimeMillis();
+        if (mCurrentRecordingStartMillis != 0) {
+            mCurrentRecordingStartMillis = 0;
         }
         else {
             throw new IllegalStateException("Progress already finished!");
@@ -81,82 +84,51 @@ public class VideosProgressView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        int count = mVideosTime.size();
-        Log.d(TAG, "onDraw, count = " + count);
+        if (mRecordingSession == null) {
+            return;
+        }
+
+        int count = mRecordingSession.getVideoCount();
         for (int i = 0; i < count; i++) {
-            ProgressItem currentItem = mVideosTime.get(i);
-            long startTime = currentItem.startMillis;
-            long endTime = currentItem.endMillis == 0 ?
-                    System.currentTimeMillis() : currentItem.endMillis;
-            int left = getFrontPixelWidth(i);
+            int left = millis2Pixels(mRecordingSession.getFrontVideoLength(i));
             int top = 0;
-            int right = left + getPixelByTime((endTime - startTime) / 1000.0f);
+            int right = left + millis2Pixels(mRecordingSession.get(i).getVideoLength());
             int bottom = getHeight();
 
-            if (right > Utils.getScreenWidthPixel(getContext())) {
-                right = Utils.getScreenWidthPixel(getContext());
+            if (right > getWidth()) {
+                right = getWidth();
             }
 
-            if (currentItem.endMillis != 0) {
-                canvas.drawRect(left, top, right - dividerWidth, bottom, mProgressPaint);
-                canvas.drawRect(right - dividerWidth, top, right, bottom, mDividerPaint);
-            }
-            else {
-                canvas.drawRect(left, top, right, bottom, mProgressPaint);
-            }
+            canvas.drawRect(left, top, right - dividerWidth, bottom, mProgressPaint);
+            canvas.drawRect(right - dividerWidth, top, right, bottom, mDividerPaint);
 
             if (right >= Utils.getScreenWidthPixel(getContext())) {
                 break;
             }
         }
 
-        String timeString = getResources().getString(R.string.time_text, getTotalTime());
+        if (mCurrentRecordingStartMillis != 0) {
+            int left = millis2Pixels(mRecordingSession.getFrontVideoLength(count));
+            if (left < getWidth()) {
+                int top = 0;
+                int right = left + millis2Pixels(
+                        System.currentTimeMillis() - mCurrentRecordingStartMillis);
+                int bottom = getHeight();
+                canvas.drawRect(left, top, right, bottom, mProgressPaint);
+            }
+        }
+
+        long currentRecordingLength = mCurrentRecordingStartMillis == 0 ? 0
+                : System.currentTimeMillis() - mCurrentRecordingStartMillis;
+        String timeString = getResources().getString(R.string.time_text,
+                (mRecordingSession.getTotalVideoLength() + currentRecordingLength) / 1000.0f);
         Rect textRect = new Rect();
         mTextPaint.getTextBounds(timeString, 0, timeString.length(), textRect);
-        canvas.drawText(timeString, Utils.getScreenWidthPixel(getContext())
-                - Utils.spToPixels(getContext(), 10) - textRect.width(),
+        canvas.drawText(timeString, getWidth() - Utils.spToPixels(getContext(), 10) - textRect.width(),
                 (getHeight() + textRect.height()) / 2, mTextPaint);
     }
 
-    private int getFrontPixelWidth(int index) {
-        return getPixelByTime(getFrontTime(index));
-    }
-
-    private float getTotalTime() {
-        return getFrontTime(mVideosTime.size());
-    }
-
-    private float getFrontTime(int index) {
-        float frontVideoTime = 0.0f;
-        for (int i = 0; i < index; i++) {
-            ProgressItem time = mVideosTime.get(i);
-            frontVideoTime += ((0 == time.endMillis ? System.currentTimeMillis() : time.endMillis)
-                                   - time.startMillis) / 1000.0f;
-        }
-        return frontVideoTime;
-    }
-
-    private int getPixelByTime(float time/*second*/) {
-        return (int) (Utils.getScreenWidthPixel(getContext()) * (time / TOTAL_LENGTH));
-    }
-
-    class ProgressItem {
-        long startMillis;
-        long endMillis;
-
-        ProgressItem() {
-            startMillis = 0;
-            endMillis = 0;
-        }
-
-        ProgressItem(long startMillis) {
-            this.startMillis = startMillis;
-            endMillis = 0;
-        }
-
-        ProgressItem(long startMillis, long endMillis) {
-            this.startMillis = startMillis;
-            this.endMillis = endMillis;
-        }
+    private int millis2Pixels(long millis) {
+        return (int) (getWidth() * (1.0f * millis / TOTAL_LENGTH));
     }
 }

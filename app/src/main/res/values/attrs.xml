@@ -30,4 +30,9 @@
     <declare-styleable name="BannerPagerIndicator">
         <attr name="indicator_size" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="VideoPieceView">
+        <attr name="mark_color" format="color" />
+        <attr name="selected_color" format="color" />
+    </declare-styleable>
 </resources>

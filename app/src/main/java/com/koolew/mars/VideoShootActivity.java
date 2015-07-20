@@ -6,6 +6,7 @@ import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,21 +21,31 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
+import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
+import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
+import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
+import com.h6ah4i.android.widget.advrecyclerview.swipeable.SwipeableItemAdapter;
+import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager;
+import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableSwipeableItemViewHolder;
+import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.koolew.mars.camerautils.CameraSurfacePreview;
 import com.koolew.mars.media.MediaAudioEncoder;
 import com.koolew.mars.media.MediaEncoder;
 import com.koolew.mars.media.MediaMuxerWrapper;
 import com.koolew.mars.media.MediaVideoEncoder;
-import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.RawImageUtil;
 import com.koolew.mars.utils.Utils;
+import com.koolew.mars.utils.ViewUtil;
+import com.koolew.mars.video.VideoRecordingSession;
+import com.koolew.mars.view.VideoPieceView;
 import com.koolew.mars.view.VideosProgressView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class VideoShootActivity extends Activity
         implements OnClickListener, MediaPlayer.OnPreparedListener,
@@ -54,13 +65,16 @@ public class VideoShootActivity extends Activity
     private int previewHeight;
 
     private RecyclerView mRecyclerView;
+    private RecyclerViewDragDropManager mRecyclerViewDragDropManager;
+    private RecyclerViewSwipeManager mRecyclerViewSwipeManager;
+    private RecyclerViewTouchActionGuardManager mRecyclerViewTouchActionGuardManager;
     private VideoItemAdapter mAdapter;
+    private RecyclerView.Adapter mWrappedAdapter;
     private VideosProgressView mVideosProgressView;
     private ImageView mChangeCamera;
 
-    private String currentRecordingDir;
-    private List<VideoItemInfo> mRecordedVideos = new LinkedList<VideoItemInfo>();
-    private String mCurrentRecodingFile;
+    private VideoRecordingSession mRecordingSession;
+    private VideoRecordingSession.VideoPieceItem mCurrentRecodingVideo;
     private boolean isRecording = false;
     private boolean isEncoding = false;
 
@@ -115,7 +129,6 @@ public class VideoShootActivity extends Activity
 
     @Override
     protected void onPause() {
-        Log.d("stdzhu", "onPause");
         super.onPause();
 
         if (mCurrentSurfaceMode == MODE_PREVIEW) {
@@ -135,31 +148,29 @@ public class VideoShootActivity extends Activity
     protected void onDestroy() {
         super.onDestroy();
 
-        new Thread() {
-            @Override public void run() {
-                for (VideoItemInfo info: mRecordedVideos) {
-                    new File(info.path).delete();
-                }
-            }
-        }.start();
+        if (mRecyclerViewDragDropManager != null) {
+            mRecyclerViewDragDropManager.release();
+            mRecyclerViewDragDropManager = null;
+        }
+
+        if (mWrappedAdapter != null) {
+            WrapperAdapterUtils.releaseAll(mWrappedAdapter);
+            mWrappedAdapter = null;
+        }
     }
 
     private void initMembers() {
         mCurrentCamera = Camera.CameraInfo.CAMERA_FACING_BACK;
-        currentRecordingDir = Utils.getCacheDir(this);
-        Log.d(TAG, "current recording dir :" + currentRecordingDir);
+        mRecordingSession = new VideoRecordingSession(this);
         mCurrentSurfaceMode = MODE_PREVIEW;
     }
 
     private void initViews() {
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mAdapter = new VideoItemAdapter();
-        mAdapter.setData(mRecordedVideos);
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        initRecyclerView();
 
         mVideosProgressView = (VideosProgressView) findViewById(R.id.videos_progress);
+        mVideosProgressView.setRecordingSession(mRecordingSession);
         mPreviewFrame = (FrameLayout) findViewById(R.id.preview_frame);
         mChangeCamera = (ImageView) findViewById(R.id.change_camera);
 
@@ -187,6 +198,33 @@ public class VideoShootActivity extends Activity
         findViewById(R.id.close_layout).setOnClickListener(this);
         mChangeCamera.setOnClickListener(this);
         mPlayImage.setOnClickListener(this);
+    }
+
+    private void initRecyclerView() {
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
+        mRecyclerViewDragDropManager = new RecyclerViewDragDropManager();
+        mRecyclerViewDragDropManager.setInitiateOnLongPress(true);
+        mRecyclerViewSwipeManager = new RecyclerViewSwipeManager();
+        // touch guard manager  (this class is required to suppress scrolling while swipe-dismiss animation is running)
+        mRecyclerViewTouchActionGuardManager = new RecyclerViewTouchActionGuardManager();
+        mRecyclerViewTouchActionGuardManager.setInterceptVerticalScrollingWhileAnimationRunning(true);
+        mRecyclerViewTouchActionGuardManager.setEnabled(true);
+
+        mAdapter = new VideoItemAdapter();
+        mWrappedAdapter = mRecyclerViewDragDropManager.createWrappedAdapter(mAdapter);
+        mWrappedAdapter = mRecyclerViewSwipeManager.createWrappedAdapter(mWrappedAdapter);
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(mWrappedAdapter);
+
+        // NOTE:
+        // The initialization order is very important! This order determines the priority of touch event handling.
+        //
+        // priority: TouchActionGuard > Swipe > DragAndDrop
+        mRecyclerViewTouchActionGuardManager.attachRecyclerView(mRecyclerView);
+        mRecyclerViewSwipeManager.attachRecyclerView(mRecyclerView);
+        mRecyclerViewDragDropManager.attachRecyclerView(mRecyclerView);
     }
 
 
@@ -391,14 +429,15 @@ public class VideoShootActivity extends Activity
     }
 
     private void setSelectedVideo(int position) {
-        ImageLoader.getInstance().displayImage("file://" + mRecordedVideos.get(position).path,
+        ImageLoader.getInstance().displayImage(
+                "file://" + mRecordingSession.get(position).getVideoPath(),
                 mVideoThumb, null, null, null);
     }
 
     private void playVideoList() {
         mCurrentPlayedIndex = 0;
         try {
-            mMediaPlayer.setDataSource(mRecordedVideos.get(0).path);
+            mMediaPlayer.setDataSource(mRecordingSession.get(0).getVideoPath());
             mMediaPlayer.prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();
@@ -410,9 +449,9 @@ public class VideoShootActivity extends Activity
         mCurrentPlayedIndex++;
         mMediaPlayer.reset();
 
-        if (mCurrentPlayedIndex < mRecordedVideos.size()) {
+        if (mCurrentPlayedIndex < mRecordingSession.getVideoCount()) {
             try {
-                mMediaPlayer.setDataSource(mRecordedVideos.get(mCurrentPlayedIndex).path);
+                mMediaPlayer.setDataSource(mRecordingSession.get(mCurrentPlayedIndex).getVideoPath());
                 mMediaPlayer.prepareAsync();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -435,7 +474,6 @@ public class VideoShootActivity extends Activity
     @Override
     public void onSeekComplete(MediaPlayer mp) {
         mMediaPlayer.start();
-        Log.d("stdzhu", "seek complete");
     }
 
     private SurfaceHolder.Callback mPlaybackSurfaceCallback = new SurfaceHolder.Callback() {
@@ -461,21 +499,24 @@ public class VideoShootActivity extends Activity
 
 
 
+    private String getCurrentRecordingFile() {
+        return mCurrentRecodingVideo.getVideoPath();
+    }
+
     private void startRecord() {
         try {
-            mCurrentRecodingFile = currentRecordingDir + System.currentTimeMillis() + ".mp4";
-            mMuxer = new MediaMuxerWrapper(mCurrentRecodingFile);
+            mCurrentRecodingVideo = mRecordingSession.new VideoPieceItem();
+            mVideosProgressView.start();
+            mMuxer = new MediaMuxerWrapper(getCurrentRecordingFile());
             mVideoEncoder = new MediaVideoEncoder(mMuxer, mMediaEncoderListener,
                         AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
             new MediaAudioEncoder(mMuxer, mMediaEncoderListener);
             mMuxer.prepare();
             mMuxer.startRecording();
 
-            mVideosProgressView.start();
-
             isRecording = true;
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("IOException: " + e);
         }
     }
 
@@ -485,8 +526,10 @@ public class VideoShootActivity extends Activity
             mMuxer = null;
             // you should not wait here
         }
-        mRecordedVideos.add(new VideoItemInfo(mCurrentRecodingFile));
-        mAdapter.notifyItemInserted(mRecordedVideos.size() - 1);
+        mCurrentRecodingVideo.finishRecord();
+        mRecordingSession.add(mCurrentRecodingVideo);
+        mCurrentRecodingVideo = null;
+        mAdapter.notifyItemInserted(mRecordingSession.getVideoCount() - 1);
 
         mVideosProgressView.finish();
 
@@ -553,16 +596,6 @@ public class VideoShootActivity extends Activity
         if (isRecording) {
             return;
         }
-        try {
-            List<String> videoPathList = new LinkedList<String>();
-            for (VideoItemInfo info: mRecordedVideos) {
-                videoPathList.add(info.path);
-            }
-            Mp4ParserUtil.mp4Cat(videoPathList, currentRecordingDir + "concated.mp4");
-            finish();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void onCloseClick() {
@@ -594,24 +627,24 @@ public class VideoShootActivity extends Activity
         }
     };
 
-    static class VideoItemInfo {
-        String path;
+    class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.ViewHolder>
+            implements DraggableItemAdapter<VideoItemAdapter.ViewHolder>,
+            SwipeableItemAdapter<VideoItemAdapter.ViewHolder> {
 
-        VideoItemInfo(String path) {
-            this.path = path;
-        }
-    }
+        private Set<View> mVideoPieces;
 
-    class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.ViewHolder> {
-
-        private List<VideoItemInfo> mData;
-
-        void setData(List<VideoItemInfo> data) {
-            mData = data;
+        public VideoItemAdapter() {
+            mVideoPieces = new HashSet<>();
+            setHasStableIds(true);
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        public long getItemId(int position) {
+            return mRecordingSession.get(position).getId();
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
             View itemView = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.record_video_item, viewGroup, false);
 
@@ -621,26 +654,107 @@ public class VideoShootActivity extends Activity
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder viewHolder, int i) {
-            ImageLoader.getInstance().displayImage("file://" + mData.get(i).path,
+        public void onBindViewHolder(ViewHolder viewHolder, int position) {
+            ImageLoader.getInstance().displayImage(
+                    "file://" + mRecordingSession.get(position).getVideoPath(),
                     viewHolder.thumbImage, null, null, null);
-            viewHolder.thumbImage.setTag(new Integer(i));
+            viewHolder.thumbImage.setTag(new Integer(position));
+            viewHolder.pieceView.setVideoPieceItem(mRecordingSession.get(position));
+
+            mVideoPieces.add(viewHolder.pieceView);
         }
 
         @Override
         public int getItemCount() {
-            return mData.size();
+            return mRecordingSession.getVideoCount();
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder {
+        @Override
+        public boolean onCheckCanStartDrag(ViewHolder holder, int position, int x, int y) {
+            // x, y --- relative from the itemView's top-left
+            final View containerView = holder.container;
+            final View dragHandleView = holder.dragHandle;
 
+            int offsetX = containerView.getLeft() + (int) (ViewCompat.getTranslationX(containerView) + 0.5f);
+            int offsetY = containerView.getTop() + (int) (ViewCompat.getTranslationY(containerView) + 0.5f);
+
+            return ViewUtil.hitTest(dragHandleView, x - offsetX, y - offsetY);
+        }
+
+        @Override
+        public ItemDraggableRange onGetItemDraggableRange(ViewHolder holder, int position) {
+            return null;
+        }
+
+        @Override
+        public void onMoveItem(int fromPosition, int toPosition) {
+            if (fromPosition == toPosition) {
+                return;
+            }
+
+            mRecordingSession.moveItem(fromPosition, toPosition);
+
+            notifyItemMoved(fromPosition, toPosition);
+            mVideosProgressView.invalidate();
+            for (View piece: mVideoPieces) {
+                piece.invalidate();
+            }
+        }
+
+        @Override
+        public int onGetSwipeReactionType(ViewHolder viewHolder, int position, int x, int y) {
+            return RecyclerViewSwipeManager.REACTION_CAN_SWIPE_RIGHT;
+        }
+
+        @Override
+        public void onSetSwipeBackground(ViewHolder viewHolder, int position, int type) {
+
+        }
+
+        @Override
+        public int onSwipeItem(ViewHolder viewHolder, int position, int result) {
+            switch (result) {
+                // swipe right
+                case RecyclerViewSwipeManager.RESULT_SWIPED_RIGHT:
+                case RecyclerViewSwipeManager.RESULT_SWIPED_LEFT:
+                    return RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_REMOVE_ITEM;
+                // other --- do nothing
+                case RecyclerViewSwipeManager.RESULT_CANCELED:
+                default:
+                    return RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_DEFAULT;
+            }
+        }
+
+        @Override
+        public void onPerformAfterSwipeReaction(ViewHolder viewHolder, int position, int result, int reaction) {
+            if (reaction == RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_REMOVE_ITEM) {
+                mRecordingSession.remove(position);
+                notifyItemRemoved(position);
+                mVideosProgressView.invalidate();
+                for (View piece: mVideoPieces) {
+                    piece.invalidate();
+                }
+            }
+        }
+
+        class ViewHolder extends AbstractDraggableSwipeableItemViewHolder {
+
+            View container;
             ImageView thumbImage;
+            VideoPieceView pieceView;
             ImageView dragHandle;
 
             public ViewHolder(View itemView) {
                 super(itemView);
+                container = itemView.findViewById(R.id.container);
                 thumbImage = (ImageView) itemView.findViewById(R.id.video_thumb);
+                pieceView = (VideoPieceView) itemView.findViewById(R.id.piece_view);
                 dragHandle = (ImageView) itemView.findViewById(R.id.drag_handle);
+            }
+
+            @Override
+            public View getSwipeableContainerView() {
+                return container;
             }
         }
     }
