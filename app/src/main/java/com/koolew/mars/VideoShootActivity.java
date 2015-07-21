@@ -1,10 +1,13 @@
 package com.koolew.mars;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,6 +37,7 @@ import com.koolew.mars.media.MediaAudioEncoder;
 import com.koolew.mars.media.MediaEncoder;
 import com.koolew.mars.media.MediaMuxerWrapper;
 import com.koolew.mars.media.MediaVideoEncoder;
+import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.RawImageUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.utils.ViewUtil;
@@ -596,6 +600,35 @@ public class VideoShootActivity extends Activity
         if (isRecording) {
             return;
         }
+
+        new AsyncTask<Void, Void, Void>() {
+            private ProgressDialog mProgressDialog;
+
+            @Override
+            protected void onPreExecute() {
+                mProgressDialog = DialogUtil.getGeneralProgressDialog(
+                        VideoShootActivity.this, R.string.processing_video);
+                mProgressDialog.show();
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                mRecordingSession.concatVideo();
+                mRecordingSession.generateThumb();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                mProgressDialog.dismiss();
+                Intent intent = new Intent(VideoShootActivity.this, VideoEditActivity.class);
+                intent.putExtra(VideoEditActivity.KEY_CONCATED_VIDEO,
+                        mRecordingSession.getWorkDir() + VideoRecordingSession.CONCATED_VIDEO_NAME);
+                intent.putExtra(VideoEditActivity.KEY_VIDEO_THUMB,
+                        mRecordingSession.getWorkDir() + VideoRecordingSession.VIDEO_THUMB_NAME);
+                startActivity(intent);
+            }
+        }.execute();
     }
 
     private void onCloseClick() {
@@ -605,8 +638,6 @@ public class VideoShootActivity extends Activity
     private void onCameraChangeClick() {
         switchCamera();
     }
-
-
 
     private OnClickListener videoThumbClickListener = new OnClickListener() {
         @Override

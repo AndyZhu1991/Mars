@@ -1,17 +1,26 @@
 package com.koolew.mars.video;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
+import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.Utils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Created by jinchangzhu on 7/18/15.
  */
 public class VideoRecordingSession {
+
+    public static final String CONCATED_VIDEO_NAME = "concated.mp4";
+    public static final String VIDEO_THUMB_NAME = "thumb.png";
 
     private List<VideoPieceItem> mVideoPieces;
 
@@ -51,6 +60,10 @@ public class VideoRecordingSession {
         return mVideoPieces.size();
     }
 
+    public String getWorkDir() {
+        return mCurrentWorkDir;
+    }
+
     public long getVideoLength(int startPosition, int endPosition) {
         long totalLength = 0;
         for (int i = startPosition; i < endPosition; i++) {
@@ -66,6 +79,39 @@ public class VideoRecordingSession {
 
     public long getTotalVideoLength() {
         return getFrontVideoLength(getVideoCount());
+    }
+
+    public String concatVideo() {
+        List<String> videos = new LinkedList<>();
+        for (VideoPieceItem videoItem: mVideoPieces) {
+            videos.add(videoItem.getVideoPath());
+        }
+
+        String concatedFilePath = mCurrentWorkDir + CONCATED_VIDEO_NAME;
+        try {
+            Mp4ParserUtil.mp4Cat(videos, concatedFilePath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return concatedFilePath;
+    }
+
+    public void generateThumb() {
+        Bitmap thumbBmp = ImageLoader.getInstance()
+                .loadImageSync("file://" + mVideoPieces.get(0).getVideoPath());
+        File f = new File(mCurrentWorkDir, VIDEO_THUMB_NAME);
+        if (f.exists()) {
+            f.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(f);
+            thumbBmp.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

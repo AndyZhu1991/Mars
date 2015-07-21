@@ -2,6 +2,7 @@ package com.koolew.mars.utils;
 
 import android.util.Log;
 
+import com.coremedia.iso.IsoFile;
 import com.coremedia.iso.boxes.Container;
 import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.Track;
@@ -27,19 +28,17 @@ public class Mp4ParserUtil {
     private static final String TAG = "koolew-Mp4ParserUtil";
     private static final boolean DEBUG = true;
 
-    public static void clipTest(String filePath) throws IOException {
-        //Movie movie = new MovieCreator().build(new RandomAccessFile("/home/sannies/suckerpunch-distantplanet_h1080p/suckerpunch-distantplanet_h1080p.mov", "r").getChannel());
-        Movie movie = MovieCreator.build(filePath);
+    private static final String VIDEO_TRACK_HANDLER_KEY = "vide";
+    private static final String SOUND_TRACK_HANDLER_KEY = "soun";
+
+
+    public static void clip(String inMoviePath, double startTime, double endTime,
+                            String outMoviePath) throws IOException {
+        Movie movie = MovieCreator.build(inMoviePath);
 
         List<Track> tracks = movie.getTracks();
         movie.setTracks(new LinkedList<Track>());
         // remove all tracks we will create new tracks from the old
-
-        double startTime1 = 2;
-        double endTime1 = 4;
-        double startTime2 = 6;
-        double endTime2 = 8;
-
         boolean timeCorrected = false;
 
         // Here we try to find a track that has sync samples. Since we can only start decoding
@@ -54,10 +53,8 @@ public class Mp4ParserUtil {
 
                     throw new RuntimeException("The startTime has already been corrected by another track with SyncSample. Not Supported.");
                 }
-                startTime1 = correctTimeToSyncSample(track, startTime1, false);
-                endTime1 = correctTimeToSyncSample(track, endTime1, true);
-                startTime2 = correctTimeToSyncSample(track, startTime2, false);
-                endTime2 = correctTimeToSyncSample(track, endTime2, true);
+                startTime = correctTimeToSyncSample(track, startTime, false);
+                endTime = correctTimeToSyncSample(track, endTime, true);
                 timeCorrected = true;
             }
         }
@@ -68,48 +65,32 @@ public class Mp4ParserUtil {
             double lastTime = -1;
             long startSample1 = -1;
             long endSample1 = -1;
-            long startSample2 = -1;
-            long endSample2 = -1;
 
             for (int i = 0; i < track.getSampleDurations().length; i++) {
                 long delta = track.getSampleDurations()[i];
 
 
-                if (currentTime > lastTime && currentTime <= startTime1) {
+                if (currentTime > lastTime && currentTime <= startTime) {
                     // current sample is still before the new starttime
                     startSample1 = currentSample;
                 }
-                if (currentTime > lastTime && currentTime <= endTime1) {
+                if (currentTime > lastTime && currentTime <= endTime) {
                     // current sample is after the new start time and still before the new endtime
                     endSample1 = currentSample;
-                }
-                if (currentTime > lastTime && currentTime <= startTime2) {
-                    // current sample is still before the new starttime
-                    startSample2 = currentSample;
-                }
-                if (currentTime > lastTime && currentTime <= endTime2) {
-                    // current sample is after the new start time and still before the new endtime
-                    endSample2 = currentSample;
                 }
                 lastTime = currentTime;
                 currentTime += (double) delta / (double) track.getTrackMetaData().getTimescale();
                 currentSample++;
             }
-            movie.addTrack(new AppendTrack(new CroppedTrack(track, startSample1, endSample1), new CroppedTrack(track, startSample2, endSample2)));
+            movie.addTrack(new AppendTrack(new CroppedTrack(track, startSample1, endSample1)));
         }
-        long start1 = System.currentTimeMillis();
         Container out = new DefaultMp4Builder().build(movie);
-        long start2 = System.currentTimeMillis();
-        FileOutputStream fos = new FileOutputStream(String.format("/sdcard/output-%f-%f--%f-%f.mp4", startTime1, endTime1, startTime2, endTime2));
+        FileOutputStream fos = new FileOutputStream(outMoviePath);
         FileChannel fc = fos.getChannel();
         out.writeContainer(fc);
 
         fc.close();
         fos.close();
-        long start3 = System.currentTimeMillis();
-        Log.d(TAG, "Building IsoFile took : " + (start2 - start1) + "ms");
-        Log.d(TAG, "Writing IsoFile took  : " + (start3 - start2) + "ms");
-        Log.d(TAG, "Writing IsoFile speed : " + (new File(String.format("/sdcard/output-%f-%f--%f-%f.mp4", startTime1, endTime1, startTime2, endTime2)).length() / (start3 - start2) / 1000) + "MB/s");
     }
 
 
@@ -154,10 +135,10 @@ public class Mp4ParserUtil {
 
         for (Movie m : inMovies) {
             for (Track t : m.getTracks()) {
-                if (t.getHandler().equals("soun")) {
+                if (t.getHandler().equals(SOUND_TRACK_HANDLER_KEY)) {
                     audioTracks.add(t);
                 }
-                if (t.getHandler().equals("vide")) {
+                if (t.getHandler().equals(VIDEO_TRACK_HANDLER_KEY)) {
                     videoTracks.add(t);
                 }
             }
@@ -177,5 +158,47 @@ public class Mp4ParserUtil {
         FileChannel fc = new RandomAccessFile(String.format(outMoviePath), "rw").getChannel();
         out.writeContainer(fc);
         fc.close();
+    }
+
+
+    /**
+     *
+     * @param filePath the absolute path of movie file
+     * @return movie time length in second
+     * @throws IOException
+     */
+    public static final double getDuration(String filePath) throws IOException {
+        IsoFile isoFile = new IsoFile(filePath);
+        return ((double) isoFile.getMovieBox().getMovieHeaderBox().getDuration())
+                / isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
+    }
+
+    public static void setVideoBgm(String videoPath, String bgmPath, String outMoviePath) throws IOException {
+        String clipedBgm = new File(bgmPath).getParent() + "clipedBgm.mp4";
+        double videoLen = getDuration(videoPath);
+        Log.d("stdzhu", "origin: " + videoLen);
+        clip(bgmPath, 0, videoLen, clipedBgm);
+
+        Movie result = new Movie();
+
+        for (Track track: MovieCreator.build(videoPath).getTracks()) {
+            if (track.getHandler().equals(VIDEO_TRACK_HANDLER_KEY)) {
+                result.addTrack(track);
+            }
+        }
+
+        for (Track track: MovieCreator.build(clipedBgm).getTracks()) {
+            if (track.getHandler().equals(SOUND_TRACK_HANDLER_KEY)) {
+                result.addTrack(track);
+            }
+        }
+
+        Container out = new DefaultMp4Builder().build(result);
+
+        FileChannel fc = new RandomAccessFile(String.format(outMoviePath), "rw").getChannel();
+        out.writeContainer(fc);
+        fc.close();
+
+        Log.d("stdzhu", "bgmed: " + getDuration(outMoviePath));
     }
 }

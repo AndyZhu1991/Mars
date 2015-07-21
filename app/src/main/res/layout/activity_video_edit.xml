@@ -1,0 +1,119 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:TitleBarView="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#333333"
+    tools:context="com.koolew.mars.VideoEditActivity">
+
+    <com.koolew.mars.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        TitleBarView:title_text="@string/video_edit_title"
+        TitleBarView:right_text="@string/done"/>
+
+    <FrameLayout
+        android:id="@+id/video_frame"
+        android:layout_width="match_parent"
+        android:layout_height="270dp">
+
+        <SurfaceView
+            android:id="@+id/play_surface"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/thumb"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"/>
+
+        <ImageView
+            android:id="@+id/play_image"
+            android:layout_width="30dp"
+            android:layout_height="39dp"
+            android:src="@mipmap/ic_play"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/privacy_layout"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#5B5B5B">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_centerVertical="true"
+            android:text="@string/who_can_see"
+            android:textSize="14sp"
+            android:textColor="#D8D8D8"/>
+
+        <ImageView
+            android:id="@+id/into_arrow"
+            android:layout_width="7dp"
+            android:layout_height="12dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/into_arrow"/>
+
+        <TextView
+            android:id="@+id/authority_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/into_arrow"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:text="@string/public_visible"
+            android:textSize="14sp"
+            android:textColor="#9B9B9B"/>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/music"
+            android:textSize="14sp"
+            android:textColor="#67D08E"/>
+
+        <View
+            android:layout_width="70dp"
+            android:layout_height="3dp"
+            android:layout_gravity="bottom"
+            android:background="#67D08E"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:orientation="horizontal"
+        android:background="@android:color/black">
+
+        <ImageView
+            android:id="@+id/bgm_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@mipmap/music_disable"/>
+
+        <include layout="@layout/vertical_divider" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+</LinearLayout>

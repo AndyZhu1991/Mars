@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.koolew.mars.imageloader.VideoThumbDecoder;
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.utils.BgmUtil;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -31,6 +32,7 @@ public class MarsApplication extends Application {
         initImageLoader(getApplicationContext());
         com.koolew.mars.wxapi.Api.initApi(getApplicationContext());
         MyAccountInfo.init(getApplicationContext());
+        initBgm(this);
 
         Log.d(TAG, "Init in MarsApplication takes: " + (System.currentTimeMillis() - start));
     }
@@ -57,5 +59,14 @@ public class MarsApplication extends Application {
 
         // Initialize ImageLoader with configuration.
         ImageLoader.getInstance().init(config.build());
+    }
+
+    private static void initBgm(final Context context) {
+        new Thread() {
+            @Override
+            public void run() {
+                BgmUtil.initBgms(context);
+            }
+        }.start();
     }
 }

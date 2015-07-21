@@ -91,8 +91,15 @@
     <string name="import_video">导入</string>
     <string name="capture_video">长按拍摄</string>
     <string name="time_text">%.1f秒</string>
+    <string name="processing_video">正在处理视频...</string>
+    
+    <!-- For VideoEditActivity & VideoPrivacyActivity -->
+    <string name="video_edit_title">编辑视频</string>
+    <string name="who_can_see">可以给谁看</string>
+    <string name="authority">权限</string>
     <string name="only_friend_visible">仅好友可见</string>
     <string name="public_visible">公开</string>
+    <string name="music">音乐</string>
 
     <!-- For friend meet item -->
     <string name="common_topic">共同话题</string>
@@ -203,4 +210,6 @@
     <string name="title_activity_friend_task">FriendTaskActivity</string>
     <string name="title_activity_send_danmaku">SendDanmakuActivity</string>
     <string name="title_activity_danmaku_tab">DanmakuTabActivity</string>
+    <string name="title_activity_video_edit">VideoEditActivity</string>
+    <string name="title_activity_video_privacy">VideoPrivacyActivity</string>
 </resources>
