@@ -101,9 +101,7 @@ public class MainActivity extends FragmentActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 3) {
-                    // 添加话题卡
-                    // Test
-                    startActivity(new Intent(MainActivity.this, VideoShootActivity.class));
+                    // TODO 添加话题卡
                 } else {
                     switchFragment(position);
                 }

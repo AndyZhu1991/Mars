@@ -100,6 +100,8 @@
     <string name="only_friend_visible">仅好友可见</string>
     <string name="public_visible">公开</string>
     <string name="music">音乐</string>
+    <string name="uploading">正在上传...</string>
+    <string name="upload_failed">上传失败</string>
 
     <!-- For friend meet item -->
     <string name="common_topic">共同话题</string>

@@ -19,8 +19,8 @@ import java.util.List;
  */
 public class VideoRecordingSession {
 
-    public static final String CONCATED_VIDEO_NAME = "concated.mp4";
-    public static final String VIDEO_THUMB_NAME = "thumb.png";
+    private static final String CONCATED_VIDEO_NAME = "concated.mp4";
+    private static final String VIDEO_THUMB_NAME = "thumb.png";
 
     private List<VideoPieceItem> mVideoPieces;
 
@@ -81,7 +81,14 @@ public class VideoRecordingSession {
         return getFrontVideoLength(getVideoCount());
     }
 
-    public String concatVideo() {
+    public void concatVideo() {
+        if (mVideoPieces.size() == 0) {
+            throw new RuntimeException("Zero videos to concat!");
+        }
+        if (mVideoPieces.size() == 1) {
+            return;
+        }
+
         List<String> videos = new LinkedList<>();
         for (VideoPieceItem videoItem: mVideoPieces) {
             videos.add(videoItem.getVideoPath());
@@ -93,8 +100,21 @@ public class VideoRecordingSession {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
-        return concatedFilePath;
+    public String getConcatedVideoName() {
+        if (mVideoPieces.size() == 0) {
+            return null;
+        }
+        if (mVideoPieces.size() == 1) {
+            return mVideoPieces.get(0).getVideoPath();
+        }
+
+        return mCurrentWorkDir + CONCATED_VIDEO_NAME;
+    }
+
+    public String getVideoThumbName() {
+        return mCurrentWorkDir + VIDEO_THUMB_NAME;
     }
 
     public void generateThumb() {
@@ -106,7 +126,7 @@ public class VideoRecordingSession {
         }
         try {
             FileOutputStream out = new FileOutputStream(f);
-            thumbBmp.compress(Bitmap.CompressFormat.PNG, 90, out);
+            thumbBmp.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
             out.close();
         } catch (Exception e) {

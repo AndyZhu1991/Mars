@@ -7,6 +7,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.utils.ContactUtil;
 
@@ -16,11 +17,17 @@ import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by jinchangzhu on 6/25/15.
  */
 public class ApiWorker {
+
+    private static final int SYNC_REQUEST_TIMEOUT = 8000;
+    private static final TimeUnit SYNC_REQUEST_TIME_UNIT = TimeUnit.MILLISECONDS;
 
     private static ApiWorker sInstance;
 
@@ -259,6 +266,16 @@ public class ApiWorker {
         return standardPostRequest(UrlHelper.SEND_DANMAKU_URL, requestJson, listener, errorListener);
     }
 
+    public JSONObject requestQiniuThumbTokenSync()
+            throws InterruptedException, ExecutionException, TimeoutException {
+        return standardGetRequestSync(UrlHelper.REQUEST_QINIU_THUMB_TOKEN_URL);
+    }
+
+    public JSONObject requestQiniuVideoTokenSync()
+            throws InterruptedException, ExecutionException, TimeoutException {
+        return standardGetRequestSync(UrlHelper.REQUEST_QINIU_VIDEO_TOKEN_URL);
+    }
+
 
     private JsonObjectRequest standardGetRequest(String url,
                                                  Response.Listener<JSONObject> listener,
@@ -296,6 +313,13 @@ public class ApiWorker {
         mRequestQueue.add(jsonObjectRequest);
 
         return jsonObjectRequest;
+    }
+
+    private JSONObject standardGetRequestSync(String url)
+            throws InterruptedException, ExecutionException, TimeoutException {
+        RequestFuture<JSONObject> future = RequestFuture.newFuture();
+        standardGetRequest(url, future, future);
+        return future.get(SYNC_REQUEST_TIMEOUT, SYNC_REQUEST_TIME_UNIT);
     }
 
 

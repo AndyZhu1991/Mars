@@ -57,8 +57,14 @@ public class VideoShootActivity extends Activity
 
     private final static String TAG = "koolew-VideoShootA";
 
+    private static final int VIDEO_EDIT_REQUEST = 1;
+
+    public static final String KEY_TOPIC_ID = "topic id";
+
     private static final int MODE_PREVIEW = 0;
     private static final int MODE_PLAYBACK = 1;
+
+    private String mTopicId;
 
     private FrameLayout mPreviewFrame;
     //private CameraSurfacePreview mPreview;
@@ -102,6 +108,11 @@ public class VideoShootActivity extends Activity
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_video_shoot);
+
+        mTopicId = getIntent().getStringExtra(KEY_TOPIC_ID);
+        if (mTopicId == null || mTopicId.length() == 0) {
+            throw new RuntimeException("Start VideoShootActivity must has a KEY_TOPIC_ID extra");
+        }
 
         initMembers();
         initViews();
@@ -623,12 +634,35 @@ public class VideoShootActivity extends Activity
                 mProgressDialog.dismiss();
                 Intent intent = new Intent(VideoShootActivity.this, VideoEditActivity.class);
                 intent.putExtra(VideoEditActivity.KEY_CONCATED_VIDEO,
-                        mRecordingSession.getWorkDir() + VideoRecordingSession.CONCATED_VIDEO_NAME);
+                        mRecordingSession.getConcatedVideoName());
                 intent.putExtra(VideoEditActivity.KEY_VIDEO_THUMB,
-                        mRecordingSession.getWorkDir() + VideoRecordingSession.VIDEO_THUMB_NAME);
-                startActivity(intent);
+                        mRecordingSession.getVideoThumbName());
+                intent.putExtra(VideoEditActivity.KEY_TOPIC_ID, mTopicId);
+                startActivityForResult(intent, VIDEO_EDIT_REQUEST);
             }
         }.execute();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case VIDEO_EDIT_REQUEST:
+                onVideoEditResult(resultCode);
+                break;
+        }
+    }
+
+    private void onVideoEditResult(int resultCode) {
+        switch (resultCode) {
+            case RESULT_CANCELED:
+                break;
+            case VideoEditActivity.RESULT_UPLOADED:
+                // TODO: clear cache videos
+                finish();
+                break;
+            case VideoEditActivity.RESULT_BACKGROUND_UPLOAD:
+                break;
+        }
     }
 
     private void onCloseClick() {

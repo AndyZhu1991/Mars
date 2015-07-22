@@ -26,12 +26,14 @@ public class UrlHelper {
     private static final String REQUEST_PASSWORD_URL = V1_URL + "user/code";
     public static final String LOGIN_URL = V1_URL + "user/login";
     public static final String SNS_SIGNUP_URL = V1_URL + "user/signup/sns";
-    public static final String REQUEST_QINIU_TOKEN_URL = V1_URL + "qiniu/uptoken?type=avatar";
+    public static final String REQUEST_QINIU_AVATAR_TOKEN_URL = V1_URL + "qiniu/uptoken?type=avatar";
     public static final String CURRENT_FRIEND_URL = V1_URL + "friend";
     public static final String KOO_RANK_URL = V1_URL + "koo/rank";
     private static final String COMMON_TOPIC_URL = V1_URL + "profile/topic/common";
     private static final String COMMON_FRIEND_URL = V1_URL + "profile/friend/common";
     public static final String SEND_DANMAKU_URL = V1_URL + "comment";
+    public static final String REQUEST_QINIU_THUMB_TOKEN_URL = V1_URL + "qiniu/uptoken?type=thumbnail";
+    public static final String REQUEST_QINIU_VIDEO_TOKEN_URL = V1_URL + "qiniu/uptoken?type=video";
 
     // v2 api
     public static final String INVOLVE_URL = V2_URL + "feeds/involve";

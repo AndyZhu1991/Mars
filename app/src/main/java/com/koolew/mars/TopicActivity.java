@@ -286,10 +286,17 @@ public class TopicActivity extends Activity implements AbsListView.OnScrollListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.capture:
+                onCaptureClick();
                 break;
             case R.id.send_invitation:
                 break;
         }
+    }
+
+    private void onCaptureClick() {
+        Intent intent = new Intent(this, VideoShootActivity.class);
+        intent.putExtra(VideoShootActivity.KEY_TOPIC_ID, mTopicId);
+        startActivity(intent);
     }
 
 

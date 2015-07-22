@@ -1,8 +1,10 @@
 package com.koolew.mars;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,26 +18,34 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.koolew.mars.qiniu.UploadHelper;
 import com.koolew.mars.utils.BgmUtil;
+import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.TitleBarView;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.File;
 import java.io.IOException;
 
 
 public class VideoEditActivity extends Activity
         implements TitleBarView.OnRightLayoutClickListener, View.OnClickListener{
 
+    public static final int RESULT_UPLOADED = RESULT_FIRST_USER + 1;
+    public static final int RESULT_BACKGROUND_UPLOAD = RESULT_FIRST_USER + 2;
+
     public static final String KEY_CONCATED_VIDEO = "concated video";
     public static final String KEY_VIDEO_THUMB = "video thumb";
+    public static final String KEY_TOPIC_ID = "topic id";
 
     private static final int NO_MUSIC_SELECTED = -1;
 
     private String mConcatedVideo;
     private String mVideoThumb;
+    private String mTopicId;
 
     private String mSelectedBgmPath;
 
@@ -44,7 +54,6 @@ public class VideoEditActivity extends Activity
     private TitleBarView mTitleBar;
     private FrameLayout mVideoFrame;
     private SurfaceView mPlaySurface;
-    private ImageView mThumbImage;
     private ImageView mPlayImage;
     private RelativeLayout mPrivacyLayout;
     private TextView mAuthorityText;
@@ -62,6 +71,7 @@ public class VideoEditActivity extends Activity
 
         mConcatedVideo = getIntent().getStringExtra(KEY_CONCATED_VIDEO);
         mVideoThumb = getIntent().getStringExtra(KEY_VIDEO_THUMB);
+        mTopicId = getIntent().getStringExtra(KEY_TOPIC_ID);
 
         initMembers();
 
@@ -85,9 +95,6 @@ public class VideoEditActivity extends Activity
 
         mPlaySurface = (SurfaceView) findViewById(R.id.play_surface);
         mPlaySurface.getHolder().addCallback(mSurfaceCallback);
-
-        mThumbImage = (ImageView) findViewById(R.id.thumb);
-        ImageLoader.getInstance().displayImage("file://" + mVideoThumb, mThumbImage);
 
         mPlayImage = (ImageView) findViewById(R.id.play_image);
         mPrivacyLayout = (RelativeLayout) findViewById(R.id.privacy_layout);
@@ -119,14 +126,57 @@ public class VideoEditActivity extends Activity
     }
 
     @Override
+    public void onBackPressed() {
+        setResult(RESULT_CANCELED);
+        super.onBackPressed();
+    }
+
+    @Override
     public void onRightLayoutClick() {
-        if (mAdapter.mSelectedPosition != NO_MUSIC_SELECTED && mSelectedBgmPath != null) {
+        String finalVideo;
+        if (mSelectedBgmPath == null) {
+            finalVideo = mConcatedVideo;
+        } else {
+            finalVideo = new File(mConcatedVideo).getParent() + "/final.mp4";
             try {
-                Mp4ParserUtil.setVideoBgm(mConcatedVideo, mSelectedBgmPath, "/sdcard/final.mp4");
+                Mp4ParserUtil.setVideoBgm(mConcatedVideo, mSelectedBgmPath, finalVideo);
             } catch (IOException e) {
-                throw new RuntimeException("" + e);
+                throw new RuntimeException(e);
             }
         }
+
+        new AsyncTask<String, Void, Boolean>() {
+            private ProgressDialog mUploadingDialog;
+
+            @Override
+            protected void onPreExecute() {
+                mUploadingDialog = DialogUtil.getGeneralProgressDialog
+                        (VideoEditActivity.this, R.string.uploading);
+                mUploadingDialog.show();
+            }
+
+            @Override
+            protected Boolean doInBackground(String... params) {
+                if (UploadHelper.uploadVideo(params[0], params[1], params[2])
+                        == UploadHelper.RESULT_SUCCESS) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Boolean isSuccess) {
+                mUploadingDialog.dismiss();
+                if (isSuccess) {
+                    setResult(RESULT_UPLOADED);
+                    finish();
+                } else {
+                    Toast.makeText(VideoEditActivity.this, R.string.upload_failed, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute(mTopicId, finalVideo, mVideoThumb);
+
     }
 
     @Override
@@ -152,9 +202,6 @@ public class VideoEditActivity extends Activity
         else {
             mBgmPlayer.resumePlay();
             mPlayImage.setVisibility(View.INVISIBLE);
-            if (mThumbImage.getVisibility() == View.VISIBLE) {
-                mThumbImage.setVisibility(View.INVISIBLE);
-            }
         }
     }
 
@@ -188,6 +235,11 @@ public class VideoEditActivity extends Activity
         int lastSelectedMusic = mAdapter.mSelectedPosition;
         mAdapter.mSelectedPosition = NO_MUSIC_SELECTED;
         mAdapter.notifyItemChanged(lastSelectedMusic);
+        try {
+            mBgmPlayer.restart();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     SurfaceHolder.Callback mSurfaceCallback = new SurfaceHolder.Callback() {
@@ -257,6 +309,7 @@ public class VideoEditActivity extends Activity
 
             if (mSelectedBgmPath != null) {
                 mVideoPlayer.setVolume(0.0f, 0.0f);
+                mAudioPlayer.setVolume(1.0f, 1.0f);
                 if (mAudioPlayer.isPlaying()) {
                     mAudioPlayer.stop();
                 }
@@ -266,6 +319,7 @@ public class VideoEditActivity extends Activity
             }
             else {
                 mVideoPlayer.setVolume(1.0f, 1.0f);
+                mAudioPlayer.setVolume(0.0f, 0.0f);
             }
 
             mVideoPlayer.seekTo(0);

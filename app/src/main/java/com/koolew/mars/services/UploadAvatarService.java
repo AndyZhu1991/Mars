@@ -165,7 +165,7 @@ public class UploadAvatarService extends IntentService {
 
     private String getQiniuToken() {
 
-        String url = UrlHelper.REQUEST_QINIU_TOKEN_URL;
+        String url = UrlHelper.REQUEST_QINIU_AVATAR_TOKEN_URL;
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonObjectRequest jsonObjectRequest =
                 new JsonObjectRequest(url, null, future, future) {
