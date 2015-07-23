@@ -89,75 +89,93 @@
         </activity>
         <activity
             android:name=".PushSettingsActivity"
-            android:label="@string/title_activity_push_settings" >
+            android:label="@string/title_activity_push_settings"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ChangeInfoActivity"
-            android:label="@string/title_activity_change_info" >
+            android:label="@string/title_activity_change_info"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ChangeNicknameActivity"
-            android:label="@string/title_activity_change_nickname" >
+            android:label="@string/title_activity_change_nickname"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ChangePhoneNumberActivity"
-            android:label="@string/title_activity_modify_phone_number" >
+            android:label="@string/title_activity_modify_phone_number"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".CoinRuleActivity"
-            android:label="@string/title_activity_coin_rule" >
+            android:label="@string/title_activity_coin_rule"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".KooRankActivity"
-            android:label="@string/title_activity_koo_detail" >
+            android:label="@string/title_activity_koo_detail"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".FriendInfoActivity"
-            android:label="@string/title_activity_friend_info" >
+            android:label="@string/title_activity_friend_info"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".CommonTopicActivity"
-            android:label="@string/title_activity_common_topic" >
+            android:label="@string/title_activity_common_topic"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".CommonFriendActivity"
-            android:label="@string/title_activity_common_friend" >
+            android:label="@string/title_activity_common_friend"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".TaskActivity"
-            android:label="@string/title_activity_task" >
+            android:label="@string/title_activity_task"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".WebActivity"
-            android:label="@string/title_activity_web" >
+            android:label="@string/title_activity_web"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".PushWrapperActivity"
-            android:label="@string/title_activity_push_wrapper" >
+            android:label="@string/title_activity_push_wrapper"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".FriendTaskActivity"
-            android:label="@string/title_activity_friend_task" >
+            android:label="@string/title_activity_friend_task"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".SendDanmakuActivity"
-            android:label="@string/title_activity_send_danmaku" >
+            android:label="@string/title_activity_send_danmaku"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".DanmakuTabActivity"
-            android:label="@string/title_activity_danmaku_tab" >
+            android:label="@string/title_activity_danmaku_tab"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".VideoEditActivity"
-            android:label="@string/title_activity_video_edit" >
+            android:label="@string/title_activity_video_edit"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".VideoPrivacyActivity"
-            android:label="@string/title_activity_video_privacy" >
+            android:label="@string/title_activity_video_privacy"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".AddTopicActivity"
-            android:label="@string/title_activity_add_topic" >
+            android:label="@string/title_activity_add_topic"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 
