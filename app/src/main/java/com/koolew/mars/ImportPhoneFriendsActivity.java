@@ -3,6 +3,7 @@ package com.koolew.mars;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -123,6 +124,9 @@ public class ImportPhoneFriendsActivity extends Activity {
                                 Toast.makeText(ImportPhoneFriendsActivity.this,
                                         "Add friends success.", Toast.LENGTH_SHORT).show();
                                 Log.d(TAG, "Add friends success.");
+                                Intent intent = new Intent(ImportPhoneFriendsActivity.this, MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
                             }
                             else {
                                 Toast.makeText(ImportPhoneFriendsActivity.this,

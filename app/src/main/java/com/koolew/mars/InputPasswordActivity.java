@@ -281,8 +281,9 @@ public class InputPasswordActivity extends Activity implements View.OnClickListe
                                 }
 
                                 if (result.getInt("register") == 0) {
-                                    startActivity(new Intent(InputPasswordActivity.this,
-                                            MainActivity.class));
+                                    Intent intent = new Intent(InputPasswordActivity.this, MainActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
                                 }
                                 else {
                                     startActivity(new Intent(InputPasswordActivity.this,

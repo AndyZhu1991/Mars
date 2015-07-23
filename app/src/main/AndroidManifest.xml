@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
- sss
 
     <!-- For images from picasa -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -21,6 +20,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
+            android:icon="@mipmap/ic_launcher"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -75,7 +75,8 @@
 
         <activity
             android:name=".LaunchActivity"
-            android:label="@string/title_activity_launch" >
+            android:label="@string/app_name"
+            android:icon="@mipmap/ic_launcher" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
