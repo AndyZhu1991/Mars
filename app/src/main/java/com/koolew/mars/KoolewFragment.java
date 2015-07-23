@@ -24,7 +24,7 @@ import java.util.List;
  * Use the {@link KoolewFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class KoolewFragment extends MainBaseFragment {
+public class KoolewFragment extends MainBaseFragment implements View.OnClickListener {
 
     private static final String TAG = "koolew-KoolewFragment";
 
@@ -83,6 +83,8 @@ public class KoolewFragment extends MainBaseFragment {
         mToolbarInterface.setTopIconImageResource(0, R.mipmap.ic_danmaku);
         mToolbarInterface.setTopIconImageResource(1, R.mipmap.ic_task);
 
+        root.findViewById(R.id.btn_add_topic).setOnClickListener(this);
+
         return root;
     }
 
@@ -102,6 +104,15 @@ public class KoolewFragment extends MainBaseFragment {
                     getResources().getColor(R.color.koolew_light_orange),
                     getResources().getColor(R.color.koolew_deep_orange),
             };
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_add_topic:
+                startActivity(new Intent(getActivity(), AddTopicActivity.class));
+                break;
         }
     }
 

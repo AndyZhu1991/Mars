@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
@@ -97,16 +98,7 @@ public class MainActivity extends FragmentActivity
 
         mAdapter = new DrawerListAdapter();
         mDrawerList.setAdapter(mAdapter);
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 3) {
-                    // TODO 添加话题卡
-                } else {
-                    switchFragment(position);
-                }
-            }
-        });
+        mDrawerList.setOnItemClickListener(mDrawerItemClickListener);
         mNickname.setText(MyAccountInfo.getNickname());
         mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
 
@@ -211,6 +203,17 @@ public class MainActivity extends FragmentActivity
         mDrawerLayout.closeDrawer(mLeftDrawer);
     }
 
+    private AbsListView.OnItemClickListener mDrawerItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if (position == 3) {
+                startActivity(new Intent(MainActivity.this, AddTopicActivity.class));
+            } else {
+                switchFragment(position);
+            }
+        }
+    };
+
     @Override
     public void onFragmentInteraction(Uri uri) {
 
@@ -272,6 +275,8 @@ public class MainActivity extends FragmentActivity
             case R.id.top_icon_layout2:
                 mCurFragment.onTopIconClick(1);
                 break;
+            case R.id.btn_add_topic:
+                break;
         }
     }
 
@@ -283,6 +288,10 @@ public class MainActivity extends FragmentActivity
     private void startKooRankActivity() {
         Intent intent = new Intent(this, KooRankActivity.class);
         startActivity(intent);
+    }
+
+    private void startAddTopicActivity() {
+        Intent intent = new Intent(this, AddTopicActivity.class);
     }
 
     @Override

@@ -185,6 +185,13 @@
     <string name="sending_danmaku">正在发送弹幕...</string>
     <string name="danmaku_send_faild">弹幕发送失败</string>
 
+    <!-- For AddTopicActivity -->
+    <string name="add_topic_title">添加话题卡</string>
+    <string name="input_topic_content_hint">请输入您想创建的话题内容</string>
+    <string name="recommendation">热门推荐</string>
+    <string name="little_video_count">%d个小视频</string>
+    <string name="no_title_hint">还没有输入标题呢！</string>
+
     <!-- Divider -->
     <string name="title_activity_video_shoot">VideoShootActivity</string>
     <string name="title_activity_first_login">FirstLoginActivity</string>
@@ -214,4 +221,5 @@
     <string name="title_activity_danmaku_tab">DanmakuTabActivity</string>
     <string name="title_activity_video_edit">VideoEditActivity</string>
     <string name="title_activity_video_privacy">VideoPrivacyActivity</string>
+    <string name="title_activity_add_topic">AddTopicActivity</string>
 </resources>

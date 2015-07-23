@@ -1,5 +1,7 @@
 package com.koolew.mars.webapi;
 
+import android.net.Uri;
+
 import com.koolew.mars.infos.MyAccountInfo;
 
 import java.util.HashMap;
@@ -34,6 +36,9 @@ public class UrlHelper {
     public static final String SEND_DANMAKU_URL = V1_URL + "comment";
     public static final String REQUEST_QINIU_THUMB_TOKEN_URL = V1_URL + "qiniu/uptoken?type=thumbnail";
     public static final String REQUEST_QINIU_VIDEO_TOKEN_URL = V1_URL + "qiniu/uptoken?type=video";
+    public static final String REQUEST_WORLD_HOT_URL = V1_URL + "world/hot";
+    private static final String SEARCH_TOPIC_URL = V1_URL + "topic/search";
+    public static final String ADD_TOPIC_URL = V1_URL + "topic";
 
     // v2 api
     public static final String INVOLVE_URL = V2_URL + "feeds/involve";
@@ -80,6 +85,13 @@ public class UrlHelper {
         return new GetUrlBuilder(COMMON_FRIEND_URL)
                 .addParameter("uid", uid)
                 .build();
+    }
+
+    public static String getSearchTopicUrl(String keyWord) {
+        return Uri.parse(SEARCH_TOPIC_URL)
+                .buildUpon()
+                .appendQueryParameter("query", keyWord)
+                .build().toString();
     }
 
 

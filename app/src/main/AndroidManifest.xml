@@ -155,6 +155,10 @@
             android:name=".VideoPrivacyActivity"
             android:label="@string/title_activity_video_privacy" >
         </activity>
+        <activity
+            android:name=".AddTopicActivity"
+            android:label="@string/title_activity_add_topic" >
+        </activity>
     </application>
 
 </manifest>

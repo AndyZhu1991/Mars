@@ -276,6 +276,29 @@ public class ApiWorker {
         return standardGetRequestSync(UrlHelper.REQUEST_QINIU_VIDEO_TOKEN_URL);
     }
 
+    public JsonObjectRequest requestWorldHotTopic(Response.Listener<JSONObject> listener,
+                                                  Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.REQUEST_WORLD_HOT_URL, listener, errorListener);
+    }
+
+    public JsonObjectRequest searchTopic(String keyWord,
+                                         Response.Listener<JSONObject> listener,
+                                         Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getSearchTopicUrl(keyWord), listener, errorListener);
+    }
+
+    public JsonObjectRequest addTopic(String title,
+                                      Response.Listener<JSONObject> listener,
+                                      Response.ErrorListener errorListener) {
+        JSONObject requestJson = new JSONObject();
+        try {
+            requestJson.put("content", title);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.ADD_TOPIC_URL, requestJson, listener, errorListener);
+    }
+
 
     private JsonObjectRequest standardGetRequest(String url,
                                                  Response.Listener<JSONObject> listener,
