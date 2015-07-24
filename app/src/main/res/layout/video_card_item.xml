@@ -11,6 +11,11 @@
         android:layout_height="262.5dp"
         android:background="@drawable/topic_card_out_shape">
 
+        <RelativeLayout
+            android:id="@+id/danmaku_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
         <ImageView
             android:id="@+id/video_thumb"
             android:layout_width="match_parent"

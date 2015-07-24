@@ -60,17 +60,7 @@ public class SendDanmakuActivity extends Activity
     private View mBottomLayout;
 
     private IjkMediaPlayer mMediaPlayer;
-    private VideoLoader mVideoLoader = new VideoLoader(this) {
-        @Override
-        public void loadComplete(Object player, String filePath) {
-            try {
-                mMediaPlayer.setDataSource(filePath);
-                mMediaPlayer.prepareAsync();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    };
+    private VideoLoader mVideoLoader;
 
     private ViewGroup mDanmakuContainer;
     private DanmakuShowManager mDanmakuManager;
@@ -95,6 +85,10 @@ public class SendDanmakuActivity extends Activity
 
         initViews();
 
+        initMembers();
+    }
+
+    private void initMembers() {
         try {
             JSONArray comment;
             if (mVideoItem.has("comment")) {
@@ -119,6 +113,23 @@ public class SendDanmakuActivity extends Activity
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        mVideoLoader = new VideoLoader(this);
+        mVideoLoader.setLoadListener(new VideoLoader.LoadListener() {
+            @Override
+            public void onLoadComplete(Object player, String url, String filePath) {
+                try {
+                    mMediaPlayer.setDataSource(filePath);
+                    mMediaPlayer.prepareAsync();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onLoadProgress(String url, float progress) {
+            }
+        });
     }
 
     private void initViews() {

@@ -9,8 +9,12 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.koolew.mars.danmaku.DanmakuItemInfo;
+import com.koolew.mars.player.ScrollPlayer;
 import com.koolew.mars.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -119,6 +123,7 @@ public class VideoCardAdapter extends BaseAdapter {
             convertView.setTag(holder);
             holder.videoLayout = (FrameLayout) convertView.findViewById(R.id.video_layout);
             holder.videoLayout.getLayoutParams().height = getVideoCardVideoHeight();
+            holder.danmakuContainer = (RelativeLayout) convertView.findViewById(R.id.danmaku_container);
             holder.videoThumb = (ImageView) convertView.findViewById(R.id.video_thumb);
             holder.avatar = (CircleImageView) convertView.findViewById(R.id.avatar);
             holder.nickname = (TextView) convertView.findViewById(R.id.nickname);
@@ -129,6 +134,7 @@ public class VideoCardAdapter extends BaseAdapter {
 
         try {
             ViewHolder holder = (ViewHolder) convertView.getTag();
+            holder.position = position;
             ImageLoader.getInstance().displayImage(mData.get(position).getString("thumb_url"),
                     holder.videoThumb, imgDisplayOptions);
             JSONObject userInfo = mData.get(position).getJSONObject("user_info");
@@ -159,22 +165,6 @@ public class VideoCardAdapter extends BaseAdapter {
         return (screenWidth - videoCardPadding * 2) / 4 * 3;
     }
 
-    public int getPositionByVideoLayout(FrameLayout videoLayout) {
-        String video_url = (String) videoLayout.getTag();
-        int count = mData.size();
-        for (int i = 0; i < count; i++) {
-            try {
-                if (mData.get(i).getString("video_url").equals(video_url)) {
-                    return i;
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return -1;
-    }
-
     public void setOnDanmakuSendListener(OnDanmakuSendListener listener) {
         mDanmakuSendListener = listener;
     }
@@ -193,14 +183,60 @@ public class VideoCardAdapter extends BaseAdapter {
     }
 
     public static class ViewHolder {
+        public int position;
 
         public FrameLayout videoLayout;
-        //public VideoView videoView;
+        public RelativeLayout danmakuContainer;
         public ImageView videoThumb;
         public CircleImageView avatar;
         public TextView nickname;
         public TextView videoDate;
 
         public LinearLayout danmakuSendLayout;
+    }
+
+    public static class TopicScrollPlayer extends ScrollPlayer {
+        private VideoCardAdapter mVideoCardAdapter;
+
+        public TopicScrollPlayer(VideoCardAdapter videoCardAdapter, ListView listView) {
+            super(listView);
+            mVideoCardAdapter = videoCardAdapter;
+        }
+
+        @Override
+        public boolean isItemView(View childView) {
+            return childView.getTag() instanceof ViewHolder;
+        }
+
+        @Override
+        public ViewGroup getSurfaceContainer(View itemView) {
+            return ((ViewHolder) itemView.getTag()).videoLayout;
+        }
+
+        @Override
+        public ViewGroup getDanmakuContainer(View itemView) {
+            return ((ViewHolder) itemView.getTag()).danmakuContainer;
+        }
+
+        @Override
+        public ArrayList<DanmakuItemInfo> getDanmakuList(View itemView) {
+            int position = ((ViewHolder) itemView.getTag()).position;
+            try {
+                return DanmakuItemInfo.fromJSONArray(
+                        mVideoCardAdapter.getItemData(position).getJSONArray("comment"));
+            } catch (JSONException e) {
+                return new ArrayList<>();
+            }
+        }
+
+        @Override
+        public ImageView getThumbImage(View itemView) {
+            return ((ViewHolder) itemView.getTag()).videoThumb;
+        }
+
+        @Override
+        public String getVideoUrl(View itemView) {
+            return ((ViewHolder) itemView.getTag()).videoLayout.getTag().toString();
+        }
     }
 }

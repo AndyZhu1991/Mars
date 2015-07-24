@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by jinchangzhu on 6/5/15.
  */
-public abstract class VideoLoader implements DownloadStatusListener {
+public class VideoLoader implements DownloadStatusListener {
 
     private static final String TAG = "koolew-VideoLoader";
 
@@ -32,6 +32,8 @@ public abstract class VideoLoader implements DownloadStatusListener {
     private DownloadEvent mCurrentDownload;
     private List<DownloadEvent> mOtherDownloads;
 
+    private LoadListener mLoadListener;
+
 
     public VideoLoader(Context context) {
         mContext = context;
@@ -44,7 +46,9 @@ public abstract class VideoLoader implements DownloadStatusListener {
         mPlayer = player;
         if (new File(url2LocalFile(url)).exists()) {
             // TODO: Play this video
-            loadComplete(mPlayer, url2LocalFile(url));
+            if (mLoadListener != null) {
+                mLoadListener.onLoadComplete(mPlayer, url, url2LocalFile(url));
+            }
         }
         else {
             // TODO: Download this video
@@ -57,8 +61,8 @@ public abstract class VideoLoader implements DownloadStatusListener {
                 float minPercentage = 0.0f;
                 int minPercentageIndex = 0;
                 for (int i = 0; i < downloadListSize; i++) {
-                    if (mOtherDownloads.get(i).percentage < minPercentage) {
-                        minPercentage = mOtherDownloads.get(i).percentage;
+                    if (mOtherDownloads.get(i).progress < minPercentage) {
+                        minPercentage = mOtherDownloads.get(i).progress;
                         minPercentageIndex = i;
                     }
                 }
@@ -74,13 +78,15 @@ public abstract class VideoLoader implements DownloadStatusListener {
         }
     }
 
-    public abstract void loadComplete(Object player, String filePath);
+    public void setLoadListener(LoadListener loadListener) {
+        mLoadListener = loadListener;
+    }
 
     private DownloadEvent startDownload(String url) {
         DownloadEvent event = new DownloadEvent();
         event.url = url;
         event.localPath = url2LocalFile(url);
-        event.percentage = 0.0f;
+        event.progress = 0.0f;
 
         DownloadRequest request = new DownloadRequest(Uri.parse(event.url))
                 .setDestinationURI(Uri.parse(event.localPath))
@@ -134,8 +140,9 @@ public abstract class VideoLoader implements DownloadStatusListener {
     @Override
     public void onDownloadComplete(int id) {
         if (id == mCurrentDownload.id) {
-            Log.d(TAG, mCurrentDownload.url + " completed");
-            loadComplete(mPlayer, mCurrentDownload.localPath);
+            if (mLoadListener != null) {
+                mLoadListener.onLoadComplete(mPlayer,mCurrentDownload.url, mCurrentDownload.localPath);
+            }
         }
         else {
             for (DownloadEvent event: mOtherDownloads) {
@@ -169,15 +176,22 @@ public abstract class VideoLoader implements DownloadStatusListener {
         }
 
         if (event != null) {
-            event.percentage = 1.0f * downloadedBytes / totalBytes;
+            event.progress = 1.0f * downloadedBytes / totalBytes;
+            if (mLoadListener != null) {
+                mLoadListener.onLoadProgress(event.url, event.progress);
+            }
         }
-        Log.d(TAG, event.url + ": " + event.percentage);
+    }
+
+    public interface LoadListener {
+        void onLoadComplete(Object player, String url, String filePath);
+        void onLoadProgress(String url, float progress);
     }
 
     class DownloadEvent {
         int id;
         String url;
         String localPath;
-        float percentage;
+        float progress;
     }
 }
