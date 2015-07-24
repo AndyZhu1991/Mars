@@ -14,30 +14,10 @@
         TitleBarView:title_text="@string/koolew_news_title"/>
 
     <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/refresh_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ListView
-                android:id="@+id/list_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#F5F5F5"
-                android:paddingTop="@dimen/shadow_height"
-                android:clipToPadding="false"
-                android:divider="@null" />
-        </android.support.v4.widget.SwipeRefreshLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/shadow_height"
-            android:background="@mipmap/shadow" />
-    </FrameLayout>
+        android:layout_weight="1"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -47,13 +27,12 @@
         android:background="@android:color/white">
 
         <RelativeLayout
-            android:id="@+id/capture"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginRight="10dp"
             android:background="@drawable/capture_btn_bg"
-            android:clickable="true">
+            android:onClick="onCaptureClick">
 
             <ImageView
                 android:layout_width="20dp"
@@ -63,12 +42,11 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/send_invitation"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/send_invitation_btn_bg"
-            android:clickable="true">
+            android:onClick="onInviteClick">
 
             <LinearLayout
                 android:layout_width="wrap_content"

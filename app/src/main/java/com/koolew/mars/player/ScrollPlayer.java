@@ -235,7 +235,7 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
     public abstract String getVideoUrl(View itemView);
 
 
-    class IjkRecyclerPlayer {
+    class IjkRecyclerPlayer implements IMediaPlayer.OnCompletionListener {
 
         private IjkMediaPlayer mCurrentPlayer;
 
@@ -246,11 +246,15 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
         }
 
         public void pause() {
-            mCurrentPlayer.pause();
+            if (mCurrentPlayer != null) {
+                mCurrentPlayer.pause();
+            }
         }
 
         public void resume() {
-            mCurrentPlayer.start();
+            if (mCurrentPlayer != null) {
+                mCurrentPlayer.start();
+            }
         }
 
         public boolean isPlaying() {
@@ -318,7 +322,7 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
                 @Override
                 public void run() {
                     while (player != null && player.isPlaying()) {
-                        if (player.getCurrentPosition() > 0) {
+                        if (player.getCurrentPosition() > 40) { // One more frame.
                             mListView.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -372,12 +376,15 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
         }
 
         private IjkMediaPlayer generatePlayer() {
+            IjkMediaPlayer player;
             if (mPlayerPool.size() == 0) {
-                return new IjkMediaPlayer();
+                player = new IjkMediaPlayer();
             }
             else {
-                return mPlayerPool.pop();
+                player = mPlayerPool.pop();
             }
+            player.setOnCompletionListener(this);
+            return player;
         }
 
         private void prepareSync(IjkMediaPlayer player) {
@@ -399,6 +406,11 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+
+        @Override
+        public void onCompletion(IMediaPlayer iMediaPlayer) {
+            iMediaPlayer.start();
         }
     }
 }

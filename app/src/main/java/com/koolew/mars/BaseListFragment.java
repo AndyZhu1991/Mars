@@ -122,14 +122,14 @@ public abstract class BaseListFragment extends Fragment
         }
     };
 
-    protected abstract void handleRefresh(JSONObject jsonObject);
+    protected abstract void handleRefresh(JSONObject response);
 
     /**
      *
-     * @param jsonObject
+     * @param response
      * @return is something loaded
      */
-    protected abstract boolean handleLoadMore(JSONObject jsonObject);
+    protected abstract boolean handleLoadMore(JSONObject response);
 
     protected abstract JsonObjectRequest doRefreshRequest();
 
