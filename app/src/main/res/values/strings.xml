@@ -192,6 +192,20 @@
     <string name="little_video_count">%d个小视频</string>
     <string name="no_title_hint">还没有输入标题呢！</string>
 
+    <!-- For InviteActivity -->
+    <string name="invite_activity_title">点名好友</string>
+    <string name="invite_friends">向好友发起点名</string>
+    <string name="select_all">全选</string>
+    <string name="all_selected">已全选</string>
+
+    <!-- Sns names -->
+    <string name="wechat_moments">朋友圈</string>
+    <string name="weibo">新浪微博</string>
+    <string name="wechat_friends">微信好友</string>
+    <string name="qzone">QQ空间</string>
+    <string name="email">邮件</string>
+    <string name="mms">短信</string>
+
     <!-- Divider -->
     <string name="title_activity_video_shoot">VideoShootActivity</string>
     <string name="title_activity_first_login">FirstLoginActivity</string>
@@ -222,4 +236,5 @@
     <string name="title_activity_video_edit">VideoEditActivity</string>
     <string name="title_activity_video_privacy">VideoPrivacyActivity</string>
     <string name="title_activity_add_topic">AddTopicActivity</string>
+    <string name="title_activity_invite">InviteActivity</string>
 </resources>

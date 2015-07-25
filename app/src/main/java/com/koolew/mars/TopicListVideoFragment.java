@@ -19,8 +19,10 @@ public class TopicListVideoFragment extends BaseListFragment
         implements VideoCardAdapter.OnDanmakuSendListener {
 
     public static final String KEY_TOPIC_ID = "topic_id";
+    public static final String KEY_TOPIC_TITLE = "topic_title";
 
     private String mTopicId;
+    private String mTopicTitle;
 
     private VideoCardAdapter mAdapter;
     private ScrollPlayer mScrollPlayer;
@@ -35,7 +37,9 @@ public class TopicListVideoFragment extends BaseListFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mTopicId = getActivity().getIntent().getStringExtra(KEY_TOPIC_ID);
+        Intent intent = getActivity().getIntent();
+        mTopicId = intent.getStringExtra(KEY_TOPIC_ID);
+        mTopicTitle = intent.getStringExtra(KEY_TOPIC_TITLE);
     }
 
     @Override
@@ -113,5 +117,9 @@ public class TopicListVideoFragment extends BaseListFragment
 
     public String getTopicId() {
         return mTopicId;
+    }
+
+    public String getTopicTitle() {
+        return mTopicTitle;
     }
 }

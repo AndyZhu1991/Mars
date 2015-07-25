@@ -39,6 +39,7 @@ public class UrlHelper {
     public static final String REQUEST_WORLD_HOT_URL = V1_URL + "world/hot";
     private static final String SEARCH_TOPIC_URL = V1_URL + "topic/search";
     public static final String ADD_TOPIC_URL = V1_URL + "topic";
+    public static final String SEND_INVITATION_URL = V1_URL + "call";
 
     // v2 api
     public static final String INVOLVE_URL = V2_URL + "feeds/involve";

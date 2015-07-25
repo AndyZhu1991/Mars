@@ -11,6 +11,7 @@ import android.view.View;
 public class TopicActivity extends FragmentActivity {
 
     public static final String KEY_TOPIC_ID = TopicListVideoFragment.KEY_TOPIC_ID;
+    public static final String KEY_TOPIC_TITLE = TopicListVideoFragment.KEY_TOPIC_TITLE;
 
     private TopicListVideoFragment mTopicListVideoFragment;
 
@@ -33,6 +34,9 @@ public class TopicActivity extends FragmentActivity {
     }
 
     public void onInviteClick(View v) {
-
+        Intent intent = new Intent(this, InviteActivity.class);
+        intent.putExtra(InviteActivity.KEY_TOPIC_ID, mTopicListVideoFragment.getTopicId());
+        intent.putExtra(InviteActivity.KEY_TITLE, mTopicListVideoFragment.getTopicTitle());
+        startActivity(intent);
     }
 }

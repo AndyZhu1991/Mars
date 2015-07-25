@@ -35,4 +35,15 @@
         <attr name="mark_color" format="color" />
         <attr name="selected_color" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="ShareChannelView">
+        <attr name="type">
+            <enum name="weibo" value="0"/>
+            <enum name="wechat_monents" value="1"/>
+            <enum name="wechat_friends" value="2"/>
+            <enum name="qzone" value="3"/>
+            <enum name="email" value="4"/>
+            <enum name="mms" value="5"/>
+        </attr>
+    </declare-styleable>
 </resources>

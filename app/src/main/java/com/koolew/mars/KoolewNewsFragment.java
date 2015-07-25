@@ -182,9 +182,10 @@ public class KoolewNewsFragment extends Fragment implements AdapterView.OnItemCl
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String topicId = ((TopicAdapter.TopicItem) mAdapter.getItem(position)).topicId;
+        TopicAdapter.TopicItem item = (TopicAdapter.TopicItem) mAdapter.getItem(position);
         Intent intent = new Intent(getActivity(), TopicActivity.class);
-        intent.putExtra(TopicActivity.KEY_TOPIC_ID, topicId);
+        intent.putExtra(TopicActivity.KEY_TOPIC_ID, item.topicId);
+        intent.putExtra(TopicActivity.KEY_TOPIC_TITLE, item.title);
         startActivity(intent);
     }
 }

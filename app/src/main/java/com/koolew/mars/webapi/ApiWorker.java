@@ -299,6 +299,22 @@ public class ApiWorker {
         return standardPostRequest(UrlHelper.ADD_TOPIC_URL, requestJson, listener, errorListener);
     }
 
+    public JsonObjectRequest sendInvitation(String topicId, List<String> friendIds,
+                                            Response.Listener<JSONObject> listener,
+                                            Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        try {
+            requestObject.put("topic_id", topicId);
+            JSONArray friends = new JSONArray();
+            for (String friendId: friendIds) {
+                friends.put(friendId);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.SEND_INVITATION_URL, requestObject, listener, errorListener);
+    }
+
 
     private JsonObjectRequest standardGetRequest(String url,
                                                  Response.Listener<JSONObject> listener,

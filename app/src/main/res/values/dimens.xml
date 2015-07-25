@@ -84,6 +84,9 @@
     <dimen name="task_item_topic_item_min_width">40dp</dimen>
     <dimen name="task_item_topic_item_text_size">12sp</dimen>
 
+    <!-- For invite_friend_item -->
+    <dimen name="invite_friend_item_width">68dp</dimen>
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
