@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
+import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -270,7 +271,8 @@ public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.O
             JSONObject item = (JSONObject) getItem(position);
             ViewHolder holder = (ViewHolder) convertView.getTag();
             try {
-                ImageLoader.getInstance().displayImage(item.getString("avatar"), holder.avatar);
+                ImageLoader.getInstance().displayImage(item.getString("avatar"), holder.avatar,
+                        ImageLoaderHelper.avatarLoadOptions);
                 holder.nickname.setText(item.getString("nickname"));
                 holder.kooCount.setText(String.valueOf(item.getLong("koo_num")));
                 holder.commonTopicCount.setText(String.valueOf(
@@ -283,7 +285,7 @@ public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.O
                     holder.commonFriendAvatars[i].setVisibility(View.VISIBLE);
                     ImageLoader.getInstance().displayImage(
                             ((JSONObject) commonFriend.get(i)).getString("avatar"),
-                            holder.commonFriendAvatars[i]);
+                            holder.commonFriendAvatars[i], ImageLoaderHelper.avatarLoadOptions);
                 }
                 for (; i < holder.commonFriendAvatars.length; i++) {
                     holder.commonFriendAvatars[i].setVisibility(View.GONE);

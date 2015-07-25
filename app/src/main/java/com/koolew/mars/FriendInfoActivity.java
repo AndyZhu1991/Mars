@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.koolew.mars.blur.DisplayBlurImage;
+import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.view.AvatarLinearContainer;
 import com.koolew.mars.view.BigCountView;
 import com.koolew.mars.webapi.ApiWorker;
@@ -58,7 +59,8 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
         mUid = intent.getStringExtra(KEY_UID);
         String avatar = intent.getStringExtra(KEY_AVATAR);
         if (avatar != null && !avatar.equals("")) {
-            ImageLoader.getInstance().displayImage(avatar, mAvatar);
+            ImageLoader.getInstance().displayImage(avatar, mAvatar,
+                    ImageLoaderHelper.avatarLoadOptions);
             new DisplayBlurImage(mBlurAvatar, avatar).execute();
         }
         mNickname.setText(intent.getStringExtra(KEY_NICKNAME));

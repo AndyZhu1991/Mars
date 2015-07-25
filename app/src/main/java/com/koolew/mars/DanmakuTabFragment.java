@@ -7,6 +7,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.view.NotificationPointView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -163,7 +164,8 @@ public class DanmakuTabFragment extends BaseListFragment {
 
             ViewHolder holder = (ViewHolder) convertView.getTag();
             DanmakuItemInfo item = (DanmakuItemInfo) getItem(position);
-            ImageLoader.getInstance().displayImage(item.thumb, holder.thumb);
+            ImageLoader.getInstance().displayImage(item.thumb, holder.thumb,
+                    ImageLoaderHelper.topicThumbLoadOptions);
             holder.title.setText(item.title);
             if (item.notifyCount == 0) {
                 holder.notifyCount.setVisibility(View.INVISIBLE);

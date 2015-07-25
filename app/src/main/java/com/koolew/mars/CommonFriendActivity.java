@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
+import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseFriendInfo;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -119,7 +120,8 @@ public class CommonFriendActivity extends Activity {
 
             ViewHolder holder = (ViewHolder) convertView.getTag();
             BaseFriendInfo info = (BaseFriendInfo) getItem(position);
-            ImageLoader.getInstance().displayImage(info.getAvatar(), holder.avatar);
+            ImageLoader.getInstance().displayImage(info.getAvatar(), holder.avatar,
+                    ImageLoaderHelper.avatarLoadOptions);
             holder.nickname.setText(info.getNickname());
 
             return convertView;

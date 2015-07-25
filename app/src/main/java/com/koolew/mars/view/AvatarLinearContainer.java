@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.koolew.mars.R;
+import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseFriendInfo;
 import com.koolew.mars.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -96,7 +97,8 @@ public class AvatarLinearContainer extends LinearLayout implements View.OnClickL
     private void setupAvatar(CircleImageView avatar, PersonInfo info) {
         avatar.setTag(info.getUid());
         avatar.setBorderColor(info.isSpecial ? mAvatarBorderSpecialColor : mAvatarBorderColor);
-        ImageLoader.getInstance().displayImage(info.getAvatar(), avatar);
+        ImageLoader.getInstance().displayImage(info.getAvatar(), avatar,
+                ImageLoaderHelper.avatarLoadOptions);
         avatar.setVisibility(VISIBLE);
     }
 

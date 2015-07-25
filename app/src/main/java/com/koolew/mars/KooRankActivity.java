@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
+import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseFriendInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.webapi.ApiWorker;
@@ -172,7 +173,8 @@ public class KooRankActivity extends Activity implements SwipeRefreshLayout.OnRe
 
             ViewHolder holder = (ViewHolder) convertView.getTag();
             GoodFriendItemInfo item = (GoodFriendItemInfo) getItem(position);
-            ImageLoader.getInstance().displayImage(item.getAvatar(), holder.avatar);
+            ImageLoader.getInstance().displayImage(item.getAvatar(), holder.avatar,
+                    ImageLoaderHelper.avatarLoadOptions);
             holder.nickname.setText(item.getNickname());
             holder.topText.setText(getString(R.string.top_num, position + 1));
 

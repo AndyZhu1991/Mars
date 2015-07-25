@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.utils.UriProcessor;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.BannerPagerIndicator;
@@ -362,7 +363,8 @@ public class TaskActivity extends Activity
                 }
 
                 JSONObject user = item.getJSONObject("user");
-                ImageLoader.getInstance().displayImage(user.getString("avatar"), holder.avatar);
+                ImageLoader.getInstance().displayImage(user.getString("avatar"), holder.avatar,
+                        ImageLoaderHelper.avatarLoadOptions);
                 holder.nickname.setText(user.getString("nickname"));
                 holder.topicCount.setText(getString(R.string.counter_ge, item.getInt("task_cnt")));
 

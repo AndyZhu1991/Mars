@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -31,9 +30,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
+import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.FriendInfo;
 import com.koolew.mars.webapi.UrlHelper;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -159,20 +158,8 @@ public class ImportPhoneFriendsActivity extends Activity {
 
         private LayoutInflater inflater;
 
-        private DisplayImageOptions options;
-
         FriendsAdapter() {
             inflater = LayoutInflater.from(ImportPhoneFriendsActivity.this);
-
-            options = new DisplayImageOptions.Builder()
-                    //.showImageOnLoading(R.mipmap.ic_launcher)
-                    //.showImageForEmptyUri(R.mipmap.ic_launcher)
-                    //.showImageOnFail(R.mipmap.ic_launcher)
-                    .cacheInMemory(true)
-                    .cacheOnDisk(true)
-                    .considerExifParams(true)
-                    .bitmapConfig(Bitmap.Config.RGB_565)
-                    .build();
         }
 
         @Override
@@ -208,7 +195,7 @@ public class ImportPhoneFriendsActivity extends Activity {
             }
 
             ImageLoader.getInstance().displayImage(friendInfos[position].getAvatar(),
-                    holder.avatar, options, null, null);
+                    holder.avatar, ImageLoaderHelper.avatarLoadOptions);
             if (friendSelectedFlag[position]) {
                 holder.checkIndicator.setVisibility(View.VISIBLE);
             }

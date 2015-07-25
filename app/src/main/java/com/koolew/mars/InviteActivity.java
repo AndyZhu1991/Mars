@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
+import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseFriendInfo;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Utils;
@@ -196,7 +197,8 @@ public class InviteActivity extends Activity implements SwipeRefreshLayout.OnRef
             }
             else {
                 FriendItem friendItem = getItemAt(position);
-                ImageLoader.getInstance().displayImage(friendItem.getAvatar(), holder.mAvatar);
+                ImageLoader.getInstance().displayImage(friendItem.getAvatar(), holder.mAvatar,
+                        ImageLoaderHelper.topicThumbLoadOptions);
                 holder.mCheckIndicator.setVisibility(
                         friendItem.isSelected ? View.VISIBLE : View.INVISIBLE);
                 holder.mNickname.setText(friendItem.getNickname());

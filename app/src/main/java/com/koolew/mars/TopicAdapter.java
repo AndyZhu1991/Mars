@@ -11,9 +11,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseFriendInfo;
 import com.koolew.mars.utils.Utils;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -31,13 +31,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public abstract class TopicAdapter extends BaseAdapter {
 
     private static final String TAG = "koolew-TopicAdapter";
-
-    static DisplayImageOptions imgDisplayOptions = new DisplayImageOptions.Builder()
-            //.showStubImage(R.drawable.stub_image)
-            .cacheInMemory(true)
-            .cacheOnDisk(true)
-            //.imageScaleType(ImageScaleType.EXACT)
-            .build();
 
     private Context mContext;
     private LayoutInflater mInflater;
@@ -134,7 +127,8 @@ public abstract class TopicAdapter extends BaseAdapter {
         TopicItem topicItem = mData.get(position);
         ViewHolder holder = (ViewHolder) convertView.getTag();
 
-        ImageLoader.getInstance().displayImage(topicItem.thumb, holder.thumb, imgDisplayOptions);
+        ImageLoader.getInstance().displayImage(topicItem.thumb, holder.thumb,
+                ImageLoaderHelper.topicThumbLoadOptions);
         holder.topicTitle.setText(topicItem.title);
         holder.videoCount.setText(
                 mContext.getString(R.string.video_count_label, topicItem.videoCount));
@@ -151,7 +145,7 @@ public abstract class TopicAdapter extends BaseAdapter {
 
             for (int i = 0; i < topicItem.parters.length && i < holder.parters.length; i++) {
                 ImageLoader.getInstance().displayImage(topicItem.parters[i].getAvatar(),
-                        holder.parters[i], imgDisplayOptions);
+                        holder.parters[i], ImageLoaderHelper.avatarLoadOptions);
                 holder.parters[i].setVisibility(View.VISIBLE);
             }
         }

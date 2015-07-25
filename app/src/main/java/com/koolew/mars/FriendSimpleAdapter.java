@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.utils.ContactUtil;
 import com.koolew.mars.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -159,7 +160,7 @@ public class FriendSimpleAdapter extends BaseAdapter {
                 holder.operateBtn.setTextSize(14);
             }
             else if (itemType == TYPE_NO_REGISTER) {
-                ImageLoader.getInstance().displayImage(AppProperty.DEFAULT_AVATAR_URL, holder.avatar);
+                holder.avatar.setImageResource(R.mipmap.default_avatar);
                 holder.summary.setVisibility(View.GONE);
                 holder.operateBtn.setTextSize(14);
             }
@@ -174,7 +175,8 @@ public class FriendSimpleAdapter extends BaseAdapter {
         }
         else {
             FriendInfo info = (FriendInfo) getItem(position);
-            ImageLoader.getInstance().displayImage(info.avatar, holder.avatar);
+            ImageLoader.getInstance().displayImage(info.avatar, holder.avatar,
+                    ImageLoaderHelper.avatarLoadOptions);
             holder.nickname.setText(info.nickname);
             if (info.summary == null || info.summary.length() == 0) {
                 holder.summary.setVisibility(View.GONE);

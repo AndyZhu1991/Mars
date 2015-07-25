@@ -14,9 +14,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.koolew.mars.danmaku.DanmakuItemInfo;
+import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.player.ScrollPlayer;
 import com.koolew.mars.utils.Utils;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -34,13 +34,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by jinchangzhu on 6/4/15.
  */
 public class VideoCardAdapter extends BaseAdapter {
-
-    static DisplayImageOptions imgDisplayOptions = new DisplayImageOptions.Builder()
-            //.showStubImage(R.drawable.stub_image)
-            .cacheInMemory(true)
-            .cacheOnDisk(true)
-            //.imageScaleType(ImageScaleType.EXACT)
-            .build();
 
     private Context mContext;
     private LayoutInflater mInflater;
@@ -136,10 +129,10 @@ public class VideoCardAdapter extends BaseAdapter {
             ViewHolder holder = (ViewHolder) convertView.getTag();
             holder.position = position;
             ImageLoader.getInstance().displayImage(mData.get(position).getString("thumb_url"),
-                    holder.videoThumb, imgDisplayOptions);
+                    holder.videoThumb, ImageLoaderHelper.topicThumbLoadOptions);
             JSONObject userInfo = mData.get(position).getJSONObject("user_info");
             ImageLoader.getInstance().displayImage(userInfo.getString("avatar"),
-                    holder.avatar, imgDisplayOptions);
+                    holder.avatar, ImageLoaderHelper.avatarLoadOptions);
             holder.nickname.setText(userInfo.getString("nickname"));
             holder.videoDate.setText(new SimpleDateFormat("yyyy-MM-dd").
                     format(new Date(mData.get(position).getLong("create_time"))));
