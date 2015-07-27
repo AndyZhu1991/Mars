@@ -139,8 +139,12 @@ public class InviteActivity extends Activity implements SwipeRefreshLayout.OnRef
 
     @Override
     public void onRightLayoutClick() {
-        ApiWorker.getInstance().sendInvitation(mTopicId, mAdapter.getSelectedFriendIdList(),
-                mInviteListener, null);
+        List<String> friendIdList = mAdapter.getSelectedFriendIdList();
+        if (friendIdList.size() == 0) {
+            Toast.makeText(this, R.string.please_invite_some_friends, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ApiWorker.getInstance().sendInvitation(mTopicId, friendIdList, mInviteListener, null);
     }
 
     class InviteAdapter extends RecyclerView.Adapter<InviteAdapter.ViewHolder> {

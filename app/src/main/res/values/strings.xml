@@ -195,6 +195,7 @@
     <!-- For InviteActivity -->
     <string name="invite_activity_title">点名好友</string>
     <string name="invite_friends">向好友发起点名</string>
+    <string name="please_invite_some_friends">还没有选择好友呢～</string>
     <string name="select_all">全选</string>
     <string name="all_selected">已全选</string>
 

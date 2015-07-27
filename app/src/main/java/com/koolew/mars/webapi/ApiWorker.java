@@ -309,6 +309,7 @@ public class ApiWorker {
             for (String friendId: friendIds) {
                 friends.put(friendId);
             }
+            requestObject.put("to", friends);
         } catch (JSONException e) {
             e.printStackTrace();
         }
