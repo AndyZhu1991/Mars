@@ -84,7 +84,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TopicActivity"
+            android:name=".FeedsTopicActivity"
             android:label="@string/title_activity_topic"
             android:screenOrientation="portrait" >
         </activity>
@@ -182,6 +182,10 @@
             android:name=".InviteActivity"
             android:label="@string/title_activity_invite"
             android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".WorldTopicActivity"
+            android:label="@string/title_activity_world_topic" >
         </activity>
     </application>
 

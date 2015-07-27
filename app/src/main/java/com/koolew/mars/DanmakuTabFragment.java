@@ -43,7 +43,7 @@ public class DanmakuTabFragment extends BaseListFragment {
     }
 
     @Override
-    protected void handleRefresh(JSONObject jsonObject) {
+    protected boolean handleRefresh(JSONObject jsonObject) {
         try {
             if (jsonObject.getInt("code") == 0) {
                 JSONArray notifications = jsonObject.
@@ -54,10 +54,14 @@ public class DanmakuTabFragment extends BaseListFragment {
                 }
                 mAdapter.setData(notifications);
                 mAdapter.notifyDataSetChanged();
+
+                return notifications.length() > 0;
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        return false;
     }
 
     @Override

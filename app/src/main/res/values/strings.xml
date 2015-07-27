@@ -84,8 +84,13 @@
     <string name="video_count_label">视频总数：%d个</string>
     <string name="invited_label">你被%s点名</string>
 
-    <!-- For TopicActivity -->
+    <!-- For FeedsTopicActivity -->
     <string name="send_invitation">发起点名</string>
+
+    <!-- For WorldTopicActivity -->
+    <string name="world">世界</string>
+    <string name="share">分享</string>
+    <string name="share_topic">分享话题</string>
 
     <!-- For VideoShootActivity -->
     <string name="import_video">导入</string>
@@ -207,6 +212,9 @@
     <string name="email">邮件</string>
     <string name="mms">短信</string>
 
+    <!-- For VideoCardAdapter -->
+    <string name="be_first_in_this_topic">成为此话题卡第一人</string>
+
     <!-- Divider -->
     <string name="title_activity_video_shoot">VideoShootActivity</string>
     <string name="title_activity_first_login">FirstLoginActivity</string>
@@ -238,4 +246,5 @@
     <string name="title_activity_video_privacy">VideoPrivacyActivity</string>
     <string name="title_activity_add_topic">AddTopicActivity</string>
     <string name="title_activity_invite">InviteActivity</string>
+    <string name="title_activity_world_topic">WorldTopicActivity</string>
 </resources>

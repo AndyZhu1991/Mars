@@ -69,9 +69,9 @@ public class ApiWorker {
         mRequestQueue.add(jsonObjectRequest);
     }
 
-    public JsonObjectRequest requestTopicVideo(String topicId,
-                                               Response.Listener<JSONObject> listener,
-                                               Response.ErrorListener errorListener) {
+    public JsonObjectRequest requestFeedsTopicVideo(String topicId,
+                                                    Response.Listener<JSONObject> listener,
+                                                    Response.ErrorListener errorListener) {
         if (errorListener == null) {
             errorListener = mErrorListener;
         }
@@ -89,9 +89,9 @@ public class ApiWorker {
         return jsonObjectRequest;
     }
 
-    public JsonObjectRequest requestTopicVideo(String topicId, long beforeTime,
-                                               Response.Listener<JSONObject> listener,
-                                               Response.ErrorListener errorListener) {
+    public JsonObjectRequest requestFeedsTopicVideo(String topicId, long beforeTime,
+                                                    Response.Listener<JSONObject> listener,
+                                                    Response.ErrorListener errorListener) {
         if (errorListener == null) {
             errorListener = mErrorListener;
         }
@@ -314,6 +314,13 @@ public class ApiWorker {
             e.printStackTrace();
         }
         return standardPostRequest(UrlHelper.SEND_INVITATION_URL, requestObject, listener, errorListener);
+    }
+
+    public JsonObjectRequest requestWorldTopicVideo(String topicId, int page,
+                                                    Response.Listener<JSONObject> listener,
+                                                    Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getWorldTopicVideoUrl(topicId, page),
+                listener, errorListener);
     }
 
 

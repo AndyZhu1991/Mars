@@ -92,12 +92,14 @@
         android:clickable="true">
 
         <TextView
+            android:id="@+id/danmaku_send_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/comment"
             android:textSize="12sp"/>
 
         <ImageView
+            android:id="@+id/danmaku_send_ic"
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:src="@mipmap/ic_comment"/>

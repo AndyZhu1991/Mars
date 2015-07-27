@@ -10,25 +10,27 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.player.ScrollPlayer;
 import com.koolew.mars.webapi.ApiWorker;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * Created by jinchangzhu on 7/24/15.
  */
-public class TopicListVideoFragment extends BaseListFragment
+public class BaseVideoListFragment extends BaseListFragment
         implements VideoCardAdapter.OnDanmakuSendListener {
 
     public static final String KEY_TOPIC_ID = "topic_id";
     public static final String KEY_TOPIC_TITLE = "topic_title";
 
-    private String mTopicId;
-    private String mTopicTitle;
+    protected String mTopicId;
+    protected String mTopicTitle;
 
-    private VideoCardAdapter mAdapter;
+    protected VideoCardAdapter mAdapter;
     private ScrollPlayer mScrollPlayer;
 
 
-    public TopicListVideoFragment() {
+    public BaseVideoListFragment() {
         super();
         isNeedLoadMore = true;
     }
@@ -46,13 +48,17 @@ public class TopicListVideoFragment extends BaseListFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
 
-        mAdapter = new VideoCardAdapter(getActivity());
+        mAdapter = useThisAdapter();
         mAdapter.setOnDanmakuSendListener(this);
         mScrollPlayer = new VideoCardAdapter.TopicScrollPlayer(mAdapter, mListView);
         mListFooter.setup(mListView, mScrollPlayer);
-        mListView.setAdapter(mAdapter);
 
         return root;
+    }
+
+    // Override it if need different adapter.
+    protected VideoCardAdapter useThisAdapter() {
+        return new VideoCardAdapter(getActivity());
     }
 
     @Override
@@ -83,28 +89,59 @@ public class TopicListVideoFragment extends BaseListFragment
         return getResources().getColor(R.color.koolew_light_orange);
     }
 
+    protected JSONArray getVideosFromResponse(JSONObject response) {
+        try {
+            if (response.getInt("code") == 0) {
+                return response.getJSONObject("result").getJSONArray("videos");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void setupAdapter() {
+        if (mListView.getAdapter() == null) {
+            mListView.setAdapter(mAdapter);
+        }
+    }
+
     @Override
-    protected void handleRefresh(JSONObject response) {
-        mAdapter.setData(response);
+    protected boolean handleRefresh(JSONObject response) {
+        setupAdapter();
+
+        JSONArray videos = getVideosFromResponse(response);
+        if (videos == null || videos.length() == 0) {
+            return false;
+        }
+
+        mAdapter.setData(videos);
         mAdapter.notifyDataSetChanged();
         mScrollPlayer.onListRefresh();
+
+        return true;
     }
 
     @Override
     protected boolean handleLoadMore(JSONObject response) {
-        int loadedCount = mAdapter.addData(response);
+        JSONArray videos = getVideosFromResponse(response);
+        if (videos == null || videos.length() == 0) {
+            return false;
+        }
+
+        mAdapter.addData(videos);
         mAdapter.notifyDataSetChanged();
-        return loadedCount > 0;
+        return true;
     }
 
     @Override
     protected JsonObjectRequest doRefreshRequest() {
-        return ApiWorker.getInstance().requestTopicVideo(mTopicId, mRefreshListener, null);
+        return ApiWorker.getInstance().requestFeedsTopicVideo(mTopicId, mRefreshListener, null);
     }
 
     @Override
     protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().requestTopicVideo(
+        return ApiWorker.getInstance().requestFeedsTopicVideo(
                 mTopicId, mAdapter.getOldestVideoTime(), mLoadMoreListener, null);
     }
 
@@ -121,5 +158,18 @@ public class TopicListVideoFragment extends BaseListFragment
 
     public String getTopicTitle() {
         return mTopicTitle;
+    }
+
+    protected void capture() {
+        Intent intent = new Intent(getActivity(), VideoShootActivity.class);
+        intent.putExtra(VideoShootActivity.KEY_TOPIC_ID, getTopicId());
+        startActivity(intent);
+    }
+
+    protected void invite() {
+        Intent intent = new Intent(getActivity(), InviteActivity.class);
+        intent.putExtra(InviteActivity.KEY_TOPIC_ID, getTopicId());
+        intent.putExtra(InviteActivity.KEY_TITLE, getTopicTitle());
+        startActivity(intent);
     }
 }

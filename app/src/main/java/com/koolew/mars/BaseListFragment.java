@@ -18,6 +18,11 @@ import org.json.JSONObject;
 public abstract class BaseListFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener, LoadMoreFooter.OnLoadListener {
 
+    protected static final int DEFAULT_LAYOUT = R.layout.fragment_base_list;
+
+
+    protected int mLayoutResId;
+
     protected boolean isNeedLoadMore;
 
     protected SwipeRefreshLayout mRefreshLayout;
@@ -28,6 +33,7 @@ public abstract class BaseListFragment extends Fragment
     protected JsonObjectRequest mLoadMoreRequest;
 
     protected BaseListFragment() {
+        mLayoutResId = DEFAULT_LAYOUT;
         isNeedLoadMore = false;
     }
 
@@ -39,7 +45,7 @@ public abstract class BaseListFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_base_list, container, false);
+        View root = inflater.inflate(mLayoutResId, container, false);
 
         mRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.refresh_layout);
         mRefreshLayout.setOnRefreshListener(this);
@@ -48,9 +54,11 @@ public abstract class BaseListFragment extends Fragment
         if (isNeedLoadMore) {
             mListFooter = (LoadMoreFooter) LayoutInflater.from(getActivity())
                     .inflate(R.layout.load_more_footer, null);
+            mListFooter.haveNoMore();
             mListFooter.setup(mListView);
             mListFooter.setOnLoadListener(this);
             mListView.addFooterView(mListFooter);
+            mListFooter.setVisibility(View.INVISIBLE);
         }
 
         mRefreshLayout.post(new Runnable() {
@@ -106,9 +114,14 @@ public abstract class BaseListFragment extends Fragment
             mRefreshLayout.setRefreshing(false);
             mRefreshRequest = null;
 
-            handleRefresh(jsonObject);
-
-            mListFooter.haveMore(true);
+            if (handleRefresh(jsonObject)) {
+                mListFooter.haveMore(true);
+                mListFooter.setVisibility(View.VISIBLE);
+            }
+            else {
+                mListFooter.haveMore(false);
+                mListFooter.setVisibility(View.INVISIBLE);
+            }
         }
     };
 
@@ -122,7 +135,13 @@ public abstract class BaseListFragment extends Fragment
         }
     };
 
-    protected abstract void handleRefresh(JSONObject response);
+
+    /**
+     *
+     * @param response
+     * @return is something loaded
+     */
+    protected abstract boolean handleRefresh(JSONObject response);
 
     /**
      *

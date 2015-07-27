@@ -35,9 +35,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class VideoCardAdapter extends BaseAdapter {
 
-    private Context mContext;
-    private LayoutInflater mInflater;
-    private List<JSONObject> mData;
+    protected final static int TYPE_NO_VIDEO = 0;
+    protected final static int TYPE_VIDEO_ITEM = 1;
+
+    protected Context mContext;
+    protected LayoutInflater mInflater;
+    protected List<JSONObject> mData;
 
     private OnDanmakuSendListener mDanmakuSendListener;
 
@@ -48,37 +51,20 @@ public class VideoCardAdapter extends BaseAdapter {
         mData = new ArrayList<JSONObject>();
     }
 
-    public void setData(JSONObject jsonObject) {
+    public void setData(JSONArray videos) {
         mData.clear();
-        addData(jsonObject);
+        addData(videos);
     }
 
-    public int addData(JSONObject jsonObject) {
-
-        int code;
+    public int addData(JSONArray videos) {
+        int length = 0;
         try {
-            code = jsonObject.getInt("code");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("There is no integer field named \"code\"");
-        }
-
-        if (code != 0) {
-            throw new IllegalArgumentException(
-                    String.format("The \"code\" field is %d, expected: 0.", code));
-        }
-
-        int length;
-        try {
-            JSONObject result = jsonObject.getJSONObject("result");
-            JSONArray videos = result.getJSONArray("videos");
             length = videos.length();
             for (int i = 0; i < length; i++) {
                 mData.add((JSONObject) videos.get(i));
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            throw new IllegalArgumentException("JSONObject error:\n" + jsonObject);
         }
 
         return length;
@@ -94,7 +80,7 @@ public class VideoCardAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mData.size();
+        return mData.size() == 0 ? 1 : mData.size();
     }
 
     @Override
@@ -108,7 +94,30 @@ public class VideoCardAdapter extends BaseAdapter {
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return mData.size() == 0 ? TYPE_NO_VIDEO : TYPE_VIDEO_ITEM;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        if (getItemViewType(position) == TYPE_NO_VIDEO) {
+            return getNoVideoView();
+        }
+        else {
+            return getVideoItemView(position, convertView, parent);
+        }
+    }
+
+    private View getNoVideoView() {
+        return mInflater.inflate(R.layout.topic_no_video_layout, null);
+    }
+
+    protected View getVideoItemView(int position, View convertView, ViewGroup parent) {
 
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.video_card_item, null);

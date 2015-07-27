@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.koolew.mars.FeedsTopicActivity;
 import com.koolew.mars.FriendInfoActivity;
 import com.koolew.mars.PushWrapperActivity;
 import com.koolew.mars.TaskActivity;
-import com.koolew.mars.TopicActivity;
 import com.koolew.mars.WebActivity;
 
 /**
@@ -41,8 +41,8 @@ public class UriProcessor {
             // TODO:
         }
         else if (authority.equals("topic")) {
-            Intent intent = new Intent(mContext, TopicActivity.class);
-            intent.putExtra(TopicActivity.KEY_TOPIC_ID, uri.getQueryParameter("topic_id"));
+            Intent intent = new Intent(mContext, FeedsTopicActivity.class);
+            intent.putExtra(FeedsTopicActivity.KEY_TOPIC_ID, uri.getQueryParameter("topic_id"));
             mContext.startActivity(intent);
         }
         else if (authority.equals("user")) {
