@@ -123,6 +123,7 @@ public class VideoCardAdapter extends BaseAdapter {
             convertView = mInflater.inflate(R.layout.video_card_item, null);
             ViewHolder holder = new ViewHolder();
             convertView.setTag(holder);
+            holder.imageMore = (ImageView) convertView.findViewById(R.id.more);
             holder.videoLayout = (FrameLayout) convertView.findViewById(R.id.video_layout);
             holder.videoLayout.getLayoutParams().height = getVideoCardVideoHeight();
             holder.danmakuContainer = (RelativeLayout) convertView.findViewById(R.id.danmaku_container);
@@ -187,6 +188,7 @@ public class VideoCardAdapter extends BaseAdapter {
     public static class ViewHolder {
         public int position;
 
+        public ImageView imageMore;
         public FrameLayout videoLayout;
         public RelativeLayout danmakuContainer;
         public ImageView videoThumb;

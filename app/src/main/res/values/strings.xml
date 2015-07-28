@@ -222,6 +222,11 @@
     <!-- For UserTopicActivity -->
     <string name="ad_friend">加好友</string>
 
+    <!-- For ShareVideoWindow -->
+    <string name="share_video">分享视频</string>
+    <string name="share_video_list">分享视频合集</string>
+    <string name="report_this_video">举报此视频</string>
+
     <!-- Divider -->
     <string name="title_activity_video_shoot">VideoShootActivity</string>
     <string name="title_activity_first_login">FirstLoginActivity</string>

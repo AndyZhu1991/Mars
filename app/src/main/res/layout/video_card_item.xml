@@ -23,7 +23,7 @@
             android:scaleType="centerCrop"/>
     </FrameLayout>
 
-    <ImageButton
+    <ImageView
         android:id="@+id/more"
         android:layout_width="30dp"
         android:layout_height="9dp"
