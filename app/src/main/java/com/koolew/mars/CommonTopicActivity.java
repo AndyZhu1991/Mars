@@ -2,9 +2,11 @@ package com.koolew.mars;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.Response;
@@ -15,11 +17,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class CommonTopicActivity extends Activity {
+public class CommonTopicActivity extends Activity implements AdapterView.OnItemClickListener {
 
     public static final String KEY_UID = "uid";
+    public static final String KEY_NICKNAME = "nickname";
 
     private String mUid;
+    private String mNickname;
 
     private ListView mListView;
     private TopicAdapter mAdapter;
@@ -30,8 +34,10 @@ public class CommonTopicActivity extends Activity {
         setContentView(R.layout.activity_common_topic);
 
         mUid = getIntent().getStringExtra(KEY_UID);
+        mNickname = getIntent().getStringExtra(KEY_NICKNAME);
 
         mListView = (ListView) findViewById(R.id.list_view);
+        mListView.setOnItemClickListener(this);
 
         doLoad();
     }
@@ -55,6 +61,16 @@ public class CommonTopicActivity extends Activity {
             }
         }
     };
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        String topicId = ((TopicAdapter.TopicItem) mAdapter.getItem(position)).topicId;
+        Intent intent = new Intent(this, UserTopicActivity.class);
+        intent.putExtra(UserTopicActivity.KEY_UID, mUid);
+        intent.putExtra(UserTopicActivity.KEY_TOPIC_ID, topicId);
+        intent.putExtra(UserTopicActivity.KEY_NICKNAME, mNickname);
+        startActivity(intent);
+    }
 
     private class CommonTopicAdapter extends TopicAdapter {
 

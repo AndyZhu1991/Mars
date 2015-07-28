@@ -323,6 +323,19 @@ public class ApiWorker {
                 listener, errorListener);
     }
 
+    public JsonObjectRequest requestUserTopic(String uid, String topicId,
+                                              Response.Listener<JSONObject> listener,
+                                              Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getUserTopicUrl(uid, topicId), listener, errorListener);
+    }
+
+    public JsonObjectRequest requestUserTopic(String uid, String topicId, long time,
+                                              Response.Listener<JSONObject> listener,
+                                              Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getUserTopicUrl(uid, topicId, time),
+                listener, errorListener);
+    }
+
 
     private JsonObjectRequest standardGetRequest(String url,
                                                  Response.Listener<JSONObject> listener,

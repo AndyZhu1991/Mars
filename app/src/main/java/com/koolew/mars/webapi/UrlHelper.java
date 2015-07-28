@@ -49,6 +49,7 @@ public class UrlHelper {
     private static final String TASK_DETAIL_URL = V2_URL + "task/detail";
     public static final String DANMAKU_TAB_URL = V2_URL + "activity/comment";
     public static final String TOPIC_VIDEO_WORLD_URL = V2_URL + "world/topic";
+    private static final String USER_TOPIC_URL = V2_URL + "user/topic/info";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
@@ -136,6 +137,21 @@ public class UrlHelper {
                 .buildUpon()
                 .appendQueryParameter("topic_id", topicId)
                 .appendQueryParameter("page", String.valueOf(page))
+                .build().toString();
+    }
+
+    public static String getUserTopicUrl(String uid, String topicId) {
+        return Uri.parse(USER_TOPIC_URL)
+                .buildUpon()
+                .appendQueryParameter("uid", uid)
+                .appendQueryParameter("topic_id", topicId)
+                .build().toString();
+    }
+
+    public static String getUserTopicUrl(String uid, String topicId, long time) {
+        return Uri.parse(getUserTopicUrl(uid, topicId))
+                .buildUpon()
+                .appendQueryParameter("time", String.valueOf(time))
                 .build().toString();
     }
 

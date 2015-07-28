@@ -141,6 +141,7 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
     private void onCommonTopicClick() {
         Intent intent = new Intent(this, CommonTopicActivity.class);
         intent.putExtra(CommonTopicActivity.KEY_UID, mUid);
+        intent.putExtra(CommonTopicActivity.KEY_NICKNAME, mNickname.getText());
         startActivity(intent);
     }
 

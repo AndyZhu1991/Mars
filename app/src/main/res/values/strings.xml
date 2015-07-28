@@ -219,6 +219,9 @@
     <!-- For VideoCardAdapter -->
     <string name="be_first_in_this_topic">成为此话题卡第一人</string>
 
+    <!-- For UserTopicActivity -->
+    <string name="ad_friend">加好友</string>
+
     <!-- Divider -->
     <string name="title_activity_video_shoot">VideoShootActivity</string>
     <string name="title_activity_first_login">FirstLoginActivity</string>
@@ -252,4 +255,5 @@
     <string name="title_activity_invite">InviteActivity</string>
     <string name="title_activity_world_topic">WorldTopicActivity</string>
     <string name="title_activity_task_topic">TaskTopicActivity</string>
+    <string name="title_activity_user_topic">UserTopicActivity</string>
 </resources>

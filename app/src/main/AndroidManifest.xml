@@ -191,6 +191,10 @@
             android:name=".TaskTopicActivity"
             android:label="@string/title_activity_task_topic" >
         </activity>
+        <activity
+            android:name=".UserTopicActivity"
+            android:label="@string/title_activity_user_topic" >
+        </activity>
     </application>
 
 </manifest>
