@@ -26,6 +26,7 @@
     <string name="counter_ge">"%d个"</string>
     <string name="cancel">取消</string>
     <string name="danmaku">弹幕</string>
+    <string name="ignore">忽略</string>
 
     <!-- For MainActivity -->
     <string name="title_koolew">可见</string>
@@ -91,6 +92,9 @@
     <string name="world">世界</string>
     <string name="share">分享</string>
     <string name="share_topic">分享话题</string>
+
+    <!-- For TaskTopicActivity -->
+    <string name="accept_invitation">接受点名</string>
 
     <!-- For VideoShootActivity -->
     <string name="import_video">导入</string>
@@ -247,4 +251,5 @@
     <string name="title_activity_add_topic">AddTopicActivity</string>
     <string name="title_activity_invite">InviteActivity</string>
     <string name="title_activity_world_topic">WorldTopicActivity</string>
+    <string name="title_activity_task_topic">TaskTopicActivity</string>
 </resources>

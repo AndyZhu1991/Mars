@@ -18,7 +18,7 @@ import org.json.JSONObject;
 public abstract class BaseListFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener, LoadMoreFooter.OnLoadListener {
 
-    protected static final int DEFAULT_LAYOUT = R.layout.fragment_base_list;
+    protected static final int DEFAULT_LAYOUT = R.layout.general_refresh_list_layout;
 
 
     protected int mLayoutResId;
@@ -47,10 +47,11 @@ public abstract class BaseListFragment extends Fragment
                              Bundle savedInstanceState) {
         View root = inflater.inflate(mLayoutResId, container, false);
 
-        mRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.refresh_layout);
+        View generalListLayout = findGeneralListLayout(root);
+        mRefreshLayout = (SwipeRefreshLayout) generalListLayout.findViewById(R.id.refresh_layout);
         mRefreshLayout.setOnRefreshListener(this);
         mRefreshLayout.setColorSchemeColors(getThemeColor());
-        mListView = (ListView) root.findViewById(R.id.list_view);
+        mListView = (ListView) generalListLayout.findViewById(R.id.list_view);
         if (isNeedLoadMore) {
             mListFooter = (LoadMoreFooter) LayoutInflater.from(getActivity())
                     .inflate(R.layout.load_more_footer, null);
@@ -69,6 +70,11 @@ public abstract class BaseListFragment extends Fragment
             }
         });
 
+        return root;
+    }
+
+    // Override it if used 'include' in fragment layout
+    protected View findGeneralListLayout(View root) {
         return root;
     }
 

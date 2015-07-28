@@ -187,6 +187,10 @@
             android:name=".WorldTopicActivity"
             android:label="@string/title_activity_world_topic" >
         </activity>
+        <activity
+            android:name=".TaskTopicActivity"
+            android:label="@string/title_activity_task_topic" >
+        </activity>
     </application>
 
 </manifest>

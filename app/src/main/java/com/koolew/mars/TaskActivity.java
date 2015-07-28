@@ -231,6 +231,9 @@ public class TaskActivity extends Activity
     private View.OnClickListener mOnTaskClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Intent intent = new Intent(TaskActivity.this, TaskTopicActivity.class);
+            intent.putExtra(TaskTopicActivity.KEY_TOPIC_ID, v.getTag().toString());
+            startActivity(intent);
         }
     };
 

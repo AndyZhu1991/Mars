@@ -136,7 +136,9 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
 
     private void stopCurrentPlay() {
         if (mCurrentItem != null) {
-            mDanmakuThread.stopDanmaku();
+            if (mDanmakuThread != null) {
+                mDanmakuThread.stopDanmaku();
+            }
             getThumbImage(mCurrentItem).setVisibility(View.VISIBLE);
             getSurfaceContainer(mCurrentItem).removeView(mPlaySurface);
 

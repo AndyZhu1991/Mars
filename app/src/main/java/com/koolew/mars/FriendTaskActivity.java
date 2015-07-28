@@ -159,6 +159,9 @@ public class FriendTaskActivity extends Activity
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             BaseTopicInfo topicInfo = (BaseTopicInfo) mAdapter.getItem(position);
             String topicId = topicInfo.getTopicId();
+            Intent intent = new Intent(FriendTaskActivity.this, TaskTopicActivity.class);
+            intent.putExtra(TaskTopicActivity.KEY_TOPIC_ID, topicId);
+            startActivity(intent);
         }
     };
 
