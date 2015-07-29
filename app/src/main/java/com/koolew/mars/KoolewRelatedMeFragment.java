@@ -69,7 +69,7 @@ public class KoolewRelatedMeFragment extends Fragment
 
         mListFooter = (LoadMoreFooter) getActivity().getLayoutInflater()
                 .inflate(R.layout.load_more_footer, null);
-        mListView.addFooterView(mListFooter);
+        mListView.addFooterView(mListFooter, null, false);
         mListFooter.setup(mListView);
         mListFooter.setOnLoadListener(this);
 

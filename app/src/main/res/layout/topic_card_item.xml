@@ -96,7 +96,9 @@
                 android:layout_height="@dimen/topic_parter_size"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
-                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal" />
         </LinearLayout>
     </FrameLayout>

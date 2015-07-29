@@ -1,6 +1,7 @@
 package com.koolew.mars;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +29,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by jinchangzhu on 6/2/15.
  */
-public abstract class TopicAdapter extends BaseAdapter {
+public abstract class TopicAdapter extends BaseAdapter implements View.OnClickListener {
 
     private static final String TAG = "koolew-TopicAdapter";
 
@@ -107,18 +108,13 @@ public abstract class TopicAdapter extends BaseAdapter {
             holder.parters = new CircleImageView[getMaxShowTopicParterCount()];
             for (int i = 0; i < holder.parters.length; i++) {
                 CircleImageView avatar = new CircleImageView(mContext);
+                avatar.setOnClickListener(this);
                 int avatarSize = res.getDimensionPixelSize(R.dimen.topic_parter_size);
                 int avatarMarginLr = res.getDimensionPixelOffset(R.dimen.topic_parter_half_interval);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(avatarSize, avatarSize);
                 params.setMargins(avatarMarginLr, 0, avatarMarginLr, 0);
                 avatar.setLayoutParams(params);
                 avatar.setBorderWidth(mContext.getResources().getDimensionPixelSize(R.dimen.avatar_border_width));
-                if (i == 0) {
-                    avatar.setBorderColorResource(R.color.koolew_light_green);
-                }
-                else {
-                    avatar.setBorderColorResource(R.color.avatar_gray_border);
-                }
                 holder.parters[i] = avatar;
                 holder.partersLayout.addView(avatar);
             }
@@ -144,8 +140,17 @@ public abstract class TopicAdapter extends BaseAdapter {
             }
 
             for (int i = 0; i < topicItem.parters.length && i < holder.parters.length; i++) {
+                if (topicItem.parters[i].isSpecial) {
+                    holder.parters[i].setBorderColorResource(R.color.koolew_light_green);
+                }
+                else {
+                    holder.parters[i].setBorderColorResource(R.color.avatar_gray_border);
+                }
+
                 ImageLoader.getInstance().displayImage(topicItem.parters[i].getAvatar(),
                         holder.parters[i], ImageLoaderHelper.avatarLoadOptions);
+                holder.parters[i].setTag(topicItem.parters[i].getUid());
+
                 holder.parters[i].setVisibility(View.VISIBLE);
             }
         }
@@ -155,6 +160,15 @@ public abstract class TopicAdapter extends BaseAdapter {
         }
 
         return convertView;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v instanceof CircleImageView) {
+            Intent intent = new Intent(mContext, FriendInfoActivity.class);
+            intent.putExtra(FriendInfoActivity.KEY_UID, v.getTag().toString());
+            mContext.startActivity(intent);
+        }
     }
 
     public abstract TopicItem jsonObject2TopicItem(JSONObject jsonObject);
@@ -169,9 +183,10 @@ public abstract class TopicAdapter extends BaseAdapter {
         int topicPadding = res.getDimensionPixelSize(R.dimen.topic_invitation_card_padding);
         int topicParterSize = res.getDimensionPixelSize(R.dimen.topic_parter_size);
         int topicParterHalfInterval = res.getDimensionPixelSize(R.dimen.topic_parter_half_interval);
+        int containerPadding = res.getDimensionPixelSize(R.dimen.topic_parter_container_lr_padding);
         int screenWidth = Utils.getScreenWidthPixel(mContext);
 
-        int count = (screenWidth - topicPadding * 2)
+        int count = (screenWidth - topicPadding * 2 - containerPadding * 2)
                          / (topicParterSize + topicParterHalfInterval * 2);
 
         maxShowTopicParterCount = Math.min(count, AppProperty.getTopicMaxReturnParterCount());
@@ -184,7 +199,7 @@ public abstract class TopicAdapter extends BaseAdapter {
         public String thumb;
         public int videoCount;
         public long updateTime;
-        public BaseFriendInfo[] parters;
+        public FriendInfo[] parters;
 
         public TopicItem() {
         }
@@ -194,13 +209,21 @@ public abstract class TopicAdapter extends BaseAdapter {
         }
 
         public TopicItem(String topicId, String title, String thumb, int videoCount, long updateTime,
-                         BaseFriendInfo[] parters) {
+                         FriendInfo[] parters) {
             this.topicId = topicId;
             this.title = title;
             this.thumb = thumb;
             this.videoCount = videoCount;
             this.updateTime = updateTime;
             this.parters = parters;
+        }
+    }
+
+    public static class FriendInfo extends BaseFriendInfo {
+        public boolean isSpecial;
+
+        public FriendInfo(JSONObject jsonObject) {
+            super(jsonObject);
         }
     }
 

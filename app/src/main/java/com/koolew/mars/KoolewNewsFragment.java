@@ -14,7 +14,6 @@ import android.widget.ListView;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.koolew.mars.infos.BaseFriendInfo;
 import com.koolew.mars.view.LoadMoreFooter;
 import com.koolew.mars.webapi.ApiWorker;
 
@@ -67,7 +66,7 @@ public class KoolewNewsFragment extends Fragment implements AdapterView.OnItemCl
 
         mListFooter = (LoadMoreFooter) getActivity().getLayoutInflater()
                 .inflate(R.layout.load_more_footer, null);
-        mListView.addFooterView(mListFooter);
+        mListView.addFooterView(mListFooter, null, false);
         mListFooter.setup(mListView);
         mListFooter.setOnLoadListener(this);
 
@@ -123,9 +122,11 @@ public class KoolewNewsFragment extends Fragment implements AdapterView.OnItemCl
                 JSONObject topic = jsonObject.getJSONObject("topic");
                 JSONArray parters = jsonObject.getJSONArray("parters");
                 int parterCount = parters.length();
-                BaseFriendInfo[] parterInfos = new BaseFriendInfo[parterCount];
+                FriendInfo[] parterInfos = new FriendInfo[parterCount];
                 for (int i = 0; i < parterCount; i++) {
-                    parterInfos[i] = new BaseFriendInfo(parters.getJSONObject(i));
+                    JSONObject parter = parters.getJSONObject(i);
+                    parterInfos[i] = new FriendInfo(parter);
+                    parterInfos[i].isSpecial = parter.getInt("new") == 1;
                 }
 
                 return new TopicItem(
