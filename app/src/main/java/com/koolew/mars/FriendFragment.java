@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +81,12 @@ public class FriendFragment extends MainBaseFragment {
         mToolbarInterface.setTopIconImageResource(0, R.mipmap.ic_search);
 
         return root;
+    }
+
+    @Override
+    public void onTopIconClick(int position) {
+        new SearchUserWindow(getActivity()).showAtLocation(
+                getActivity().findViewById(R.id.my_toolbar), Gravity.TOP, 0, 0);
     }
 
     class FriendFragmentPagerAdapter extends FragmentPagerAdapter {

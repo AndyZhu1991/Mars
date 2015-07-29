@@ -336,6 +336,12 @@ public class ApiWorker {
                 listener, errorListener);
     }
 
+    public JsonObjectRequest searchUser(String keyWord,
+                                        Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getSearchUserUrl(keyWord), listener, errorListener);
+    }
+
 
     private JsonObjectRequest standardGetRequest(String url,
                                                  Response.Listener<JSONObject> listener,

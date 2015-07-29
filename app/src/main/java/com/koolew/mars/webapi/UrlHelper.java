@@ -40,6 +40,7 @@ public class UrlHelper {
     private static final String SEARCH_TOPIC_URL = V1_URL + "topic/search";
     public static final String ADD_TOPIC_URL = V1_URL + "topic";
     public static final String SEND_INVITATION_URL = V1_URL + "call";
+    private static final String SEARCH_USER_URL = V1_URL + "user/search";
 
     // v2 api
     public static final String INVOLVE_URL = V2_URL + "feeds/involve";
@@ -92,6 +93,13 @@ public class UrlHelper {
 
     public static String getSearchTopicUrl(String keyWord) {
         return Uri.parse(SEARCH_TOPIC_URL)
+                .buildUpon()
+                .appendQueryParameter("query", keyWord)
+                .build().toString();
+    }
+
+    public static String getSearchUserUrl(String keyWord) {
+        return Uri.parse(SEARCH_USER_URL)
                 .buildUpon()
                 .appendQueryParameter("query", keyWord)
                 .build().toString();
