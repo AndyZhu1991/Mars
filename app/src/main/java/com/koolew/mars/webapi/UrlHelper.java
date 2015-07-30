@@ -41,6 +41,9 @@ public class UrlHelper {
     public static final String ADD_TOPIC_URL = V1_URL + "topic";
     public static final String SEND_INVITATION_URL = V1_URL + "call";
     private static final String SEARCH_USER_URL = V1_URL + "user/search";
+    public static final String REJECT_FRIEND_PADDING_URL = V1_URL + "friend/reject";
+    public static final String AGREE_FRIEND_ADD_URL = V1_URL + "friend/agree";
+    public static final String DELETE_FRIEND_URL = V1_URL + "friend/delete";
 
     // v2 api
     public static final String INVOLVE_URL = V2_URL + "feeds/involve";
@@ -51,6 +54,7 @@ public class UrlHelper {
     public static final String DANMAKU_TAB_URL = V2_URL + "activity/comment";
     public static final String TOPIC_VIDEO_WORLD_URL = V2_URL + "world/topic";
     private static final String USER_TOPIC_URL = V2_URL + "user/topic/info";
+    public static final String IGNORE_RECOMMEND_URL = V2_URL + "friend/recommend/ignore";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;

@@ -256,7 +256,7 @@ public class AddTopicActivity extends Activity implements TitleBarView.OnRightLa
             public void onClick(View v) {
                 int position = getLayoutPosition();
                 BaseTopicInfo topicInfo = mData.get(position);
-                Intent intent = new Intent(AddTopicActivity.this, FeedsTopicActivity.class);
+                Intent intent = new Intent(AddTopicActivity.this, WorldTopicActivity.class);
                 intent.putExtra(FeedsTopicActivity.KEY_TOPIC_ID, topicInfo.getTopicId());
                 startActivity(intent);
                 finish();

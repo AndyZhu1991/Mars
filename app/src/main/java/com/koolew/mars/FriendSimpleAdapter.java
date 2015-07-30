@@ -1,5 +1,6 @@
 package com.koolew.mars;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,9 +10,12 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.Response;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.utils.ContactUtil;
+import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Utils;
+import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -64,10 +68,12 @@ public class FriendSimpleAdapter extends BaseAdapter {
 
     protected Context mContext;
     protected List<FriendInfo> mData;
+    protected ProgressDialog mProgressDialog;
 
     public FriendSimpleAdapter(Context context) {
         mContext = context;
         mData = new ArrayList<FriendInfo>();
+        mProgressDialog = DialogUtil.getConnectingServerDialog(mContext);
     }
 
     public void add(JSONArray relations) {
@@ -139,6 +145,7 @@ public class FriendSimpleAdapter extends BaseAdapter {
             holder.nickname = (TextView) convertView.findViewById(R.id.nickname);
             holder.summary = (TextView) convertView.findViewById(R.id.summary);
             holder.operateBtn = (Button) convertView.findViewById(R.id.operation_btn);
+            holder.operateBtn.setOnClickListener(mOperateListener);
             convertView.setTag(holder);
 
             holder.operateBtn.setBackgroundResource(OPERATE_BTN_BG[itemType]);
@@ -168,6 +175,8 @@ public class FriendSimpleAdapter extends BaseAdapter {
 
 
         ViewHolder holder = (ViewHolder) convertView.getTag();
+
+        holder.operateBtn.setTag(position);
 
         if (itemType == TYPE_NO_REGISTER) {
             ContactUtil.SimpleContactInfo info = (ContactUtil.SimpleContactInfo) getItem(position);
@@ -199,8 +208,79 @@ public class FriendSimpleAdapter extends BaseAdapter {
         return 5;
     }
 
+    private View.OnClickListener mOperateListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            onOperate((Integer) v.getTag());
+        }
+    };
+
     // Override it in subclass
     protected void retrievalContactName(FriendInfo info) {
+    }
+
+    protected void onOperate(int position) {
+        String uid = null;
+        if (mData.size() > position) {
+            uid = mData.get(position).uid;
+        }
+        switch (getItemViewType(position)) {
+            case TYPE_SELF:
+                break;
+            case TYPE_STRANGER:
+                requestForFriend(uid);
+                break;
+            case TYPE_SENT_INVITATION:
+                break;
+            case TYPE_INVITED_ME:
+                agreeAddFriend(uid);
+                break;
+            case TYPE_FRIEND:
+                removeFriend(uid);
+                break;
+            case TYPE_NO_REGISTER:
+                break;
+        }
+    }
+
+    protected void requestForFriend(String uid) {
+        mProgressDialog.show();
+        ApiWorker.getInstance().addFriend(uid, new RemoveResponseListener(uid), null);
+    }
+
+    protected void agreeAddFriend(String uid) {
+        mProgressDialog.show();
+        ApiWorker.getInstance().agreeFriendAdd(uid, new RemoveResponseListener(uid), null);
+    }
+
+    protected void removeFriend(String uid) {
+        mProgressDialog.show();
+        ApiWorker.getInstance().deleteFriend(uid, new RemoveResponseListener(uid), null);
+    }
+
+    protected void inviteContact(String phoneNum) {
+    }
+
+    class RemoveResponseListener implements Response.Listener<JSONObject> {
+
+        private String uid;
+
+        public RemoveResponseListener(String uid) {
+            this.uid = uid;
+        }
+
+        @Override
+        public void onResponse(JSONObject response) {
+            mProgressDialog.dismiss();
+            int count = mData.size();
+            for (int i = 0; i < count; i++) {
+                if (mData.get(i).uid.equals(uid)) {
+                    mData.remove(i);
+                    notifyDataSetChanged();
+                    return;
+                }
+            }
+        }
     }
 
     protected void generateSummary(FriendInfo info) {
@@ -224,7 +304,7 @@ public class FriendSimpleAdapter extends BaseAdapter {
         }
     }
 
-    protected class FriendInfo {
+    public class FriendInfo {
         protected int type;
         protected String uid;
         protected String nickname;
@@ -232,6 +312,10 @@ public class FriendSimpleAdapter extends BaseAdapter {
         protected String phoneNumber;
         protected String contactName;
         protected String summary;
+
+        public String getUid() {
+            return uid;
+        }
     }
 
     protected class ViewHolder {

@@ -15,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -342,7 +343,97 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.getSearchUserUrl(keyWord), listener, errorListener);
     }
 
+    public JsonObjectRequest rejectPadding(String fromUid,
+                                           Response.Listener<JSONObject> listener,
+                                           Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        try {
+            requestObject.put("from", fromUid);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.REJECT_FRIEND_PADDING_URL,
+                requestObject, listener, errorListener);
+    }
 
+    public JsonObjectRequest ignoreRecommend(String uid,
+                                             Response.Listener<JSONObject> listener,
+                                             Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        try {
+            requestObject.put("uid", uid);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.IGNORE_RECOMMEND_URL,
+                requestObject, listener, errorListener);
+    }
+
+    public JsonObjectRequest agreeFriendAdd(String fromUid,
+                                            Response.Listener<JSONObject> listener,
+                                            Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        try {
+            requestObject.put("from", fromUid);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.AGREE_FRIEND_ADD_URL,
+                requestObject, listener, errorListener);
+    }
+
+    public JsonObjectRequest addFriends(List<String> uids,
+                                        Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        JSONObject applys = new JSONObject();
+        JSONArray to = new JSONArray();
+        for (String uid: uids) {
+            to.put(uid);
+        }
+        try {
+            applys.put("to", to);
+            requestObject.put("applys", applys);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.ADD_FRIEND_URL, requestObject, listener, errorListener);
+    }
+
+    public JsonObjectRequest addFriend(String uid,
+                                       Response.Listener<JSONObject> listener,
+                                       Response.ErrorListener errorListener) {
+        List<String> uids = new ArrayList<>();
+        uids.add(uid);
+        return addFriends(uids, listener, errorListener);
+    }
+
+    public JsonObjectRequest deleteFriends(List<String> uids,
+                                           Response.Listener<JSONObject> listener,
+                                           Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        JSONArray friends = new JSONArray();
+        for (String uid: uids) {
+            friends.put(uid);
+        }
+        try {
+            requestObject.put("friends", friends);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.DELETE_FRIEND_URL, requestObject, listener, errorListener);
+    }
+
+    public JsonObjectRequest deleteFriend(String uid,
+                                          Response.Listener<JSONObject> listener,
+                                          Response.ErrorListener errorListener) {
+        List<String> uids = new ArrayList<>();
+        uids.add(uid);
+        return deleteFriends(uids, listener, errorListener);
+    }
+
+
+    // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,
                                                  Response.Listener<JSONObject> listener,
                                                  Response.ErrorListener errorListener) {

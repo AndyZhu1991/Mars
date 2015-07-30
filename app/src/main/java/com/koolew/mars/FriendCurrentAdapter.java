@@ -1,6 +1,9 @@
 package com.koolew.mars;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+
+import com.koolew.mars.utils.DialogUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,8 +14,11 @@ import org.json.JSONObject;
  */
 public class FriendCurrentAdapter extends FriendSimpleAdapter {
 
+    private ProgressDialog mProgressDialog;
+
     public FriendCurrentAdapter(Context context) {
         super(context);
+        mProgressDialog = DialogUtil.getConnectingServerDialog(context);
     }
 
     @Override

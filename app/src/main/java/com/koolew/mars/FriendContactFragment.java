@@ -1,5 +1,6 @@
 package com.koolew.mars;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.Response;
@@ -21,7 +23,8 @@ import org.json.JSONObject;
 import java.util.List;
 
 
-public class FriendContactFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FriendContactFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
+        AdapterView.OnItemClickListener {
 
     private static final String TAG = "koolew-FriendContactF";
 
@@ -61,6 +64,7 @@ public class FriendContactFragment extends Fragment implements SwipeRefreshLayou
         mRefreshLayout.setColorSchemeResources(R.color.koolew_light_blue);
         mRefreshLayout.setOnRefreshListener(this);
         mListView = (ListView) root.findViewById(R.id.list_view);
+        mListView.setOnItemClickListener(this);
 
         if (mAdapter == null) {
             mRefreshLayout.post(new Runnable() {
@@ -94,6 +98,17 @@ public class FriendContactFragment extends Fragment implements SwipeRefreshLayou
 
     private void requestContactFriend() {
         ApiWorker.getInstance().requestContactFriend(mContacts, new RefreshListener(), null);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (mAdapter.getItemViewType(position) == FriendSimpleAdapter.TYPE_NO_REGISTER) {
+            return;
+        }
+        Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
+        String uid = ((FriendSimpleAdapter.FriendInfo) mAdapter.getItem(position)).getUid();
+        intent.putExtra(FriendInfoActivity.KEY_UID, uid);
+        startActivity(intent);
     }
 
     class RefreshListener implements Response.Listener<JSONObject> {

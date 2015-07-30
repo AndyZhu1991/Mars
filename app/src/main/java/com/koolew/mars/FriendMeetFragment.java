@@ -1,5 +1,6 @@
 package com.koolew.mars;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
+import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -31,12 +33,15 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
+public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
+        AdapterView.OnItemClickListener {
 
     private ListView mListView;
     private FriendMeetAdapter mAdapter;
 
     private SwipeRefreshLayout mRefreshLayout;
+
+    private ProgressDialog mProgressDialog;
 
     private JSONObject mResult;
 
@@ -58,6 +63,8 @@ public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.O
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mProgressDialog = DialogUtil.getConnectingServerDialog(getActivity());
     }
 
     @Override
@@ -127,24 +134,6 @@ public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.O
         }
     }
 
-    private View.OnClickListener mOnRemoveListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-        }
-    };
-
-    private View.OnClickListener mOnAcceptListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-        }
-    };
-
-    private View.OnClickListener mOnAddListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-        }
-    };
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.d("stdzhu", "item click");
@@ -213,7 +202,7 @@ public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.O
 
                 holder.explainLabel = (TextView) convertView.findViewById(R.id.explain_label);
                 holder.removeButton = (Button) convertView.findViewById(R.id.btn_remove);
-                holder.removeButton.setOnClickListener(mOnRemoveListener);
+                holder.removeButton.setOnClickListener(holder);
                 holder.avatar = (CircleImageView) convertView.findViewById(R.id.avatar);
                 holder.acceptAddButton = (Button) convertView.findViewById(R.id.btn_accept_add);
                 holder.nickname = (TextView) convertView.findViewById(R.id.nickname);
@@ -250,7 +239,7 @@ public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.O
                     holder.acceptAddButton.setText(R.string.accept);
                     holder.acceptAddButton.setTextColor(getResources().
                             getColor(android.R.color.white));
-                    holder.acceptAddButton.setOnClickListener(mOnAcceptListener);
+                    holder.acceptAddButton.setOnClickListener(holder);
                     holder.paddingGreenBorder.setVisibility(View.VISIBLE);
                 }
                 else {
@@ -261,7 +250,7 @@ public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.O
                     holder.acceptAddButton.setText(R.string.add);
                     holder.acceptAddButton.setTextColor(getResources().
                             getColor(R.color.koolew_light_blue));
-                    holder.acceptAddButton.setOnClickListener(mOnAddListener);
+                    holder.acceptAddButton.setOnClickListener(holder);
                     holder.paddingGreenBorder.setVisibility(View.GONE);
                 }
 
@@ -270,6 +259,7 @@ public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.O
 
             JSONObject item = (JSONObject) getItem(position);
             ViewHolder holder = (ViewHolder) convertView.getTag();
+            holder.position = position;
             try {
                 ImageLoader.getInstance().displayImage(item.getString("avatar"), holder.avatar,
                         ImageLoaderHelper.avatarLoadOptions);
@@ -318,19 +308,107 @@ public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.O
             return (screenWidth - itemBorder * 2) /
                     (commonFriendAvatarSize + commonFriendAvatarHalfInterval * 2);
         }
-    }
 
-    class ViewHolder {
-        TextView explainLabel;
-        Button removeButton;
-        CircleImageView avatar;
-        TextView nickname;
-        Button acceptAddButton;
-        TextView kooCount;
-        TextView commonTopicCount;
-        TextView commonFriendLabel;
-        LinearLayout commonFriendAvatarLayout;
-        CircleImageView[] commonFriendAvatars;
-        View paddingGreenBorder;
+        private void rejectFriendPadding(String uid) {
+            ApiWorker.getInstance().rejectPadding(uid, new RemoveItemResponseListener(uid), null);
+        }
+
+        private void agreeFriendAdd(String uid) {
+        }
+
+        private void ignoreRecommend(String uid) {
+
+        }
+
+        private void addFriend(String uid) {
+
+        }
+
+        class RemoveItemResponseListener implements Response.Listener<JSONObject> {
+
+            private String uid;
+
+            public RemoveItemResponseListener(String uid) {
+                this.uid = uid;
+            }
+
+            @Override
+            public void onResponse(JSONObject response) {
+                mProgressDialog.dismiss();
+
+                int count = mPendings.size();
+                for (int i = 0; i < count; i++) {
+                    JSONObject jsonObject = mPendings.get(i);
+                    try {
+                        if (jsonObject.getString("uid").equals(uid)) {
+                            mPendings.remove(i);
+                            notifyDataSetChanged();
+                            return;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                count = mRecommends.size();
+                for (int i = 0; i < count; i++) {
+                    JSONObject jsonObject = mRecommends.get(i);
+                    try {
+                        if (jsonObject.getString("uid").equals(uid)) {
+                            mRecommends.remove(i);
+                            notifyDataSetChanged();
+                            return;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        class ViewHolder implements View.OnClickListener {
+            int position;
+            TextView explainLabel;
+            Button removeButton;
+            CircleImageView avatar;
+            TextView nickname;
+            Button acceptAddButton;
+            TextView kooCount;
+            TextView commonTopicCount;
+            TextView commonFriendLabel;
+            LinearLayout commonFriendAvatarLayout;
+            CircleImageView[] commonFriendAvatars;
+            View paddingGreenBorder;
+
+            @Override
+            public void onClick(View v) {
+                String uid;
+                try {
+                    uid = ((JSONObject) getItem(position)).getString("uid");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                Response.Listener<JSONObject> responseListener = new RemoveItemResponseListener(uid);
+
+                mProgressDialog.show();
+                if (getItemViewType(position) == TYPE_PADDING) {
+                    if (v == removeButton) {
+                        ApiWorker.getInstance().rejectPadding(uid, responseListener, null);
+                    }
+                    else if (v == acceptAddButton) {
+                        ApiWorker.getInstance().agreeFriendAdd(uid, responseListener, null);
+                    }
+                }
+                else if (getItemViewType(position) == TYPE_RECOMMEND) {
+                    if (v == removeButton) {
+                        ApiWorker.getInstance().ignoreRecommend(uid, responseListener, null);
+                    }
+                    else if (v == acceptAddButton) {
+                        ApiWorker.getInstance().addFriend(uid, responseListener, null);
+                    }
+                }
+            }
+        }
     }
 }

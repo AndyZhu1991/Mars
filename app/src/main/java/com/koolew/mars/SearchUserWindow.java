@@ -1,6 +1,7 @@
 package com.koolew.mars;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -174,7 +175,7 @@ public class SearchUserWindow extends PopupWindow implements TextWatcher,
             return mData.size();
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             private CircleImageView avatar;
             private TextView nickname;
 
@@ -183,6 +184,18 @@ public class SearchUserWindow extends PopupWindow implements TextWatcher,
 
                 avatar = (CircleImageView) itemView.findViewById(R.id.avatar);
                 nickname = (TextView) itemView.findViewById(R.id.nickname);
+
+                itemView.setOnClickListener(this);
+            }
+
+            @Override
+            public void onClick(View v) {
+                if (v == itemView) {
+                    Intent intent = new Intent(mContext, FriendInfoActivity.class);
+                    String uid = mData.get(getAdapterPosition()).getUid();
+                    intent.putExtra(FriendInfoActivity.KEY_UID, uid);
+                    mContext.startActivity(intent);
+                }
             }
         }
     }
