@@ -432,6 +432,12 @@ public class ApiWorker {
         return deleteFriends(uids, listener, errorListener);
     }
 
+    public JsonObjectRequest requestSingleVideo(String videoId,
+                                                Response.Listener<JSONObject> listener,
+                                                Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getSingleVideoUrl(videoId), listener, errorListener);
+    }
+
 
     // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,

@@ -195,6 +195,10 @@
             android:name=".UserTopicActivity"
             android:label="@string/title_activity_user_topic" >
         </activity>
+        <activity
+            android:name=".CheckDanmakuActivity"
+            android:label="@string/title_activity_check_danmaku" >
+        </activity>
     </application>
 
 </manifest>

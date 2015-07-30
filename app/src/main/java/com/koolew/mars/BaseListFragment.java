@@ -58,7 +58,7 @@ public abstract class BaseListFragment extends Fragment
             mListFooter.haveNoMore();
             mListFooter.setup(mListView);
             mListFooter.setOnLoadListener(this);
-            mListView.addFooterView(mListFooter);
+            mListView.addFooterView(mListFooter, null, false);
             mListFooter.setVisibility(View.INVISIBLE);
         }
 
@@ -121,12 +121,16 @@ public abstract class BaseListFragment extends Fragment
             mRefreshRequest = null;
 
             if (handleRefresh(jsonObject)) {
-                mListFooter.haveMore(true);
-                mListFooter.setVisibility(View.VISIBLE);
+                if (isNeedLoadMore) {
+                    mListFooter.haveMore(true);
+                    mListFooter.setVisibility(View.VISIBLE);
+                }
             }
             else {
-                mListFooter.haveMore(false);
-                mListFooter.setVisibility(View.INVISIBLE);
+                if (isNeedLoadMore) {
+                    mListFooter.haveMore(false);
+                    mListFooter.setVisibility(View.INVISIBLE);
+                }
             }
         }
     };
@@ -135,9 +139,11 @@ public abstract class BaseListFragment extends Fragment
         @Override
         public void onResponse(JSONObject jsonObject) {
             mLoadMoreRequest = null;
-            mListFooter.loadComplete();
 
-            mListFooter.haveMore(handleLoadMore(jsonObject));
+            if (isNeedLoadMore) {
+                mListFooter.loadComplete();
+                mListFooter.haveMore(handleLoadMore(jsonObject));
+            }
         }
     };
 

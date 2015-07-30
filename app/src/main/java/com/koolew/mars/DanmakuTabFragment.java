@@ -1,8 +1,11 @@
 package com.koolew.mars;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
@@ -23,13 +26,22 @@ import java.util.List;
 /**
  * Created by jinchangzhu on 7/17/15.
  */
-public class DanmakuTabFragment extends BaseListFragment {
+public class DanmakuTabFragment extends BaseListFragment implements AdapterView.OnItemClickListener {
 
     private DanmakuTabItemAdapter mAdapter;
 
     public DanmakuTabFragment() {
         super();
         isNeedLoadMore = true;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View root = super.onCreateView(inflater, container, savedInstanceState);
+
+        mListView.setOnItemClickListener(this);
+
+        return root;
     }
 
     @Override
@@ -93,6 +105,17 @@ public class DanmakuTabFragment extends BaseListFragment {
                 mAdapter.getLastUpdateTime(), mLoadMoreListener, null);
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(getActivity(), CheckDanmakuActivity.class);
+        String videoId = mAdapter.mData.get(position).videoId;
+        intent.putExtra(CheckDanmakuActivity.KEY_VIDEO_ID, videoId);
+        startActivity(intent);
+
+        mAdapter.mData.get(position).notifyCount = 0;
+        mAdapter.notifyDataSetChanged();
+    }
+
 
     class DanmakuTabItemAdapter extends BaseAdapter {
 
@@ -120,11 +143,12 @@ public class DanmakuTabFragment extends BaseListFragment {
 
         public void addData(JSONObject jsonObject) {
             try {
+                String videoId = jsonObject.getJSONObject("video_info").getString("video_id");
                 String thumb = jsonObject.getJSONObject("video_info").getString("thumb_url");
                 String title = jsonObject.getJSONObject("topic").getString("content");
                 int notifyCount = jsonObject.getInt("notify_cnt");
                 long updateTime = jsonObject.getLong("update_time");
-                mData.add(new DanmakuItemInfo(thumb, title, notifyCount, updateTime));
+                mData.add(new DanmakuItemInfo(videoId, thumb, title, notifyCount, updateTime));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -184,12 +208,14 @@ public class DanmakuTabFragment extends BaseListFragment {
     }
 
     class DanmakuItemInfo {
+        String videoId;
         String thumb;
         String title;
         int notifyCount;
         long updateTime;
 
-        DanmakuItemInfo(String thumb, String title, int notifyCount, long updateTime) {
+        DanmakuItemInfo(String videoId, String thumb, String title, int notifyCount, long updateTime) {
+            this.videoId = videoId;
             this.thumb = thumb;
             this.title = title;
             this.notifyCount = notifyCount;

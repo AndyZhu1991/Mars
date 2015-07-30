@@ -51,7 +51,9 @@ public class BaseVideoListFragment extends BaseListFragment
         mAdapter = useThisAdapter();
         mAdapter.setOnDanmakuSendListener(this);
         mScrollPlayer = new VideoCardAdapter.TopicScrollPlayer(mAdapter, mListView);
-        mListFooter.setup(mListView, mScrollPlayer);
+        if (isNeedLoadMore) {
+            mListFooter.setup(mListView, mScrollPlayer);
+        }
 
         return root;
     }

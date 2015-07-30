@@ -44,6 +44,7 @@ public class UrlHelper {
     public static final String REJECT_FRIEND_PADDING_URL = V1_URL + "friend/reject";
     public static final String AGREE_FRIEND_ADD_URL = V1_URL + "friend/agree";
     public static final String DELETE_FRIEND_URL = V1_URL + "friend/delete";
+    private static final String SINGLE_VIDEO_URL = V1_URL + "video";
 
     // v2 api
     public static final String INVOLVE_URL = V2_URL + "feeds/involve";
@@ -106,6 +107,13 @@ public class UrlHelper {
         return Uri.parse(SEARCH_USER_URL)
                 .buildUpon()
                 .appendQueryParameter("query", keyWord)
+                .build().toString();
+    }
+
+    public static String getSingleVideoUrl(String videoId) {
+        return Uri.parse(SINGLE_VIDEO_URL)
+                .buildUpon()
+                .appendQueryParameter("video_id", videoId)
                 .build().toString();
     }
 
