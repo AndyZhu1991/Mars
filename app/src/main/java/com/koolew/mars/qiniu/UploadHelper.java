@@ -52,7 +52,7 @@ public class UploadHelper {
             videoOption.put("x:type", "video");
             videoOption.put("x:tid", topicId);
             videoOption.put("x:duration", String.valueOf(Mp4ParserUtil.getDuration(videoPath)));
-            uploadManager.put(videoPath, null, videoToken, videoFuture,
+            uploadManager.put(videoPath, "$(key).mp4", videoToken, videoFuture,
                     new UploadOptions(videoOption, null, false, null, null));
             videoFuture.upload();
 

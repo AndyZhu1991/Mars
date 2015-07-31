@@ -101,6 +101,8 @@
     <string name="capture_video">点一下拍摄</string>
     <string name="time_text">%.1f秒</string>
     <string name="processing_video">正在处理视频...</string>
+    <string name="there_is_no_video">还没拍视频呢</string>
+    <string name="video_too_long">视频超过%d秒了，右划可删除</string>
     
     <!-- For VideoEditActivity & VideoPrivacyActivity -->
     <string name="video_edit_title">编辑视频</string>

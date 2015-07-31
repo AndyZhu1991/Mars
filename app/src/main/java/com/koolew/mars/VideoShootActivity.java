@@ -23,6 +23,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
@@ -615,6 +616,18 @@ public class VideoShootActivity extends Activity
 
     private void onRecordCompleteClick() {
         if (isRecording) {
+            return;
+        }
+
+        if (mRecordingSession.getVideoCount() == 0) {
+            Toast.makeText(this, R.string.there_is_no_video, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //                                       ms             s
+        if (mRecordingSession.getTotalVideoLength() / 1000.0f > AppProperty.RECORD_VIDEO_MAX_LEN) {
+            Toast.makeText(this, getString(R.string.video_too_long,
+                    (int) AppProperty.RECORD_VIDEO_MAX_LEN), Toast.LENGTH_LONG).show();
             return;
         }
 
