@@ -139,7 +139,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".WebActivity"
+            android:name=".KoolewWebActivity"
             android:label="@string/title_activity_web"
             android:screenOrientation="portrait" >
         </activity>

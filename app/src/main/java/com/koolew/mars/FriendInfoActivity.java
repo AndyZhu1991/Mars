@@ -155,6 +155,10 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        position--; // Header
+        if (position < 0) {
+            return;
+        }
         Intent intent = new Intent(this, FeedsTopicActivity.class);
         intent.putExtra(FeedsTopicActivity.KEY_TOPIC_ID, mAdapter.getTopicId(position));
         startActivity(intent);

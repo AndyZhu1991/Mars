@@ -46,7 +46,7 @@ public class VideoCardAdapter extends BaseAdapter {
     protected List<JSONObject> mData;
 
     private OnDanmakuSendListener mDanmakuSendListener;
-
+    private OnKooClickListener mKooClickListener;
 
     public VideoCardAdapter(Context context) {
         mContext = context;
@@ -180,11 +180,19 @@ public class VideoCardAdapter extends BaseAdapter {
         mDanmakuSendListener = listener;
     }
 
+    public void setOnKooClickListener(OnKooClickListener listener) {
+        mKooClickListener = listener;
+    }
+
     private View.OnClickListener mOnKooClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            ApiWorker.getInstance().kooVideo(v.getTag().toString(), 1,
+            String topicId = v.getTag().toString();
+            ApiWorker.getInstance().kooVideo(topicId, 1,
                     ApiWorker.getInstance().emptyResponseListener, null);
+            if (mKooClickListener != null) {
+                mKooClickListener.onKooClick(topicId);
+            }
         }
     };
 
@@ -212,6 +220,10 @@ public class VideoCardAdapter extends BaseAdapter {
 
     interface OnDanmakuSendListener {
         void onDanmakuSend(JSONObject videoItem);
+    }
+
+    interface OnKooClickListener {
+        void onKooClick(String videoId);
     }
 
     public static class ViewHolder {

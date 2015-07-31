@@ -20,17 +20,21 @@ public class PushWrapperActivity extends FragmentActivity {
 
         String tabType = getIntent().getStringExtra(KEY_TAB_TYPE);
         Fragment fragment;
+        int themeColor;
         String title;
         if (tabType.equals("feeds")) {
             fragment = KoolewNewsFragment.newInstance();
+            themeColor = getResources().getColor(R.color.koolew_light_orange);
             title = getString(R.string.koolew_news_title);
         }
         else if (tabType.equals("suggestion")) {
             fragment = FriendMeetFragment.newInstance();
+            themeColor = getResources().getColor(R.color.koolew_light_blue);
             title = getString(R.string.friend_meet_title);
         }
         else {
             fragment = null;
+            themeColor = 0xFF000000;
             title = null;
         }
 
@@ -39,6 +43,8 @@ public class PushWrapperActivity extends FragmentActivity {
         fragmentTransaction.add(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
 
-        ((TitleBarView) findViewById(R.id.title_bar)).setTitle(title);
+        TitleBarView titleBar = ((TitleBarView) findViewById(R.id.title_bar));
+        titleBar.setBackgroundColor(themeColor);
+        titleBar.setTitle(title);
     }
 }

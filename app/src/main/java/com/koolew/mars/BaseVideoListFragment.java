@@ -1,6 +1,8 @@
 package com.koolew.mars;
 
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +20,7 @@ import org.json.JSONObject;
  * Created by jinchangzhu on 7/24/15.
  */
 public class BaseVideoListFragment extends BaseListFragment
-        implements VideoCardAdapter.OnDanmakuSendListener {
+        implements VideoCardAdapter.OnDanmakuSendListener, VideoCardAdapter.OnKooClickListener {
 
     public static final String KEY_TOPIC_ID = "topic_id";
     public static final String KEY_TOPIC_TITLE = "topic_title";
@@ -30,6 +32,9 @@ public class BaseVideoListFragment extends BaseListFragment
 
     protected VideoCardAdapter mAdapter;
     private ScrollPlayer mScrollPlayer;
+
+    private SoundPool mSoundPool;
+    private int mKooSound;
 
 
     public BaseVideoListFragment() {
@@ -52,6 +57,7 @@ public class BaseVideoListFragment extends BaseListFragment
 
         mAdapter = useThisAdapter();
         mAdapter.setOnDanmakuSendListener(this);
+        mAdapter.setOnKooClickListener(this);
         mScrollPlayer = new VideoCardAdapter.TopicScrollPlayer(mAdapter, mListView);
         if (isNeedLoadMore) {
             mListFooter.setup(mListView, mScrollPlayer);
@@ -69,11 +75,14 @@ public class BaseVideoListFragment extends BaseListFragment
     public void onResume() {
         super.onResume();
         mScrollPlayer.onActivityResume();
+        mSoundPool = new SoundPool(5, AudioManager.STREAM_RING, 0);
+        mKooSound = mSoundPool.load(getActivity(), R.raw.koo, 1);
     }
 
     @Override
     public void onPause() {
         mScrollPlayer.onActivityPause();
+        mSoundPool.release();
         super.onPause();
     }
 
@@ -154,6 +163,11 @@ public class BaseVideoListFragment extends BaseListFragment
         Intent intent = new Intent(getActivity(), SendDanmakuActivity.class);
         intent.putExtra(SendDanmakuActivity.KEY_VIDEO_JSON, videoItem.toString());
         startActivity(intent);
+    }
+
+    @Override
+    public void onKooClick(String videoId) {
+        mSoundPool.play(mKooSound, 1, 1, 0, 0, 1);
     }
 
     public String getTopicId() {

@@ -1,11 +1,19 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:TitleBarView="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.koolew.mars.WebActivity">
+    android:orientation="vertical"
+    tools:context="com.koolew.mars.KoolewWebActivity">
+
+    <com.koolew.mars.view.TitleBarView
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/koolew_light_blue"
+        TitleBarView:title_text="@string/app_name"/>
 
     <WebView
         android:id="@+id/web_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-</RelativeLayout>
+</LinearLayout>
