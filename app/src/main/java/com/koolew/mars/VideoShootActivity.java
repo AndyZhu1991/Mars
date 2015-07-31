@@ -174,6 +174,12 @@ public class VideoShootActivity extends Activity
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_CANCELED);
+        super.onBackPressed();
+    }
+
     private void initMembers() {
         mCurrentCamera = Camera.CameraInfo.CAMERA_FACING_BACK;
         mRecordingSession = new VideoRecordingSession(this);
@@ -658,6 +664,7 @@ public class VideoShootActivity extends Activity
                 break;
             case VideoEditActivity.RESULT_UPLOADED:
                 // TODO: clear cache videos
+                setResult(RESULT_OK);
                 finish();
                 break;
             case VideoEditActivity.RESULT_BACKGROUND_UPLOAD:

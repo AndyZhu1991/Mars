@@ -32,74 +32,74 @@
             android:layout_height="?attr/actionBarSize"/>
     </FrameLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/refresh_layout"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="-6dp"
         android:background="@drawable/coin_rule_bg">
 
-        <FrameLayout
+        <RelativeLayout
+            android:id="@+id/no_koo_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="invisible">
 
-            <RelativeLayout
-                android:id="@+id/no_koo_layout"
+            <ImageView
+                android:id="@+id/cry"
+                android:layout_width="117dp"
+                android:layout_height="120dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:src="@mipmap/cry_no_koo" />
+
+            <TextView
+                android:id="@+id/no_koo_info1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cry"
+                android:layout_centerHorizontal="true"
+                android:text="@string/no_koo_info1"
+                android:textColor="#9EADB7"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/no_koo_info1"
+                android:layout_centerHorizontal="true"
+                android:text="@string/no_koo_info2"
+                android:textColor="#9EADB7"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/koo_rank_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="17dp"
+                android:text="@string/koo_you_mostly"
+                android:textColor="@color/koolew_gray"
+                android:textSize="16sp" />
+
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/refresh_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="invisible">
-
-                <ImageView
-                    android:id="@+id/cry"
-                    android:layout_width="117dp"
-                    android:layout_height="120dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="50dp"
-                    android:src="@mipmap/cry_no_koo" />
-
-                <TextView
-                    android:id="@+id/no_koo_info1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/cry"
-                    android:layout_centerHorizontal="true"
-                    android:text="@string/no_koo_info1"
-                    android:textColor="#9EADB7"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/no_koo_info1"
-                    android:layout_centerHorizontal="true"
-                    android:text="@string/no_koo_info2"
-                    android:textColor="#9EADB7"
-                    android:textSize="14sp" />
-            </RelativeLayout>
-
-            <LinearLayout
-                android:id="@+id/koo_rank_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:visibility="invisible">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="17dp"
-                    android:text="@string/koo_you_mostly"
-                    android:textColor="@color/koolew_gray"
-                    android:textSize="16sp" />
+                android:layout_height="match_parent">
 
                 <ListView
                     android:id="@+id/list_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="12dp"
-                    android:divider="@null"/>
-            </LinearLayout>
-        </FrameLayout>
-    </android.support.v4.widget.SwipeRefreshLayout>
+                    android:divider="@null" />
+            </android.support.v4.widget.SwipeRefreshLayout>
+        </LinearLayout>
+    </FrameLayout>
 </LinearLayout>

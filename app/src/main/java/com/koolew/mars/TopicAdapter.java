@@ -35,7 +35,7 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
 
     private Context mContext;
     private LayoutInflater mInflater;
-    private List<TopicItem> mData;
+    protected List<TopicItem> mData;
 
     TopicAdapter(Context context) {
         mContext = context;

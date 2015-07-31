@@ -19,6 +19,11 @@ public class WorldVideoListFragment extends CaptureInviteVideoListFragment {
         mCurrentPage = 0;
     }
 
+    @Override
+    public int getThemeColor() {
+        return getResources().getColor(R.color.koolew_light_blue);
+    }
+
     // This is share in fact
     // They used same layout
     @Override

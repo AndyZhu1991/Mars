@@ -1,10 +1,12 @@
 package com.koolew.mars;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -26,7 +28,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class CommonFriendActivity extends Activity {
+public class CommonFriendActivity extends Activity implements AdapterView.OnItemClickListener {
 
     public static final String KEY_UID = "uid";
 
@@ -43,6 +45,7 @@ public class CommonFriendActivity extends Activity {
         mUid = getIntent().getStringExtra(KEY_UID);
 
         mListView = (ListView) findViewById(R.id.list_view);
+        mListView.setOnItemClickListener(this);
 
         doLoad();
     }
@@ -66,6 +69,13 @@ public class CommonFriendActivity extends Activity {
             }
         }
     };
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(this, FriendInfoActivity.class);
+        intent.putExtra(FriendInfoActivity.KEY_UID, mAdapter.mData.get(position).getUid());
+        startActivity(intent);
+    }
 
 
     class CommonFriendAdapter extends BaseAdapter {

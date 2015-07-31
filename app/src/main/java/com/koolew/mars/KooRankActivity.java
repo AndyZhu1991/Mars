@@ -1,11 +1,13 @@
 package com.koolew.mars;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,7 +30,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class KooRankActivity extends Activity implements SwipeRefreshLayout.OnRefreshListener,
-        Response.Listener<JSONObject> {
+        Response.Listener<JSONObject>, AdapterView.OnItemClickListener {
 
     private SwipeRefreshLayout mRefreshLayout;
     private View mNoKooLayout;
@@ -53,6 +55,7 @@ public class KooRankActivity extends Activity implements SwipeRefreshLayout.OnRe
         mNoKooLayout = findViewById(R.id.no_koo_layout);
         mKooRankLayout = findViewById(R.id.koo_rank_layout);
         mListView = (ListView) findViewById(R.id.list_view);
+        mListView.setOnItemClickListener(this);
 
         mRefreshLayout.setOnRefreshListener(this);
         mRefreshLayout.setColorSchemeColors(0xFF5888B5);
@@ -115,6 +118,13 @@ public class KooRankActivity extends Activity implements SwipeRefreshLayout.OnRe
 
     private static final int TYPE_BEST = 0;
     private static final int TYPE_GOOD = 1;
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(this, FriendInfoActivity.class);
+        intent.putExtra(FriendInfoActivity.KEY_UID, mAdapter.mData.get(position).getUid());
+        startActivity(intent);
+    }
 
     class GoodFriendAdapter extends BaseAdapter {
 

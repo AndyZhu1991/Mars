@@ -98,7 +98,7 @@
 
     <!-- For VideoShootActivity -->
     <string name="import_video">导入</string>
-    <string name="capture_video">长按拍摄</string>
+    <string name="capture_video">点一下拍摄</string>
     <string name="time_text">%.1f秒</string>
     <string name="processing_video">正在处理视频...</string>
     

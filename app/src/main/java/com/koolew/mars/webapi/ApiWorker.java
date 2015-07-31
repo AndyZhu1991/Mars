@@ -438,6 +438,32 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.getSingleVideoUrl(videoId), listener, errorListener);
     }
 
+    public JsonObjectRequest kooVideo(String videoId, int count,
+                                      Response.Listener<JSONObject> listener,
+                                      Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        try {
+            requestObject.put("video_id", videoId);
+            requestObject.put("count", count);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.KOO_URL, requestObject, listener, errorListener);
+    }
+
+    public JsonObjectRequest ignoreInvitation(String topicId,
+                                              Response.Listener<JSONObject> listener,
+                                              Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        try {
+            requestObject.put("topic_id", topicId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.IGNORE_INVITATION_URL, requestObject,
+                listener, errorListener);
+    }
+
 
     // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,
@@ -485,6 +511,11 @@ public class ApiWorker {
         return future.get(SYNC_REQUEST_TIMEOUT, SYNC_REQUEST_TIME_UNIT);
     }
 
+    public Response.Listener<JSONObject> emptyResponseListener = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+        }
+    };
 
     class StdErrorListener implements Response.ErrorListener {
         @Override

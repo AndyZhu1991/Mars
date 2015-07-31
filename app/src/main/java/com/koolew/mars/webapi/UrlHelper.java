@@ -13,7 +13,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class UrlHelper {
 
-    private static final String BASE_URL = "http://test.koolew.cn/";
+    private static final String TEST_API_URL = "http://test.koolew.cn/";
+    private static final String REAL_API_URL = "http://api.koolew.com/";
+
+    private static final String BASE_URL = TEST_API_URL;
 
     private static final String V1_URL = BASE_URL + "v1/";
     private static final String V2_URL = BASE_URL + "v2/";
@@ -45,6 +48,8 @@ public class UrlHelper {
     public static final String AGREE_FRIEND_ADD_URL = V1_URL + "friend/agree";
     public static final String DELETE_FRIEND_URL = V1_URL + "friend/delete";
     private static final String SINGLE_VIDEO_URL = V1_URL + "video";
+    public static final String KOO_URL = V1_URL + "koo";
+    public static final String IGNORE_INVITATION_URL = V1_URL + "call/ignore";
 
     // v2 api
     public static final String INVOLVE_URL = V2_URL + "feeds/involve";

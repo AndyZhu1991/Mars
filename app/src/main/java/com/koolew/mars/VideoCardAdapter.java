@@ -1,6 +1,7 @@
 package com.koolew.mars;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,10 @@ import android.widget.TextView;
 
 import com.koolew.mars.danmaku.DanmakuItemInfo;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
+import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.player.ScrollPlayer;
 import com.koolew.mars.utils.Utils;
+import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -129,10 +132,13 @@ public class VideoCardAdapter extends BaseAdapter {
             holder.danmakuContainer = (RelativeLayout) convertView.findViewById(R.id.danmaku_container);
             holder.videoThumb = (ImageView) convertView.findViewById(R.id.video_thumb);
             holder.avatar = (CircleImageView) convertView.findViewById(R.id.avatar);
+            holder.avatar.setOnClickListener(mOnAvatarClickListener);
             holder.nickname = (TextView) convertView.findViewById(R.id.nickname);
             holder.videoDate = (TextView) convertView.findViewById(R.id.video_date);
             holder.danmakuSendLayout = (LinearLayout) convertView.findViewById(R.id.danmaku_send_layout);
             holder.danmakuSendLayout.setOnClickListener(mOnDanmakuSendClickListener);
+            holder.kooLayout = (LinearLayout) convertView.findViewById(R.id.koo_layout);
+            holder.kooLayout.setOnClickListener(mOnKooClickListener);
         }
 
         try {
@@ -143,12 +149,14 @@ public class VideoCardAdapter extends BaseAdapter {
             JSONObject userInfo = mData.get(position).getJSONObject("user_info");
             ImageLoader.getInstance().displayImage(userInfo.getString("avatar"),
                     holder.avatar, ImageLoaderHelper.avatarLoadOptions);
+            holder.avatar.setTag(userInfo.getString("uid"));
             holder.nickname.setText(userInfo.getString("nickname"));
             holder.videoDate.setText(new SimpleDateFormat("yyyy-MM-dd").
-                    format(new Date(mData.get(position).getLong("create_time"))));
+                    format(new Date(mData.get(position).getLong("create_time") * 1000)));
             holder.videoLayout.setTag(mData.get(position).getString("video_url"));
 
             holder.danmakuSendLayout.setTag(mData.get(position));
+            holder.kooLayout.setTag(mData.get(position).getString("video_id"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -172,12 +180,33 @@ public class VideoCardAdapter extends BaseAdapter {
         mDanmakuSendListener = listener;
     }
 
+    private View.OnClickListener mOnKooClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ApiWorker.getInstance().kooVideo(v.getTag().toString(), 1,
+                    ApiWorker.getInstance().emptyResponseListener, null);
+        }
+    };
+
     private View.OnClickListener mOnDanmakuSendClickListener  = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (mDanmakuSendListener != null) {
                 mDanmakuSendListener.onDanmakuSend((JSONObject) v.getTag());
             }
+        }
+    };
+
+    private View.OnClickListener mOnAvatarClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String uid = v.getTag().toString();
+            if (uid.equals(MyAccountInfo.getUid())) {
+                return;
+            }
+            Intent intent = new Intent(mContext, FriendInfoActivity.class);
+            intent.putExtra(FriendInfoActivity.KEY_UID, uid);
+            mContext.startActivity(intent);
         }
     };
 
@@ -196,6 +225,7 @@ public class VideoCardAdapter extends BaseAdapter {
         public TextView nickname;
         public TextView videoDate;
 
+        public LinearLayout kooLayout;
         public LinearLayout danmakuSendLayout;
     }
 

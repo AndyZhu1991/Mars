@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,7 +26,7 @@ import org.json.JSONObject;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class FriendInfoActivity extends Activity implements View.OnClickListener {
+public class FriendInfoActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     public static final String KEY_UID = "uid";
     public static final String KEY_AVATAR = "avatar";
@@ -40,7 +41,7 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
     private ImageView mOperationImage;
     private TextView mOperationText;
     private ListView mListView;
-    private TopicAdapter mAdapter;
+    private FriendProfileTopicAdapter mAdapter;
 
     private BigCountView mKooCountView;
     private BigCountView mCommonTopicCountView;
@@ -76,6 +77,7 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
         mOperationImage = (ImageView) findViewById(R.id.operation_image);
         mOperationText = (TextView) findViewById(R.id.operation_text);
         mListView = (ListView) findViewById(R.id.list_view);
+        mListView.setOnItemClickListener(this);
 
         View header = getLayoutInflater().inflate(R.layout.friend_info_list_header, null);
         mListView.addHeaderView(header);
@@ -151,6 +153,13 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
         startActivity(intent);
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(this, FeedsTopicActivity.class);
+        intent.putExtra(FeedsTopicActivity.KEY_TOPIC_ID, mAdapter.getTopicId(position));
+        startActivity(intent);
+    }
+
     class FriendProfileTopicAdapter extends TopicAdapter {
 
         FriendProfileTopicAdapter(Context context) {
@@ -182,6 +191,10 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
                     getString(R.string.part_video_count, ((TopicItem) getItem(position)).videoCount));
 
             return root;
+        }
+
+        public String getTopicId(int position) {
+            return mData.get(position).topicId;
         }
     }
 }

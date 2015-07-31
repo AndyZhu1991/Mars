@@ -38,8 +38,8 @@
         android:layout_marginTop="-25dp"
         android:layout_below="@id/video_layout"
         android:layout_centerHorizontal="true"
-        app:border_width="@dimen/avatar_border_width"
-        app:border_color="@color/koolew_gray"/>
+        app:border_width="3dp"
+        app:border_color="@color/avatar_gray_border"/>
 
     <TextView
         android:id="@+id/nickname"
@@ -58,9 +58,11 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:layout_centerHorizontal="true"
-        android:textSize="10sp"/>
+        android:textSize="10sp"
+        android:textColor="#9EADB7"/>
 
     <LinearLayout
+        android:id="@+id/koo_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
@@ -72,11 +74,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/koo"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:textColor="@color/koolew_light_gray"/>
 
         <ImageView
             android:layout_width="12dp"
             android:layout_height="12dp"
+            android:layout_marginLeft="3dp"
             android:src="@mipmap/ic_koo"/>
     </LinearLayout>
 
@@ -91,18 +95,20 @@
         android:gravity="center_vertical"
         android:clickable="true">
 
+        <ImageView
+            android:id="@+id/danmaku_send_ic"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginRight="3dp"
+            android:src="@mipmap/ic_comment"/>
+
         <TextView
             android:id="@+id/danmaku_send_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/comment"
-            android:textSize="12sp"/>
-
-        <ImageView
-            android:id="@+id/danmaku_send_ic"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:src="@mipmap/ic_comment"/>
+            android:textSize="12sp"
+            android:textColor="@color/koolew_light_gray"/>
     </LinearLayout>
 
     <View

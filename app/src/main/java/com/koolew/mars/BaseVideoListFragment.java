@@ -23,6 +23,8 @@ public class BaseVideoListFragment extends BaseListFragment
     public static final String KEY_TOPIC_ID = "topic_id";
     public static final String KEY_TOPIC_TITLE = "topic_title";
 
+    protected static final int REQUEST_CAPTURE = 1;
+
     protected String mTopicId;
     protected String mTopicTitle;
 

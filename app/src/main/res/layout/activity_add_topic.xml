@@ -37,7 +37,8 @@
             android:layout_marginRight="10dp"
             android:hint="@string/input_topic_content_hint"
             android:textSize="16sp"
-            android:textColor="#9EADB7"
+            android:textColor="@color/koolew_gray"
+            android:textColorHint="#9EADB7"
             android:background="@null"/>
 
         <ImageView

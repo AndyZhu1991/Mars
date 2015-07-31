@@ -155,6 +155,7 @@ public class SendDanmakuActivity extends Activity
         mTitleBar = (TitleBarView) findViewById(R.id.title_bar);
 
         mDanmakuEdit = (EditText) findViewById(R.id.danmaku_edit);
+        mDanmakuEdit.setHint(getString(R.string.danmaku_word_limit_hint, AppProperty.DANMAKU_MAX_WORD));
         mDanmakuEdit.setOnEditorActionListener(this);
         mDanmakuEdit.addTextChangedListener(
                 new DanmakuLengthWatcher(AppProperty.DANMAKU_MAX_WORD, mDanmakuEdit));
