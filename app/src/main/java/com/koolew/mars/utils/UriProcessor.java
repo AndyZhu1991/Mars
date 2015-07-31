@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.koolew.mars.CheckDanmakuActivity;
+import com.koolew.mars.DanmakuTabActivity;
 import com.koolew.mars.FriendInfoActivity;
 import com.koolew.mars.KoolewWebActivity;
 import com.koolew.mars.PushWrapperActivity;
@@ -16,6 +17,12 @@ import com.koolew.mars.WorldTopicActivity;
  * Created by jinchangzhu on 7/15/15.
  */
 public class UriProcessor {
+
+    protected static final String TAB_FEEDS = "feeds";
+    protected static final String TAB_SUGGESTION = "suggestion";
+    protected static final String TAB_ASSIGNMENT = "assignment";
+    protected static final String TAB_COMMENT = "comment";
+    protected static final String TAB_ME = "me";
 
     private Context mContext;
 
@@ -28,8 +35,6 @@ public class UriProcessor {
             return false;
         }
 
-        uriString = "koolew://tab?tab_id=assignment";
-
         Uri uri = Uri.parse(uriString);
         String scheme = uri.getScheme();
         if (scheme.equals("koolew")) {
@@ -37,8 +42,7 @@ public class UriProcessor {
             return true;
         }
         else if (scheme.equals("http") || scheme.equals("https")) {
-            processUrl(uriString);
-            return true;
+            return processUrl(uriString);
         }
         else {
             processOtherUri(uri);
@@ -68,10 +72,11 @@ public class UriProcessor {
         }
     }
 
-    private void processUrl(String url) {
+    protected boolean processUrl(String url) {
         Intent intent = new Intent(mContext, KoolewWebActivity.class);
         intent.putExtra(KoolewWebActivity.KEY_URL, url);
         mContext.startActivity(intent);
+        return true;
     }
 
     private void processOtherUri(Uri uri) {
@@ -80,17 +85,19 @@ public class UriProcessor {
 
     protected void switchToTab(String tabId) {
         // TODO
-        if (tabId.equals("feeds") || tabId.equals("suggestion")) {
+        if (tabId.equals(TAB_FEEDS) || tabId.equals(TAB_SUGGESTION)) {
             Intent intent = new Intent(mContext, PushWrapperActivity.class);
             intent.putExtra(PushWrapperActivity.KEY_TAB_TYPE, tabId);
             mContext.startActivity(intent);
         }
-        else if (tabId.equals("assignment")) {
+        else if (tabId.equals(TAB_ASSIGNMENT)) {
             mContext.startActivity(new Intent(mContext, TaskActivity.class));
         }
-        else if (tabId.equals("comment")) {
+        else if (tabId.equals(TAB_COMMENT)) {
+            Intent intent = new Intent(mContext, DanmakuTabActivity.class);
+            mContext.startActivity(intent);
         }
-        else if (tabId.equals("me")) {
+        else if (tabId.equals(TAB_ME)) {
         }
     }
 

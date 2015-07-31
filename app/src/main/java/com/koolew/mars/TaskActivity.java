@@ -1,6 +1,7 @@
 package com.koolew.mars;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -65,7 +66,7 @@ public class TaskActivity extends Activity
 
         initView();
 
-        mUriProcesser = new UriProcessor(this);
+        mUriProcesser = new TaskUriProcessor(this);
 
         mRefreshLayout.post(new Runnable() {
             @Override
@@ -244,6 +245,22 @@ public class TaskActivity extends Activity
         }
     };
 
+
+    class TaskUriProcessor extends UriProcessor {
+        public TaskUriProcessor(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void switchToTab(String tabId) {
+            if (tabId.equals(TAB_ASSIGNMENT)) {
+                return;
+            }
+            else {
+                super.switchToTab(tabId);
+            }
+        }
+    }
 
     class BannerAdapter extends PagerAdapter {
 

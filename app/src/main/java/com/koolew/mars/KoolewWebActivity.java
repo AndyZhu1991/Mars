@@ -1,6 +1,7 @@
 package com.koolew.mars;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -31,7 +32,18 @@ public class KoolewWebActivity extends Activity {
     private WebViewClient mWebViewClient = new WebViewClient() {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            return new UriProcessor(KoolewWebActivity.this).process(url);
+            return new WebUriProcessor(KoolewWebActivity.this).process(url);
         }
     };
+
+    class WebUriProcessor extends UriProcessor {
+        public WebUriProcessor(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected boolean processUrl(String url) {
+            return false;
+        }
+    }
 }
