@@ -102,7 +102,7 @@ public class VideoLoader implements DownloadStatusListener {
     }
 
     private String url2LocalFile(String url) {
-        return mContext.getExternalCacheDir() + stringToMD5(url) + ".mp4";
+        return Utils.getCacheDir(mContext) + stringToMD5(url) + ".mp4";
     }
 
     public static String stringToMD5(String string) {

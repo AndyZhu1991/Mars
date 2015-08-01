@@ -144,6 +144,10 @@
     <string name="new_video_by_friend">好友发布了新视频</string>
     <string name="danmakued_by_friend">好友弹幕了我</string>
     <string name="i_got_koo">我获得了Koo</string>
+    <string name="cache">缓存</string>
+    <string name="clear_cache">清空缓存</string>
+    <string name="clear_cache_confirm_message">确认清空缓存吗？</string>
+    <string name="clearing_cache">正在清理缓存</string>
 
     <!-- For ChangeInfoActivity & EditNicknameActivity & ChangePhoneNumberActivity -->
     <string name="login_account">登录账号</string>

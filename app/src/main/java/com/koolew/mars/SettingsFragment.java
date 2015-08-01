@@ -2,10 +2,12 @@ package com.koolew.mars;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +16,19 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.preference.OperationPreference;
 import com.koolew.mars.preference.PreferenceAdapter;
 import com.koolew.mars.preference.PreferenceGroupTitle;
 import com.koolew.mars.preference.PreferenceHelper;
 import com.koolew.mars.preference.SwitchPreference;
 import com.koolew.mars.preference.TreePreference;
+import com.koolew.mars.utils.DialogUtil;
+import com.koolew.mars.utils.FileUtil;
+import com.koolew.mars.utils.Utils;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.io.File;
+import java.io.FileFilter;
 
 
 /**
@@ -88,6 +98,58 @@ public class SettingsFragment extends MainBaseFragment implements View.OnClickLi
         }
     }
 
+    private View.OnClickListener mClearCacheListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            new AlertDialog.Builder(getActivity())
+                    .setMessage(R.string.clear_cache_confirm_message)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            clearCache();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show();
+        }
+    };
+
+    private void clearCache() {
+
+        new AsyncTask<Void, Void, Void>() {
+            ProgressDialog clearingDialog;
+
+            @Override
+            protected void onPreExecute() {
+                clearingDialog = DialogUtil.getGeneralProgressDialog(
+                        getActivity(), R.string.clearing_cache);
+                clearingDialog.show();
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                ImageLoader.getInstance().clearDiskCache();
+                FileUtil.deleteFilesFromDir(new File(Utils.getCacheDir(getActivity())),
+                        new FileFilter() {
+                            @Override
+                            public boolean accept(File pathname) {
+                                if (pathname.getAbsolutePath().endsWith(".mp4")) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            }
+                        });
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                clearingDialog.dismiss();
+            }
+        }.execute();
+    }
+
     private void setupAdapter() {
         Context context = getActivity();
         mAdapter = new PreferenceAdapter(context);
@@ -97,9 +159,10 @@ public class SettingsFragment extends MainBaseFragment implements View.OnClickLi
         mAdapter.add(new SwitchPreference(context, R.string.intelligent_save_data_mode,
                 PreferenceHelper.KEY_INTEL_SAVE_DATA, PreferenceHelper.DEFAULT_INTEL_SAVE_DATA));
 
-        mAdapter.add(new PreferenceGroupTitle(context, R.string.service));
-        mAdapter.add(new TreePreference(context, R.string.official_wechat, null));
-        mAdapter.add(new TreePreference(context, R.string.contact_koolew_service, null));
+        mAdapter.add(new PreferenceGroupTitle(context, R.string.cache));
+        OperationPreference clearCachePref = new OperationPreference(context, R.string.clear_cache);
+        clearCachePref.setOnClickListener(mClearCacheListener);
+        mAdapter.add(clearCachePref);
 
         mAdapter.add(new PreferenceGroupTitle(context, R.string.about));
         mAdapter.add(new TreePreference(context, R.string.want_talk, null));
