@@ -28,6 +28,12 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
         VideoLoader.LoadListener, SurfaceHolder.Callback {
 
+    private static final int STATE_NORMAL = 1;
+    private static final int STATE_PAUSED = 2;
+    private static final int STATE_DESTROYED = 3;
+
+    private int mState = STATE_NORMAL;
+
     private ListView mListView;
     private Context mContext;
 
@@ -71,6 +77,7 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
      *  Invoke it in Activity's onPause() to pause the player.
      */
     public void onActivityPause() {
+        mState = STATE_PAUSED;
         if (mCurrentItem != null) {
             mRecyclerPlayer.pause();
         }
@@ -80,6 +87,7 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
      *  Invoke it in Activity's onResume() to resume the player.
      */
     public void onActivityResume() {
+        mState = STATE_NORMAL;
         if (mCurrentItem != null) {
             mRecyclerPlayer.resume();
         }
@@ -89,6 +97,8 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
      *  Invoke it in Activity's onDestroy() to release resources.
      */
     public void onActivityDestroy() {
+        mState = STATE_DESTROYED;
+        mCurrentItem = null;
         mRecyclerPlayer.destory();
     }
 
@@ -149,6 +159,7 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
     }
 
     private void setupCurrentPlay() {
+        getProgressView(mCurrentItem).setVisibility(View.VISIBLE);
         mVideoLoader.loadVideo(null, getVideoUrl(mCurrentItem));
     }
 
@@ -173,6 +184,8 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
                         }
                     });
             mDanmakuThread.start();
+
+            getProgressView(mCurrentItem).setVisibility(View.INVISIBLE);
         }
     }
 
@@ -233,6 +246,8 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
     public abstract ArrayList<DanmakuItemInfo> getDanmakuList(View itemView);
 
     public abstract ImageView getThumbImage(View itemView);
+
+    public abstract View getProgressView(View itemView);
 
     public abstract String getVideoUrl(View itemView);
 
@@ -341,6 +356,9 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+                    }
+                    if (mState != STATE_NORMAL) {
+                        player.pause();
                     }
                 }
             }.start();

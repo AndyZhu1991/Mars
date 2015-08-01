@@ -140,6 +140,7 @@ public class VideoShootActivity extends Activity
         if (mCurrentSurfaceMode == MODE_PREVIEW) {
         }
         else { // mCurrentSurfaceMode == MODE_PLAYBACK
+            mMediaPlayer.start();
         }
     }
 

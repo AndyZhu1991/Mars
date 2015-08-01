@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -131,6 +132,7 @@ public class VideoCardAdapter extends BaseAdapter {
             holder.videoLayout.getLayoutParams().height = getVideoCardVideoHeight();
             holder.danmakuContainer = (RelativeLayout) convertView.findViewById(R.id.danmaku_container);
             holder.videoThumb = (ImageView) convertView.findViewById(R.id.video_thumb);
+            holder.progressBar = (ProgressBar) convertView.findViewById(R.id.progress);
             holder.avatar = (CircleImageView) convertView.findViewById(R.id.avatar);
             holder.avatar.setOnClickListener(mOnAvatarClickListener);
             holder.nickname = (TextView) convertView.findViewById(R.id.nickname);
@@ -146,6 +148,7 @@ public class VideoCardAdapter extends BaseAdapter {
             holder.position = position;
             ImageLoader.getInstance().displayImage(mData.get(position).getString("thumb_url"),
                     holder.videoThumb, ImageLoaderHelper.topicThumbLoadOptions);
+            holder.progressBar.setVisibility(View.INVISIBLE);
             JSONObject userInfo = mData.get(position).getJSONObject("user_info");
             ImageLoader.getInstance().displayImage(userInfo.getString("avatar"),
                     holder.avatar, ImageLoaderHelper.avatarLoadOptions);
@@ -233,6 +236,7 @@ public class VideoCardAdapter extends BaseAdapter {
         public FrameLayout videoLayout;
         public RelativeLayout danmakuContainer;
         public ImageView videoThumb;
+        public ProgressBar progressBar;
         public CircleImageView avatar;
         public TextView nickname;
         public TextView videoDate;
@@ -278,6 +282,11 @@ public class VideoCardAdapter extends BaseAdapter {
         @Override
         public ImageView getThumbImage(View itemView) {
             return ((ViewHolder) itemView.getTag()).videoThumb;
+        }
+
+        @Override
+        public View getProgressView(View itemView) {
+            return ((ViewHolder) itemView.getTag()).progressBar;
         }
 
         @Override
