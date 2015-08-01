@@ -185,19 +185,23 @@
         </activity>
         <activity
             android:name=".WorldTopicActivity"
-            android:label="@string/title_activity_world_topic" >
+            android:label="@string/title_activity_world_topic"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".TaskTopicActivity"
-            android:label="@string/title_activity_task_topic" >
+            android:label="@string/title_activity_task_topic"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".UserTopicActivity"
-            android:label="@string/title_activity_user_topic" >
+            android:label="@string/title_activity_user_topic"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".CheckDanmakuActivity"
-            android:label="@string/title_activity_check_danmaku" >
+            android:label="@string/title_activity_check_danmaku"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

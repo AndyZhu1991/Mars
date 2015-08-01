@@ -37,6 +37,14 @@ public class MyAccountInfo {
         sToken = sharedPreferences.getString(KEY_TOKEN, null);
     }
 
+    public static void clear() {
+        Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.commit();
+
+        sToken = null;
+    }
+
     public static String getAvatar() {
         return sAvatar;
     }

@@ -138,6 +138,7 @@
     <string name="want_talk">我想和你谈谈</string>
     <string name="privacy_policy">隐私条款</string>
     <string name="logout">登出</string>
+    <string name="logout_confirm">确认登出吗？</string>
     <string name="permission">权限</string>
     <string name="new_friend_apply">新好友申请</string>
     <string name="new_video_by_friend">好友发布了新视频</string>

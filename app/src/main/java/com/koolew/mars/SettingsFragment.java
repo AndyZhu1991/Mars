@@ -1,14 +1,19 @@
 package com.koolew.mars;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
+import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.preference.PreferenceAdapter;
 import com.koolew.mars.preference.PreferenceGroupTitle;
 import com.koolew.mars.preference.PreferenceHelper;
@@ -24,10 +29,11 @@ import com.koolew.mars.preference.TreePreference;
  * Use the {@link SettingsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SettingsFragment extends MainBaseFragment {
+public class SettingsFragment extends MainBaseFragment implements View.OnClickListener {
 
     private ListView mListView;
     private PreferenceAdapter mAdapter;
+    private Button mLogoutBtn;
 
     private OnFragmentInteractionListener mListener;
 
@@ -67,6 +73,9 @@ public class SettingsFragment extends MainBaseFragment {
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(mAdapter);
 
+        mLogoutBtn = (Button) root.findViewById(R.id.logout);
+        mLogoutBtn.setOnClickListener(this);
+
         mToolbarInterface.setTopIconCount(0);
 
         return root;
@@ -95,5 +104,36 @@ public class SettingsFragment extends MainBaseFragment {
         mAdapter.add(new PreferenceGroupTitle(context, R.string.about));
         mAdapter.add(new TreePreference(context, R.string.want_talk, null));
         mAdapter.add(new TreePreference(context, R.string.privacy_policy, null));
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.logout:
+                logout();
+                break;
+        }
+    }
+
+    private void logout() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(R.string.logout_confirm);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                MyAccountInfo.clear();
+                Intent intent = new Intent(getActivity(), LaunchActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
     }
 }

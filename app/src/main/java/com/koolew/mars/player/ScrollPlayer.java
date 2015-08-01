@@ -358,7 +358,11 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
                         }
                     }
                     if (mState != STATE_NORMAL) {
-                        player.pause();
+                        try {
+                            player.pause();
+                        }
+                        catch (IllegalStateException ise) {
+                        }
                     }
                 }
             }.start();
