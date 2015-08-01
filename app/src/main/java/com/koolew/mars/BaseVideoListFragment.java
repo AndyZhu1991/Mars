@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,7 @@ public class BaseVideoListFragment extends BaseListFragment
         View root = super.onCreateView(inflater, container, savedInstanceState);
 
         mAdapter = useThisAdapter();
+        mAdapter.setTopicTitle(mTopicTitle);
         mAdapter.setOnDanmakuSendListener(this);
         mAdapter.setOnKooClickListener(this);
         mScrollPlayer = new VideoCardAdapter.TopicScrollPlayer(mAdapter, mListView);
@@ -113,6 +115,17 @@ public class BaseVideoListFragment extends BaseListFragment
         return null;
     }
 
+    protected String getTopicTitleFromResponse(JSONObject response) {
+        try {
+            if (response.getInt("code") == 0) {
+                return response.getJSONObject("result").getString("content");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private void setupAdapter() {
         if (mListView.getAdapter() == null) {
             mListView.setAdapter(mAdapter);
@@ -124,6 +137,12 @@ public class BaseVideoListFragment extends BaseListFragment
         setupAdapter();
 
         JSONArray videos = getVideosFromResponse(response);
+        String topicTitle = getTopicTitleFromResponse(response);
+        if (!TextUtils.isEmpty(topicTitle)) {
+            mTopicTitle = topicTitle;
+            mAdapter.setTopicTitle(mTopicTitle);
+        }
+
         if (videos == null || videos.length() == 0) {
             return false;
         }

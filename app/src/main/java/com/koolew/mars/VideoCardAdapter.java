@@ -39,12 +39,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class VideoCardAdapter extends BaseAdapter {
 
-    protected final static int TYPE_NO_VIDEO = 0;
-    protected final static int TYPE_VIDEO_ITEM = 1;
+    protected final static int TYPE_TITLE = 0;
+    protected final static int TYPE_NO_VIDEO = 1;
+    protected final static int TYPE_VIDEO_ITEM = 2;
 
     protected Context mContext;
     protected LayoutInflater mInflater;
     protected List<JSONObject> mData;
+
+    protected TextView mTitleText;
+    protected String mTopicTitle;
 
     private OnDanmakuSendListener mDanmakuSendListener;
     private OnKooClickListener mKooClickListener;
@@ -53,6 +57,13 @@ public class VideoCardAdapter extends BaseAdapter {
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
         mData = new ArrayList<JSONObject>();
+    }
+
+    public void setTopicTitle(String topicTitle) {
+        mTopicTitle = topicTitle;
+        if (mTitleText != null) {
+            mTitleText.setText(mTopicTitle);
+        }
     }
 
     public void setData(JSONArray videos) {
@@ -84,12 +95,17 @@ public class VideoCardAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mData.size() == 0 ? 1 : mData.size();
+        return mData.size() == 0 ? 2 : mData.size() + 1;
     }
 
     @Override
     public Object getItem(int position) {
-        return mData.get(position);
+        if (position == 0) { // Title
+            return null;
+        }
+        else {         // First position is title
+            return mData.get(position - 1);
+        }
     }
 
     @Override
@@ -99,22 +115,37 @@ public class VideoCardAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return mData.size() == 0 ? TYPE_NO_VIDEO : TYPE_VIDEO_ITEM;
+        if (position == 0) {
+            return TYPE_TITLE;
+        }
+        else {
+            return mData.size() == 0 ? TYPE_NO_VIDEO : TYPE_VIDEO_ITEM;
+        }
     }
 
     @Override
     public int getViewTypeCount() {
-        return 2;
+        return 3;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (getItemViewType(position) == TYPE_NO_VIDEO) {
-            return getNoVideoView();
+        switch (getItemViewType(position)) {
+            case TYPE_TITLE:
+                return getTitleView();
+            case TYPE_NO_VIDEO:
+                return getNoVideoView();
+            case TYPE_VIDEO_ITEM:
+                return getVideoItemView(position, convertView, parent);
         }
-        else {
-            return getVideoItemView(position, convertView, parent);
-        }
+        return null;
+    }
+
+    protected View getTitleView() {
+        View view = mInflater.inflate(R.layout.topic_title_layout, null);
+        mTitleText = ((TextView) view.findViewById(R.id.title));
+        mTitleText.setText(mTopicTitle);
+        return view;
     }
 
     private View getNoVideoView() {
@@ -146,20 +177,21 @@ public class VideoCardAdapter extends BaseAdapter {
         try {
             ViewHolder holder = (ViewHolder) convertView.getTag();
             holder.position = position;
-            ImageLoader.getInstance().displayImage(mData.get(position).getString("thumb_url"),
+            JSONObject item = getItemData(position);
+            ImageLoader.getInstance().displayImage(item.getString("thumb_url"),
                     holder.videoThumb, ImageLoaderHelper.topicThumbLoadOptions);
             holder.progressBar.setVisibility(View.INVISIBLE);
-            JSONObject userInfo = mData.get(position).getJSONObject("user_info");
+            JSONObject userInfo = item.getJSONObject("user_info");
             ImageLoader.getInstance().displayImage(userInfo.getString("avatar"),
                     holder.avatar, ImageLoaderHelper.avatarLoadOptions);
             holder.avatar.setTag(userInfo.getString("uid"));
             holder.nickname.setText(userInfo.getString("nickname"));
             holder.videoDate.setText(new SimpleDateFormat("yyyy-MM-dd").
-                    format(new Date(mData.get(position).getLong("create_time") * 1000)));
-            holder.videoLayout.setTag(mData.get(position).getString("video_url"));
+                    format(new Date(item.getLong("create_time") * 1000)));
+            holder.videoLayout.setTag(item.getString("video_url"));
 
-            holder.danmakuSendLayout.setTag(mData.get(position));
-            holder.kooLayout.setTag(mData.get(position).getString("video_id"));
+            holder.danmakuSendLayout.setTag(item);
+            holder.kooLayout.setTag(item.getString("video_id"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -168,7 +200,7 @@ public class VideoCardAdapter extends BaseAdapter {
     }
 
     public JSONObject getItemData(int position) {
-        return mData.get(position);
+        return (JSONObject) getItem(position);
     }
 
     private int getVideoCardVideoHeight() {

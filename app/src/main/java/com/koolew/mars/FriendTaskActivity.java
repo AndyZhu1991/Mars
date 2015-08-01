@@ -41,6 +41,7 @@ public class FriendTaskActivity extends Activity
     private static final int REQUEST_CHECK_TASK = 2;
 
     private String mUid;
+    private String mNickname;
 
     private SwipeRefreshLayout mRefreshLayout;
     private ListView mListView;
@@ -64,8 +65,8 @@ public class FriendTaskActivity extends Activity
 
         Intent intent = getIntent();
         mUid = intent.getStringExtra(KEY_UID);
-        ((TitleBarView) findViewById(R.id.title_bar)).setTitle(
-                "@" + intent.getStringExtra(KEY_NICKNAME));
+        mNickname = intent.getStringExtra(KEY_NICKNAME);
+        ((TitleBarView) findViewById(R.id.title_bar)).setTitle("@" + mNickname);
 
         mRefreshLayout.post(new Runnable() {
             @Override
@@ -196,6 +197,7 @@ public class FriendTaskActivity extends Activity
             mOperatingTopicId = topicId;
             Intent intent = new Intent(FriendTaskActivity.this, TaskTopicActivity.class);
             intent.putExtra(TaskTopicActivity.KEY_TOPIC_ID, topicId);
+            intent.putExtra(TaskTopicActivity.KEY_INVITER, mNickname);
             startActivityForResult(intent, REQUEST_CHECK_TASK);
         }
     };

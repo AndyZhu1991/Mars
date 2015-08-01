@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="9dp"
             CoinRuleItem:description_text="@string/send_a_koo"
-            CoinRuleItem:coin_count="-3"/>
+            CoinRuleItem:coin_count="-1"/>
 
         <View
             android:layout_width="match_parent"
@@ -74,13 +74,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="9dp"
             CoinRuleItem:description_text="@string/invite_a_koolew_friend"
-            CoinRuleItem:coin_count="1"/>
+            CoinRuleItem:coin_count="2"/>
 
         <com.koolew.mars.view.CoinRuleItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             CoinRuleItem:description_text="@string/friend_accept_invitation"
-            CoinRuleItem:coin_count="10"/>
+            CoinRuleItem:coin_count="2"/>
     </LinearLayout>
 
     <Button

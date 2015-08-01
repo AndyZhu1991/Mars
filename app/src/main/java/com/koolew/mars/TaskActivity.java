@@ -229,15 +229,6 @@ public class TaskActivity extends Activity
         }
     };
 
-    private View.OnClickListener mOnTaskClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(TaskActivity.this, TaskTopicActivity.class);
-            intent.putExtra(TaskTopicActivity.KEY_TOPIC_ID, v.getTag().toString());
-            startActivity(intent);
-        }
-    };
-
     private View.OnClickListener mOnBannerClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -371,6 +362,7 @@ public class TaskActivity extends Activity
             }
 
             ViewHolder holder = (ViewHolder) convertView.getTag();
+            holder.position = position;
             JSONObject item = (JSONObject) getItem(position);
             try {
                 if (item.getInt("new") == 0) {
@@ -406,7 +398,7 @@ public class TaskActivity extends Activity
                     if (holder.topicLayout.getChildCount() <= i) {
                         topicText = generateTopicTextView();
                         holder.topicLayout.addView(topicText);
-                        topicText.setOnClickListener(mOnTaskClickListener);
+                        topicText.setOnClickListener(holder);
                     }
                     else {
                         topicText = (TextView) holder.topicLayout.getChildAt(i);
@@ -479,11 +471,26 @@ public class TaskActivity extends Activity
         }
     }
 
-    class ViewHolder {
+    class ViewHolder implements View.OnClickListener {
+        int position;
         ImageView newTaskFlag;
         CircleImageView avatar;
         TextView nickname;
         TextView topicCount;
         LinearLayout topicLayout;
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(TaskActivity.this, TaskTopicActivity.class);
+            intent.putExtra(TaskTopicActivity.KEY_TOPIC_ID, v.getTag().toString());
+            try {
+                String nickname = ((JSONObject) mListAdapter.getItem(position))
+                        .getJSONObject("user").getString("nickname");
+                intent.putExtra(TaskTopicActivity.KEY_INVITER, nickname);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            startActivity(intent);
+        }
     }
 }
