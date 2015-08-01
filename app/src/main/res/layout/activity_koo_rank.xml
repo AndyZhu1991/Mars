@@ -84,7 +84,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="17dp"
-                android:text="@string/koo_you_mostly"
+                android:layout_marginBottom="12dp"
+                android:text="@string/koo_rank_lable"
                 android:textColor="@color/koolew_gray"
                 android:textSize="16sp" />
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class KooRankActivity extends Activity implements SwipeRefreshLayout.OnRefreshListener,
         Response.Listener<JSONObject>, AdapterView.OnItemClickListener {
 
+    public static final String KEY_UID = "uid";
+    public static final String KEY_KOO_COUNT = "koo count";
+
+    private String mUid;
+    private int mKooCount;
+
     private SwipeRefreshLayout mRefreshLayout;
     private View mNoKooLayout;
     private View mKooRankLayout;
@@ -43,13 +50,17 @@ public class KooRankActivity extends Activity implements SwipeRefreshLayout.OnRe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_koo_rank);
 
+        Intent intent = getIntent();
+        mUid = intent.getStringExtra(KEY_UID);
+        mKooCount = intent.getIntExtra(KEY_KOO_COUNT, (int) MyAccountInfo.getKooNum());
+
         initViews();
 
         doFirstLoad();
     }
 
     private void initViews() {
-        ((TextView) findViewById(R.id.count_koo)).setText(String.valueOf(MyAccountInfo.getKooNum()));
+        ((TextView) findViewById(R.id.count_koo)).setText(String.valueOf(mKooCount));
 
         mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         mNoKooLayout = findViewById(R.id.no_koo_layout);
@@ -102,7 +113,12 @@ public class KooRankActivity extends Activity implements SwipeRefreshLayout.OnRe
     }
 
     private void doRefresh() {
-        ApiWorker.getInstance().requestKooRank(this, null);
+        if (TextUtils.isEmpty(mUid)) {
+            ApiWorker.getInstance().requestKooRank(this, null);
+        }
+        else {
+            ApiWorker.getInstance().requestKooRank(mUid, this, null);
+        }
     }
 
     private void showNoKooLayout() {

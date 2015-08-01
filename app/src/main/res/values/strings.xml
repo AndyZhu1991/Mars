@@ -168,7 +168,7 @@
     <string name="go_black_market">进入黑市</string>
 
     <!-- For KooRankActivity -->
-    <string name="koo_you_mostly">"Koo 你最多的好友"</string>
+    <string name="koo_rank_lable">"好友送Koo排行榜"</string>
     <string name="best_friend">最佳好友</string>
     <string name="top_num">"Top %02d"</string>
     <string name="no_koo_info1">还没有好友Koo你</string>

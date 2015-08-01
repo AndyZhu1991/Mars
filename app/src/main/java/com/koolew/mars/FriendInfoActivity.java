@@ -26,13 +26,15 @@ import org.json.JSONObject;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class FriendInfoActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class FriendInfoActivity extends Activity implements View.OnClickListener,
+        AdapterView.OnItemClickListener {
 
     public static final String KEY_UID = "uid";
     public static final String KEY_AVATAR = "avatar";
     public static final String KEY_NICKNAME = "nickname";
 
     private String mUid;
+    private int mKooCount;
 
     private CircleImageView mAvatar;
     private ImageView mBlurAvatar;
@@ -82,6 +84,7 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
         View header = getLayoutInflater().inflate(R.layout.friend_info_list_header, null);
         mListView.addHeaderView(header);
         mKooCountView = (BigCountView) header.findViewById(R.id.count_koo);
+        mKooCountView.setOnClickListener(this);
         mCommonTopicCountView = (BigCountView) header.findViewById(R.id.count_common_topic);
         mCommonTopicCountView.setOnClickListener(this);
         mCommonFriendTitle = (TextView) header.findViewById(R.id.common_friend_title);
@@ -106,7 +109,8 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
                 new DisplayBlurImage(mBlurAvatar, avatar).execute();
                 mNickname.setText(user.getString("nickname"));
 
-                mKooCountView.setCount(user.getInt("koo_num"));
+                mKooCount = user.getInt("koo_num");
+                mKooCountView.setCount(mKooCount);
 
                 JSONArray topic = result.getJSONArray("topic");
                 mAdapter = new FriendProfileTopicAdapter(FriendInfoActivity.this);
@@ -131,6 +135,9 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.count_koo:
+                onCountKooClick();
+                break;
             case R.id.count_common_topic:
                 onCommonTopicClick();
                 break;
@@ -138,6 +145,13 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
                 onCommonFriendClick();
                 break;
         }
+    }
+
+    private void onCountKooClick() {
+        Intent intent = new Intent(this, KooRankActivity.class);
+        intent.putExtra(KooRankActivity.KEY_UID, mUid);
+        intent.putExtra(KooRankActivity.KEY_KOO_COUNT, mKooCount);
+        startActivity(intent);
     }
 
     private void onCommonTopicClick() {

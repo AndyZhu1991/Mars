@@ -61,6 +61,7 @@ public class UrlHelper {
     public static final String TOPIC_VIDEO_WORLD_URL = V2_URL + "world/topic";
     private static final String USER_TOPIC_URL = V2_URL + "user/topic/info";
     public static final String IGNORE_RECOMMEND_URL = V2_URL + "friend/recommend/ignore";
+    public static final String KOO_RANK_V2_URL = V2_URL + "koo/rank";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
@@ -119,6 +120,13 @@ public class UrlHelper {
         return Uri.parse(SINGLE_VIDEO_URL)
                 .buildUpon()
                 .appendQueryParameter("video_id", videoId)
+                .build().toString();
+    }
+
+    public static String getKooRankUrl(String uid) {
+        return Uri.parse(KOO_RANK_V2_URL)
+                .buildUpon()
+                .appendQueryParameter("uid", uid)
                 .build().toString();
     }
 
