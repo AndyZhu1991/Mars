@@ -5,6 +5,7 @@ import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.webapi.ApiWorker;
 import com.qiniu.android.storage.UploadManager;
 import com.qiniu.android.storage.UploadOptions;
+import com.qiniu.android.utils.Etag;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +24,7 @@ public class UploadHelper {
     public static final int RESULT_SUCCESS = 0;
     public static final int RESULT_FAILED = -1;
 
-    public static int uploadVideo(String topicId, String videoPath, String thumbPath) {
+    public static int uploadVideo(String topicId, String videoPath, String thumbPath, int privacy) {
         try {
             JSONObject thumbTokenJson = ApiWorker.getInstance().requestQiniuThumbTokenSync();
             String thumbToken = null;
@@ -45,6 +46,8 @@ public class UploadHelper {
                 videoToken = videoTokenJson.getJSONObject("result").getString("video");
             }
 
+            String key = Etag.file(videoPath) + ".mp4";
+
             UploadFuture videoFuture = new UploadFuture();
             Map<String, String> videoOption = new HashMap<String, String>();
             videoOption.put("x:thumb", thumbResponse.getResponse().getString("key"));
@@ -52,7 +55,8 @@ public class UploadHelper {
             videoOption.put("x:type", "video");
             videoOption.put("x:tid", topicId);
             videoOption.put("x:duration", String.valueOf(Mp4ParserUtil.getDuration(videoPath)));
-            uploadManager.put(videoPath, "$(key).mp4", videoToken, videoFuture,
+            videoOption.put("x:privacy", String.valueOf(privacy));
+            uploadManager.put(videoPath, key, videoToken, videoFuture,
                     new UploadOptions(videoOption, null, false, null, null));
             videoFuture.upload();
 

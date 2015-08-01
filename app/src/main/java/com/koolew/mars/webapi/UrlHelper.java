@@ -16,7 +16,7 @@ public class UrlHelper {
     private static final String TEST_API_URL = "http://test.koolew.cn/";
     private static final String REAL_API_URL = "http://api.koolew.com/";
 
-    private static final String BASE_URL = TEST_API_URL;
+    private static final String BASE_URL = REAL_API_URL;
 
     private static final String V1_URL = BASE_URL + "v1/";
     private static final String V2_URL = BASE_URL + "v2/";

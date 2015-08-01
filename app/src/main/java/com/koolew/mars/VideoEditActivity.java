@@ -34,6 +34,8 @@ import java.io.IOException;
 public class VideoEditActivity extends Activity
         implements TitleBarView.OnRightLayoutClickListener, View.OnClickListener{
 
+    public static final int REQUEST_VIDEO_PRIVACY = 1;
+
     public static final int RESULT_UPLOADED = RESULT_FIRST_USER + 1;
     public static final int RESULT_BACKGROUND_UPLOAD = RESULT_FIRST_USER + 2;
 
@@ -157,7 +159,7 @@ public class VideoEditActivity extends Activity
 
             @Override
             protected Boolean doInBackground(String... params) {
-                if (UploadHelper.uploadVideo(params[0], params[1], params[2])
+                if (UploadHelper.uploadVideo(params[0], params[1], params[2], mAuthority)
                         == UploadHelper.RESULT_SUCCESS) {
                     return true;
                 } else {
@@ -207,12 +209,16 @@ public class VideoEditActivity extends Activity
 
     private void onPrivacyLayoutClick() {
         Intent intent = new Intent(this, VideoPrivacyActivity.class);
-        startActivityForResult(intent, 0);
+        startActivityForResult(intent, REQUEST_VIDEO_PRIVACY);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        setAuthority(resultCode);
+        switch (requestCode) {
+            case REQUEST_VIDEO_PRIVACY:
+                setAuthority(resultCode);
+                break;
+        }
     }
 
     private void setAuthority(int authority) {
