@@ -277,7 +277,7 @@ public class VideoShootActivity extends Activity
         if (this.mCamera != null) {
             Camera.Parameters params = this.mCamera.getParameters();
             params.setPreviewFormat(ImageFormat.NV21);
-            params.setPreviewFrameRate(AppProperty.RECORD_VIDEO_FPS);
+            setBestCameraPreviewFpsRange(params);
             params.setFlashMode("off");
             params.setWhiteBalance(Camera.Parameters.WHITE_BALANCE_AUTO);
             params.setSceneMode(Camera.Parameters.SCENE_MODE_AUTO);
@@ -390,6 +390,32 @@ public class VideoShootActivity extends Activity
             previewHeight = bestSize.height;
             previewWidth = bestSize.width;
         }
+    }
+
+    private void setBestCameraPreviewFpsRange(Camera.Parameters params) {
+        List<int[]> previewFpsRanges = params.getSupportedPreviewFpsRange();
+
+        int count = previewFpsRanges.size();
+        int minFpsDiff = Integer.MAX_VALUE;
+        int bestRangeIndex = -1;
+        int appVideoFps = AppProperty.RECORD_VIDEO_FPS * 1000; // getSupportedPreviewFpsRange return 1000-time values
+        for (int i = 0; i < count; i++) {
+            int[] fpsRange = previewFpsRanges.get(i);
+            int fpsDiff = Math.abs(fpsRange[0] - appVideoFps) + Math.abs(fpsRange[1] - appVideoFps);
+            if (fpsDiff < minFpsDiff) {
+                minFpsDiff = fpsDiff;
+                bestRangeIndex = i;
+                if (minFpsDiff == 0) {
+                    break;
+                }
+            }
+        }
+
+        if (bestRangeIndex == -1) {
+            throw new RuntimeException("No camera preview fps range!");
+        }
+        int[] bestFpsRange = previewFpsRanges.get(bestRangeIndex);
+        params.setPreviewFpsRange(bestFpsRange[0], bestFpsRange[1]);
     }
 
     class MyPreviewCallback implements Camera.PreviewCallback {
