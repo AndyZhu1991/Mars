@@ -1,6 +1,7 @@
 package com.koolew.mars;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,10 +11,13 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
+import com.koolew.mars.infos.TypedFriendInfo;
+import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.view.AvatarLinearContainer;
 import com.koolew.mars.view.BigCountView;
 import com.koolew.mars.webapi.ApiWorker;
@@ -34,7 +38,10 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
     public static final String KEY_NICKNAME = "nickname";
 
     private String mUid;
+    private int mType;
     private int mKooCount;
+
+    private Dialog mProgressDialog;
 
     private CircleImageView mAvatar;
     private ImageView mBlurAvatar;
@@ -58,6 +65,8 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
 
         initViews();
 
+        mProgressDialog = DialogUtil.getConnectingServerDialog(this);
+
         Intent intent = getIntent();
         mUid = intent.getStringExtra(KEY_UID);
         String avatar = intent.getStringExtra(KEY_AVATAR);
@@ -72,17 +81,20 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
     }
 
     private void initViews() {
-        mAvatar = (CircleImageView) findViewById(R.id.avatar);
-        mBlurAvatar = (ImageView) findViewById(R.id.blur_avatar);
-        mNickname = (TextView) findViewById(R.id.nickname);
-        mSummary = (TextView) findViewById(R.id.summary);
-        mOperationImage = (ImageView) findViewById(R.id.operation_image);
-        mOperationText = (TextView) findViewById(R.id.operation_text);
+        View header = getLayoutInflater().inflate(R.layout.friend_info_list_header, null);
+
+        mAvatar = (CircleImageView) header.findViewById(R.id.avatar);
+        mBlurAvatar = (ImageView) header.findViewById(R.id.blur_avatar);
+        mNickname = (TextView) header.findViewById(R.id.nickname);
+        mSummary = (TextView) header.findViewById(R.id.summary);
+        mOperationImage = (ImageView) header.findViewById(R.id.operation_image);
+        mOperationImage.setOnClickListener(this);
+        mOperationText = (TextView) header.findViewById(R.id.operation_text);
+
         mListView = (ListView) findViewById(R.id.list_view);
         mListView.setOnItemClickListener(this);
 
-        View header = getLayoutInflater().inflate(R.layout.friend_info_list_header, null);
-        mListView.addHeaderView(header);
+        mListView.addHeaderView(header, null, false);
         mKooCountView = (BigCountView) header.findViewById(R.id.count_koo);
         mKooCountView.setOnClickListener(this);
         mCommonTopicCountView = (BigCountView) header.findViewById(R.id.count_common_topic);
@@ -102,6 +114,9 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
         public void onResponse(JSONObject jsonObject) {
             try {
                 JSONObject result = jsonObject.getJSONObject("result");
+
+                mType = result.getInt("type");
+                initTypeView(mType);
 
                 JSONObject user = result.getJSONObject("user");
                 String avatar = user.getString("avatar");
@@ -132,6 +147,63 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
         }
     };
 
+    private void initTypeView(int type) {
+        switch (type) {
+            case TypedFriendInfo.TYPE_STRANGER:
+            case TypedFriendInfo.TYPE_INVITED_ME:
+                mOperationImage.setImageResource(R.mipmap.friend_info_add_friend);
+                mOperationText.setText(R.string.add_friend);
+                break;
+            case TypedFriendInfo.TYPE_SENT_INVITATION:
+                mOperationImage.setImageResource(R.mipmap.friend_info_requested);
+                mOperationText.setText(R.string.requested_friend);
+                break;
+            default:
+                mOperationImage.setVisibility(View.INVISIBLE);
+                mOperationText.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void onOperationLayoutClick(int type) {
+        switch (type) {
+            case TypedFriendInfo.TYPE_STRANGER:
+            case TypedFriendInfo.TYPE_INVITED_ME:
+                mProgressDialog.show();
+                ApiWorker.getInstance().addFriend(mUid, mFriendOpListener, null);
+                break;
+            case TypedFriendInfo.TYPE_SENT_INVITATION:
+                break;
+            default:
+        }
+    }
+
+    private Response.Listener<JSONObject> mFriendOpListener = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            mProgressDialog.dismiss();
+            try {
+                if (response.getInt("code") == 0) {
+                    switch (mType) {
+                        case TypedFriendInfo.TYPE_STRANGER:
+                            mType = TypedFriendInfo.TYPE_SENT_INVITATION;
+                            initTypeView(mType);
+                            break;
+                        case TypedFriendInfo.TYPE_INVITED_ME:
+                            mType = TypedFriendInfo.TYPE_FRIEND;
+                            initTypeView(mType);
+                            break;
+                    }
+                }
+                else {
+                    Toast.makeText(FriendInfoActivity.this,
+                            R.string.connect_server_failed, Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -143,6 +215,9 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
                 break;
             case R.id.common_friend_title_layout:
                 onCommonFriendClick();
+                break;
+            case R.id.operation_image:
+                onOperationLayoutClick(mType);
                 break;
         }
     }

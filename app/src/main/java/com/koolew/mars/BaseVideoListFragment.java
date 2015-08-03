@@ -56,6 +56,7 @@ public class BaseVideoListFragment extends BaseListFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
 
+        mListView.setPadding(0, 0, 0, 0);
         mAdapter = useThisAdapter();
         mAdapter.setTopicTitle(mTopicTitle);
         mAdapter.setOnDanmakuSendListener(this);

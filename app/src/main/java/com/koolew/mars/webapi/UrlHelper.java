@@ -62,6 +62,7 @@ public class UrlHelper {
     private static final String USER_TOPIC_URL = V2_URL + "user/topic/info";
     public static final String IGNORE_RECOMMEND_URL = V2_URL + "friend/recommend/ignore";
     public static final String KOO_RANK_V2_URL = V2_URL + "koo/rank";
+    public static final String CONTACT_FRIEND_RECOMMEND_V2_URL = V2_URL + "contact/recommend";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;

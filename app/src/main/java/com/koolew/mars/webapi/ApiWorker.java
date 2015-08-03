@@ -392,14 +392,12 @@ public class ApiWorker {
                                         Response.Listener<JSONObject> listener,
                                         Response.ErrorListener errorListener) {
         JSONObject requestObject = new JSONObject();
-        JSONObject applys = new JSONObject();
         JSONArray to = new JSONArray();
         for (String uid: uids) {
             to.put(uid);
         }
         try {
-            applys.put("to", to);
-            requestObject.put("applys", applys);
+            requestObject.put("to", to);
         } catch (JSONException e) {
             e.printStackTrace();
         }

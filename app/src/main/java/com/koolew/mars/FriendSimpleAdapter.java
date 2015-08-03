@@ -1,7 +1,9 @@
 package com.koolew.mars;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
+import com.koolew.mars.infos.TypedFriendInfo;
 import com.koolew.mars.utils.ContactUtil;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Utils;
@@ -32,13 +35,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class FriendSimpleAdapter extends BaseAdapter {
 
-    public static final int TYPE_UNKNOWN         = -1;
-    public static final int TYPE_SELF            = 0;  // Not used now.
-    public static final int TYPE_STRANGER        = 1;
-    public static final int TYPE_SENT_INVITATION = 2;
-    public static final int TYPE_INVITED_ME      = 3;
-    public static final int TYPE_FRIEND          = 4;
-    public static final int TYPE_NO_REGISTER     = 5;
+    public static final int TYPE_UNKNOWN         = TypedFriendInfo.TYPE_UNKNOWN;
+    public static final int TYPE_SELF            = TypedFriendInfo.TYPE_SELF;
+    public static final int TYPE_STRANGER        = TypedFriendInfo.TYPE_STRANGER;
+    public static final int TYPE_SENT_INVITATION = TypedFriendInfo.TYPE_SENT_INVITATION;
+    public static final int TYPE_INVITED_ME      = TypedFriendInfo.TYPE_INVITED_ME;
+    public static final int TYPE_FRIEND          = TypedFriendInfo.TYPE_FRIEND;
+    public static final int TYPE_NO_REGISTER     = TypedFriendInfo.TYPE_NO_REGISTER;
 
     private static final int[] OPERATE_BTN_BG = new int[] {
             0, // Not used
@@ -253,9 +256,18 @@ public class FriendSimpleAdapter extends BaseAdapter {
         ApiWorker.getInstance().agreeFriendAdd(uid, new RemoveResponseListener(uid), null);
     }
 
-    protected void removeFriend(String uid) {
-        mProgressDialog.show();
-        ApiWorker.getInstance().deleteFriend(uid, new RemoveResponseListener(uid), null);
+    protected void removeFriend(final String uid) {
+        new AlertDialog.Builder(mContext)
+                .setMessage(R.string.delete_friend_confirm)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mProgressDialog.show();
+                        ApiWorker.getInstance().deleteFriend(uid, new RemoveResponseListener(uid), null);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 
     protected void inviteContact(String phoneNum) {

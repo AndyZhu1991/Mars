@@ -255,7 +255,7 @@ public class ImportPhoneFriendsActivity extends Activity {
                 }
             }
 
-            String url = UrlHelper.CONTACT_FRIEND_RECOMMEND_URL;
+            String url = UrlHelper.CONTACT_FRIEND_RECOMMEND_V2_URL;
             RequestFuture<JSONObject> future = RequestFuture.newFuture();
             JSONObject requestJson = new JSONObject();
             try {
@@ -289,7 +289,7 @@ public class ImportPhoneFriendsActivity extends Activity {
                 for (int i = 0; i < friendJsons.length(); i++) {
                     Log.d(TAG, i + ": " + friendJsons.get(i));
                     friendInfos[i] = FriendInfo.fromJson((JSONObject) friendJsons.get(i));
-                    friendSelectedFlag[i] = false;
+                    friendSelectedFlag[i] = true;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
