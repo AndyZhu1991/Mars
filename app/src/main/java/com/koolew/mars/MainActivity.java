@@ -1,5 +1,6 @@
 package com.koolew.mars;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +47,8 @@ public class MainActivity extends FragmentActivity
                    MainBaseFragment.ToolbarOperateInterface, View.OnClickListener{
 
     private static final String TAG = "koolew-MainActivity";
+
+    public static final String KEY_PUSH_URI = "push_uri";
 
     public static final int REQUEST_CODE_CHANGE_INFO = 1;
 
@@ -121,6 +125,14 @@ public class MainActivity extends FragmentActivity
         configureDrawer();
 
         getUserInfo();
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            String pushUri = bundle.getString(KEY_PUSH_URI);
+            if (!TextUtils.isEmpty(pushUri)) {
+                new UriProcessor(this).process(pushUri);
+            }
+        }
     }
 
     private void configureDrawer() {
@@ -307,6 +319,26 @@ public class MainActivity extends FragmentActivity
                 break;
         }
     }
+
+
+    private class UriProcessor extends com.koolew.mars.utils.UriProcessor {
+        public UriProcessor(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void switchToTab(String tabId) {
+            if (tabId.equals(TAB_FEEDS)) {
+            }
+            else if (tabId.equals(TAB_SUGGESTION)) {
+                switchFragment(1);
+            }
+            else {
+                super.switchToTab(tabId);
+            }
+        }
+    }
+
 
     class DrawerListAdapter extends BaseAdapter {
 

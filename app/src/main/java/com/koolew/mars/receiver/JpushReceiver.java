@@ -8,8 +8,14 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.koolew.mars.MainActivity;
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.utils.UriProcessor;
+import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import cn.jpush.android.api.JPushInterface;
 
@@ -47,9 +53,29 @@ public class JpushReceiver extends BroadcastReceiver {
 
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
             Log.d(TAG, "用户点击打开了通知");
-
+            try {
+                String extra = bundle.getString(JPushInterface.EXTRA_EXTRA);
+                String url = new JSONObject(extra).getString("url");
+                if (Utils.isAppBackground(context)) {
+                    Log.d("stdzhu", "background");
+                    startMainActivityPushed(context, url);
+                }
+                else {
+                    Log.d("stdzhu", "foreground");
+                    new UriProcessor(context).process(url);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         } else {
             Log.d(TAG, "Unhandled intent - " + intent.getAction());
         }
+    }
+
+    private void startMainActivityPushed(Context context, String uri) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(MainActivity.KEY_PUSH_URI, uri);
+        context.startActivity(intent);
     }
 }

@@ -1,5 +1,6 @@
 package com.koolew.mars.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,6 +18,16 @@ import com.koolew.mars.WorldTopicActivity;
  * Created by jinchangzhu on 7/15/15.
  */
 public class UriProcessor {
+
+    protected static final String AUTH_VIDEO = "video";
+    protected static final String AUTH_TOPIC = "topic";
+    protected static final String AUTH_USER = "user";
+    protected static final String AUTH_TAB = "tab";
+
+    protected static final String KEY_VIDEO_ID = "video_id";
+    protected static final String KEY_TOPIC_ID = "topic_id";
+    protected static final String KEY_USER_ID = "user_id";
+    protected static final String KEY_TAB_ID = "tab_id";
 
     protected static final String TAB_FEEDS = "feeds";
     protected static final String TAB_SUGGESTION = "suggestion";
@@ -53,27 +64,27 @@ public class UriProcessor {
 
     private void processKoolewUri(Uri uri) {
         String authority = uri.getAuthority();
-        if (authority.equals("video")) {
-            String videoId = uri.getQueryParameter("video_id");
+        if (authority.equals(AUTH_VIDEO)) {
+            String videoId = uri.getQueryParameter(KEY_VIDEO_ID);
             startSingleVideoActivity(videoId);
         }
-        else if (authority.equals("topic")) {
-            Intent intent = new Intent(mContext, WorldTopicActivity.class);
-            intent.putExtra(WorldTopicActivity.KEY_TOPIC_ID, uri.getQueryParameter("topic_id"));
+        else if (authority.equals(AUTH_TOPIC)) {
+            Intent intent = newIntent(mContext, WorldTopicActivity.class);
+            intent.putExtra(WorldTopicActivity.KEY_TOPIC_ID, uri.getQueryParameter(KEY_TOPIC_ID));
             mContext.startActivity(intent);
         }
-        else if (authority.equals("user")) {
-            Intent intent = new Intent(mContext, FriendInfoActivity.class);
-            intent.putExtra(FriendInfoActivity.KEY_UID, uri.getQueryParameter("user_id"));
+        else if (authority.equals(AUTH_USER)) {
+            Intent intent = newIntent(mContext, FriendInfoActivity.class);
+            intent.putExtra(FriendInfoActivity.KEY_UID, uri.getQueryParameter(KEY_USER_ID));
             mContext.startActivity(intent);
         }
-        else if (authority.equals("tab")) {
-            switchToTab(uri.getQueryParameter("tab_id"));
+        else if (authority.equals(AUTH_TAB)) {
+            switchToTab(uri.getQueryParameter(KEY_TAB_ID));
         }
     }
 
     protected boolean processUrl(String url) {
-        Intent intent = new Intent(mContext, KoolewWebActivity.class);
+        Intent intent = newIntent(mContext, KoolewWebActivity.class);
         intent.putExtra(KoolewWebActivity.KEY_URL, url);
         mContext.startActivity(intent);
         return true;
@@ -84,17 +95,16 @@ public class UriProcessor {
     }
 
     protected void switchToTab(String tabId) {
-        // TODO
         if (tabId.equals(TAB_FEEDS) || tabId.equals(TAB_SUGGESTION)) {
-            Intent intent = new Intent(mContext, PushWrapperActivity.class);
+            Intent intent = newIntent(mContext, PushWrapperActivity.class);
             intent.putExtra(PushWrapperActivity.KEY_TAB_TYPE, tabId);
             mContext.startActivity(intent);
         }
         else if (tabId.equals(TAB_ASSIGNMENT)) {
-            mContext.startActivity(new Intent(mContext, TaskActivity.class));
+            mContext.startActivity(newIntent(mContext, TaskActivity.class));
         }
         else if (tabId.equals(TAB_COMMENT)) {
-            Intent intent = new Intent(mContext, DanmakuTabActivity.class);
+            Intent intent = newIntent(mContext, DanmakuTabActivity.class);
             mContext.startActivity(intent);
         }
         else if (tabId.equals(TAB_ME)) {
@@ -102,8 +112,19 @@ public class UriProcessor {
     }
 
     private void startSingleVideoActivity(String videoId) {
-        Intent intent = new Intent(mContext, CheckDanmakuActivity.class);
+        Intent intent = newIntent(mContext, CheckDanmakuActivity.class);
         intent.putExtra(CheckDanmakuActivity.KEY_VIDEO_ID, videoId);
         mContext.startActivity(intent);
+    }
+
+    private Intent newIntent(Context context, Class<?> activity) {
+        if (context instanceof Activity) {
+            return new Intent(context, activity);
+        }
+        else {
+            Intent intent = new Intent(context, activity);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            return intent;
+        }
     }
 }
