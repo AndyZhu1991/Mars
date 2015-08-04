@@ -50,6 +50,7 @@ public class UrlHelper {
     private static final String SINGLE_VIDEO_URL = V1_URL + "video";
     public static final String KOO_URL = V1_URL + "koo";
     public static final String IGNORE_INVITATION_URL = V1_URL + "call/ignore";
+    public static final String DEVICE_ID_URL = V1_URL + "device";
 
     // v2 api
     public static final String INVOLVE_URL = V2_URL + "feeds/involve";

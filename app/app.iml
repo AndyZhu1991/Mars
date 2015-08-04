@@ -89,6 +89,8 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/rs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
+      <excludeFolder url="file://$MODULE_DIR$/build/reports" />
+      <excludeFolder url="file://$MODULE_DIR$/build/test-results" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
     <orderEntry type="jdk" jdkName="Android API 22 Platform" jdkType="Android SDK" />
@@ -104,6 +106,7 @@
     <orderEntry type="library" exported="" name="ijkmediawidget" level="project" />
     <orderEntry type="library" exported="" name="library-1.0.18" level="project" />
     <orderEntry type="library" exported="" name="ijkplayer" level="project" />
+    <orderEntry type="library" exported="" name="jpush-sdk-release1.8.0" level="project" />
     <orderEntry type="library" exported="" name="support-v13-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="advrecyclerview-0.7.2" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.2.0" level="project" />

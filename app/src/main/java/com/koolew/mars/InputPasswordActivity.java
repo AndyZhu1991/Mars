@@ -21,6 +21,7 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.infos.MyAccountInfo.LOGIN_TYPE;
+import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
 import com.koolew.mars.weiboapi.AccessTokenKeeper;
 import com.koolew.mars.wxapi.TokenKeeper;
@@ -151,6 +152,10 @@ public class InputPasswordActivity extends Activity implements View.OnClickListe
                             if (response.getInt("code") == 0) {
                                 JSONObject result = response.getJSONObject("result");
                                 MyAccountInfo.setToken(result.getString("token"));
+                                // For jpush
+                                ApiWorker.getInstance().postRegistrationId(
+                                        MyAccountInfo.getRegistrationId(),
+                                        ApiWorker.getInstance().emptyResponseListener, null);
                                 MyAccountInfo.setUid(result.getString("uid"));
                                 if (result.has("info")) {
                                     JSONObject info = result.getJSONObject("info");

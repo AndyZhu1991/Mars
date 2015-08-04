@@ -468,6 +468,19 @@ public class ApiWorker {
                 listener, errorListener);
     }
 
+    public JsonObjectRequest postRegistrationId(String registrationId,
+                                                Response.Listener<JSONObject> listener,
+                                                Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        try {
+            requestObject.put("device_id", registrationId);
+            requestObject.put("type", 1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.DEVICE_ID_URL, requestObject, listener, errorListener);
+    }
+
 
     // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,

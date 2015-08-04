@@ -63,6 +63,7 @@ dependencies {
     compile files('libs/universal-image-loader-1.9.3.jar')
     compile files('libs/ijkplayer.jar')
     compile files('libs/ijkmediawidget.jar')
+    compile files('libs/jpush-sdk-release1.8.0.jar')
 }
 
 dependencies {

@@ -15,10 +15,14 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
+import cn.jpush.android.api.JPushInterface;
+
 /**
  * Created by jinchangzhu on 5/27/15.
  */
 public class MarsApplication extends Application {
+
+    private static final boolean DEBUG = true;
 
     private static final String TAG = "koolew-MarsApplication";
 
@@ -33,6 +37,7 @@ public class MarsApplication extends Application {
         com.koolew.mars.wxapi.Api.initApi(getApplicationContext());
         MyAccountInfo.init(getApplicationContext());
         initBgm(this);
+        initJpush(getApplicationContext());
 
         Log.d(TAG, "Init in MarsApplication takes: " + (System.currentTimeMillis() - start));
     }
@@ -51,11 +56,11 @@ public class MarsApplication extends Application {
         config.imageDecoder(new VideoThumbDecoder(true));
         config.writeDebugLogs(); // Remove for release app
         config.defaultDisplayImageOptions(new DisplayImageOptions.Builder()
-                                              .cacheInMemory(true)
-                                              .cacheOnDisk(true)
-                                              .considerExifParams(true)
-                                              .bitmapConfig(Bitmap.Config.RGB_565)
-                                              .build());
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .considerExifParams(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .build());
 
         // Initialize ImageLoader with configuration.
         ImageLoader.getInstance().init(config.build());
@@ -68,5 +73,10 @@ public class MarsApplication extends Application {
                 BgmUtil.initBgms(context);
             }
         }.start();
+    }
+
+    private void initJpush(Context context) {
+        JPushInterface.setDebugMode(DEBUG);
+        JPushInterface.init(context);
     }
 }
