@@ -8,6 +8,7 @@ import com.koolew.mars.preference.PreferenceAdapter;
 import com.koolew.mars.preference.PreferenceGroupTitle;
 import com.koolew.mars.preference.PreferenceHelper;
 import com.koolew.mars.preference.SwitchPreference;
+import com.koolew.mars.webapi.ApiWorker;
 
 
 public class PushSettingsActivity extends Activity {
@@ -25,6 +26,13 @@ public class PushSettingsActivity extends Activity {
         mListView.setAdapter(mAdapter);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ApiWorker.getInstance().postPushBit(new PreferenceHelper(this).getPushBit(),
+                ApiWorker.getInstance().emptyResponseListener, null);
+    }
+
     private void setupAdapter() {
         mAdapter = new PreferenceAdapter(this);
 
@@ -35,7 +43,9 @@ public class PushSettingsActivity extends Activity {
                 PreferenceHelper.KEY_NEW_VIDEO_BY_FRIEND, PreferenceHelper.DEFAULT_NEW_VIDEO_BY_FRIEND));
         mAdapter.add(new SwitchPreference(this, R.string.danmakued_by_friend,
                 PreferenceHelper.KEY_DANMAKUED_BY_FRIEND, PreferenceHelper.DEFAULT_DANMAKUED_BY_FRIEND));
-        mAdapter.add(new SwitchPreference(this, R.string.i_got_koo,
-                PreferenceHelper.KEY_I_GOT_KOO, PreferenceHelper.DEFAULT_I_GOT_KOO));
+        mAdapter.add(new SwitchPreference(this, R.string.invited_by_friend,
+                PreferenceHelper.KEY_INVITED, PreferenceHelper.DEFAULT_INVITED));
+        mAdapter.add(new SwitchPreference(this, R.string.invitation_accepted,
+                PreferenceHelper.KEY_INVITATION_ACCEPTED, PreferenceHelper.DEFAULT_INVITATION_ACCEPTED));
     }
 }

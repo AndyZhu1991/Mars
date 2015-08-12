@@ -24,6 +24,7 @@ public class MyAccountInfo {
     private static String sRegistrationId;
     private static long sKooNum;
     private static long sCoinNum;
+    private static int sPushBit;
     private static LOGIN_TYPE sLoginType;
     private static String sSnsUid;
     private static String sSnsUnionId;

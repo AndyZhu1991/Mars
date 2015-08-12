@@ -31,6 +31,7 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.preference.PreferenceHelper;
 import com.koolew.mars.view.DrawerToggleView;
 import com.koolew.mars.view.PhoneNumberView;
 import com.koolew.mars.webapi.UrlHelper;
@@ -175,6 +176,7 @@ public class MainActivity extends FragmentActivity
                                 MyAccountInfo.setAvatar(user.getString("avatar"));
                                 MyAccountInfo.setNickname(user.getString("nickname"));
                                 MyAccountInfo.setKooNum(user.getLong("koo_num"));
+                                new PreferenceHelper(MainActivity.this).setPushBit(user.getInt("push_bit"));
 
                                 mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
                                 mCountCoin.setText("" + MyAccountInfo.getCoinNum());

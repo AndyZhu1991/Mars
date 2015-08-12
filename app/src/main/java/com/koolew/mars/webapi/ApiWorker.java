@@ -481,6 +481,18 @@ public class ApiWorker {
         return standardPostRequest(UrlHelper.DEVICE_ID_URL, requestObject, listener, errorListener);
     }
 
+    public JsonObjectRequest postPushBit(int pushBit,
+                                         Response.Listener<JSONObject> listener,
+                                         Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        try {
+            requestObject.put("push_bit", pushBit);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.DEVICE_PUSH_URL, requestObject, listener, errorListener);
+    }
+
 
     // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,
