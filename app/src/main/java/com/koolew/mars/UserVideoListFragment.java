@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONException;
@@ -57,11 +58,11 @@ public class UserVideoListFragment extends BaseVideoListFragment {
     }
 
     @Override
-    public void onDanmakuSend(JSONObject videoItem) {
+    public void onDanmakuSend(BaseVideoInfo videoInfo) {
         if (needShowAddFriend(mUserType)) {
         }
         else {
-            super.onDanmakuSend(videoItem);
+            super.onDanmakuSend(videoInfo);
         }
     }
 

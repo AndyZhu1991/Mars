@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.koolew.mars.imageloader.ImageLoaderHelper;
-import com.koolew.mars.infos.BaseFriendInfo;
+import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -199,7 +199,7 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
         public String thumb;
         public int videoCount;
         public long updateTime;
-        public FriendInfo[] parters;
+        public UserInfo[] parters;
 
         public TopicItem() {
         }
@@ -209,7 +209,7 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
         }
 
         public TopicItem(String topicId, String title, String thumb, int videoCount, long updateTime,
-                         FriendInfo[] parters) {
+                         UserInfo[] parters) {
             this.topicId = topicId;
             this.title = title;
             this.thumb = thumb;
@@ -219,10 +219,10 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
         }
     }
 
-    public static class FriendInfo extends BaseFriendInfo {
+    public static class UserInfo extends BaseUserInfo {
         public boolean isSpecial;
 
-        public FriendInfo(JSONObject jsonObject) {
+        public UserInfo(JSONObject jsonObject) {
             super(jsonObject);
         }
     }

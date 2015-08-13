@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.koolew.mars.danmaku.DanmakuItemInfo;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
+import com.koolew.mars.infos.BaseUserInfo;
+import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.player.ScrollPlayer;
 import com.koolew.mars.utils.Utils;
@@ -25,7 +27,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,18 +46,19 @@ public class VideoCardAdapter extends BaseAdapter {
 
     protected Context mContext;
     protected LayoutInflater mInflater;
-    protected List<JSONObject> mData;
+    protected List<BaseVideoInfo> mData;
 
     protected TextView mTitleText;
     protected String mTopicTitle;
 
     private OnDanmakuSendListener mDanmakuSendListener;
     private OnKooClickListener mKooClickListener;
+    private OnMoreMenuClickListener mMoreMenuListener;
 
     public VideoCardAdapter(Context context) {
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
-        mData = new ArrayList<JSONObject>();
+        mData = new ArrayList<>();
     }
 
     public void setTopicTitle(String topicTitle) {
@@ -76,7 +78,7 @@ public class VideoCardAdapter extends BaseAdapter {
         try {
             length = videos.length();
             for (int i = 0; i < length; i++) {
-                mData.add((JSONObject) videos.get(i));
+                mData.add(new BaseVideoInfo(videos.getJSONObject(i)));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -86,10 +88,16 @@ public class VideoCardAdapter extends BaseAdapter {
     }
 
     public long getOldestVideoTime() {
-        try {
-            return mData.get(mData.size() - 1).getLong("create_time");
-        } catch (JSONException e) {
-            throw new RuntimeException("Can not get create_time!");
+        return mData.get(mData.size() - 1).getCreateTime();
+    }
+
+    public void removeVideo(String videoId) {
+        int count = mData.size();
+        for (int i = 0; i < count; i++) {
+            if (mData.get(i).getVideoId().equals(videoId)) {
+                mData.remove(i);
+                break;
+            }
         }
     }
 
@@ -156,51 +164,33 @@ public class VideoCardAdapter extends BaseAdapter {
 
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.video_card_item, null);
-            ViewHolder holder = new ViewHolder();
+            ViewHolder holder = new ViewHolder(convertView);
             convertView.setTag(holder);
-            holder.imageMore = (ImageView) convertView.findViewById(R.id.more);
-            holder.videoLayout = (FrameLayout) convertView.findViewById(R.id.video_layout);
-            holder.videoLayout.getLayoutParams().height = getVideoCardVideoHeight();
-            holder.danmakuContainer = (RelativeLayout) convertView.findViewById(R.id.danmaku_container);
-            holder.videoThumb = (ImageView) convertView.findViewById(R.id.video_thumb);
-            holder.progressBar = (ProgressBar) convertView.findViewById(R.id.progress);
-            holder.avatar = (CircleImageView) convertView.findViewById(R.id.avatar);
-            holder.avatar.setOnClickListener(mOnAvatarClickListener);
-            holder.nickname = (TextView) convertView.findViewById(R.id.nickname);
-            holder.videoDate = (TextView) convertView.findViewById(R.id.video_date);
-            holder.danmakuSendLayout = (LinearLayout) convertView.findViewById(R.id.danmaku_send_layout);
-            holder.danmakuSendLayout.setOnClickListener(mOnDanmakuSendClickListener);
-            holder.kooLayout = (LinearLayout) convertView.findViewById(R.id.koo_layout);
-            holder.kooLayout.setOnClickListener(mOnKooClickListener);
         }
 
-        try {
-            ViewHolder holder = (ViewHolder) convertView.getTag();
-            holder.position = position;
-            JSONObject item = getItemData(position);
-            ImageLoader.getInstance().displayImage(item.getString("thumb_url"),
-                    holder.videoThumb, ImageLoaderHelper.topicThumbLoadOptions);
-            holder.progressBar.setVisibility(View.INVISIBLE);
-            JSONObject userInfo = item.getJSONObject("user_info");
-            ImageLoader.getInstance().displayImage(userInfo.getString("avatar"),
-                    holder.avatar, ImageLoaderHelper.avatarLoadOptions);
-            holder.avatar.setTag(userInfo.getString("uid"));
-            holder.nickname.setText(userInfo.getString("nickname"));
-            holder.videoDate.setText(new SimpleDateFormat("yyyy-MM-dd").
-                    format(new Date(item.getLong("create_time") * 1000)));
-            holder.videoLayout.setTag(item.getString("video_url"));
+        ViewHolder holder = (ViewHolder) convertView.getTag();
+        holder.position = position;
+        BaseVideoInfo item = getItemData(position);
+        ImageLoader.getInstance().displayImage(item.getVideoThumb(),
+                holder.videoThumb, ImageLoaderHelper.topicThumbLoadOptions);
+        holder.progressBar.setVisibility(View.INVISIBLE);
+        BaseUserInfo userInfo = item.getUserInfo();
+        ImageLoader.getInstance().displayImage(userInfo.getAvatar(),
+                holder.avatar, ImageLoaderHelper.avatarLoadOptions);
+        holder.avatar.setTag(userInfo.getUid());
+        holder.nickname.setText(userInfo.getNickname());
+        holder.videoDate.setText(new SimpleDateFormat("yyyy-MM-dd").
+                format(new Date(item.getCreateTime() * 1000)));
+        holder.videoLayout.setTag(item.getVideoUrl());
 
-            holder.danmakuSendLayout.setTag(item);
-            holder.kooLayout.setTag(item.getString("video_id"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        holder.danmakuSendLayout.setTag(item);
+        holder.kooLayout.setTag(item.getVideoId());
 
         return convertView;
     }
 
-    public JSONObject getItemData(int position) {
-        return (JSONObject) getItem(position);
+    public BaseVideoInfo getItemData(int position) {
+        return (BaseVideoInfo) getItem(position);
     }
 
     private int getVideoCardVideoHeight() {
@@ -219,49 +209,41 @@ public class VideoCardAdapter extends BaseAdapter {
         mKooClickListener = listener;
     }
 
-    private View.OnClickListener mOnKooClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            String topicId = v.getTag().toString();
-            ApiWorker.getInstance().kooVideo(topicId, 1,
-                    ApiWorker.getInstance().emptyResponseListener, null);
-            if (mKooClickListener != null) {
-                mKooClickListener.onKooClick(topicId);
-            }
-        }
-    };
+    public void setOnMoreMenuClickListener(OnMoreMenuClickListener listener) {
+        mMoreMenuListener = listener;
+    }
 
-    private View.OnClickListener mOnDanmakuSendClickListener  = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (mDanmakuSendListener != null) {
-                mDanmakuSendListener.onDanmakuSend((JSONObject) v.getTag());
-            }
+    public void onKooClick(String videoId) {
+        ApiWorker.getInstance().kooVideo(videoId, 1,
+                ApiWorker.getInstance().emptyResponseListener, null);
+        if (mKooClickListener != null) {
+            mKooClickListener.onKooClick(videoId);
         }
-    };
+    }
 
-    private View.OnClickListener mOnAvatarClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            String uid = v.getTag().toString();
-            if (uid.equals(MyAccountInfo.getUid())) {
-                return;
-            }
-            Intent intent = new Intent(mContext, FriendInfoActivity.class);
-            intent.putExtra(FriendInfoActivity.KEY_UID, uid);
-            mContext.startActivity(intent);
+    protected void onAvatarClick(String uid) {
+        if (uid.equals(MyAccountInfo.getUid())) {
+            return;
         }
-    };
+        Intent intent = new Intent(mContext, FriendInfoActivity.class);
+        intent.putExtra(FriendInfoActivity.KEY_UID, uid);
+        mContext.startActivity(intent);
+    }
 
     interface OnDanmakuSendListener {
-        void onDanmakuSend(JSONObject videoItem);
+        void onDanmakuSend(BaseVideoInfo videoInfo);
     }
 
     interface OnKooClickListener {
         void onKooClick(String videoId);
     }
 
-    public static class ViewHolder {
+    interface OnMoreMenuClickListener {
+        void onMoreMenuClick(String videoId, String uid);
+    }
+
+    class ViewHolder implements View.OnClickListener {
+
         public int position;
 
         public ImageView imageMore;
@@ -275,14 +257,56 @@ public class VideoCardAdapter extends BaseAdapter {
 
         public LinearLayout kooLayout;
         public LinearLayout danmakuSendLayout;
+
+        public ViewHolder(View convertView) {
+            imageMore = (ImageView) convertView.findViewById(R.id.more);
+            imageMore.setOnClickListener(this);
+            videoLayout = (FrameLayout) convertView.findViewById(R.id.video_layout);
+            videoLayout.getLayoutParams().height = getVideoCardVideoHeight();
+            danmakuContainer = (RelativeLayout) convertView.findViewById(R.id.danmaku_container);
+            videoThumb = (ImageView) convertView.findViewById(R.id.video_thumb);
+            progressBar = (ProgressBar) convertView.findViewById(R.id.progress);
+            avatar = (CircleImageView) convertView.findViewById(R.id.avatar);
+            avatar.setOnClickListener(this);
+            nickname = (TextView) convertView.findViewById(R.id.nickname);
+            videoDate = (TextView) convertView.findViewById(R.id.video_date);
+            danmakuSendLayout = (LinearLayout) convertView.findViewById(R.id.danmaku_send_layout);
+            danmakuSendLayout.setOnClickListener(this);
+            kooLayout = (LinearLayout) convertView.findViewById(R.id.koo_layout);
+            kooLayout.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v == imageMore) {
+                if (mMoreMenuListener != null) {
+                    BaseVideoInfo videoInfo = getItemData(position);
+                    mMoreMenuListener.onMoreMenuClick(videoInfo.getVideoId(),
+                            videoInfo.getUserInfo().getUid());
+                }
+            }
+            else if (v == avatar) {
+                onAvatarClick(getItemData(position).getUserInfo().getUid());
+            }
+            else if (v == kooLayout) {
+                onKooClick(getItemData(position).getVideoId());
+            }
+            else if (v == danmakuSendLayout) {
+                if (mDanmakuSendListener != null) {
+                    mDanmakuSendListener.onDanmakuSend(getItemData(position));
+                }
+            }
+        }
     }
 
-    public static class TopicScrollPlayer extends ScrollPlayer {
-        private VideoCardAdapter mVideoCardAdapter;
+    public class TopicScrollPlayer extends ScrollPlayer {
 
-        public TopicScrollPlayer(VideoCardAdapter videoCardAdapter, ListView listView) {
+        public TopicScrollPlayer(ListView listView) {
             super(listView);
-            mVideoCardAdapter = videoCardAdapter;
+        }
+
+        private BaseVideoInfo getVideoInfoByItemView(View itemView) {
+            return getItemData(((ViewHolder) itemView.getTag()).position);
         }
 
         @Override
@@ -302,13 +326,7 @@ public class VideoCardAdapter extends BaseAdapter {
 
         @Override
         public ArrayList<DanmakuItemInfo> getDanmakuList(View itemView) {
-            int position = ((ViewHolder) itemView.getTag()).position;
-            try {
-                return DanmakuItemInfo.fromJSONArray(
-                        mVideoCardAdapter.getItemData(position).getJSONArray("comment"));
-            } catch (JSONException e) {
-                return new ArrayList<>();
-            }
+            return getVideoInfoByItemView(itemView).getDanmakus();
         }
 
         @Override
@@ -323,7 +341,7 @@ public class VideoCardAdapter extends BaseAdapter {
 
         @Override
         public String getVideoUrl(View itemView) {
-            return ((ViewHolder) itemView.getTag()).videoLayout.getTag().toString();
+            return getVideoInfoByItemView(itemView).getVideoUrl();
         }
     }
 }

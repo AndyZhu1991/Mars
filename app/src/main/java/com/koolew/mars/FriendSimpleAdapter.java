@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
-import com.koolew.mars.infos.TypedFriendInfo;
+import com.koolew.mars.infos.TypedUserInfo;
 import com.koolew.mars.utils.ContactUtil;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Utils;
@@ -35,13 +35,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class FriendSimpleAdapter extends BaseAdapter {
 
-    public static final int TYPE_UNKNOWN         = TypedFriendInfo.TYPE_UNKNOWN;
-    public static final int TYPE_SELF            = TypedFriendInfo.TYPE_SELF;
-    public static final int TYPE_STRANGER        = TypedFriendInfo.TYPE_STRANGER;
-    public static final int TYPE_SENT_INVITATION = TypedFriendInfo.TYPE_SENT_INVITATION;
-    public static final int TYPE_INVITED_ME      = TypedFriendInfo.TYPE_INVITED_ME;
-    public static final int TYPE_FRIEND          = TypedFriendInfo.TYPE_FRIEND;
-    public static final int TYPE_NO_REGISTER     = TypedFriendInfo.TYPE_NO_REGISTER;
+    public static final int TYPE_UNKNOWN         = TypedUserInfo.TYPE_UNKNOWN;
+    public static final int TYPE_SELF            = TypedUserInfo.TYPE_SELF;
+    public static final int TYPE_STRANGER        = TypedUserInfo.TYPE_STRANGER;
+    public static final int TYPE_SENT_INVITATION = TypedUserInfo.TYPE_SENT_INVITATION;
+    public static final int TYPE_INVITED_ME      = TypedUserInfo.TYPE_INVITED_ME;
+    public static final int TYPE_FRIEND          = TypedUserInfo.TYPE_FRIEND;
+    public static final int TYPE_NO_REGISTER     = TypedUserInfo.TYPE_NO_REGISTER;
 
     private static final int[] OPERATE_BTN_BG = new int[] {
             0, // Not used

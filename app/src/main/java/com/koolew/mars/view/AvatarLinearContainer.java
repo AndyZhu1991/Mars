@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 
 import com.koolew.mars.R;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
-import com.koolew.mars.infos.BaseFriendInfo;
+import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -133,7 +133,7 @@ public class AvatarLinearContainer extends LinearLayout implements View.OnClickL
 
     }
 
-    public static class PersonInfo extends BaseFriendInfo {
+    public static class PersonInfo extends BaseUserInfo {
 
         private boolean isSpecial;
 

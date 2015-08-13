@@ -4,12 +4,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by jinchangzhu on 6/18/15.
  */
-public class DanmakuItemInfo {
+public class DanmakuItemInfo implements Serializable {
     String uid;
     String nickname;
     String avatar;

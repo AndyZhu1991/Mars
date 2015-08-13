@@ -19,9 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
-import com.koolew.mars.danmaku.DanmakuItemInfo;
 import com.koolew.mars.danmaku.DanmakuShowManager;
 import com.koolew.mars.danmaku.DanmakuThread;
+import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.MaxLengthWatcher;
@@ -31,7 +31,6 @@ import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -47,9 +46,9 @@ public class SendDanmakuActivity extends Activity
 
     private static final String TAG = "koolew-SendDanmakuA";
 
-    public static final String KEY_VIDEO_JSON = "video_json";
+    public static final String KEY_VIDEO_INFO = "video info";
 
-    private JSONObject mVideoItem;
+    private BaseVideoInfo mVideoInfo;
 
     private FrameLayout mPlayLayout;
     private SurfaceView mPlaySurface;
@@ -77,11 +76,7 @@ public class SendDanmakuActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_danmaku);
 
-        try {
-            mVideoItem = new JSONObject(getIntent().getStringExtra(KEY_VIDEO_JSON));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        mVideoInfo = (BaseVideoInfo) getIntent().getSerializableExtra(KEY_VIDEO_INFO);
 
         initViews();
 
@@ -89,30 +84,19 @@ public class SendDanmakuActivity extends Activity
     }
 
     private void initMembers() {
-        try {
-            JSONArray comment;
-            if (mVideoItem.has("comment")) {
-                comment = mVideoItem.getJSONArray("comment");
+        mDanmakuManager = new DanmakuShowManager(this, mDanmakuContainer,
+                mVideoInfo.getDanmakus());
+        mDanmakuThread = new DanmakuThread(this, mDanmakuManager, new DanmakuThread.PlayerWrapper() {
+            @Override
+            public long getCurrentPosition() {
+                return mMediaPlayer.getCurrentPosition();
             }
-            else {
-                comment = new JSONArray();
-            }
-            mDanmakuManager = new DanmakuShowManager(this, mDanmakuContainer,
-                    DanmakuItemInfo.fromJSONArray(comment));
-            mDanmakuThread = new DanmakuThread(this, mDanmakuManager, new DanmakuThread.PlayerWrapper() {
-                @Override
-                public long getCurrentPosition() {
-                    return mMediaPlayer.getCurrentPosition();
-                }
 
-                @Override
-                public boolean isPlaying() {
-                    return mMediaPlayer.isPlaying();
-                }
-            });
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            @Override
+            public boolean isPlaying() {
+                return mMediaPlayer.isPlaying();
+            }
+        });
 
         mVideoLoader = new VideoLoader(this);
         mVideoLoader.setLoadListener(new VideoLoader.LoadListener() {
@@ -141,11 +125,7 @@ public class SendDanmakuActivity extends Activity
         mPlaySurface = (SurfaceView) findViewById(R.id.play_surface);
         mPlaySurface.getHolder().addCallback(mSurfaceCallback);
         mThumb = (ImageView) findViewById(R.id.thumb);
-        try {
-            ImageLoader.getInstance().displayImage(mVideoItem.getString("thumb_url"), mThumb);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        ImageLoader.getInstance().displayImage(mVideoInfo.getVideoThumb(), mThumb);
 
         mDanmakuContainer = (ViewGroup) findViewById(R.id.danmaku_container);
         mDanmakuContainer.setOnTouchListener(this);
@@ -250,12 +230,7 @@ public class SendDanmakuActivity extends Activity
         }
         else {
             String content = mDanmakuEdit.getText().toString();
-            String videoId = null;
-            try {
-                videoId = mVideoItem.getString("video_id");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            String videoId = mVideoInfo.getVideoId();
             float showTime = mMediaPlayer.getCurrentPosition() / 1000.0f;
             float x = 1.0f * mSendingDanmaku.getX() / mSendingDanmakuLayout.getWidth();
             float y = 1.0f * mSendingDanmaku.getY() / mSendingDanmakuLayout.getHeight();
@@ -318,11 +293,7 @@ public class SendDanmakuActivity extends Activity
         public void surfaceCreated(SurfaceHolder holder) {
             mMediaPlayer = new IjkMediaPlayer();
             mMediaPlayer.setDisplay(mPlaySurface.getHolder());
-            try {
-                mVideoLoader.loadVideo(mMediaPlayer, mVideoItem.getString("video_url"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            mVideoLoader.loadVideo(mMediaPlayer, mVideoInfo.getVideoUrl());
             mMediaPlayer.setOnPreparedListener(SendDanmakuActivity.this);
             mMediaPlayer.setOnCompletionListener(SendDanmakuActivity.this);
         }

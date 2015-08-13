@@ -224,6 +224,14 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
         }
     }
 
+    public void refreshPlayingItem() {
+        if (mCurrentItem != null) {
+            stopCurrentPlay();
+        }
+        mCurrentItem = getCurrentItemView();
+        setupCurrentPlay();
+    }
+
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
     }

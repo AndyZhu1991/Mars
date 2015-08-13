@@ -6,7 +6,7 @@ import org.json.JSONObject;
 /**
  * Created by jinchangzhu on 8/3/15.
  */
-public class TypedFriendInfo extends BaseFriendInfo {
+public class TypedUserInfo extends BaseUserInfo {
 
     public static final int TYPE_UNKNOWN         = -1;
     public static final int TYPE_SELF            = 0;
@@ -18,13 +18,13 @@ public class TypedFriendInfo extends BaseFriendInfo {
 
     protected int mType;
 
-    public TypedFriendInfo(JSONObject jsonObject, int type) {
+    public TypedUserInfo(JSONObject jsonObject, int type) {
         super(jsonObject);
 
         mType = type;
     }
 
-    public TypedFriendInfo(JSONObject jsonObject) {
+    public TypedUserInfo(JSONObject jsonObject) {
         super(jsonObject);
 
         try {

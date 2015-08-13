@@ -102,17 +102,19 @@
         <include layout="@layout/horizontal_divider" />
 
         <LinearLayout
-            android:id="@+id/report"
+            android:id="@+id/operation_layout"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:gravity="center">
 
             <ImageView
+                android:id="@+id/operation_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/ic_report" />
 
             <TextView
+                android:id="@+id/operation_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"

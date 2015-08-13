@@ -5,11 +5,13 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.player.ScrollPlayer;
 import com.koolew.mars.webapi.ApiWorker;
 
@@ -17,11 +19,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 /**
  * Created by jinchangzhu on 7/24/15.
  */
 public class BaseVideoListFragment extends BaseListFragment
-        implements VideoCardAdapter.OnDanmakuSendListener, VideoCardAdapter.OnKooClickListener {
+        implements VideoCardAdapter.OnDanmakuSendListener, VideoCardAdapter.OnKooClickListener,
+        VideoCardAdapter.OnMoreMenuClickListener, ShareVideoWindow.OnVideoOperatedListener {
 
     public static final String KEY_TOPIC_ID = "topic_id";
     public static final String KEY_TOPIC_TITLE = "topic_title";
@@ -61,7 +65,8 @@ public class BaseVideoListFragment extends BaseListFragment
         mAdapter.setTopicTitle(mTopicTitle);
         mAdapter.setOnDanmakuSendListener(this);
         mAdapter.setOnKooClickListener(this);
-        mScrollPlayer = new VideoCardAdapter.TopicScrollPlayer(mAdapter, mListView);
+        mAdapter.setOnMoreMenuClickListener(this);
+        mScrollPlayer = mAdapter.new TopicScrollPlayer(mListView);
         if (isNeedLoadMore) {
             mListFooter.setup(mListView, mScrollPlayer);
         }
@@ -179,15 +184,23 @@ public class BaseVideoListFragment extends BaseListFragment
     }
 
     @Override
-    public void onDanmakuSend(JSONObject videoItem) {
+    public void onDanmakuSend(BaseVideoInfo videoInfo) {
         Intent intent = new Intent(getActivity(), SendDanmakuActivity.class);
-        intent.putExtra(SendDanmakuActivity.KEY_VIDEO_JSON, videoItem.toString());
+        intent.putExtra(SendDanmakuActivity.KEY_VIDEO_INFO, videoInfo);
         startActivity(intent);
     }
 
     @Override
     public void onKooClick(String videoId) {
         mSoundPool.play(mKooSound, 1, 1, 0, 0, 1);
+    }
+
+    @Override
+    public void onMoreMenuClick(String videoId, String uid) {
+        ShareVideoWindow shareVideoWindow =
+                new ShareVideoWindow(getActivity(), ShareVideoWindow.TYPE_VIDEO, videoId, uid);
+        shareVideoWindow.setOnVideoOperatedListener(this);
+        shareVideoWindow.showAtLocation(getView(), Gravity.TOP, 0, 0);
     }
 
     public String getTopicId() {
@@ -209,5 +222,21 @@ public class BaseVideoListFragment extends BaseListFragment
         intent.putExtra(InviteActivity.KEY_TOPIC_ID, getTopicId());
         intent.putExtra(InviteActivity.KEY_TITLE, getTopicTitle());
         startActivity(intent);
+    }
+
+    @Override
+    public void onVideoDeleted(String videoId) {
+        removeVideo(videoId);
+    }
+
+    @Override
+    public void onVideoAgainst(String videoId) {
+        removeVideo(videoId);
+    }
+
+    private void removeVideo(String videoId) {
+        mAdapter.removeVideo(videoId);
+        mAdapter.notifyDataSetChanged();
+        mScrollPlayer.refreshPlayingItem();
     }
 }

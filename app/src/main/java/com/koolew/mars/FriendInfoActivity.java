@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
-import com.koolew.mars.infos.TypedFriendInfo;
+import com.koolew.mars.infos.TypedUserInfo;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.view.AvatarLinearContainer;
 import com.koolew.mars.view.BigCountView;
@@ -149,12 +149,12 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
 
     private void initTypeView(int type) {
         switch (type) {
-            case TypedFriendInfo.TYPE_STRANGER:
-            case TypedFriendInfo.TYPE_INVITED_ME:
+            case TypedUserInfo.TYPE_STRANGER:
+            case TypedUserInfo.TYPE_INVITED_ME:
                 mOperationImage.setImageResource(R.mipmap.friend_info_add_friend);
                 mOperationText.setText(R.string.add_friend);
                 break;
-            case TypedFriendInfo.TYPE_SENT_INVITATION:
+            case TypedUserInfo.TYPE_SENT_INVITATION:
                 mOperationImage.setImageResource(R.mipmap.friend_info_requested);
                 mOperationText.setText(R.string.requested_friend);
                 break;
@@ -166,12 +166,12 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
 
     private void onOperationLayoutClick(int type) {
         switch (type) {
-            case TypedFriendInfo.TYPE_STRANGER:
-            case TypedFriendInfo.TYPE_INVITED_ME:
+            case TypedUserInfo.TYPE_STRANGER:
+            case TypedUserInfo.TYPE_INVITED_ME:
                 mProgressDialog.show();
                 ApiWorker.getInstance().addFriend(mUid, mFriendOpListener, null);
                 break;
-            case TypedFriendInfo.TYPE_SENT_INVITATION:
+            case TypedUserInfo.TYPE_SENT_INVITATION:
                 break;
             default:
         }
@@ -184,12 +184,12 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
             try {
                 if (response.getInt("code") == 0) {
                     switch (mType) {
-                        case TypedFriendInfo.TYPE_STRANGER:
-                            mType = TypedFriendInfo.TYPE_SENT_INVITATION;
+                        case TypedUserInfo.TYPE_STRANGER:
+                            mType = TypedUserInfo.TYPE_SENT_INVITATION;
                             initTypeView(mType);
                             break;
-                        case TypedFriendInfo.TYPE_INVITED_ME:
-                            mType = TypedFriendInfo.TYPE_FRIEND;
+                        case TypedUserInfo.TYPE_INVITED_ME:
+                            mType = TypedUserInfo.TYPE_FRIEND;
                             initTypeView(mType);
                             break;
                     }

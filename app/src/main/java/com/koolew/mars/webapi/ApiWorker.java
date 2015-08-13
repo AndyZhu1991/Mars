@@ -493,6 +493,30 @@ public class ApiWorker {
         return standardPostRequest(UrlHelper.DEVICE_PUSH_URL, requestObject, listener, errorListener);
     }
 
+    public JsonObjectRequest deleteVideo(String videoId,
+                                         Response.Listener<JSONObject> listener,
+                                         Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        try {
+            requestObject.put("video_id", videoId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.VIDEO_DELETE_URL, requestObject, listener, errorListener);
+    }
+
+    public JsonObjectRequest againstVideo(String videoId,
+                                          Response.Listener<JSONObject> listener,
+                                          Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        try {
+            requestObject.put("video_id", videoId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.VIDEO_AGAINST_URL, requestObject, listener, errorListener);
+    }
+
 
     // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,

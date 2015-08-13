@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.koolew.mars.infos.BaseFriendInfo;
+import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -131,7 +131,7 @@ public class SearchUserWindow extends PopupWindow implements TextWatcher,
 
     class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
-        private List<BaseFriendInfo> mData;
+        private List<BaseUserInfo> mData;
 
         public UserAdapter() {
             mData = new ArrayList<>();
@@ -142,7 +142,7 @@ public class SearchUserWindow extends PopupWindow implements TextWatcher,
             int count = jsonArray.length();
             for (int i = 0; i < count; i++) {
                 try {
-                    mData.add(new BaseFriendInfo(jsonArray.getJSONObject(i)));
+                    mData.add(new BaseUserInfo(jsonArray.getJSONObject(i)));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
-import com.koolew.mars.infos.BaseFriendInfo;
+import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -208,7 +208,7 @@ public class KooRankActivity extends Activity implements SwipeRefreshLayout.OnRe
         }
     }
 
-    class GoodFriendItemInfo extends BaseFriendInfo {
+    class GoodFriendItemInfo extends BaseUserInfo {
         public GoodFriendItemInfo(JSONObject jsonObject) {
             super(jsonObject);
         }

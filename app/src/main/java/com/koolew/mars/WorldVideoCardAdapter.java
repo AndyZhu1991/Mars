@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.koolew.mars.infos.BaseVideoInfo;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,9 +37,10 @@ public class WorldVideoCardAdapter extends VideoCardAdapter {
         int count = videos.length();
         for (int i = 0; i < count; i++) {
             try {
-                JSONObject video = videos.getJSONObject(i);
-                if (!hasVideo(video)) {
-                    mData.add(video);
+                JSONObject videoJson = videos.getJSONObject(i);
+                BaseVideoInfo videoInfo = new BaseVideoInfo(videoJson);
+                if (!hasVideo(videoInfo)) {
+                    mData.add(videoInfo);
                     addedCount++;
                 }
             } catch (JSONException e) {
@@ -47,13 +50,9 @@ public class WorldVideoCardAdapter extends VideoCardAdapter {
         return addedCount;
     }
 
-    private boolean hasVideo(JSONObject video) {
-        for (JSONObject item: mData) {
-            try {
-                return item.getString("video_id").equals(video.getString("video_id"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+    private boolean hasVideo(BaseVideoInfo otherVideo) {
+        for (BaseVideoInfo videoInfo: mData) {
+            return videoInfo.getVideoId().equals(otherVideo.getVideoId());
         }
         return false;
     }

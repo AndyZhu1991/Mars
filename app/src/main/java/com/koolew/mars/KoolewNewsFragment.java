@@ -122,10 +122,10 @@ public class KoolewNewsFragment extends Fragment implements AdapterView.OnItemCl
                 JSONObject topic = jsonObject.getJSONObject("topic");
                 JSONArray parters = jsonObject.getJSONArray("parters");
                 int parterCount = parters.length();
-                FriendInfo[] parterInfos = new FriendInfo[parterCount];
+                UserInfo[] parterInfos = new UserInfo[parterCount];
                 for (int i = 0; i < parterCount; i++) {
                     JSONObject parter = parters.getJSONObject(i);
-                    parterInfos[i] = new FriendInfo(parter);
+                    parterInfos[i] = new UserInfo(parter);
                     parterInfos[i].isSpecial = parter.getInt("new") == 1;
                 }
 
