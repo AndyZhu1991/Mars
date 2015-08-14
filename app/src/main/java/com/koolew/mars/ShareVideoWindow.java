@@ -9,42 +9,58 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.share.ShareManager;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.PlatformActionListener;
+
 /**
  * Created by jinchangzhu on 7/28/15.
  */
-public class ShareVideoWindow extends PopupWindow implements View.OnClickListener {
+public class ShareVideoWindow extends PopupWindow implements View.OnClickListener,
+        PlatformActionListener {
 
     public static final int TYPE_VIDEO = 0;
     public static final int TYPE_VIDEO_LIST = 1;
+
+    private Context mContext;
 
     private View mContentView;
 
     private int mType;
     private String mId;
+    private String mContent;
     private String mUid; // This only used for TYPE_VIDEO
 
     private Dialog mProgressDialog;
     private OnVideoOperatedListener mVideoOperatedListener;
+    private ShareManager mShareManager;
 
-    public ShareVideoWindow(Context context, int type, String id) {
-        this(context, type, id, null);
+    public ShareVideoWindow(Context context, int type, String id, String content) {
+        this(context, type, id, content, null);
     }
 
-    public ShareVideoWindow(Context context, int type, String id, String uid) {
+    public ShareVideoWindow(Context context, int type, String id, String content, String uid) {
         super(context);
+
+        mContext = context;
+        mShareManager = new ShareManager(mContext, this);
 
         mProgressDialog = DialogUtil.getConnectingServerDialog(context);
 
         mType = type;
         mId = id;
+        mContent = content;
         mUid = uid;
 
         mContentView = LayoutInflater.from(context).inflate(R.layout.share_video_layout, null);
@@ -84,16 +100,52 @@ public class ShareVideoWindow extends PopupWindow implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.wechat_moments:
+                if (mType == TYPE_VIDEO) {
+                    mShareManager.shareVideoTo(ShareManager.ShareChanel.WECHAT_MOMENTS, mId, mContent);
+                }
+                else if (mType == TYPE_VIDEO_LIST) {
+                    mShareManager.shareTopicTo(ShareManager.ShareChanel.WECHAT_MOMENTS, mId, mContent);
+                }
                 break;
             case R.id.wechat_friends:
+                if (mType == TYPE_VIDEO) {
+                    mShareManager.shareVideoTo(ShareManager.ShareChanel.WECHAT_FRIENDS, mId, mContent);
+                }
+                else if (mType == TYPE_VIDEO_LIST) {
+                    mShareManager.shareTopicTo(ShareManager.ShareChanel.WECHAT_FRIENDS, mId, mContent);
+                }
                 break;
             case R.id.qzone:
+                if (mType == TYPE_VIDEO) {
+                    mShareManager.shareVideoTo(ShareManager.ShareChanel.QZONE, mId, mContent);
+                }
+                else if (mType == TYPE_VIDEO_LIST) {
+                    mShareManager.shareTopicTo(ShareManager.ShareChanel.QZONE, mId, mContent);
+                }
                 break;
             case R.id.weibo:
+                if (mType == TYPE_VIDEO) {
+                    mShareManager.shareVideoTo(ShareManager.ShareChanel.WEIBO, mId, mContent);
+                }
+                else if (mType == TYPE_VIDEO_LIST) {
+                    mShareManager.shareTopicTo(ShareManager.ShareChanel.WEIBO, mId, mContent);
+                }
                 break;
             case R.id.email:
+                if (mType == TYPE_VIDEO) {
+                    mShareManager.shareVideoTo(ShareManager.ShareChanel.EMAIL, mId, mContent);
+                }
+                else if (mType == TYPE_VIDEO_LIST) {
+                    mShareManager.shareTopicTo(ShareManager.ShareChanel.EMAIL, mId, mContent);
+                }
                 break;
             case R.id.sms:
+                if (mType == TYPE_VIDEO) {
+                    mShareManager.shareVideoTo(ShareManager.ShareChanel.SMS, mId, mContent);
+                }
+                else if (mType == TYPE_VIDEO_LIST) {
+                    mShareManager.shareTopicTo(ShareManager.ShareChanel.SMS, mId, mContent);
+                }
                 break;
             case R.id.operation_layout:
                 onOperate();
@@ -137,6 +189,20 @@ public class ShareVideoWindow extends PopupWindow implements View.OnClickListene
 
     public void setOnVideoOperatedListener(OnVideoOperatedListener listener) {
         mVideoOperatedListener = listener;
+    }
+
+    @Override
+    public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
+        this.dismiss();
+    }
+
+    @Override
+    public void onError(Platform platform, int i, Throwable throwable) {
+        Toast.makeText(mContext, R.string.share_failed, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onCancel(Platform platform, int i) {
     }
 
     interface OnVideoOperatedListener {

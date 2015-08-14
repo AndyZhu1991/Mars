@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
+import com.koolew.mars.share.ShareManager;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.TitleBarView;
@@ -28,14 +29,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.PlatformActionListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class InviteActivity extends Activity implements SwipeRefreshLayout.OnRefreshListener,
-        TitleBarView.OnRightLayoutClickListener {
+        TitleBarView.OnRightLayoutClickListener, PlatformActionListener {
 
     public static final String KEY_TOPIC_ID = "topic_id";
     public static final String KEY_TITLE = "title";
@@ -49,6 +53,7 @@ public class InviteActivity extends Activity implements SwipeRefreshLayout.OnRef
     private InviteAdapter mAdapter;
 
     private ProgressDialog mConnectingDialog;
+    private ShareManager mShareManager;
 
 
     @Override
@@ -59,6 +64,8 @@ public class InviteActivity extends Activity implements SwipeRefreshLayout.OnRef
         Intent intent = getIntent();
         mTopicId = intent.getStringExtra(KEY_TOPIC_ID);
         mTitle = intent.getStringExtra(KEY_TITLE);
+
+        mShareManager = new ShareManager(this, this);
 
         initViews();
 
@@ -146,6 +153,39 @@ public class InviteActivity extends Activity implements SwipeRefreshLayout.OnRef
         }
         ApiWorker.getInstance().sendInvitation(mTopicId, friendIdList, mInviteListener, null);
     }
+
+    public void onInviteByWeibo(View v) {
+        mShareManager.inviteBy(ShareManager.ShareChanel.WEIBO, mTopicId, mTitle);
+    }
+
+    public void onInviteByMoments(View v) {
+        mShareManager.inviteBy(ShareManager.ShareChanel.WECHAT_MOMENTS, mTopicId, mTitle);
+    }
+
+    public void onInviteByWechat(View v) {
+        mShareManager.inviteBy(ShareManager.ShareChanel.WECHAT_FRIENDS, mTopicId, mTitle);
+    }
+
+    public void onInviteByQzone(View v) {
+        mShareManager.inviteBy(ShareManager.ShareChanel.QZONE, mTopicId, mTitle);
+    }
+
+
+    @Override
+    public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
+        this.onBackPressed();
+    }
+
+    @Override
+    public void onError(Platform platform, int i, Throwable throwable) {
+        Toast.makeText(this, R.string.invite_failed, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onCancel(Platform platform, int i) {
+
+    }
+
 
     class InviteAdapter extends RecyclerView.Adapter<InviteAdapter.ViewHolder> {
 

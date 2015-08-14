@@ -197,8 +197,8 @@ public class BaseVideoListFragment extends BaseListFragment
 
     @Override
     public void onMoreMenuClick(String videoId, String uid) {
-        ShareVideoWindow shareVideoWindow =
-                new ShareVideoWindow(getActivity(), ShareVideoWindow.TYPE_VIDEO, videoId, uid);
+        ShareVideoWindow shareVideoWindow = new ShareVideoWindow(
+                getActivity(), ShareVideoWindow.TYPE_VIDEO, videoId, mTopicTitle, uid);
         shareVideoWindow.setOnVideoOperatedListener(this);
         shareVideoWindow.showAtLocation(getView(), Gravity.TOP, 0, 0);
     }

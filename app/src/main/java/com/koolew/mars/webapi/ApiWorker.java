@@ -9,6 +9,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
+import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.utils.ContactUtil;
 
 import org.json.JSONArray;
@@ -515,6 +516,23 @@ public class ApiWorker {
             e.printStackTrace();
         }
         return standardPostRequest(UrlHelper.VIDEO_AGAINST_URL, requestObject, listener, errorListener);
+    }
+
+    public JsonObjectRequest loginBySns(MyAccountInfo.LOGIN_TYPE type, String openId,
+                                        String refreshToken, long expiresIn, String unionId,
+                                        Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        JSONObject requestJson = new JSONObject();
+        try {
+            requestJson.put("type", type.ordinal());
+            requestJson.put("open_id", openId);
+            requestJson.put("refresh_token", refreshToken);
+            requestJson.put("expires_in", expiresIn);
+            requestJson.put("union_id", unionId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.SNS_LOGIN_URL, requestJson, listener, errorListener);
     }
 
 

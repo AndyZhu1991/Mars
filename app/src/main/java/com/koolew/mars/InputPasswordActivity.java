@@ -23,9 +23,6 @@ import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.infos.MyAccountInfo.LOGIN_TYPE;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
-import com.koolew.mars.weiboapi.AccessTokenKeeper;
-import com.koolew.mars.wxapi.TokenKeeper;
-import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,11 +32,20 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.PlatformDb;
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.sina.weibo.SinaWeibo;
+import cn.sharesdk.tencent.qq.QQ;
+import cn.sharesdk.wechat.friends.Wechat;
+
 
 public class InputPasswordActivity extends Activity implements View.OnClickListener,
         RequestPasswordFragment.OnFragmentInteractionListener{
 
     private static final String TAG = "koolew-InputPasswordA";
+
+    public static final String KEY_LOGIN_TYPE = "login type";
 
     private EditText mPasswordCapture;
     private TextView[] mPasswordDigits = new TextView[4];
@@ -49,10 +55,14 @@ public class InputPasswordActivity extends Activity implements View.OnClickListe
 
     private RequestQueue mRequestQueue;
 
+    private int mLoginType;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input_password);
+
+        mLoginType = getIntent().getExtras().getInt(KEY_LOGIN_TYPE);
 
         mRequestQueue = Volley.newRequestQueue(this);
         mPasswordCapture = (EditText) findViewById(R.id.password_capture);
@@ -131,14 +141,14 @@ public class InputPasswordActivity extends Activity implements View.OnClickListe
         try {
             requestJson.put("phone", MyAccountInfo.getPhoneNumber());
             requestJson.put("code", password);
-            if (MyAccountInfo.getLoginType() == LOGIN_TYPE.MOBILE) {
+            if (mLoginType == LOGIN_TYPE.MOBILE.ordinal()) {
                 Log.d(TAG, "Login by mobile");
                 url = UrlHelper.LOGIN_URL;
             }
             else {
-                Log.d(TAG, "Signup by: " + MyAccountInfo.getLoginType().ordinal());
+                Log.d(TAG, "Signup by: " + mLoginType);
                 url = UrlHelper.SNS_SIGNUP_URL;
-                addSnsRegisterParams(MyAccountInfo.getLoginType(), requestJson);
+                addSnsRegisterParams(mLoginType, requestJson);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -159,7 +169,7 @@ public class InputPasswordActivity extends Activity implements View.OnClickListe
                                 MyAccountInfo.setUid(result.getString("uid"));
                                 if (result.has("info")) {
                                     JSONObject info = result.getJSONObject("info");
-                                    if (MyAccountInfo.getLoginType() == LOGIN_TYPE.MOBILE) {
+                                    if (mLoginType == LOGIN_TYPE.MOBILE.ordinal()) {
                                         MyAccountInfo.setAvatar(info.getString("avatar"));
                                     }
                                     MyAccountInfo.setNickname(info.getString("nickname"));
@@ -168,7 +178,7 @@ public class InputPasswordActivity extends Activity implements View.OnClickListe
                                 }
                                 else {
                                     // Why no "info" ?
-                                    if (MyAccountInfo.getLoginType() == LOGIN_TYPE.MOBILE) {
+                                    if (mLoginType == LOGIN_TYPE.MOBILE.ordinal()) {
                                         MyAccountInfo.setAvatar(result.getString("avatar"));
                                     }
                                     MyAccountInfo.setNickname("");
@@ -208,20 +218,31 @@ public class InputPasswordActivity extends Activity implements View.OnClickListe
         mRequestQueue.add(jsonRequest);
     }
 
-    private void addSnsRegisterParams(LOGIN_TYPE type, JSONObject requestJson) {
+    private void addSnsRegisterParams(int type, JSONObject requestJson) {
         try {
-            requestJson.put("type", MyAccountInfo.getLoginType().ordinal());
-            if (type == LOGIN_TYPE.WEIBO) {
-                Oauth2AccessToken token = AccessTokenKeeper.readAccessToken(InputPasswordActivity.this);
-                requestJson.put("open_id", token.getUid());
-                requestJson.put("refresh_token", token);
-                requestJson.put("expires_in", token.getExpiresTime());
-                requestJson.put("union_id", token.getUid());
-            } else if (type == LOGIN_TYPE.WECHAT) {
-                requestJson.put("open_id", TokenKeeper.readOpenId(InputPasswordActivity.this));
-                requestJson.put("refresh_token", TokenKeeper.readRefreshToken(InputPasswordActivity.this));
-                requestJson.put("expires_in", TokenKeeper.readExpiresIn(InputPasswordActivity.this));
-                requestJson.put("union_id", TokenKeeper.readUnionId(InputPasswordActivity.this));
+            requestJson.put("type", type);
+            if (type == LOGIN_TYPE.WEIBO.ordinal()) {
+                Platform platform = ShareSDK.getPlatform(SinaWeibo.NAME);
+                PlatformDb db = platform.getDb();
+                requestJson.put("open_id", db.getUserId());
+                requestJson.put("refresh_token", db.getToken());
+                requestJson.put("expires_in", db.getExpiresTime());
+                requestJson.put("union_id", db.getUserId());
+            } else if (type == LOGIN_TYPE.WECHAT.ordinal()) {
+                Platform platform = ShareSDK.getPlatform(Wechat.NAME);
+                PlatformDb db = platform.getDb();
+                requestJson.put("open_id", db.get("openid"));
+                requestJson.put("refresh_token", db.get("refresh_token"));
+                requestJson.put("expires_in", db.getExpiresIn());
+                requestJson.put("union_id", db.get("unionid"));
+            }
+            else if (type == LOGIN_TYPE.QQ.ordinal()) {
+                Platform platform = ShareSDK.getPlatform(QQ.NAME);
+                PlatformDb db = platform.getDb();
+                requestJson.put("open_id", db.getUserId());
+                requestJson.put("refresh_token", db.getToken());
+                requestJson.put("expires_in", db.getExpiresIn());
+                requestJson.put("union_id", db.getUserId());
             }
         } catch (JSONException je) {
             je.printStackTrace();

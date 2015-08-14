@@ -23,7 +23,7 @@
     <string name="invite">邀请</string>
     <string name="save">保存</string>
     <string name="failed">失败了</string>
-    <string name="counter_ge">"%d个"</string>
+    <string name="counter_ge" formatted="false">"%d个"</string>
     <string name="cancel">取消</string>
     <string name="danmaku">弹幕</string>
     <string name="ignore">忽略</string>
@@ -52,14 +52,14 @@
     <string name="send_password_hint1">系统向你的手机</string>
     <string name="send_password_hint3">发送了一条动态密码</string>
     <string name="resend_password">重发动态密码</string>
-    <string name="count_down_string">(%d秒)</string>
+    <string name="count_down_string" formatted="false">(%d秒)</string>
     <string name="requesting_password">正在向服务器请求动态密码...</string>
-    
+
     <!-- For InitPersonalInfoActivity -->
     <string name="edit_personal_info">编辑个人信息</string>
     <string name="your_portrait">你的头像</string>
     <string name="your_nickname">你的昵称</string>
-    <string name="nickname_over_input_message">昵称不能超过%d个字符！</string>
+    <string name="nickname_over_input_message" formatted="false">昵称不能超过%d个字符！</string>
     <string name="no_nickname_message">请输入昵称！</string>
 
     <!-- For ImportPhoneFriendsActivity -->
@@ -82,8 +82,8 @@
     <string name="friend_current_title">现有好友</string>
 
     <!-- For TopicInvitationList -->
-    <string name="video_count_label">视频总数：%d个</string>
-    <string name="invited_label">你被%s点名</string>
+    <string name="video_count_label" formatted="false">视频总数：%d个</string>
+    <string name="invited_label" formatted="false">你被%s点名</string>
 
     <!-- For FeedsTopicActivity -->
     <string name="send_invitation">发起点名</string>
@@ -99,11 +99,11 @@
     <!-- For VideoShootActivity -->
     <string name="import_video">导入</string>
     <string name="capture_video">点一下拍摄</string>
-    <string name="time_text">%.1f秒</string>
+    <string name="time_text" formatted="false">%.1f秒</string>
     <string name="processing_video">正在处理视频...</string>
     <string name="there_is_no_video">还没拍视频呢</string>
-    <string name="video_too_long">视频超过%d秒了，右划可删除</string>
-    
+    <string name="video_too_long" formatted="false">视频超过%d秒了，右划可删除</string>
+
     <!-- For VideoEditActivity & VideoPrivacyActivity -->
     <string name="video_edit_title">编辑视频</string>
     <string name="who_can_see">可以给谁看</string>
@@ -116,13 +116,13 @@
 
     <!-- For friend meet item -->
     <string name="common_topic">共同话题</string>
-    <string name="common_friend">共同好友（%d人）</string>
+    <string name="common_friend" formatted="false">共同好友（%d人）</string>
     <string name="padding_friend_label">待接受好友申请</string>
     <string name="recommend_friend_label">可能认识</string>
     <string name="contact_friend">通讯录好友</string>
 
     <!-- For friend simple item -->
-    <string name="phone_contact_name">手机通讯录：%s</string>
+    <string name="phone_contact_name" formatted="false">手机通讯录：%s</string>
     <string name="request_for_friend">请求加你为好友</string>
     <string name="waiting_for_accept">等待通过</string>
     <string name="sent_invitation">已发送好友申请</string>
@@ -155,17 +155,17 @@
     <!-- For ChangeInfoActivity & EditNicknameActivity & ChangePhoneNumberActivity -->
     <string name="login_account">登录账号</string>
     <string name="edit_nickname">编辑昵称</string>
-    <string name="original_name_is">原名为：%s</string>
+    <string name="original_name_is" formatted="false">原名为：%s</string>
     <string name="input_new_nickname_hint">输入新名称</string>
     <string name="modify_phone_number">修改手机号</string>
-    <string name="original_number_is">原手机号为：%s</string>
+    <string name="original_number_is" formatted="false">原手机号为：%s</string>
     <string name="input_new_phone_number_hint">输入新手机号</string>
     <string name="input_password_hint">输入验证码</string>
 
     <!-- For RequestPasswordFragment -->
     <string name="verify_by_call">电话验证</string>
     <string name="verify_by_message">短信验证</string>
-    <string name="resend_password_waiting">重发动态密码（%d秒）</string>
+    <string name="resend_password_waiting" formatted="false">重发动态密码（%d秒）</string>
 
     <!-- For CoinRuleActivity -->
     <string name="consume_koo">消耗金币</string>
@@ -178,13 +178,13 @@
     <!-- For KooRankActivity -->
     <string name="koo_rank_lable">"好友送Koo排行榜"</string>
     <string name="best_friend">最佳好友</string>
-    <string name="top_num">"Top %02d"</string>
+    <string name="top_num" formatted="false">"Top %02d"</string>
     <string name="no_koo_info1">还没有好友Koo你</string>
     <string name="no_koo_info2">赶紧发布新的话题吧</string>
 
     <!-- For FriendInfoActivity -->
     <string name="other_joined_topic">其他参与话题</string>
-    <string name="part_video_count">参与视频数：%d个</string>
+    <string name="part_video_count" formatted="false">参与视频数：%d个</string>
     <string name="add_friend">加好友</string>
     <string name="requested_friend">已申请好友</string>
 
@@ -197,11 +197,11 @@
     <string name="you_have_no_task">你还没有任务呢</string>
 
     <!-- For SendDanmakuActivity -->
-    <string name="danmaku_word_limit_hint">请输入弹幕，最多%d个字</string>
+    <string name="danmaku_word_limit_hint" formatted="false">请输入弹幕，最多%d个字</string>
     <string name="drop_danmaku_hint">点击视频任意区域，放置弹幕</string>
     <string name="send_danmaku">发送弹幕</string>
     <string name="danmaku_no_word_hint">写点什么呗~</string>
-    <string name="danmaku_over_input_hint">弹幕最多只能输入%d个字</string>
+    <string name="danmaku_over_input_hint" formatted="false">弹幕最多只能输入%d个字</string>
     <string name="danmaku_not_located_hint">先把弹幕放下吧，点击视频任意区域即可</string>
     <string name="sending_danmaku">正在发送弹幕...</string>
     <string name="danmaku_send_faild">弹幕发送失败</string>
@@ -210,7 +210,7 @@
     <string name="add_topic_title">添加话题卡</string>
     <string name="input_topic_content_hint">请输入您想创建的话题内容</string>
     <string name="recommendation">热门推荐</string>
-    <string name="little_video_count">%d个小视频</string>
+    <string name="little_video_count" formatted="false">%d个小视频</string>
     <string name="no_title_hint">还没有输入标题呢！</string>
 
     <!-- For InviteActivity -->
@@ -240,6 +240,85 @@
     <string name="report_this_video">举报此视频</string>
     <string name="delete_this_video">删除此视频</string>
 
+    <!-- ShareManager -->
+    <string name="share_video_description">[9秒小视频]</string>
+    <string name="share_topic_description">[小视频合集]</string>
+    <string name="invite_desc_wechat" formatted="false">"你被 %s 点名：“%s”（看到点名必须回复！）"</string>
+    <string name="invite_desc_weibo_n_qzone" formatted="false">"（对，就是你！）快来支持 %s 发起的点名：“%s”"</string>
+    <string name="share_failed">分享失败</string>
+    <string name="invite_failed">点名失败</string>
+
+    <!-- ShareSDK -->
+    <string name="weibo_oauth_regiseter">应用授权</string>
+    <string name="website">http://www.mob.com</string>
+    <string name="weibo_upload_content">分享图片</string>
+    <string name="wechat_client_inavailable">目前您的微信版本过低或未安装微信，需要安装微信才能使用</string>
+    <string name="google_plus_client_inavailable">Google+ 版本过低或者没有安装，需要升级或安装Google+才能使用！</string>
+    <string name="qq_client_inavailable">QQ 版本过低或者没有安装，需要升级或安装QQ才能使用！</string>
+    <string name="pinterest_client_inavailable">Pinterest版本过低或者没有安装，需要升级或安装Pinterest才能使用！</string>
+    <string name="instagram_client_inavailable">Instagram版本过低或者没有安装，需要升级或安装Instagram才能使用！</string>
+    <string name="yixin_client_inavailable">目前您的易信版本过低或未安装，需要安装易信才能使用</string>
+    <string name="line_client_inavailable">目前您的Line版本过低或未安装，需要安装Line才能使用</string>
+    <string name="kakaotalk_client_inavailable">目前您的KakaoTalk版本过低或未安装，需要安装KakaoTalk才能使用</string>
+    <string name="kakaostory_client_inavailable">目前您的KakaoStory版本过低或未安装，需要安装KakaoStory才能使用</string>
+    <string name="whatsapp_client_inavailable">目前您的WhatsApp版本过低或未安装，需要安装WhatsApp才能使用</string>
+    <string name="baidutieba_client_inavailable">目前您的百度贴吧版本过低或未安装，需要安装百度贴吧才能使用</string>
+    <string name="laiwang_client_inavailable">目前您的来往版本过低或未安装，需要安装来往才能使用</string>
+
+    <string name="sinaweibo">新浪微博</string>
+    <string name="tencentweibo">腾讯微博</string>
+    <string name="wechat">微信好友</string>
+    <string name="wechatmoments">微信朋友圈</string>
+    <string name="wechatfavorite">微信收藏</string>
+    <string name="facebook">Facebook</string>
+    <string name="twitter">Twitter</string>
+    <string name="renren">人人网</string>
+    <string name="kaixin">开心网</string>
+    <string name="shortmessage">信息</string>
+    <string name="sohumicroblog">搜狐微博</string>
+    <string name="sohusuishenkan">搜狐随身看</string>
+    <string name="neteasemicroblog">网易微博</string>
+    <string name="douban">豆瓣</string>
+    <string name="youdao">有道云笔记</string>
+    <string name="evernote">印象笔记</string>
+    <string name="linkedin">领英</string>
+    <string name="googleplus">Google+</string>
+    <string name="foursquare">FourSquare</string>
+    <string name="qq">QQ</string>
+    <string name="pinterest">Pinterest</string>
+    <string name="flickr">Flickr</string>
+    <string name="tumblr">Tumblr</string>
+    <string name="dropbox">Dropbox</string>
+    <string name="vkontakte">VK</string>
+    <string name="instagram">Instagram</string>
+    <string name="yixin">易信</string>
+    <string name="yixinmoments">易信朋友圈</string>
+    <string name="mingdao">明道</string>
+    <string name="kakaotalk">KakaoTalk</string>
+    <string name="kakaostory">KakaoStory</string>
+    <string name="line">Line</string>
+    <string name="bluetooth">蓝牙</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="pocket">Pocket</string>
+    <string name="instapaper">Instapaper</string>
+    <string name="instapaper_email">邮箱</string>
+    <string name="instapaper_pwd">密码</string>
+    <string name="instapaper_login">登录</string>
+    <string name="instapaper_logining">登录中…</string>
+    <string name="instapager_email_or_password_incorrect">Email或密码不正确</string>
+    <string name="facebookmessenger">Facebook Messenger</string>
+    <string name="baidutieba">百度贴吧</string>
+    <string name="laiwang">来往</string>
+    <string name="laiwangmoments">来往动态</string>
+
+    <string name="share_to_baidutieba">分享到百度贴吧</string>
+    <string name="share_to_qzone">分享到QQ空间</string>
+    <string name="share_to_qq">分享到QQ</string>
+    <string name="mingdao_share_content">网页分享</string>
+    <string name="share_to_mingdao">分享到明道</string>
+    <string name="share_to_qzone_default" formatted="false">来自%s的分享</string>
+    <string name="use_login_button">请改用“登录”按钮</string>
+
     <!-- Divider -->
     <string name="title_activity_video_shoot">VideoShootActivity</string>
     <string name="title_activity_first_login">FirstLoginActivity</string>
@@ -248,7 +327,7 @@
     <string name="title_activity_import_phone_friends">ImportPhoneFriendsActivity</string>
     <string name="title_activity_launch">LaunchActivity</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_topic">TopicActivity</string>
     <string name="title_activity_push_settings">PushSettingsActivity</string>

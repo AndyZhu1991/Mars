@@ -16,6 +16,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import cn.jpush.android.api.JPushInterface;
+import cn.sharesdk.framework.ShareSDK;
 
 /**
  * Created by jinchangzhu on 5/27/15.
@@ -34,10 +35,10 @@ public class MarsApplication extends Application {
 
         ApiWorker.init(getApplicationContext());
         initImageLoader(getApplicationContext());
-        com.koolew.mars.wxapi.Api.initApi(getApplicationContext());
         MyAccountInfo.init(getApplicationContext());
         initBgm(this);
         initJpush(getApplicationContext());
+        ShareSDK.initSDK(getApplicationContext());
 
         Log.d(TAG, "Init in MarsApplication takes: " + (System.currentTimeMillis() - start));
     }

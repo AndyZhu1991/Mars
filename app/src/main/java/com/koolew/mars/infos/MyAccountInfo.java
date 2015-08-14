@@ -25,9 +25,6 @@ public class MyAccountInfo {
     private static long sKooNum;
     private static long sCoinNum;
     private static int sPushBit;
-    private static LOGIN_TYPE sLoginType;
-    private static String sSnsUid;
-    private static String sSnsUnionId;
 
     public static enum LOGIN_TYPE {
         MOBILE, WEIBO, QQ, WECHAT
@@ -122,29 +119,5 @@ public class MyAccountInfo {
         editor.putString(KEY_PHONE_NUMBER, phoneNumber);
         editor.commit();
         sPhoneNumber = phoneNumber;
-    }
-
-    public static LOGIN_TYPE getLoginType() {
-        return sLoginType;
-    }
-
-    public static void setLoginType(LOGIN_TYPE loginType) {
-        sLoginType = loginType;
-    }
-
-    public static String getSnsUid() {
-        return sSnsUid;
-    }
-
-    public static void setSnsUid(String snsUid) {
-        MyAccountInfo.sSnsUid = snsUid;
-    }
-
-    public static String getSnsUnionId() {
-        return sSnsUnionId;
-    }
-
-    public static void setSnsUnionId(String snsUnionId) {
-        MyAccountInfo.sSnsUnionId = snsUnionId;
     }
 }

@@ -20,12 +20,19 @@ public class PhoneLoginActivity extends Activity {
 
     private static final String TAG = "koolew-PhoneLoginA";
 
+    public static final String KEY_LOGIN_TYPE = InputPasswordActivity.KEY_LOGIN_TYPE;
+
     private EditText mPhoneNumberEdit;
+
+    private int mLoginType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_login);
+
+        mLoginType = getIntent().getExtras().
+                getInt(KEY_LOGIN_TYPE, MyAccountInfo.LOGIN_TYPE.MOBILE.ordinal());
 
         mPhoneNumberEdit = (EditText) findViewById(R.id.et_phone_number);
     }
@@ -52,6 +59,8 @@ public class PhoneLoginActivity extends Activity {
         }
 
         MyAccountInfo.setPhoneNumber(mPhoneNumberEdit.getText().toString());
-        startActivity(new Intent(this, InputPasswordActivity.class));
+        Intent intent = new Intent(this, InputPasswordActivity.class);
+        intent.putExtra(InputPasswordActivity.KEY_LOGIN_TYPE, mLoginType);
+        startActivity(intent);
     }
 }

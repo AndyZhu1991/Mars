@@ -61,25 +61,29 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                ShareChannelView:type="weibo"/>
+                ShareChannelView:type="weibo"
+                android:onClick="onInviteByWeibo"/>
 
             <com.koolew.mars.view.ShareChannelView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                ShareChannelView:type="wechat_monents"/>
+                ShareChannelView:type="wechat_monents"
+                android:onClick="onInviteByMoments"/>
 
             <com.koolew.mars.view.ShareChannelView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                ShareChannelView:type="wechat_friends"/>
+                ShareChannelView:type="wechat_friends"
+                android:onClick="onInviteByWechat"/>
 
             <com.koolew.mars.view.ShareChannelView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                ShareChannelView:type="qzone"/>
+                ShareChannelView:type="qzone"
+                android:onClick="onInviteByQzone"/>
         </LinearLayout>
 
         <View
