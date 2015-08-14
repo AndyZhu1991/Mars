@@ -48,6 +48,9 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
 
     private boolean isFirstPlay;
 
+    private boolean isNeedDanmaku;
+    private boolean isNeedSound;
+
 
     public ScrollPlayer(ListView listView) {
         mListView = listView;
@@ -63,6 +66,9 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
         mRecyclerPlayer = new IjkRecyclerPlayer();
 
         isFirstPlay = true;
+
+        isNeedDanmaku = true;
+        isNeedSound = true;
     }
 
     /**
@@ -100,6 +106,14 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
         mState = STATE_DESTROYED;
         mCurrentItem = null;
         mRecyclerPlayer.destory();
+    }
+
+    public void setNeedDanmaku(boolean isNeedDanmaku) {
+        this.isNeedDanmaku = isNeedDanmaku;
+    }
+
+    public void setNeedSound(boolean isNeedSound) {
+        this.isNeedSound = isNeedSound;
     }
 
     private View getCurrentItemView() {
@@ -167,23 +181,25 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
     public void onLoadComplete(Object player, String url, String filePath) {
         if (mCurrentItem != null && getVideoUrl(mCurrentItem).equals(url)) {
             getSurfaceContainer(mCurrentItem).addView(mPlaySurface, 0);
-            mRecyclerPlayer.play(url);
+            mRecyclerPlayer.play(filePath);
 
-            DanmakuShowManager danmakuManager = new DanmakuShowManager(mContext,
-                    getDanmakuContainer(mCurrentItem), getDanmakuList(mCurrentItem));
-            mDanmakuThread = new DanmakuThread((Activity) mContext, danmakuManager,
-                    new DanmakuThread.PlayerWrapper() {
-                        @Override
-                        public long getCurrentPosition() {
-                            return mRecyclerPlayer.getCurrentPosition();
-                        }
+            if (isNeedDanmaku) {
+                DanmakuShowManager danmakuManager = new DanmakuShowManager(mContext,
+                        getDanmakuContainer(mCurrentItem), getDanmakuList(mCurrentItem));
+                mDanmakuThread = new DanmakuThread((Activity) mContext, danmakuManager,
+                        new DanmakuThread.PlayerWrapper() {
+                            @Override
+                            public long getCurrentPosition() {
+                                return mRecyclerPlayer.getCurrentPosition();
+                            }
 
-                        @Override
-                        public boolean isPlaying() {
-                            return mRecyclerPlayer.isPlaying();
-                        }
-                    });
-            mDanmakuThread.start();
+                            @Override
+                            public boolean isPlaying() {
+                                return mRecyclerPlayer.isPlaying();
+                            }
+                        });
+                mDanmakuThread.start();
+            }
 
             getProgressView(mCurrentItem).setVisibility(View.INVISIBLE);
         }
@@ -301,7 +317,12 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
                 @Override
                 public void run() {
                     if (mCurrentPlayer != null) {
-                        mCurrentPlayer.release();
+                        synchronized (mCurrentPlayer) {
+                            if (mCurrentPlayer.isPlaying()) {
+                                mCurrentPlayer.stop();
+                            }
+                            mCurrentPlayer.release();
+                        }
                     }
                     synchronized (mPlayerPool) {
                         while (mPlayerPool.size() > 0) {
@@ -416,6 +437,9 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
                 player = mPlayerPool.pop();
             }
             player.setOnCompletionListener(this);
+            if (!isNeedSound) {
+                player.setVolume(0.0f, 0.0f);
+            }
             return player;
         }
 

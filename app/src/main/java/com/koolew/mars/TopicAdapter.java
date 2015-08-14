@@ -10,10 +10,14 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.koolew.mars.danmaku.DanmakuItemInfo;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
+import com.koolew.mars.player.ScrollPlayer;
 import com.koolew.mars.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -105,6 +109,7 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
 
             holder.partersLayout = (LinearLayout) convertView.findViewById(R.id.parters_layout);
             holder.partersArrow = (ImageView) convertView.findViewById(R.id.parters_arrow);
+            holder.progressBar = (ProgressBar) convertView.findViewById(R.id.progress);
             holder.parters = new CircleImageView[getMaxShowTopicParterCount()];
             for (int i = 0; i < holder.parters.length; i++) {
                 CircleImageView avatar = new CircleImageView(mContext);
@@ -123,11 +128,14 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
         TopicItem topicItem = mData.get(position);
         ViewHolder holder = (ViewHolder) convertView.getTag();
 
+        holder.position = position;
+
         ImageLoader.getInstance().displayImage(topicItem.thumb, holder.thumb,
                 ImageLoaderHelper.topicThumbLoadOptions);
         holder.topicTitle.setText(topicItem.title);
         holder.videoCount.setText(
                 mContext.getString(R.string.video_count_label, topicItem.videoCount));
+        holder.progressBar.setVisibility(View.INVISIBLE);
 
         if (holder.parters != null && holder.parters.length != 0 &&
                 topicItem.parters != null && topicItem.parters.length != 0) {
@@ -197,6 +205,7 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
         public String topicId;
         public String title;
         public String thumb;
+        public String videoUrl;
         public int videoCount;
         public long updateTime;
         public UserInfo[] parters;
@@ -228,6 +237,8 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
     }
 
     class ViewHolder {
+        public int position;
+
         FrameLayout videoFrame;
         ImageView thumb;
         TextView topicTitle;
@@ -235,5 +246,48 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
         LinearLayout partersLayout;
         CircleImageView[] parters;
         ImageView partersArrow;
+        ProgressBar progressBar;
+    }
+
+    public class TopicScrollPlayer extends ScrollPlayer {
+
+        public TopicScrollPlayer(ListView listView) {
+            super(listView);
+        }
+
+        @Override
+        public boolean isItemView(View childView) {
+            return childView.getTag() instanceof ViewHolder;
+        }
+
+        @Override
+        public ViewGroup getSurfaceContainer(View itemView) {
+            return ((ViewHolder) itemView.getTag()).videoFrame;
+        }
+
+        @Override
+        public ViewGroup getDanmakuContainer(View itemView) {
+            return null;
+        }
+
+        @Override
+        public ArrayList<DanmakuItemInfo> getDanmakuList(View itemView) {
+            return null;
+        }
+
+        @Override
+        public ImageView getThumbImage(View itemView) {
+            return ((ViewHolder) itemView.getTag()).thumb;
+        }
+
+        @Override
+        public View getProgressView(View itemView) {
+            return ((ViewHolder) itemView.getTag()).progressBar;
+        }
+
+        @Override
+        public String getVideoUrl(View itemView) {
+            return mData.get(((ViewHolder) itemView.getTag()).position).videoUrl;
+        }
     }
 }

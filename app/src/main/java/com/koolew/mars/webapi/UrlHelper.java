@@ -22,7 +22,6 @@ public class UrlHelper {
     private static final String V2_URL = BASE_URL + "v2/";
 
     // v1 api
-    public static final String FEEDS_TOPIC_URL = V1_URL + "feeds/topic";
     private static final String TOPIC_VIDEO_FRIEND_URL = V1_URL + "feeds";
     public static final String SNS_LOGIN_URL = V1_URL + "user/login/sns";
     public static final String ADD_FRIEND_URL = V1_URL + "friend/apply";
@@ -57,6 +56,7 @@ public class UrlHelper {
     public static final String DEVICE_LOGOUT_URL = V1_URL + "device/logout";
 
     // v2 api
+    public static final String FEEDS_TOPIC_URL = V2_URL + "feeds/topic";
     public static final String INVOLVE_URL = V2_URL + "feeds/involve";
     public static final String FRIEND_RECOMMEND_URL = V2_URL + "friend/recommend";
     private static final String FRIEND_PROFILE_URL = V2_URL + "profile";

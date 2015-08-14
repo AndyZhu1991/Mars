@@ -3,17 +3,15 @@ package com.koolew.mars;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
-import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.player.ScrollPlayer;
 import com.koolew.mars.view.LoadMoreFooter;
 import com.koolew.mars.webapi.ApiWorker;
 
@@ -22,18 +20,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class KoolewNewsFragment extends Fragment implements AdapterView.OnItemClickListener,
+public class KoolewNewsFragment extends BaseListFragment implements AdapterView.OnItemClickListener,
         SwipeRefreshLayout.OnRefreshListener, LoadMoreFooter.OnLoadListener {
 
     private static final String TAG = "koolew-KoolewNewsF";
 
-    private SwipeRefreshLayout mRefreshLayout;
-    private ListView mListView;
-    private LoadMoreFooter mListFooter;
     private TopicAdapter mAdapter;
-
-    private JsonObjectRequest mRefreshRequest;
-    private JsonObjectRequest mLoadMoreRequest;
+    private ScrollPlayer mScrollPlayer;
 
     /**
      * Use this factory method to create a new instance of
@@ -49,6 +42,7 @@ public class KoolewNewsFragment extends Fragment implements AdapterView.OnItemCl
 
     public KoolewNewsFragment() {
         // Required empty public constructor
+        isNeedLoadMore = true;
     }
 
     @Override
@@ -60,46 +54,35 @@ public class KoolewNewsFragment extends Fragment implements AdapterView.OnItemCl
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root =  inflater.inflate(R.layout.fragment_koolew_news, container, false);
-        mListView = (ListView) root.findViewById(R.id.list_view);
-        mListView.setOnItemClickListener(this);
+        View root =  super.onCreateView(inflater, container, savedInstanceState);
 
-        mListFooter = (LoadMoreFooter) getActivity().getLayoutInflater()
-                .inflate(R.layout.load_more_footer, null);
-        mListView.addFooterView(mListFooter, null, false);
-        mListFooter.setup(mListView);
-        mListFooter.setOnLoadListener(this);
-
-        mRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.refresh_layout);
-        mRefreshLayout.setColorSchemeResources(R.color.koolew_light_orange);
-        mRefreshLayout.setOnRefreshListener(this);
-
-        if (mAdapter == null) {
-            mRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mRefreshLayout.setRefreshing(true);
-                    doRefresh();
-                }
-            });
-        }
-        else {
-            mListView.setAdapter(mAdapter);
+        mAdapter = new FeedsTopicAdapter(getActivity());
+        mScrollPlayer = mAdapter.new TopicScrollPlayer(mListView);
+        mScrollPlayer.setNeedDanmaku(false);
+        mScrollPlayer.setNeedSound(false);
+        if (isNeedLoadMore) {
+            mListFooter.setup(mListView, mScrollPlayer);
         }
 
         return root;
     }
 
     @Override
-    public void onRefresh() {
-        doRefresh();
+    public void onResume() {
+        super.onResume();
+        mScrollPlayer.onActivityResume();
     }
 
-    private void doRefresh() {
-        if (mLoadMoreRequest != null) {
-            mLoadMoreRequest.cancel();
-        }
-        mRefreshRequest = ApiWorker.getInstance().requestFeedsTopic(mRefreshListener, null);
+    @Override
+    public void onPause() {
+        super.onPause();
+        mScrollPlayer.onActivityPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mScrollPlayer.onActivityDestroy();
     }
 
     @Override
@@ -108,6 +91,65 @@ public class KoolewNewsFragment extends Fragment implements AdapterView.OnItemCl
             mRefreshRequest.cancel();
         }
         mLoadMoreRequest = ApiWorker.getInstance().requestFeedsTopic(
+                mAdapter.getOldestCardTime(), mLoadMoreListener, null);
+    }
+
+    @Override
+    public String getTitle() {
+        return null;
+    }
+
+    @Override
+    public int getThemeColor() {
+        return getActivity().getResources().getColor(R.color.koolew_light_orange);
+    }
+
+    private void setupAdapter() {
+        if (mListView.getAdapter() == null) {
+            mListView.setAdapter(mAdapter);
+        }
+    }
+
+    @Override
+    protected boolean handleRefresh(JSONObject response) {
+        try {
+            mRefreshRequest = null;
+            JSONArray cards = response.getJSONObject("result").getJSONArray("cards");
+            mAdapter.setData(cards);
+            setupAdapter();
+            mScrollPlayer.onListRefresh();
+            return cards.length() > 0;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
+    protected boolean handleLoadMore(JSONObject response) {
+        try {
+            mLoadMoreRequest = null;
+            JSONArray cards = response.getJSONObject("result").getJSONArray("cards");
+            int loadedCount = mAdapter.addData(cards);
+            mAdapter.notifyDataSetChanged();
+
+            return loadedCount > 0;
+        }
+        catch (JSONException jse) {
+        }
+
+        return false;
+    }
+
+    @Override
+    protected JsonObjectRequest doRefreshRequest() {
+        return ApiWorker.getInstance().requestFeedsTopic(mRefreshListener, null);
+    }
+
+    @Override
+    protected JsonObjectRequest doLoadMoreRequest() {
+        return ApiWorker.getInstance().requestFeedsTopic(
                 mAdapter.getOldestCardTime(), mLoadMoreListener, null);
     }
 
@@ -129,13 +171,15 @@ public class KoolewNewsFragment extends Fragment implements AdapterView.OnItemCl
                     parterInfos[i].isSpecial = parter.getInt("new") == 1;
                 }
 
-                return new TopicItem(
+                TopicItem topicItem = new TopicItem(
                         topic.getString("topic_id"),
                         topic.getString("content"),
                         topic.getString("thumb_url"),
                         topic.getInt("video_cnt"),
                         topic.getLong("update_time"),
                         parterInfos);
+                topicItem.videoUrl = topic.getString("video_url");
+                return topicItem;
             } catch (JSONException e) {
                 e.printStackTrace();
                 Log.e(TAG, "JsonObject get field error!");
@@ -143,43 +187,6 @@ public class KoolewNewsFragment extends Fragment implements AdapterView.OnItemCl
             return null;
         }
     }
-
-    private Response.Listener<JSONObject> mRefreshListener = new Response.Listener<JSONObject>() {
-        @Override
-        public void onResponse(JSONObject response) {
-            try {
-                mRefreshRequest = null;
-                mAdapter = new FeedsTopicAdapter(getActivity());
-                JSONArray cards = response.getJSONObject("result").getJSONArray("cards");
-                mAdapter.setData(cards);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            mListView.setAdapter(mAdapter);
-            mRefreshLayout.setRefreshing(false);
-            mListFooter.haveMore(true);
-        }
-    };
-
-    private Response.Listener<JSONObject> mLoadMoreListener = new Response.Listener<JSONObject>() {
-        @Override
-        public void onResponse(JSONObject response) {
-            try {
-                mLoadMoreRequest = null;
-                JSONArray cards = response.getJSONObject("result").getJSONArray("cards");
-                int loadedCount = mAdapter.addData(cards);
-                mAdapter.notifyDataSetChanged();
-
-                mListFooter.loadComplete();
-                if (loadedCount == 0) {
-                    mListFooter.haveNoMore();
-                }
-            }
-            catch (JSONException jse) {
-            }
-        }
-    };
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

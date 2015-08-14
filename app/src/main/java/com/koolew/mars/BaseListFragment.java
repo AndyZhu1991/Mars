@@ -6,6 +6,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.Response;
@@ -16,7 +18,8 @@ import org.json.JSONObject;
 
 
 public abstract class BaseListFragment extends Fragment
-        implements SwipeRefreshLayout.OnRefreshListener, LoadMoreFooter.OnLoadListener {
+        implements SwipeRefreshLayout.OnRefreshListener, LoadMoreFooter.OnLoadListener,
+        AbsListView.OnItemClickListener {
 
     protected static final int DEFAULT_LAYOUT = R.layout.general_refresh_list_layout;
 
@@ -52,6 +55,7 @@ public abstract class BaseListFragment extends Fragment
         mRefreshLayout.setOnRefreshListener(this);
         mRefreshLayout.setColorSchemeColors(getThemeColor());
         mListView = (ListView) generalListLayout.findViewById(R.id.list_view);
+        mListView.setOnItemClickListener(this);
         if (isNeedLoadMore) {
             mListFooter = (LoadMoreFooter) LayoutInflater.from(getActivity())
                     .inflate(R.layout.load_more_footer, null);
@@ -147,6 +151,9 @@ public abstract class BaseListFragment extends Fragment
         }
     };
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    }
 
     /**
      *

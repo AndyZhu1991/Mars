@@ -88,6 +88,14 @@
                         android:layout_marginRight="15dp"
                         android:src="@mipmap/into_arrow" />
                 </RelativeLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:indeterminate="true"
+                    android:alpha="0.5"/>
             </FrameLayout>
 
             <LinearLayout
