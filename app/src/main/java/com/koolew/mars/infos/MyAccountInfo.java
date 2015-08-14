@@ -39,9 +39,7 @@ public class MyAccountInfo {
     }
 
     public static void clear() {
-        Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.commit();
+        setToken("");
 
         sToken = null;
     }

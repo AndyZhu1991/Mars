@@ -25,6 +25,7 @@ import com.koolew.mars.preference.TreePreference;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.FileUtil;
 import com.koolew.mars.utils.Utils;
+import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
@@ -184,6 +185,7 @@ public class SettingsFragment extends MainBaseFragment implements View.OnClickLi
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                ApiWorker.getInstance().logout();
                 MyAccountInfo.clear();
                 Intent intent = new Intent(getActivity(), LaunchActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

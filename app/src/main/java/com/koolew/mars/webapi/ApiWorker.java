@@ -479,7 +479,7 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.DEVICE_ID_URL, requestObject, listener, errorListener);
+        return standardPostRequest(UrlHelper.DEVICE_LOGIN_URL, requestObject, listener, errorListener);
     }
 
     public JsonObjectRequest postPushBit(int pushBit,
@@ -533,6 +533,23 @@ public class ApiWorker {
             e.printStackTrace();
         }
         return standardPostRequest(UrlHelper.SNS_LOGIN_URL, requestJson, listener, errorListener);
+    }
+
+    public JsonObjectRequest logout() {
+        return logout(MyAccountInfo.getRegistrationId(), emptyResponseListener, null);
+    }
+
+    public JsonObjectRequest logout(String registrationId,
+                                    Response.Listener<JSONObject> listener,
+                                    Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        try {
+            requestObject.put("device_id", registrationId);
+            requestObject.put("type", 1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.DEVICE_LOGOUT_URL, requestObject, listener, errorListener);
     }
 
 

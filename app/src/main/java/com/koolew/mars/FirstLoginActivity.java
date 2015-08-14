@@ -105,6 +105,8 @@ public class FirstLoginActivity extends Activity implements PlatformActionListen
                     MyAccountInfo.setPhoneNumber(info.getString("phone"));
                     MyAccountInfo.setKooNum(info.getInt("koo_num"));
                     MyAccountInfo.setCoinNum(info.getInt("coin_num"));
+                    ApiWorker.getInstance().postRegistrationId(MyAccountInfo.getRegistrationId(),
+                            ApiWorker.getInstance().emptyResponseListener, null);
 
                     // Go to the MainActivity
                     Intent intent = new Intent(FirstLoginActivity.this, MainActivity.class);
