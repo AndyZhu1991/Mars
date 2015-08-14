@@ -14,6 +14,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.sharesdk.framework.ShareSDK;
@@ -39,6 +40,7 @@ public class MarsApplication extends Application {
         initBgm(this);
         initJpush(getApplicationContext());
         ShareSDK.initSDK(getApplicationContext());
+        CrashReport.initCrashReport(getApplicationContext(), "900006713", false);
 
         Log.d(TAG, "Init in MarsApplication takes: " + (System.currentTimeMillis() - start));
     }

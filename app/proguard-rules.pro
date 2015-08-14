@@ -158,3 +158,6 @@
 #    public static int d(...);
 #    public static int e(...);
 #}
+
+# bugly
+-keep public class com.tencent.bugly.**{*;}
