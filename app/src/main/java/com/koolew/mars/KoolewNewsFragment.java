@@ -113,10 +113,11 @@ public class KoolewNewsFragment extends BaseListFragment implements AdapterView.
     @Override
     protected boolean handleRefresh(JSONObject response) {
         try {
+            setupAdapter();
             mRefreshRequest = null;
             JSONArray cards = response.getJSONObject("result").getJSONArray("cards");
             mAdapter.setData(cards);
-            setupAdapter();
+            mAdapter.notifyDataSetChanged();
             mScrollPlayer.onListRefresh();
             return cards.length() > 0;
         } catch (JSONException e) {
