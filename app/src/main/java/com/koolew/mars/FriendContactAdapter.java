@@ -57,7 +57,7 @@ public class FriendContactAdapter extends FriendSimpleAdapter {
         for (ContactUtil.SimpleContactInfo contactInfo : mAllContacts) {
             if (contactInfo.getNumber().equals(friendInfo.phoneNumber)) {
                 friendInfo.contactName = contactInfo.getName();
-                mAllContacts.remove(contactInfo);
+                //mAllContacts.remove(contactInfo);
                 break;
             }
         }

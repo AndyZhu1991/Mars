@@ -13,7 +13,28 @@ import java.util.List;
  */
 public class ContactUtil {
 
+    private static List<SimpleContactInfo> sPhoneContacts;
+
+
+    public static String searchContactName(String number) {
+        if (sPhoneContacts != null) {
+            for (SimpleContactInfo info: sPhoneContacts) {
+                if (info.getNumber().equals(number)) {
+                    return info.getName();
+                }
+            }
+        }
+        return null;
+    }
+
     public static List<SimpleContactInfo> getPhoneContacts(Context context) {
+        if (sPhoneContacts == null) {
+            sPhoneContacts = queryPhoneContacts(context);
+        }
+        return sPhoneContacts;
+    }
+
+    private static List<SimpleContactInfo> queryPhoneContacts(Context context) {
 
         ContentResolver contentResolver = context.getContentResolver();
         Cursor contactsCur = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
