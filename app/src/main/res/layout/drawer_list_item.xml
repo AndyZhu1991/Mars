@@ -13,9 +13,17 @@
 
     <TextView
         android:id="@+id/text"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:layout_marginLeft="36dp"
         android:textSize="18sp"
         android:textColor="@color/drawer_list_text_color"/>
+
+    <com.koolew.mars.view.NotificationPointView
+        android:id="@+id/notification_point"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_marginRight="8dp"
+        android:visibility="invisible"/>
 </LinearLayout>

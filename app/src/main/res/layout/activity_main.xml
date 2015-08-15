@@ -10,18 +10,33 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
 
-        <com.koolew.mars.view.DrawerToggleView
-            android:id="@+id/my_drawer_toggle"
+        <FrameLayout
+            android:id="@+id/drawer_toggle_container"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true">
+
+            <com.koolew.mars.view.DrawerToggleView
+                android:id="@+id/my_drawer_toggle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <com.koolew.mars.view.NotificationPointView
+                android:id="@+id/toggle_notification_point"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_gravity="top|right"
+                android:visibility="invisible"/>
+        </FrameLayout>
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_toRightOf="@+id/my_drawer_toggle"
+            android:layout_toRightOf="@+id/drawer_toggle_container"
             android:textColor="@android:color/white"
             android:textSize="@dimen/toolbar_title_text_size"
             android:layout_marginLeft="15dp"
@@ -142,7 +157,8 @@
                         android:layout_marginTop="6dp"
                         android:layout_toRightOf="@id/avatar"
                         android:textColor="@android:color/white"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:visibility="invisible"/>
                 </RelativeLayout>
 
                 <LinearLayout

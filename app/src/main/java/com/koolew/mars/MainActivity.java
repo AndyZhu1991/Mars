@@ -31,14 +31,19 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.notification.NotificationEvent;
+import com.koolew.mars.notification.NotificationManager;
 import com.koolew.mars.preference.PreferenceHelper;
 import com.koolew.mars.view.DrawerToggleView;
+import com.koolew.mars.view.NotificationPointView;
 import com.koolew.mars.view.PhoneNumberView;
 import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.Map;
 
@@ -55,6 +60,7 @@ public class MainActivity extends FragmentActivity
 
     private DrawerLayout mDrawerLayout;
     private DrawerToggleView mToggleView;
+    private NotificationPointView mToggleNotificationPoint;
     private View mMyToolbar;
     private TextView mTitleView;
     private FrameLayout mContentFrame;
@@ -88,6 +94,8 @@ public class MainActivity extends FragmentActivity
         mMyToolbar = findViewById(R.id.my_toolbar);
         mTitleView = (TextView) findViewById(R.id.title);
         mToggleView = (DrawerToggleView) findViewById(R.id.my_drawer_toggle);
+        mToggleNotificationPoint = (NotificationPointView)
+                findViewById(R.id.toggle_notification_point);
         mContentFrame = (FrameLayout) findViewById(R.id.content_frame);
         mLeftDrawer = (LinearLayout) findViewById(R.id.left_drawer);
         mInfoBackground = (ImageView) findViewById(R.id.info_background);
@@ -133,6 +141,25 @@ public class MainActivity extends FragmentActivity
             if (!TextUtils.isEmpty(pushUri)) {
                 new UriProcessor(this).process(pushUri);
             }
+        }
+
+        EventBus.getDefault().register(this);
+        NotificationManager.refreshNotification();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscriber
+    public void onNotificationUpdate(NotificationEvent event) {
+        if (event.getSuggestion() > 0) {
+            mToggleNotificationPoint.setVisibility(View.VISIBLE);
+            //                        Friends
+            mAdapter.notificationCount[1] = event.getSuggestion();
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -225,6 +252,17 @@ public class MainActivity extends FragmentActivity
             } else {
                 switchFragment(position);
             }
+
+            mAdapter.notificationCount[position] = 0;
+            mAdapter.notifyDataSetChanged();
+
+            int totalCount = 0;
+            for (int count: mAdapter.notificationCount) {
+                totalCount += count;
+            }
+            if (totalCount == 0) {
+                mToggleNotificationPoint.setVisibility(View.INVISIBLE);
+            }
         }
     };
 
@@ -266,8 +304,8 @@ public class MainActivity extends FragmentActivity
     }
 
     @Override
-    public void notifyTopIcon(int position) {
-        mTopNotifications[position].setVisibility(View.VISIBLE);
+    public void notifyTopIcon(int position, boolean isNotify) {
+        mTopNotifications[position].setVisibility(isNotify ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
@@ -370,6 +408,8 @@ public class MainActivity extends FragmentActivity
                 R.color.drawer_list_add_select,
         };
 
+        private int[] notificationCount = new int[4];
+
         DrawerListAdapter() {
             inflater = LayoutInflater.from(MainActivity.this);
         }
@@ -400,6 +440,8 @@ public class MainActivity extends FragmentActivity
                 assert view != null;
                 holder.icon = (ImageView) view.findViewById(R.id.icon);
                 holder.text = (TextView) view.findViewById(R.id.text);
+                holder.notificationPoint = (NotificationPointView)
+                        view.findViewById(R.id.notification_point);
                 view.setTag(holder);
             } else {
                 holder = (ViewHolder) view.getTag();
@@ -414,6 +456,12 @@ public class MainActivity extends FragmentActivity
                 holder.text.setTextColor(getResources().getColor(R.color.koolew_gray));
             }
             holder.text.setText(listTexts[position]);
+            if (notificationCount[position] > 0) {
+                holder.notificationPoint.setVisibility(View.VISIBLE);
+            }
+            else {
+                holder.notificationPoint.setVisibility(View.INVISIBLE);
+            }
 
             return view;
         }
@@ -422,5 +470,6 @@ public class MainActivity extends FragmentActivity
     class ViewHolder {
         ImageView icon;
         TextView text;
+        NotificationPointView notificationPoint;
     }
 }

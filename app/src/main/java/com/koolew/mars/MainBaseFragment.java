@@ -61,6 +61,6 @@ public class MainBaseFragment extends Fragment {
 
         void setTopIconImageResource(int position, int resource);
 
-        void notifyTopIcon(int position);
+        void notifyTopIcon(int position, boolean isNotify);
     }
 }

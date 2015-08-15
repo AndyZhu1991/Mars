@@ -552,6 +552,11 @@ public class ApiWorker {
         return standardPostRequest(UrlHelper.DEVICE_LOGOUT_URL, requestObject, listener, errorListener);
     }
 
+    public JsonObjectRequest requestNotificationBrief(Response.Listener<JSONObject> listener,
+                                                      Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.NOTIFICATION_BRIEF_URL, listener, errorListener);
+    }
+
 
     // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,

@@ -50,23 +50,23 @@ public class JpushReceiver extends BroadcastReceiver {
 
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
             Log.d(TAG, "接受到推送下来的通知");
-
+            com.koolew.mars.notification.NotificationManager.refreshNotification();
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
             Log.d(TAG, "用户点击打开了通知");
             try {
                 String extra = bundle.getString(JPushInterface.EXTRA_EXTRA);
                 String url = new JSONObject(extra).getString("url");
                 if (Utils.isAppBackground(context)) {
-                    Log.d("stdzhu", "background");
                     startMainActivityPushed(context, url);
                 }
                 else {
-                    Log.d("stdzhu", "foreground");
                     new UriProcessor(context).process(url);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            com.koolew.mars.notification.NotificationManager.refreshDelayed(1000);
         } else {
             Log.d(TAG, "Unhandled intent - " + intent.getAction());
         }
