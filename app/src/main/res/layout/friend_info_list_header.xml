@@ -148,6 +148,7 @@
             AvatarLinearContainer:avatar_margin_lr="6dp" />
 
         <TextView
+            android:id="@+id/joined_topic_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

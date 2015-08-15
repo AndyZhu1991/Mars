@@ -55,6 +55,7 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
     private BigCountView mKooCountView;
     private BigCountView mCommonTopicCountView;
     private TextView mCommonFriendTitle;
+    private TextView mJoinedTopicTitle;
     private AvatarLinearContainer mAvatarContainer;
 
 
@@ -100,6 +101,7 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
         mCommonTopicCountView = (BigCountView) header.findViewById(R.id.count_common_topic);
         mCommonTopicCountView.setOnClickListener(this);
         mCommonFriendTitle = (TextView) header.findViewById(R.id.common_friend_title);
+        mJoinedTopicTitle = (TextView) header.findViewById(R.id.joined_topic_title);
         mAvatarContainer = (AvatarLinearContainer) header.findViewById(R.id.avatar_container);
 
         findViewById(R.id.common_friend_title_layout).setOnClickListener(this);
@@ -127,7 +129,16 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
                 mKooCount = user.getInt("koo_num");
                 mKooCountView.setCount(mKooCount);
 
-                JSONArray topic = result.getJSONArray("topic");
+                JSONArray topic;
+                if (result.has("topic")) {
+                    topic = result.getJSONArray("topic");
+                }
+                else {
+                    topic = new JSONArray();
+                }
+                if (topic.length() == 0) {
+                    mJoinedTopicTitle.setText(R.string.he_or_she_no_topic_joined);
+                }
                 mAdapter = new FriendProfileTopicAdapter(FriendInfoActivity.this);
                 mAdapter.setData(topic);
                 mListView.setAdapter(mAdapter);
