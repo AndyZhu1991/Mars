@@ -91,6 +91,7 @@ dependencies {
     compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.7.2'
     compile 'com.tencent.bugly:crashreport:1.2.3.6'
     compile 'org.simple:androideventbus:1.0.5'
+    compile 'com.7heaven.ioswidget:iosswitch:0.5'
 }
 
 bugly {

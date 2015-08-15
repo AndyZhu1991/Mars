@@ -92,5 +92,6 @@
         android:text="@string/go_black_market"
         android:textSize="16sp"
         android:textColor="@android:color/white"
-        android:background="@drawable/big_corner_orange_bg"/>
+        android:background="@drawable/big_corner_orange_bg"
+        android:visibility="invisible"/>
 </RelativeLayout>

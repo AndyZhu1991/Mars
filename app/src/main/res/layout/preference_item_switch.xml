@@ -14,11 +14,14 @@
         android:textSize="14sp"
         android:textColor="@color/settings_item_text_color"/>
 
-    <Switch
+    <com.sevenheaven.iosswitch.ShSwitchView
+        xmlns:shSwitch="http://schemas.android.com/apk/res-auto"
         android:id="@+id/switcher"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="35dp"
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/setting_item_right_margin"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        shSwitch:tintColor="@color/koolew_light_green"
+        shSwitch:shadowSpace="6dp"/>
 </RelativeLayout>

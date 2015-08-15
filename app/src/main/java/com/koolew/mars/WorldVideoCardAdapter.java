@@ -28,6 +28,9 @@ public class WorldVideoCardAdapter extends VideoCardAdapter {
         ((TextView) root.findViewById(R.id.danmaku_send_text)).setText(R.string.share);
         ((ImageView) root.findViewById(R.id.danmaku_send_ic)).setImageResource(R.mipmap.ic_share);
 
+        root.findViewById(R.id.danmaku_send_text).setVisibility(View.INVISIBLE);
+        root.findViewById(R.id.danmaku_send_ic).setVisibility(View.INVISIBLE);
+
         return root;
     }
 

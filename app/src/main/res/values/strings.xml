@@ -355,4 +355,5 @@
     <string name="title_activity_task_topic">TaskTopicActivity</string>
     <string name="title_activity_user_topic">UserTopicActivity</string>
     <string name="title_activity_check_danmaku">CheckDanmakuActivity</string>
+    <string name="title_activity_privacy_policy">PrivacyPolicyActivity</string>
 </resources>

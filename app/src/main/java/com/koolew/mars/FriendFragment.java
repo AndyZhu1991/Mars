@@ -106,8 +106,8 @@ public class FriendFragment extends MainBaseFragment {
             fragmentList.add(FriendContactFragment.newInstance());
             fragmentTitles.add(getString(R.string.friend_contact_title));
 
-            fragmentList.add(FriendWeiboFragment.newInstance());
-            fragmentTitles.add(getString(R.string.friend_weibo_title));
+            //fragmentList.add(FriendWeiboFragment.newInstance());
+            //fragmentTitles.add(getString(R.string.friend_weibo_title));
 
             fragmentList.add(FriendCurrentFragment.newInstance());
             fragmentTitles.add(getString(R.string.friend_current_title));

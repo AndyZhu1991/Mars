@@ -166,8 +166,8 @@ public class SettingsFragment extends MainBaseFragment implements View.OnClickLi
         mAdapter.add(clearCachePref);
 
         mAdapter.add(new PreferenceGroupTitle(context, R.string.about));
-        mAdapter.add(new TreePreference(context, R.string.want_talk, null));
-        mAdapter.add(new TreePreference(context, R.string.privacy_policy, null));
+        //mAdapter.add(new TreePreference(context, R.string.want_talk, null));
+        mAdapter.add(new TreePreference(context, R.string.privacy_policy, PrivacyPolicyActivity.class));
     }
 
     @Override
