@@ -301,6 +301,7 @@ public class MainActivity extends FragmentActivity
     @Override
     public void setTopIconImageResource(int position, int resource) {
         mTopIcons[position].setImageResource(resource);
+        notifyTopIcon(position, false);
     }
 
     @Override
@@ -327,8 +328,6 @@ public class MainActivity extends FragmentActivity
             case R.id.top_icon_layout2:
                 mCurFragment.onTopIconClick(1);
                 break;
-            case R.id.btn_add_topic:
-                break;
         }
     }
 
@@ -340,10 +339,6 @@ public class MainActivity extends FragmentActivity
     private void startKooRankActivity() {
         Intent intent = new Intent(this, KooRankActivity.class);
         startActivity(intent);
-    }
-
-    private void startAddTopicActivity() {
-        Intent intent = new Intent(this, AddTopicActivity.class);
     }
 
     @Override

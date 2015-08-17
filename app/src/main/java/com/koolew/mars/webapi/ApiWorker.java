@@ -557,6 +557,19 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.NOTIFICATION_BRIEF_URL, listener, errorListener);
     }
 
+    public JsonObjectRequest postLocation(double longitude, double latitude,
+                                          Response.Listener<JSONObject> listener,
+                                          Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        try {
+            requestObject.put("longitude", longitude);
+            requestObject.put("latitude", latitude);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.USER_LOCATION_URL, requestObject, listener, errorListener);
+    }
+
 
     // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,

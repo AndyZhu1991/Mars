@@ -119,6 +119,7 @@
     <string name="common_friend" formatted="false">共同好友（%d人）</string>
     <string name="padding_friend_label">待接受好友申请</string>
     <string name="recommend_friend_label">可能认识</string>
+    <string name="nearby_user">附近的人</string>
     <string name="contact_friend">通讯录好友</string>
 
     <!-- For friend simple item -->
@@ -127,6 +128,9 @@
     <string name="waiting_for_accept">等待通过</string>
     <string name="sent_invitation">已发送好友申请</string>
     <string name="delete_friend_confirm">确认删除好友吗？</string>
+    <string name="distance_less_than_100">距离小于100米</string>
+    <string name="distance_100_to_1000" formatted="false">距离%d米</string>
+    <string name="distance_more_than_1000" formatted="false">距离%.1f千米</string>
 
     <!-- For settings -->
     <string name="intelligent">智能</string>

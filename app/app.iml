@@ -110,8 +110,8 @@
     <orderEntry type="library" exported="" name="ijkmediawidget" level="project" />
     <orderEntry type="library" exported="" name="library-1.0.18" level="project" />
     <orderEntry type="library" exported="" name="ijkplayer" level="project" />
-    <orderEntry type="library" exported="" name="ShareSDK-QQ-2.6.1" level="project" />
     <orderEntry type="library" exported="" name="jpush-sdk-release1.8.0" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-QQ-2.6.1" level="project" />
     <orderEntry type="library" exported="" name="support-v13-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="advrecyclerview-0.7.2" level="project" />
     <orderEntry type="library" exported="" name="MobLogCollector" level="project" />
@@ -120,6 +120,7 @@
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.3" level="project" />
     <orderEntry type="library" exported="" name="ShareSDK-SinaWeibo-2.6.1" level="project" />
     <orderEntry type="library" exported="" name="roundedimageview-2.1.0" level="project" />
+    <orderEntry type="library" exported="" name="MapApiLocation_1.3.3" level="project" />
     <orderEntry type="library" exported="" name="ShareSDK-ShortMessage-2.6.1" level="project" />
     <orderEntry type="library" exported="" name="ShareSDK-Wechat-Moments-2.6.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.2.0" level="project" />
@@ -129,6 +130,7 @@
     <orderEntry type="library" exported="" name="android-async-http-1.4.7" level="project" />
     <orderEntry type="library" exported="" name="MobTools" level="project" />
     <orderEntry type="library" exported="" name="libammsdk" level="project" />
+    <orderEntry type="library" exported="" name="Android_2DMapApi_V2.5.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="androideventbus-1.0.5" level="project" />
     <orderEntry type="library" exported="" name="qiniu-android-sdk-7.0.7.1" level="project" />

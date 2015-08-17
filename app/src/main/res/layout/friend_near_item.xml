@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:id="@+id/explain_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="19dp"
+            android:text="@string/nearby_user"
+            android:textColor="@color/koolew_gray"
+            android:textSize="14sp" />
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="5dp"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:id="@+id/top_info_layout"
+                android:layout_width="match_parent"
+                android:layout_height="183dp"
+                android:background="@mipmap/near_friend_bg"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/btn_remove"
+                        android:layout_width="52dp"
+                        android:layout_height="27dp"
+                        android:background="@drawable/btn_bg_remove"
+                        android:focusable="false"
+                        android:text="@string/remove"
+                        android:textColor="@color/friend_item_common_text_color"
+                        android:textSize="@dimen/friend_item_common_text_size" />
+
+                    <Button
+                        android:id="@+id/btn_accept_add"
+                        android:layout_width="52dp"
+                        android:layout_height="27dp"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/btn_bg_add"
+                        android:focusable="false"
+                        android:text="@string/add"
+                        android:textColor="@color/koolew_light_blue"
+                        android:textSize="@dimen/friend_item_common_text_size" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="53dp"
+                        android:layout_marginTop="30dp"
+                        android:orientation="vertical">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="4" />
+
+                        <TextView
+                            android:id="@id/nickname"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:textColor="#3E5467"
+                            android:textSize="18sp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="2" />
+
+                        <TextView
+                            android:id="@+id/friend_summary_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:text="@string/contact_friend"
+                            android:textColor="@color/friend_item_common_text_color"
+                            android:textSize="@dimen/friend_item_common_text_size" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="5" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <com.koolew.mars.view.BigCountView
+                    android:id="@+id/got_koo"
+                    android:layout_width="160dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/friend_item_koo_topic_border"
+                    app:description_image="@mipmap/ic_count_koo"
+                    app:description_text="@string/got_koo" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:translationZ="5dp"
+            app:border_color="@color/avatar_gray_border"
+            app:border_width="3dp" />
+    </RelativeLayout>
+</RelativeLayout>

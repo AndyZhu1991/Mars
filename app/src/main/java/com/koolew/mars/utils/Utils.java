@@ -167,4 +167,48 @@ public class Utils {
         }
         return false;
     }
+
+    public static int getPositionType(int position, int[] types, List... lists) {
+        for (int i = 0; i < lists.length; i++) {
+            position -= lists[i].size();
+            if (position < 0) {
+                return types[i];
+            }
+        }
+
+        return lists.length;
+    }
+
+    public static Object getItemFromLists(int position, List... lists) {
+        ListNPosition listNPosition = getListNPosition(position, lists);
+        return listNPosition.list.get(listNPosition.position);
+    }
+
+    public static void removeItem(int position, List... lists) {
+        ListNPosition listNPosition = getListNPosition(position, lists);
+        listNPosition.list.remove(listNPosition.position);
+    }
+
+    private static ListNPosition getListNPosition(int position, List... lists) {
+        for (int i = 0; i < lists.length; i++) {
+            if (position - lists[i].size() < 0) {
+                return new ListNPosition(lists[i], position);
+            }
+            else {
+                position -= lists[i].size();
+            }
+        }
+
+        return null;
+    }
+
+    private static class ListNPosition {
+        private List list;
+        private int position;
+
+        public ListNPosition(List list, int position) {
+            this.list = list;
+            this.position = position;
+        }
+    }
 }
