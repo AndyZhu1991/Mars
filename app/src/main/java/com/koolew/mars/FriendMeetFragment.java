@@ -48,8 +48,6 @@ public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.O
 
     private SwipeRefreshLayout mRefreshLayout;
 
-    private JSONObject mResult;
-
     private LatLng mLocation;
 
     /**
@@ -80,6 +78,8 @@ public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.O
                         LocationProviderProxy.AMapNetwork, -1, 1, mLocationListener);
             }
         }.start();
+
+        mAdapter = new FriendRecommendAdapter();
     }
 
     @Override
@@ -90,21 +90,19 @@ public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.O
 
         mRecyclerView = (RecyclerView) root.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new FriendRecommendAdapter();
         mRecyclerView.setAdapter(mAdapter);
 
         mRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.refresh_layout);
         mRefreshLayout.setColorSchemeResources(R.color.koolew_light_blue);
         mRefreshLayout.setOnRefreshListener(this);
 
-        initListView();
+        requestData();
 
         return root;
     }
 
-    private void initListView() {
-        // Only request data at first onCreateView
-        if (mResult == null) {
+    private void requestData() {
+        if (mAdapter.getItemCount() == 0) {
             mRefreshLayout.post(new Runnable() {
                 @Override
                 public void run() {
@@ -113,20 +111,6 @@ public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.O
                 }
             });
         }
-        else {
-            setResultToListView();
-        }
-    }
-
-    private void setResultToListView() {
-        try {
-            mAdapter.setData(mResult.getJSONArray("pendings"),
-                    mResult.getJSONArray("recommends"),
-                    mResult.getJSONArray("poi_recommends"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -147,12 +131,14 @@ public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.O
         @Override
         public void onResponse(JSONObject jsonObject) {
             try {
-                mResult = jsonObject.getJSONObject("result");
+                JSONObject result = jsonObject.getJSONObject("result");
+                mAdapter.setData(result.getJSONArray("pendings"),
+                        result.getJSONArray("recommends"),
+                        result.getJSONArray("poi_recommends"));
+                mAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-            setResultToListView();
 
             mRefreshLayout.setRefreshing(false);
         }
