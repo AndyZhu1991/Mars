@@ -2,6 +2,7 @@ package com.koolew.mars.player;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -13,7 +14,9 @@ import android.widget.ListView;
 import com.koolew.mars.danmaku.DanmakuItemInfo;
 import com.koolew.mars.danmaku.DanmakuShowManager;
 import com.koolew.mars.danmaku.DanmakuThread;
+import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.VideoLoader;
+import com.koolew.mars.video.VideoRepeater;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -180,34 +183,81 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
     @Override
     public void onLoadComplete(Object player, String url, String filePath) {
         if (mCurrentItem != null && getVideoUrl(mCurrentItem).equals(url)) {
-            getSurfaceContainer(mCurrentItem).addView(mPlaySurface, 0);
-            mRecyclerPlayer.play(filePath);
-
-            if (isNeedDanmaku) {
-                DanmakuShowManager danmakuManager = new DanmakuShowManager(mContext,
-                        getDanmakuContainer(mCurrentItem), getDanmakuList(mCurrentItem));
-                mDanmakuThread = new DanmakuThread((Activity) mContext, danmakuManager,
-                        new DanmakuThread.PlayerWrapper() {
-                            @Override
-                            public long getCurrentPosition() {
-                                return mRecyclerPlayer.getCurrentPosition();
-                            }
-
-                            @Override
-                            public boolean isPlaying() {
-                                return mRecyclerPlayer.isPlaying();
-                            }
-                        });
-                mDanmakuThread.start();
-            }
-
-            getProgressView(mCurrentItem).setVisibility(View.INVISIBLE);
+            new PlayRepeatedVideoTask().execute(filePath);
         }
     }
 
     @Override
     public void onLoadProgress(String url, float progress) {
+    }
 
+    class PlayRepeatedVideoTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            String videoPath = params[0];
+
+            if (VideoRepeater.isNeedRepeat(videoPath)) {
+                return repeatedVideo(videoPath);
+            }
+            else {
+                return originalVideo(videoPath);
+            }
+        }
+
+        private DanmakuShowManager getDanmakuManager() {
+            return new DanmakuShowManager(mContext, getDanmakuContainer(mCurrentItem),
+                    getDanmakuList(mCurrentItem));
+        }
+
+        private String repeatedVideo(String videoPath) {
+            VideoRepeater.repeatVideo(videoPath);
+
+            if (isNeedDanmaku) {
+                try {
+                    int videoDurationInMillis = (int) (Mp4ParserUtil.getDuration(videoPath) * 1000);
+                    mDanmakuThread = new DanmakuThread((Activity) mContext, getDanmakuManager(),
+                            new DanmakuPlayerWrapper(), videoDurationInMillis);
+                    mDanmakuThread.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    originalVideo(videoPath);
+                }
+            }
+
+            //mRecyclerPlayer.play(VideoRepeater.getFinalRepeatedVideoPath(videoPath));
+            return VideoRepeater.getFinalRepeatedVideoPath(videoPath);
+        }
+
+        private String originalVideo(String videoPath) {
+            if (isNeedDanmaku) {
+                mDanmakuThread = new DanmakuThread((Activity) mContext, getDanmakuManager(),
+                        new DanmakuPlayerWrapper());
+                mDanmakuThread.start();
+            }
+
+            //mRecyclerPlayer.play(videoPath);
+            return videoPath;
+        }
+
+        @Override
+        protected void onPostExecute(String playVideoPath) {
+            getSurfaceContainer(mCurrentItem).addView(mPlaySurface, 0);
+            mRecyclerPlayer.play(playVideoPath);
+            getProgressView(mCurrentItem).setVisibility(View.INVISIBLE);
+        }
+    }
+
+    class DanmakuPlayerWrapper implements DanmakuThread.PlayerWrapper {
+        @Override
+        public long getCurrentPosition() {
+            return mRecyclerPlayer.getCurrentPosition();
+        }
+
+        @Override
+        public boolean isPlaying() {
+            return mRecyclerPlayer.isPlaying();
+        }
     }
 
     @Override

@@ -160,6 +160,15 @@ public class Mp4ParserUtil {
         fc.close();
     }
 
+    public static void mp4Repeat(String inMoviePath, int repeatCount, String outMoviePath)
+            throws IOException {
+        List<String> sameMovies = new LinkedList<>();
+        for (int i = 0; i < repeatCount; i++) {
+            sameMovies.add(inMoviePath);
+        }
+        mp4Cat(sameMovies, outMoviePath);
+    }
+
 
     /**
      *
