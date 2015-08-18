@@ -9,12 +9,22 @@
     <com.koolew.mars.view.TitleBarView
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/koolew_light_blue"
+        android:background="@color/koolew_deep_blue"
         app:title_text="@string/privacy_policy"/>
 
-    <WebView
-        android:id="@+id/web_view"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <WebView
+            android:id="@+id/web_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shadow_height"
+            android:background="@mipmap/shadow"/>
+    </FrameLayout>
 
 </LinearLayout>

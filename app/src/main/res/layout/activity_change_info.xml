@@ -34,6 +34,7 @@
                 android:layout_height="66dp"
                 android:layout_below="@id/title_bar"
                 android:layout_centerHorizontal="true"
+                android:onClick="onAvatarChange"
                 app:border_width="3dp"
                 app:border_color="#D8D8D8"/>
 
@@ -44,8 +45,7 @@
                 android:layout_toRightOf="@id/avatar"
                 android:layout_marginTop="23dp"
                 android:layout_marginLeft="-10dp"
-                android:src="@mipmap/ic_edit"
-                android:onClick="onAvatarChange"/>
+                android:src="@mipmap/ic_edit"/>
 
             <TextView
                 android:id="@+id/nickname"
@@ -68,8 +68,7 @@
                 android:layout_alignRight="@id/nickname"
                 android:layout_marginTop="11dp"
                 android:layout_marginRight="8dp"
-                android:src="@mipmap/ic_edit"
-                android:onClick="onNicknameChange"/>
+                android:src="@mipmap/ic_edit"/>
 
             <View
                 android:layout_width="match_parent"
@@ -100,8 +99,7 @@
                 android:layout_alignRight="@id/phone_number"
                 android:layout_marginTop="11dp"
                 android:layout_marginRight="8dp"
-                android:src="@mipmap/ic_edit"
-                android:onClick="onPhoneNumberChange"/>
+                android:src="@mipmap/ic_edit"/>
 
             <View
                 android:layout_width="match_parent"
@@ -110,37 +108,6 @@
                 android:layout_marginRight="8dp"
                 android:layout_below="@id/phone_number"
                 android:background="#80FFFFFF"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/top_corner_bg">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="14dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="@string/login_account"
-                    android:textSize="12sp"
-                    android:textColor="#C8C8C8"/>
-            </RelativeLayout>
         </RelativeLayout>
     </FrameLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#E2E6E9" />
-
-    <include android:id="@+id/wechat_item"
-        layout="@layout/change_info_sns_item"/>
-
-    <include android:id="@+id/qq_item"
-        layout="@layout/change_info_sns_item"/>
-
-    <include android:id="@+id/weibo_item"
-        layout="@layout/change_info_sns_item"/>
-
 </LinearLayout>

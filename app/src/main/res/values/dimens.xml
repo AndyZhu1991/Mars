@@ -78,8 +78,8 @@
 
     <!-- For task item -->
     <dimen name="task_item_margin">5dp</dimen>
-    <dimen name="task_item_bottom_left_padding">23dp</dimen>
-    <dimen name="task_item_bottom_right_padding">18dp</dimen>
+    <dimen name="task_item_bottom_left_padding">12dp</dimen>
+    <dimen name="task_item_bottom_right_padding">7dp</dimen>
     <dimen name="task_item_topic_item_right_margin">5dp</dimen>
     <dimen name="task_item_topic_item_lr_padding">5dp</dimen>
     <dimen name="task_item_topic_item_min_width">40dp</dimen>

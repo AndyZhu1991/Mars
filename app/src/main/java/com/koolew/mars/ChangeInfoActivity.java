@@ -17,7 +17,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class ChangeInfoActivity extends Activity {
+public class ChangeInfoActivity extends Activity implements View.OnClickListener {
 
     public static final int REQUEST_CODE_CHANGE_NICKNAME = 1;
     public static final int REQUEST_CODE_CHANGE_NUMBER = 2;
@@ -28,10 +28,6 @@ public class ChangeInfoActivity extends Activity {
 
     private TextView mNickname;
     private PhoneNumberView mPhoneNumber;
-
-    private View mWechatItem;
-    private View mQQItem;
-    private View mWeiboItem;
 
     private int mResultCode = RESULT_CANCELED;
 
@@ -54,21 +50,27 @@ public class ChangeInfoActivity extends Activity {
         mBlurAvatar = (ImageView) findViewById(R.id.blur_avatar);
 
         mNickname = (TextView) findViewById(R.id.nickname);
+        mNickname.setOnClickListener(this);
         mPhoneNumber = (PhoneNumberView) findViewById(R.id.phone_number);
-
-        mWechatItem = findViewById(R.id.wechat_item);
-        mQQItem = findViewById(R.id.qq_item);
-        mWeiboItem = findViewById(R.id.weibo_item);
+        mPhoneNumber.setOnClickListener(this);
 
         ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(), mAvatar);
         new DisplayBlurImage(mBlurAvatar, MyAccountInfo.getAvatar()).execute();
 
         mNickname.setText(MyAccountInfo.getNickname());
         mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
+    }
 
-        ((ImageView) mWechatItem.findViewById(R.id.icon)).setImageResource(R.mipmap.ic_login_wechat);
-        ((ImageView) mQQItem.findViewById(R.id.icon)).setImageResource(R.mipmap.ic_login_qq);
-        ((ImageView) mWeiboItem.findViewById(R.id.icon)).setImageResource(R.mipmap.ic_login_weibo);
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.nickname:
+                onNicknameChange(v);
+                break;
+            case R.id.phone_number:
+                onPhoneNumberChange(v);
+                break;
+        }
     }
 
     public void onAvatarChange(View view) {
