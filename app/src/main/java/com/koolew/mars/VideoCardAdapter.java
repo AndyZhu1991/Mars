@@ -14,7 +14,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Response;
 import com.koolew.mars.danmaku.DanmakuItemInfo;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
@@ -22,11 +24,13 @@ import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.player.ScrollPlayer;
 import com.koolew.mars.utils.Utils;
+import com.koolew.mars.webapi.ApiErrorCode;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -214,10 +218,27 @@ public class VideoCardAdapter extends BaseAdapter {
     }
 
     public void onKooClick(String videoId) {
-        ApiWorker.getInstance().kooVideo(videoId, 1,
-                ApiWorker.getInstance().emptyResponseListener, null);
+        ApiWorker.getInstance().kooVideo(videoId, 1, new KooListener(), null);
         if (mKooClickListener != null) {
             mKooClickListener.onKooClick(videoId);
+        }
+    }
+
+    class KooListener implements Response.Listener<JSONObject> {
+        @Override
+        public void onResponse(JSONObject response) {
+            try {
+                int code = response.getInt("code");
+                if (code == 0) {
+                    MyAccountInfo.setCoinNum(MyAccountInfo.getCoinNum() - 1);
+                }
+                else if (code == ApiErrorCode.COIN_NOT_ENOUGH) {
+                    Toast.makeText(mContext, R.string.not_enough_coin_hint, Toast.LENGTH_SHORT)
+                            .show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -153,6 +153,19 @@ public class MainActivity extends FragmentActivity
         EventBus.getDefault().unregister(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        syncLocalMyInfo();
+    }
+
+    private void syncLocalMyInfo() {
+        ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(), mAvatar);
+        mNickname.setText(MyAccountInfo.getNickname());
+        mCountKoo.setText(String.valueOf(MyAccountInfo.getKooNum()));
+        mCountCoin.setText(String.valueOf(MyAccountInfo.getCoinNum()));
+    }
+
     @Subscriber
     public void onNotificationUpdate(NotificationEvent event) {
         if (event.getSuggestion() > 0) {
