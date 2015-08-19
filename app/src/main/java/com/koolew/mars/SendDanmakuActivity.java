@@ -128,7 +128,6 @@ public class SendDanmakuActivity extends Activity
         ImageLoader.getInstance().displayImage(mVideoInfo.getVideoThumb(), mThumb);
 
         mDanmakuContainer = (ViewGroup) findViewById(R.id.danmaku_container);
-        mDanmakuContainer.setOnTouchListener(this);
         mSendingDanmakuLayout = (ViewGroup) findViewById(R.id.sending_danmaku_layout);
         mSendingDanmakuLayout.setOnTouchListener(this);
 
@@ -161,7 +160,6 @@ public class SendDanmakuActivity extends Activity
             else {
                 mTitleBar.setVisibility(View.INVISIBLE);
                 mDanmakuEdit.setVisibility(View.INVISIBLE);
-                mSendingDanmakuLayout.setVisibility(View.INVISIBLE);
                 mBottomLayout.setVisibility(View.VISIBLE);
 
                 mSendingDanmaku = LayoutInflater.from(this).inflate(R.layout.danmaku_item, null);
@@ -170,7 +168,8 @@ public class SendDanmakuActivity extends Activity
                 ((TextView) mSendingDanmaku.findViewById(R.id.message)).setText(mDanmakuEdit.getText());
 
                 mSendingDanmakuLayout.addView(mSendingDanmaku);
-                mSendingDanmaku.setVisibility(View.INVISIBLE);
+                moveDanmakuTo(mSendingDanmakuLayout.getWidth() / 2,
+                        mSendingDanmakuLayout.getHeight() / 2);
 
                 mMediaPlayer.start();
                 mDanmakuThread.start();
@@ -207,26 +206,26 @@ public class SendDanmakuActivity extends Activity
             return false;
         }
 
-        if (v == mDanmakuContainer) {
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                mMediaPlayer.pause();
-                mSendingDanmakuLayout.setVisibility(View.VISIBLE);
-                moveDanmakuTo((int) event.getX(), (int) event.getY());
-                mSendingDanmaku.setVisibility(View.VISIBLE);
-            }
-            return true;
-        }
-        else if (v == mSendingDanmakuLayout) {
+        if (v == mSendingDanmakuLayout) {
             moveDanmakuTo((int) event.getX(), (int) event.getY());
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                pauseVideoPlay();
+            }
             return true;
         }
 
         return false;
     }
 
+    private void pauseVideoPlay() {
+        if (mMediaPlayer.isPlaying()) {
+            mMediaPlayer.pause();
+        }
+    }
+
     public void onSendClick(View v) {
-        if (mSendingDanmaku.getVisibility() == View.INVISIBLE) {
-            Toast.makeText(this, R.string.danmaku_not_located_hint, Toast.LENGTH_LONG).show();
+        if (mMediaPlayer.isPlaying()) {
+            Toast.makeText(this, R.string.danmaku_no_time_hint, Toast.LENGTH_LONG).show();
         }
         else {
             String content = mDanmakuEdit.getText().toString();

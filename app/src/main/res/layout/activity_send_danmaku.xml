@@ -54,12 +54,14 @@
         android:visibility="invisible">
 
         <TextView
-            android:layout_width="188dp"
+            android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:layout_marginTop="18dp"
             android:layout_centerHorizontal="true"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:gravity="center"
-            android:text="@string/drop_danmaku_hint"
+            android:text="@string/locate_time_danmaku_hint"
             android:textSize="12sp"
             android:textColor="#D8D8D8"
             android:background="@drawable/drop_danmaku_hint_bg"/>

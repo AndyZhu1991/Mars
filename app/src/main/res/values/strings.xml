@@ -208,11 +208,11 @@
 
     <!-- For SendDanmakuActivity -->
     <string name="danmaku_word_limit_hint" formatted="false">请输入弹幕，最多%d个字</string>
-    <string name="drop_danmaku_hint">点击视频任意区域，放置弹幕</string>
+    <string name="locate_time_danmaku_hint">点击视频任意区域，确定弹幕位置和时间</string>
     <string name="send_danmaku">发送弹幕</string>
     <string name="danmaku_no_word_hint">写点什么呗~</string>
     <string name="danmaku_over_input_hint" formatted="false">弹幕最多只能输入%d个字</string>
-    <string name="danmaku_not_located_hint">先把弹幕放下吧，点击视频任意区域即可</string>
+    <string name="danmaku_no_time_hint">先给弹幕定个时间吧，点击视频任意区域即可</string>
     <string name="sending_danmaku">正在发送弹幕...</string>
     <string name="danmaku_send_faild">弹幕发送失败</string>
 
