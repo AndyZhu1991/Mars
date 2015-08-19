@@ -88,6 +88,7 @@ public class VideoShootActivity extends Activity
     private RecyclerView.Adapter mWrappedAdapter;
     private VideosProgressView mVideosProgressView;
     private ImageView mChangeCamera;
+    private ImageView mRecordComplete;
 
     private VideoRecordingSession mRecordingSession;
     private VideoRecordingSession.VideoPieceItem mCurrentRecodingVideo;
@@ -185,17 +186,26 @@ public class VideoShootActivity extends Activity
 
     @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(this)
-                .setMessage(R.string.confirm_give_up_videos)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        setResult(RESULT_CANCELED);
-                        VideoShootActivity.super.onBackPressed();
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, null)
-                .show();
+        if (mRecordingSession.getVideoCount() == 0) {
+            cancelRecord();
+        }
+        else {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.confirm_give_up_videos)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            cancelRecord();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show();
+        }
+    }
+
+    private void cancelRecord() {
+        setResult(RESULT_CANCELED);
+        VideoShootActivity.super.onBackPressed();
     }
 
     private void initMembers() {
@@ -232,8 +242,10 @@ public class VideoShootActivity extends Activity
         mPlaybackSurface.setLayoutParams(pvlp);
         mPlaybackSurface.getHolder().addCallback(mPlaybackSurfaceCallback);
 
+        mRecordComplete = (ImageView) findViewById(R.id.record_complete);
+        mRecordComplete.setOnClickListener(this);
+
         findViewById(R.id.image_record).setOnClickListener(this);
-        findViewById(R.id.record_complete).setOnClickListener(this);
         findViewById(R.id.close_layout).setOnClickListener(this);
         mChangeCamera.setOnClickListener(this);
         mPlayImage.setOnClickListener(this);
@@ -622,6 +634,10 @@ public class VideoShootActivity extends Activity
             mAdapter.notifyItemInserted(mRecordingSession.getVideoCount() - 1);
 
             isRecording = false;
+
+            if (mRecordingSession.getVideoCount() == 1) {
+                mRecordComplete.setImageResource(R.mipmap.video_complete_enable);
+            }
         }
     }
 
@@ -754,7 +770,7 @@ public class VideoShootActivity extends Activity
     }
 
     private void onCloseClick() {
-        finish();
+        onBackPressed();
     }
 
     private void onCameraChangeClick() {
@@ -886,6 +902,9 @@ public class VideoShootActivity extends Activity
                 mVideosProgressView.invalidate();
                 for (View piece: mVideoPieces) {
                     piece.invalidate();
+                }
+                if (mRecordingSession.getVideoCount() == 0) {
+                    mRecordComplete.setImageResource(R.mipmap.video_complete_disable);
                 }
             }
         }
