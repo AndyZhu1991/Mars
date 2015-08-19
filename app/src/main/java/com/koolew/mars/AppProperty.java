@@ -11,6 +11,7 @@ public class AppProperty {
     public static final int RECORD_VIDEO_FPS = 25;
 
     public static final String DEFAULT_AVATAR_URL = "http://avatar.koolew.com/default_avatar.jpg";
+    public static final String APP_DOWNLOAD_URL = "d.koolew.com";
 
     public static final int DANMAKU_MAX_WORD = 15;
 

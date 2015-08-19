@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -271,6 +273,11 @@ public class FriendSimpleAdapter extends BaseAdapter {
     }
 
     protected void inviteContact(String phoneNum) {
+        Uri smsToUri = Uri.parse("smsto:" + phoneNum);
+        Intent intent = new Intent(Intent.ACTION_SENDTO, smsToUri);
+        intent.putExtra("sms_body", mContext.getString(R.string.sms_invitation_message,
+                AppProperty.APP_DOWNLOAD_URL));
+        mContext.startActivity(intent);
     }
 
     class RemoveResponseListener implements Response.Listener<JSONObject> {

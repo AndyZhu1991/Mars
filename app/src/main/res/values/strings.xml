@@ -106,6 +106,8 @@
     <string name="confirm_give_up_videos">确认放弃已拍摄的视频吗？</string>
     <string name="max_video_len_hint" formatted="false">视频最多只能拍摄%d秒，右划可以删除视频哦～</string>
 
+    <string name="sms_invitation_message" formatted="false">来「可见」和我一起玩视频点名吧，下载链接：%s</string>
+
     <!-- For VideoEditActivity & VideoPrivacyActivity -->
     <string name="video_edit_title">编辑视频</string>
     <string name="who_can_see">可以给谁看</string>

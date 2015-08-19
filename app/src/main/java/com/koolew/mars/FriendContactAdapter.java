@@ -50,6 +50,16 @@ public class FriendContactAdapter extends FriendSimpleAdapter {
         return false;
     }
 
+    @Override
+    protected void onOperate(int position) {
+        if (getItemViewType(position) == TYPE_NO_REGISTER) {
+            inviteContact(((ContactUtil.SimpleContactInfo) getItem(position)).getNumber());
+        }
+        else {
+            super.onOperate(position);
+        }
+    }
+
     protected void retrievalContactName(FriendInfo friendInfo) {
         if (mAllContacts == null || mAllContacts.size() == 0) {
             return;
