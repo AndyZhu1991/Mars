@@ -20,19 +20,19 @@ import java.util.List;
  */
 public class VideoLoader implements DownloadStatusListener {
 
-    private static final String TAG = "koolew-VideoLoader";
+    protected static final String TAG = "koolew-VideoLoader";
 
-    private static final int MAX_DOWNLOAD_COUNT = 3;
+    protected static final int MAX_DOWNLOAD_COUNT = 3;
 
-    private Context mContext;
+    protected Context mContext;
 
-    private Object mPlayer;
+    protected Object mPlayer;
 
-    private ThinDownloadManager mDownloadManager;
-    private DownloadEvent mCurrentDownload;
-    private List<DownloadEvent> mOtherDownloads;
+    protected ThinDownloadManager mDownloadManager;
+    protected DownloadEvent mCurrentDownload;
+    protected List<DownloadEvent> mOtherDownloads;
 
-    private LoadListener mLoadListener;
+    protected LoadListener mLoadListener;
 
 
     public VideoLoader(Context context) {
@@ -46,9 +46,7 @@ public class VideoLoader implements DownloadStatusListener {
         mPlayer = player;
         if (new File(url2LocalFile(url)).exists()) {
             // TODO: Play this video
-            if (mLoadListener != null) {
-                mLoadListener.onLoadComplete(mPlayer, url, url2LocalFile(url));
-            }
+            loadComplete(mPlayer, url, url2LocalFile(url));
         }
         else {
             // TODO: Download this video
@@ -140,9 +138,7 @@ public class VideoLoader implements DownloadStatusListener {
     @Override
     public void onDownloadComplete(int id) {
         if (id == mCurrentDownload.id) {
-            if (mLoadListener != null) {
-                mLoadListener.onLoadComplete(mPlayer,mCurrentDownload.url, mCurrentDownload.localPath);
-            }
+            loadComplete(mPlayer,mCurrentDownload.url, mCurrentDownload.localPath);
         }
         else {
             for (DownloadEvent event: mOtherDownloads) {
@@ -183,15 +179,21 @@ public class VideoLoader implements DownloadStatusListener {
         }
     }
 
+    protected void loadComplete(Object player, String url, String filePath) {
+        if (mLoadListener != null) {
+            mLoadListener.onLoadComplete(player, url, filePath);
+        }
+    }
+
     public interface LoadListener {
         void onLoadComplete(Object player, String url, String filePath);
         void onLoadProgress(String url, float progress);
     }
 
-    class DownloadEvent {
-        int id;
-        String url;
-        String localPath;
-        float progress;
+    protected class DownloadEvent {
+        public int id;
+        public String url;
+        public String localPath;
+        public float progress;
     }
 }

@@ -3,6 +3,7 @@ package com.koolew.mars.player;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -10,13 +11,10 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.koolew.mars.R;
 import com.koolew.mars.danmaku.DanmakuItemInfo;
 import com.koolew.mars.danmaku.DanmakuShowManager;
 import com.koolew.mars.danmaku.DanmakuThread;
-import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.VideoLoader;
 import com.koolew.mars.video.VideoRepeater;
 import com.koolew.mars.video.VideoUtil;
@@ -63,7 +61,7 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
         mListView = listView;
         listView.setOnScrollListener(this);
         mContext = listView.getContext();
-        mVideoLoader = new VideoLoader(mContext);
+        mVideoLoader = new RepeatVideoLoader(mContext);
         mVideoLoader.setLoadListener(this);
 
         mPlaySurface = new SurfaceView(mContext);
@@ -187,92 +185,39 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
     @Override
     public void onLoadComplete(Object player, String url, String filePath) {
         if (mCurrentItem != null && getVideoUrl(mCurrentItem).equals(url)) {
-            if (VideoUtil.isMp4FileBroken(url, filePath)) {
-                onMp4FileBroken(url, filePath);
+            if (TextUtils.isEmpty(filePath)) {
+                getProgressView(mCurrentItem).setVisibility(View.INVISIBLE);
+                return;
             }
-            else {
-                new PlayRepeatedVideoTask().execute(filePath);
-            }
-        }
-    }
 
-    private void onMp4FileBroken(String url, String filePath) {
-        new File(filePath).delete();
-        getProgressView(mCurrentItem).setVisibility(View.INVISIBLE);
-        Toast.makeText(mContext, R.string.mp4_file_broken_hint, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onLoadProgress(String url, float progress) {
-    }
-
-    class PlayRepeatedVideoTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-            String videoPath = params[0];
-
-            if (VideoRepeater.isNeedRepeat(videoPath)) {
-                return repeatedVideo(videoPath);
-            }
-            else {
-                return originalVideo(videoPath);
-            }
-        }
-
-        private DanmakuShowManager getDanmakuManager() {
-            return new DanmakuShowManager(mContext, getDanmakuContainer(mCurrentItem),
-                    getDanmakuList(mCurrentItem));
-        }
-
-        private String repeatedVideo(String videoPath) {
-            VideoRepeater.repeatVideo(videoPath);
+            getSurfaceContainer(mCurrentItem).addView(mPlaySurface, 0);
+            mRecyclerPlayer.play(filePath);
 
             if (isNeedDanmaku) {
-                try {
-                    int videoDurationInMillis = (int) (Mp4ParserUtil.getDuration(videoPath) * 1000);
-                    mDanmakuThread = new DanmakuThread((Activity) mContext, getDanmakuManager(),
-                            new DanmakuPlayerWrapper(), videoDurationInMillis);
-                    mDanmakuThread.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    originalVideo(videoPath);
-                }
-            }
+                DanmakuShowManager danmakuManager = new DanmakuShowManager(mContext,
+                        getDanmakuContainer(mCurrentItem), getDanmakuList(mCurrentItem));
+                mDanmakuThread = new DanmakuThread((Activity) mContext, danmakuManager,
+                        new DanmakuThread.PlayerWrapper() {
+                            @Override
+                            public long getCurrentPosition() {
+                                return mRecyclerPlayer.getCurrentPosition();
+                            }
 
-            //mRecyclerPlayer.play(VideoRepeater.getFinalRepeatedVideoPath(videoPath));
-            return VideoRepeater.getFinalRepeatedVideoPath(videoPath);
-        }
-
-        private String originalVideo(String videoPath) {
-            if (isNeedDanmaku) {
-                mDanmakuThread = new DanmakuThread((Activity) mContext, getDanmakuManager(),
-                        new DanmakuPlayerWrapper());
+                            @Override
+                            public boolean isPlaying() {
+                                return mRecyclerPlayer.isPlaying();
+                            }
+                        });
                 mDanmakuThread.start();
             }
 
-            //mRecyclerPlayer.play(videoPath);
-            return videoPath;
-        }
-
-        @Override
-        protected void onPostExecute(String playVideoPath) {
-            getSurfaceContainer(mCurrentItem).addView(mPlaySurface, 0);
-            mRecyclerPlayer.play(playVideoPath);
             getProgressView(mCurrentItem).setVisibility(View.INVISIBLE);
         }
     }
 
-    class DanmakuPlayerWrapper implements DanmakuThread.PlayerWrapper {
-        @Override
-        public long getCurrentPosition() {
-            return mRecyclerPlayer.getCurrentPosition();
-        }
+    @Override
+    public void onLoadProgress(String url, float progress) {
 
-        @Override
-        public boolean isPlaying() {
-            return mRecyclerPlayer.isPlaying();
-        }
     }
 
     @Override
@@ -532,6 +477,52 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
         @Override
         public void onCompletion(IMediaPlayer iMediaPlayer) {
             iMediaPlayer.start();
+        }
+    }
+
+    class RepeatVideoLoader extends VideoLoader {
+
+        public RepeatVideoLoader(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void loadComplete(Object player, String url, String filePath) {
+            if (VideoUtil.isMp4FileBroken(url, filePath)) {
+                new File(filePath).delete();
+                super.loadComplete(player, url, null);
+                return;
+            }
+
+            if (VideoRepeater.isNeedRepeat(filePath)) {
+                new VideoRepeatTask(player, url, filePath).execute();
+            }
+            else {
+                super.loadComplete(player, url, filePath);
+            }
+        }
+
+        class VideoRepeatTask extends AsyncTask<Void, Void, String> {
+            private Object player;
+            private String url;
+            private String filePath;
+
+            public VideoRepeatTask(Object player, String url, String filePath) {
+                this.player = player;
+                this.url = url;
+                this.filePath = filePath;
+            }
+
+            @Override
+            protected String doInBackground(Void... params) {
+                VideoRepeater.repeatVideo(filePath);
+                return VideoRepeater.getFinalRepeatedVideoPath(filePath);
+            }
+
+            @Override
+            protected void onPostExecute(String finalVideoPath) {
+                RepeatVideoLoader.super.loadComplete(player, url, finalVideoPath);
+            }
         }
     }
 }
