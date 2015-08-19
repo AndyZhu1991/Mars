@@ -13,7 +13,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-import java.io.File;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -55,25 +54,6 @@ public class Utils {
 
     public static String getCacheDir(Context context) {
         return context.getExternalCacheDir().getAbsolutePath() + "/";
-    }
-
-    public static boolean deleteFileOrDir(String name) {
-        return deleteFileOrDir(new File(name));
-    }
-
-    public static boolean deleteFileOrDir(File file) {
-        if (file.isFile()) {
-            return file.delete();
-        }
-
-        File subFiles[] = file.listFiles();
-        for (File f: subFiles) {
-            if (f.delete() == false) {
-                return false;
-            }
-        }
-
-        return file.delete();
     }
 
     public static void showSoftKeyInput(final EditText editText, int delay) {

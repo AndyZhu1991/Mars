@@ -32,7 +32,7 @@
     <string name="title_koolew">可见</string>
     <string name="title_friend">好友</string>
     <string name="title_settings">设置</string>
-    <string name="title_add">添加话题卡</string>
+    <string name="title_add">新建话题</string>
     <string name="got_koo">获得Koo</string>
     <string name="coin_count">金币数量</string>
 
@@ -103,6 +103,8 @@
     <string name="processing_video">正在处理视频...</string>
     <string name="there_is_no_video">还没拍视频呢</string>
     <string name="video_too_long" formatted="false">视频超过%d秒了，右划可删除</string>
+    <string name="confirm_give_up_videos">确认放弃已拍摄的视频吗？</string>
+    <string name="max_video_len_hint" formatted="false">视频最多只能拍摄%d秒，右划可以删除视频哦～</string>
 
     <!-- For VideoEditActivity & VideoPrivacyActivity -->
     <string name="video_edit_title">编辑视频</string>

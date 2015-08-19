@@ -1,8 +1,10 @@
 package com.koolew.mars;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
@@ -39,6 +41,7 @@ import com.koolew.mars.media.MediaEncoder;
 import com.koolew.mars.media.MediaMuxerWrapper;
 import com.koolew.mars.media.MediaVideoEncoder;
 import com.koolew.mars.utils.DialogUtil;
+import com.koolew.mars.utils.MathUtil;
 import com.koolew.mars.utils.RawImageUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.utils.ViewUtil;
@@ -51,6 +54,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class VideoShootActivity extends Activity
         implements OnClickListener, MediaPlayer.OnPreparedListener,
@@ -174,12 +179,23 @@ public class VideoShootActivity extends Activity
             WrapperAdapterUtils.releaseAll(mWrappedAdapter);
             mWrappedAdapter = null;
         }
+
+        mRecordingSession.deleteSession();
     }
 
     @Override
     public void onBackPressed() {
-        setResult(RESULT_CANCELED);
-        super.onBackPressed();
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.confirm_give_up_videos)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        setResult(RESULT_CANCELED);
+                        VideoShootActivity.super.onBackPressed();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 
     private void initMembers() {
@@ -421,7 +437,6 @@ public class VideoShootActivity extends Activity
     class MyPreviewCallback implements Camera.PreviewCallback {
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
-            Log.d(TAG, "onPreviewFrame, isRecording: " + isRecording);
             if (isEncoding){//mVideoEncoder != null && mVideoEncoder.isEncoding == true) {
                 MediaVideoEncoder.YUV420SPFrame frame = mVideoEncoder.obtainFrame();
                 frame.frameNanoTime = System.nanoTime();
@@ -552,10 +567,28 @@ public class VideoShootActivity extends Activity
         return mCurrentRecodingVideo.getVideoPath();
     }
 
+    private TimerTask mRecordMonitorTask;
+
+    class RecordMonitorTask extends TimerTask {
+        @Override
+        public void run() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    doStopRecord();
+                }
+            });
+        }
+    }
+
     private void startRecord() {
         try {
             mCurrentRecodingVideo = mRecordingSession.new VideoPieceItem();
             mVideosProgressView.start();
+            mRecordMonitorTask = new RecordMonitorTask();
+            new Timer().schedule(mRecordMonitorTask,
+                    (long) (AppProperty.RECORD_VIDEO_MAX_LEN * 1000
+                            - mRecordingSession.getTotalVideoLength()));
             mMuxer = new MediaMuxerWrapper(getCurrentRecordingFile());
             mVideoEncoder = new MediaVideoEncoder(mMuxer, mMediaEncoderListener,
                         AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
@@ -570,22 +603,30 @@ public class VideoShootActivity extends Activity
     }
 
     private void stopRecord() {
-        if (mMuxer != null) {
-            mMuxer.stopRecording();
-            mMuxer = null;
-            // you should not wait here
-        }
-        mCurrentRecodingVideo.finishRecord();
-        mRecordingSession.add(mCurrentRecodingVideo);
-        mCurrentRecodingVideo = null;
-        mAdapter.notifyItemInserted(mRecordingSession.getVideoCount() - 1);
+        mRecordMonitorTask.cancel();
 
-        mVideosProgressView.finish();
-
-        isRecording = false;
+        doStopRecord();
     }
 
-    private final MediaEncoder.MediaEncoderListener mMediaEncoderListener = new MediaEncoder.MediaEncoderListener() {
+    private void doStopRecord() {
+        if (isRecording) {
+            if (mMuxer != null) {
+                mMuxer.stopRecording();
+                mMuxer = null;
+                // you should not wait here
+            }
+            mCurrentRecodingVideo.finishRecord();
+            mRecordingSession.add(mCurrentRecodingVideo);
+            mVideosProgressView.finish();
+            mCurrentRecodingVideo = null;
+            mAdapter.notifyItemInserted(mRecordingSession.getVideoCount() - 1);
+
+            isRecording = false;
+        }
+    }
+
+    private final MediaEncoder.MediaEncoderListener mMediaEncoderListener =
+            new MediaEncoder.MediaEncoderListener() {
         @Override
         public void onPrepared(final MediaEncoder encoder) {
             if (encoder == mVideoEncoder) {
@@ -634,7 +675,14 @@ public class VideoShootActivity extends Activity
         }
         else {
             if (!isRecording) {
-                startRecord();
+                if (MathUtil.equalsApproximate(mRecordingSession.getTotalVideoLength() / 1000.0,
+                        AppProperty.RECORD_VIDEO_MAX_LEN, 0.1)) {
+                    Toast.makeText(this, getString(R.string.max_video_len_hint,
+                            (int) AppProperty.RECORD_VIDEO_MAX_LEN), Toast.LENGTH_LONG).show();
+                }
+                else {
+                    startRecord();
+                }
             } else {
                 stopRecord();
             }
@@ -648,13 +696,6 @@ public class VideoShootActivity extends Activity
 
         if (mRecordingSession.getVideoCount() == 0) {
             Toast.makeText(this, R.string.there_is_no_video, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        //                                       ms             s
-        if (mRecordingSession.getTotalVideoLength() / 1000.0f > AppProperty.RECORD_VIDEO_MAX_LEN) {
-            Toast.makeText(this, getString(R.string.video_too_long,
-                    (int) AppProperty.RECORD_VIDEO_MAX_LEN), Toast.LENGTH_LONG).show();
             return;
         }
 

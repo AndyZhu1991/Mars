@@ -3,6 +3,7 @@ package com.koolew.mars.video;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.koolew.mars.utils.FileUtil;
 import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -132,6 +133,15 @@ public class VideoRecordingSession {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void deleteSession() {
+        new Thread() {
+            @Override
+            public void run() {
+                FileUtil.deleteFileOrDir(mCurrentWorkDir);
+            }
+        }.start();
     }
 
 
