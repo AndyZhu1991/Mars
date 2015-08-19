@@ -259,8 +259,10 @@ public class FriendInfoActivity extends Activity implements View.OnClickListener
         if (position < 0) {
             return;
         }
-        Intent intent = new Intent(this, FeedsTopicActivity.class);
-        intent.putExtra(FeedsTopicActivity.KEY_TOPIC_ID, mAdapter.getTopicId(position));
+        Intent intent = new Intent(this, UserTopicActivity.class);
+        intent.putExtra(UserTopicActivity.KEY_TOPIC_ID, mAdapter.getTopicId(position));
+        intent.putExtra(UserTopicActivity.KEY_UID, mUid);
+        intent.putExtra(UserTopicActivity.KEY_NICKNAME, mNickname.getText().toString());
         startActivity(intent);
     }
 

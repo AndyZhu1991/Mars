@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
+import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.view.LoadMoreFooter;
 import com.koolew.mars.webapi.ApiWorker;
 
@@ -112,9 +113,9 @@ public class KoolewRelatedMeFragment extends Fragment
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         RelatedMeItem item = (RelatedMeItem) mAdapter.getItem(position);
-        Intent intent = new Intent(getActivity(), FeedsTopicActivity.class);
-        intent.putExtra(FeedsTopicActivity.KEY_TOPIC_ID, item.topicId);
-        intent.putExtra(FeedsTopicActivity.KEY_TOPIC_TITLE, item.title);
+        Intent intent = new Intent(getActivity(), IJoinedTopicActivity.class);
+        intent.putExtra(IJoinedTopicActivity.KEY_TOPIC_ID, item.topicId);
+        intent.putExtra(IJoinedTopicActivity.KEY_UID, MyAccountInfo.getUid());
         startActivity(intent);
     }
 

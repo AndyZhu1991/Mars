@@ -366,4 +366,5 @@
     <string name="title_activity_user_topic">UserTopicActivity</string>
     <string name="title_activity_check_danmaku">CheckDanmakuActivity</string>
     <string name="title_activity_privacy_policy">PrivacyPolicyActivity</string>
+    <string name="title_activity_i_joined">IJoinedActivity</string>
 </resources>

@@ -224,6 +224,11 @@
             android:label="@string/title_activity_privacy_policy"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".IJoinedTopicActivity"
+            android:label="@string/title_activity_i_joined"
+            android:screenOrientation="portrait" >
+        </activity>
 
         <!-- Jpush -->
         <!-- Required -->
