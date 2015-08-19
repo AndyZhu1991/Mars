@@ -10,14 +10,18 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.koolew.mars.R;
 import com.koolew.mars.danmaku.DanmakuItemInfo;
 import com.koolew.mars.danmaku.DanmakuShowManager;
 import com.koolew.mars.danmaku.DanmakuThread;
 import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.VideoLoader;
 import com.koolew.mars.video.VideoRepeater;
+import com.koolew.mars.video.VideoUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
@@ -183,8 +187,19 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
     @Override
     public void onLoadComplete(Object player, String url, String filePath) {
         if (mCurrentItem != null && getVideoUrl(mCurrentItem).equals(url)) {
-            new PlayRepeatedVideoTask().execute(filePath);
+            if (VideoUtil.isMp4FileBroken(url, filePath)) {
+                onMp4FileBroken(url, filePath);
+            }
+            else {
+                new PlayRepeatedVideoTask().execute(filePath);
+            }
         }
+    }
+
+    private void onMp4FileBroken(String url, String filePath) {
+        new File(filePath).delete();
+        getProgressView(mCurrentItem).setVisibility(View.INVISIBLE);
+        Toast.makeText(mContext, R.string.mp4_file_broken_hint, Toast.LENGTH_SHORT).show();
     }
 
     @Override

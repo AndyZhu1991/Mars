@@ -257,6 +257,8 @@
     <string name="share_failed">分享失败</string>
     <string name="invite_failed">点名失败</string>
 
+    <string name="mp4_file_broken_hint">视频出错啦</string>
+
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>
     <string name="website">http://www.mob.com</string>
