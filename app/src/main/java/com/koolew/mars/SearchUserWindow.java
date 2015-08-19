@@ -36,7 +36,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by jinchangzhu on 7/29/15.
  */
 public class SearchUserWindow extends PopupWindow implements TextWatcher,
-        Response.Listener<JSONObject> {
+        Response.Listener<JSONObject>, View.OnClickListener {
 
     private Context mContext;
 
@@ -52,6 +52,7 @@ public class SearchUserWindow extends PopupWindow implements TextWatcher,
         mContext = context;
 
         mContentView = LayoutInflater.from(mContext).inflate(R.layout.search_user_layout, null);
+        mContentView.setOnClickListener(this);
         setContentView(mContentView);
 
         Resources resources = mContext.getResources();
@@ -72,8 +73,7 @@ public class SearchUserWindow extends PopupWindow implements TextWatcher,
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mAdapter = new UserAdapter();
         mRecyclerView.setAdapter(mAdapter);
-        LinearLayout.LayoutParams rvlp = (LinearLayout.LayoutParams) mRecyclerView.getLayoutParams();
-        rvlp.bottomMargin = Utils.getNavigationBarHeightPixel(mContext);
+        mRecyclerView.setPadding(0, 0, 0, Utils.getNavigationBarHeightPixel(mContext));
 
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
@@ -128,6 +128,11 @@ public class SearchUserWindow extends PopupWindow implements TextWatcher,
     public void afterTextChanged(Editable s) {
     }
 
+    @Override
+    public void onClick(View v) {
+        dismiss();
+    }
+
 
     class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
@@ -148,10 +153,10 @@ public class SearchUserWindow extends PopupWindow implements TextWatcher,
                 }
             }
             if (count == 0) {
-                mRecyclerView.setBackgroundColor(0x00000000);
+                mRecyclerView.setVisibility(View.INVISIBLE);
             }
             else {
-                mRecyclerView.setBackgroundColor(0xFFF5F5F5);
+                mRecyclerView.setVisibility(View.VISIBLE);
             }
         }
 
