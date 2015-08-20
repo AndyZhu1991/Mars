@@ -1,5 +1,7 @@
 package com.koolew.mars;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -24,6 +26,7 @@ import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.player.ScrollPlayer;
 import com.koolew.mars.utils.Utils;
+import com.koolew.mars.view.KooAnimationView;
 import com.koolew.mars.webapi.ApiErrorCode;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -277,7 +280,9 @@ public class VideoCardAdapter extends BaseAdapter {
         public TextView videoDate;
 
         public LinearLayout kooLayout;
+        public ImageView kooIcon;
         public LinearLayout danmakuSendLayout;
+        public KooAnimationView kooAnimationView;
 
         public ViewHolder(View convertView) {
             imageMore = (ImageView) convertView.findViewById(R.id.more);
@@ -295,6 +300,8 @@ public class VideoCardAdapter extends BaseAdapter {
             danmakuSendLayout.setOnClickListener(this);
             kooLayout = (LinearLayout) convertView.findViewById(R.id.koo_layout);
             kooLayout.setOnClickListener(this);
+            kooIcon = (ImageView) convertView.findViewById(R.id.koo_icon);
+            kooAnimationView = (KooAnimationView) convertView.findViewById(R.id.koo_animation_view);
         }
 
         @Override
@@ -311,6 +318,13 @@ public class VideoCardAdapter extends BaseAdapter {
             }
             else if (v == kooLayout) {
                 onKooClick(getItemData(position).getVideoId());
+                PropertyValuesHolder pvhX = PropertyValuesHolder.ofFloat("alpha", 1f, 0.5f, 1f);
+                PropertyValuesHolder pvhY = PropertyValuesHolder.ofFloat("scaleX", 1f, 3f, 1f);
+                PropertyValuesHolder pvhZ = PropertyValuesHolder.ofFloat("scaleY", 1f, 3f, 1f);
+                ObjectAnimator.ofPropertyValuesHolder(kooIcon, pvhX, pvhY, pvhZ)
+                        .setDuration(400)
+                        .start();
+                kooAnimationView.startAnimation();
             }
             else if (v == danmakuSendLayout) {
                 if (mDanmakuSendListener != null) {

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/video_card_padding">
+    android:padding="@dimen/video_card_padding"
+    android:background="@null">
 
     <FrameLayout
         android:id="@+id/video_layout"
@@ -71,61 +72,73 @@
         android:textSize="10sp"
         android:textColor="#9EADB7"/>
 
-    <LinearLayout
-        android:id="@+id/koo_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="33dp"
-        android:layout_below="@id/video_layout"
-        android:gravity="center_vertical">
+    <RelativeLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_below="@id/video_layout">
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/koo_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/koo"
-            android:textSize="12sp"
-            android:textColor="@color/koolew_light_gray"/>
+            android:layout_centerVertical="true"
+            android:padding="15dp"
+            android:gravity="center_vertical"
+            android:clipToPadding="false">
 
-        <ImageView
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_marginLeft="3dp"
-            android:src="@mipmap/ic_koo"/>
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/koo"
+                android:textSize="12sp"
+                android:textColor="@color/koolew_light_gray"/>
 
-    <LinearLayout
-        android:id="@+id/danmaku_send_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="33dp"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/video_layout"
-        android:gravity="center_vertical"
-        android:clickable="true">
+            <ImageView
+                android:id="@+id/koo_icon"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginLeft="3dp"
+                android:src="@mipmap/ic_koo"/>
+        </LinearLayout>
 
-        <ImageView
-            android:id="@+id/danmaku_send_ic"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_marginRight="3dp"
-            android:src="@mipmap/ic_comment"/>
-
-        <TextView
-            android:id="@+id/danmaku_send_text"
+        <LinearLayout
+            android:id="@+id/danmaku_send_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/comment"
-            android:textSize="12sp"
-            android:textColor="@color/koolew_light_gray"/>
-    </LinearLayout>
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="15dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/danmaku_send_ic"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginRight="3dp"
+                android:src="@mipmap/ic_comment"/>
+
+            <TextView
+                android:id="@+id/danmaku_send_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/comment"
+                android:textSize="12sp"
+                android:textColor="@color/koolew_light_gray"/>
+        </LinearLayout>
+
+        <com.koolew.mars.view.KooAnimationView
+            android:id="@+id/koo_animation_view"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="6dp"/>
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginLeft="3dp"
         android:layout_marginRight="3dp"
-        android:layout_below="@id/video_date"
+        android:layout_below="@id/bottom_layout"
         android:background="@mipmap/horizontal_dash_line"/>
 </RelativeLayout>
