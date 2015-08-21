@@ -28,10 +28,11 @@
     <string name="danmaku">弹幕</string>
     <string name="ignore">忽略</string>
     <string name="not_enough_coin_hint">金币不够了！赶紧去赚金币吧！</string>
+    <string name="search">搜索</string>
 
     <!-- For MainActivity -->
     <string name="title_koolew">可见</string>
-    <string name="title_friend">好友</string>
+    <string name="title_friend">朋友</string>
     <string name="title_settings">设置</string>
     <string name="title_add">新建话题</string>
     <string name="got_koo">获得Koo</string>
@@ -87,7 +88,8 @@
     <string name="invited_label" formatted="false">你被%s点名</string>
 
     <!-- For FeedsTopicActivity -->
-    <string name="send_invitation">发起点名</string>
+    <string name="i_want_capture">我要拍</string>
+    <string name="send_invitation">点名好友</string>
 
     <!-- For WorldTopicActivity -->
     <string name="world">世界</string>
@@ -123,7 +125,7 @@
     <string name="common_topic">共同话题</string>
     <string name="common_friend" formatted="false">共同好友（%d人）</string>
     <string name="padding_friend_label">待接受好友申请</string>
-    <string name="recommend_friend_label">可能认识</string>
+    <string name="recommend_friend_label">好友推荐</string>
     <string name="nearby_user">附近的人</string>
     <string name="contact_friend">通讯录好友</string>
 

@@ -34,7 +34,11 @@
                 android:layout_marginLeft="8dp"
                 android:text="@string/accept_invitation"
                 android:textSize="14sp"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white"
+                android:shadowDx="0"
+                android:shadowDy="3"
+                android:shadowColor="#54B87A"
+                android:shadowRadius="1"/>
         </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

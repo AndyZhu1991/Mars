@@ -46,11 +46,31 @@
             android:layout_marginRight="10dp"
             android:background="@drawable/capture_btn_bg">
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="18dp"
-                android:layout_centerInParent="true"
-                android:src="@drawable/ic_capture"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_centerInParent="true">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="18dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_capture"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="8dp"
+                    android:text="@string/i_want_capture"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:shadowDx="0"
+                    android:shadowDy="3"
+                    android:shadowColor="#CD0000"
+                    android:shadowRadius="1"/>
+            </LinearLayout>
         </RelativeLayout>
 
         <RelativeLayout
@@ -64,13 +84,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_centerInParent="true">
+                android:layout_centerInParent="true"
+                android:gravity="center_vertical">
 
-                <ImageView
-                    android:layout_width="19.5dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_send_invitation"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-4dp"
+                    android:textSize="20sp"
+                    android:textColor="@android:color/white"
+                    android:text="\@"
+                    android:shadowDx="0"
+                    android:shadowDy="3"
+                    android:shadowColor="#EF8B19"
+                    android:shadowRadius="1"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -79,7 +106,11 @@
                     android:layout_marginLeft="8dp"
                     android:text="@string/send_invitation"
                     android:textColor="@android:color/white"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp"
+                    android:shadowDx="0"
+                    android:shadowDy="3"
+                    android:shadowColor="#EF8B19"
+                    android:shadowRadius="1"/>
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
