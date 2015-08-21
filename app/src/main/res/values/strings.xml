@@ -255,8 +255,12 @@
     <string name="share_topic_description">[小视频合集]</string>
     <string name="invite_desc_wechat" formatted="false">"你被 %s 点名：“%s”（看到点名必须回复！）"</string>
     <string name="invite_desc_weibo_n_qzone" formatted="false">"（对，就是你！）快来支持 %s 发起的点名：“%s”"</string>
+    <string name="share_success">分享成功</string>
     <string name="share_failed">分享失败</string>
+    <string name="share_cancel">分享取消</string>
+    <string name="invite_success">点名成功</string>
     <string name="invite_failed">点名失败</string>
+    <string name="invite_cancel">点名取消</string>
 
     <string name="mp4_file_broken_hint">视频出错啦</string>
 

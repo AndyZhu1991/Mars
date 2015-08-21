@@ -34,12 +34,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import cn.sharesdk.framework.Platform;
-import cn.sharesdk.framework.PlatformActionListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class InviteActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener,
-        TitleBarView.OnRightLayoutClickListener, PlatformActionListener {
+        TitleBarView.OnRightLayoutClickListener {
 
     public static final String KEY_TOPIC_ID = "topic_id";
     public static final String KEY_TITLE = "title";
@@ -65,7 +64,7 @@ public class InviteActivity extends BaseActivity implements SwipeRefreshLayout.O
         mTopicId = intent.getStringExtra(KEY_TOPIC_ID);
         mTitle = intent.getStringExtra(KEY_TITLE);
 
-        mShareManager = new ShareManager(this, this);
+        mShareManager = new ShareManager(this, new ShareListener());
 
         initViews();
 
@@ -171,19 +170,24 @@ public class InviteActivity extends BaseActivity implements SwipeRefreshLayout.O
     }
 
 
-    @Override
-    public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
-        this.onBackPressed();
-    }
+    class ShareListener extends ShareManager.ShareListener {
 
-    @Override
-    public void onError(Platform platform, int i, Throwable throwable) {
-        Toast.makeText(this, R.string.invite_failed, Toast.LENGTH_SHORT).show();
-    }
+        public ShareListener() {
+            super(InviteActivity.this);
+        }
 
-    @Override
-    public void onCancel(Platform platform, int i) {
+        @Override
+        protected void initMessages() {
+            mSuccessMessage = getString(R.string.invite_success);
+            mErrorMessage = getString(R.string.invite_failed);
+            mCancelMessage = getString(R.string.invite_cancel);
+        }
 
+        @Override
+        public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
+            super.onComplete(platform, i, hashMap);
+            onBackPressed();
+        }
     }
 
 

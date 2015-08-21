@@ -1,7 +1,7 @@
 package com.koolew.mars;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.koolew.mars.infos.MyAccountInfo;
@@ -22,18 +21,16 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 import cn.sharesdk.framework.Platform;
-import cn.sharesdk.framework.PlatformActionListener;
 
 /**
  * Created by jinchangzhu on 7/28/15.
  */
-public class ShareVideoWindow extends PopupWindow implements View.OnClickListener,
-        PlatformActionListener {
+public class ShareVideoWindow extends PopupWindow implements View.OnClickListener{
 
     public static final int TYPE_VIDEO = 0;
     public static final int TYPE_VIDEO_LIST = 1;
 
-    private Context mContext;
+    private Activity mActivity;
 
     private View mContentView;
 
@@ -46,24 +43,24 @@ public class ShareVideoWindow extends PopupWindow implements View.OnClickListene
     private OnVideoOperatedListener mVideoOperatedListener;
     private ShareManager mShareManager;
 
-    public ShareVideoWindow(Context context, int type, String id, String content) {
-        this(context, type, id, content, null);
+    public ShareVideoWindow(Activity activity, int type, String id, String content) {
+        this(activity, type, id, content, null);
     }
 
-    public ShareVideoWindow(Context context, int type, String id, String content, String uid) {
-        super(context);
+    public ShareVideoWindow(Activity activity, int type, String id, String content, String uid) {
+        super(activity);
 
-        mContext = context;
-        mShareManager = new ShareManager(mContext, this);
+        mActivity = activity;
+        mShareManager = new ShareManager(mActivity, new ShareListener());
 
-        mProgressDialog = DialogUtil.getConnectingServerDialog(context);
+        mProgressDialog = DialogUtil.getConnectingServerDialog(activity);
 
         mType = type;
         mId = id;
         mContent = content;
         mUid = uid;
 
-        mContentView = LayoutInflater.from(context).inflate(R.layout.share_video_layout, null);
+        mContentView = LayoutInflater.from(activity).inflate(R.layout.share_video_layout, null);
         setContentView(mContentView);
 
         if (type == TYPE_VIDEO) {
@@ -191,18 +188,24 @@ public class ShareVideoWindow extends PopupWindow implements View.OnClickListene
         mVideoOperatedListener = listener;
     }
 
-    @Override
-    public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
-        this.dismiss();
-    }
+    class ShareListener extends ShareManager.ShareListener {
 
-    @Override
-    public void onError(Platform platform, int i, Throwable throwable) {
-        Toast.makeText(mContext, R.string.share_failed, Toast.LENGTH_SHORT).show();
-    }
+        public ShareListener() {
+            super(ShareVideoWindow.this.mActivity);
+        }
 
-    @Override
-    public void onCancel(Platform platform, int i) {
+        @Override
+        protected void initMessages() {
+            mSuccessMessage = mActivity.getString(R.string.share_success);
+            mErrorMessage = mActivity.getString(R.string.share_failed);
+            mCancelMessage = mActivity.getString(R.string.share_cancel);
+        }
+
+        @Override
+        public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
+            super.onComplete(platform, i, hashMap);
+            ShareVideoWindow.this.dismiss();
+        }
     }
 
     interface OnVideoOperatedListener {

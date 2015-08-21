@@ -62,7 +62,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 ShareChannelView:type="weibo"
-                android:onClick="onInviteByWeibo"/>
+                android:onClick="onInviteByWeibo"
+                android:visibility="invisible"/>
 
             <com.koolew.mars.view.ShareChannelView
                 android:layout_width="0dp"
@@ -83,7 +84,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 ShareChannelView:type="qzone"
-                android:onClick="onInviteByQzone"/>
+                android:onClick="onInviteByQzone"
+                android:visibility="invisible"/>
         </LinearLayout>
 
         <View

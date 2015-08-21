@@ -1,11 +1,18 @@
 package com.koolew.mars.share;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.widget.Toast;
 
 import com.koolew.mars.R;
 import com.koolew.mars.infos.MyAccountInfo;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
@@ -45,7 +52,7 @@ public class ShareManager {
 
     private final ShareImage DEFAULT_SHARE_IMAGE = new ResourceShareImage(R.mipmap.ic_launcher);
 
-    public ShareManager(Context context, PlatformActionListener platformActionListener) {
+    public ShareManager(Context context, ShareListener platformActionListener) {
         mContext = context;
         mListener = platformActionListener;
     }
@@ -99,7 +106,12 @@ public class ShareManager {
                               String title, String description, ShareImage shareImage, String url) {
         Platform.ShareParams sp = new Platform.ShareParams();
         sp.setTitle(title);
-        sp.setText(description);
+        if (platformName.equals(SinaWeibo.NAME)) {
+            sp.setText(description + " " + url);
+        }
+        else {
+            sp.setText(description);
+        }
         sp.setUrl(url);
         sp.setShareType(Platform.SHARE_WEBPAGE);
         shareImage.setImageParam(sp);
@@ -174,6 +186,52 @@ public class ShareManager {
         protected void setImageParam(Platform.ShareParams sp) {
             sp.setImageData(BitmapFactory.decodeResource(
                     mContext.getResources(), mImageResId));
+        }
+    }
+
+    public static abstract class ShareListener
+            implements cn.sharesdk.framework.PlatformActionListener {
+
+        protected Activity mActivity;
+
+        protected String mSuccessMessage;
+        protected String mCancelMessage;
+        protected String mErrorMessage;
+
+        public ShareListener(Activity activity) {
+            mActivity = activity;
+            initMessages();
+        }
+
+        protected abstract void initMessages();
+
+        @Override
+        public void onCancel(Platform platform, int i) {
+            Toast.makeText(mActivity, mCancelMessage, Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
+            Toast.makeText(mActivity, mSuccessMessage, Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onError(Platform platform, int i, final Throwable throwable) {
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    String failedMessage = mErrorMessage;
+                    try {
+                        JSONObject errorMessage = new JSONObject(throwable.getMessage());
+                        JSONObject error = new JSONObject(errorMessage.getString("error"));
+                        String errorString = error.getString("error");
+                        failedMessage = failedMessage + ": " + errorString;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(mActivity, failedMessage, Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 }
