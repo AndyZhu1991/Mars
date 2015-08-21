@@ -53,7 +53,7 @@ public class FriendFragment extends MainBaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mToolbarInterface.setToolbarTitle(R.string.title_friend);
+        mToolbarInterface.setToolbarTitle(getString(R.string.title_friend));
     }
 
     @Override

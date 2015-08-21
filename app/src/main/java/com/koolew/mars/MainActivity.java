@@ -62,6 +62,7 @@ public class MainActivity extends BaseV4FragmentActivity
     private DrawerToggleView mToggleView;
     private NotificationPointView mToggleNotificationPoint;
     private View mMyToolbar;
+    private String mTitle;
     private TextView mTitleView;
     private FrameLayout mContentFrame;
     private LinearLayout mLeftDrawer;
@@ -93,6 +94,9 @@ public class MainActivity extends BaseV4FragmentActivity
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mMyToolbar = findViewById(R.id.my_toolbar);
         mTitleView = (TextView) findViewById(R.id.title);
+        if (!TextUtils.isEmpty(mTitle)) {
+            mTitleView.setText(mTitle);
+        }
         mToggleView = (DrawerToggleView) findViewById(R.id.my_drawer_toggle);
         mToggleNotificationPoint = (NotificationPointView)
                 findViewById(R.id.toggle_notification_point);
@@ -291,12 +295,10 @@ public class MainActivity extends BaseV4FragmentActivity
 
     @Override
     public void setToolbarTitle(String title) {
-        mTitleView.setText(title);
-    }
-
-    @Override
-    public void setToolbarTitle(int titleResId) {
-        mTitleView.setText(titleResId);
+        mTitle = title;
+        if (!TextUtils.isEmpty(title)) {
+            mTitleView.setText(title);
+        }
     }
 
     @Override

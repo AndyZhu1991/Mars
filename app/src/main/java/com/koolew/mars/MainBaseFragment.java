@@ -56,8 +56,6 @@ public class MainBaseFragment extends BaseV4Fragment {
 
         void setToolbarTitle(String title);
 
-        void setToolbarTitle(int titleResId);
-
         void setTopIconCount(int count);
 
         void setTopIconImageResource(int position, int resource);

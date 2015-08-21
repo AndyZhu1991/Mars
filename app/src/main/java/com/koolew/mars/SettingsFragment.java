@@ -67,7 +67,7 @@ public class SettingsFragment extends MainBaseFragment implements View.OnClickLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mToolbarInterface.setToolbarTitle(R.string.title_settings);
+        mToolbarInterface.setToolbarTitle(getString(R.string.title_settings));
         mToolbarInterface.setToolbarColor(getResources().getColor(R.color.koolew_deep_blue));
     }
 

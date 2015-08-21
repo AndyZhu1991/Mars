@@ -59,7 +59,7 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mToolbarInterface.setToolbarTitle(R.string.title_koolew);
+        mToolbarInterface.setToolbarTitle(getString(R.string.title_koolew));
         initSubPageColors();
 
         EventBus.getDefault().register(this);
