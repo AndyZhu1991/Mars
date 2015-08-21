@@ -296,7 +296,7 @@ public class MainActivity extends BaseV4FragmentActivity
     @Override
     public void setToolbarTitle(String title) {
         mTitle = title;
-        if (!TextUtils.isEmpty(title)) {
+        if (!TextUtils.isEmpty(title) && mTitleView != null) {
             mTitleView.setText(title);
         }
     }

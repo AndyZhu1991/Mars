@@ -6,4 +6,6 @@ package com.koolew.mars.webapi;
 public class ApiErrorCode {
 
     public static final int COIN_NOT_ENOUGH = 103;
+
+    public static final int PHONE_CODE_ERROR = 102;
 }

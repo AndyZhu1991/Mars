@@ -3,13 +3,12 @@ package com.koolew.mars;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
@@ -21,6 +20,8 @@ import com.android.volley.toolbox.Volley;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.infos.MyAccountInfo.LOGIN_TYPE;
 import com.koolew.mars.statistics.BaseActivity;
+import com.koolew.mars.utils.MaxLengthWatcher;
+import com.koolew.mars.webapi.ApiErrorCode;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
 
@@ -66,19 +67,17 @@ public class InputPasswordActivity extends BaseActivity implements View.OnClickL
 
         mRequestQueue = Volley.newRequestQueue(this);
         mPasswordCapture = (EditText) findViewById(R.id.password_capture);
-        mPasswordCapture.addTextChangedListener(new TextWatcher() {
+        mPasswordCapture.addTextChangedListener(new MaxLengthWatcher(4, mPasswordCapture) {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                if (mPasswordCapture.getText().length() <= 4) {
+                    updatePasswordDigits(mPasswordCapture.getText().toString());
+                }
+                super.onTextChanged(arg0, arg1, arg2, arg3);
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Log.d(TAG, "Text changed: " + s);
-                updatePasswordDigits(s.toString());
+            public void onTextOverInput() {
             }
         });
         int[] passwordDigitIds = { R.id.password_digit1, R.id.password_digit2,
@@ -159,7 +158,8 @@ public class InputPasswordActivity extends BaseActivity implements View.OnClickL
                     public void onResponse(JSONObject response) {
                         Log.d(TAG, "response -> " + response.toString());
                         try {
-                            if (response.getInt("code") == 0) {
+                            int code = response.getInt("code");
+                            if (code == 0) {
                                 JSONObject result = response.getJSONObject("result");
                                 MyAccountInfo.setToken(result.getString("token"));
                                 // For jpush
@@ -195,6 +195,11 @@ public class InputPasswordActivity extends BaseActivity implements View.OnClickL
                                     startActivity(new Intent(InputPasswordActivity.this,
                                             InitPersonalInfoActivity.class));
                                 }
+                            }
+                            else if (code == ApiErrorCode.PHONE_CODE_ERROR) {
+                                Toast.makeText(InputPasswordActivity.this, R.string.error_phone_code,
+                                        Toast.LENGTH_LONG).show();
+                                mPasswordCapture.setText("");
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
