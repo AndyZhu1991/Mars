@@ -2,15 +2,15 @@ package com.koolew.mars;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Gravity;
 
+import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.view.TitleBarView;
 
 
-public class WorldTopicActivity extends FragmentActivity
+public class WorldTopicActivity extends BaseV4FragmentActivity
         implements TitleBarView.OnRightLayoutClickListener {
 
     public static final String KEY_TOPIC_ID = BaseVideoListFragment.KEY_TOPIC_ID;

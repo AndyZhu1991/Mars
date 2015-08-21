@@ -347,6 +347,9 @@
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="fd621d57c604311836719bfe4ea1b5e7" />
+
+        <meta-data android:value="55d5c5f5e0f55aa46200399a" android:name="UMENG_APPKEY"></meta-data>
+        <meta-data android:value="default" android:name="UMENG_CHANNEL"/>
     </application>
 
 </manifest>

@@ -1,12 +1,13 @@
 package com.koolew.mars;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import com.koolew.mars.statistics.BaseV4FragmentActivity;
 
-public class DanmakuTabActivity extends FragmentActivity {
+
+public class DanmakuTabActivity extends BaseV4FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

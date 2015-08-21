@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +16,7 @@ import com.android.volley.Response;
 import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.TypedUserInfo;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.view.AvatarLinearContainer;
 import com.koolew.mars.view.BigCountView;
@@ -30,7 +30,7 @@ import org.json.JSONObject;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class FriendInfoActivity extends Activity implements View.OnClickListener,
+public class FriendInfoActivity extends BaseActivity implements View.OnClickListener,
         AdapterView.OnItemClickListener {
 
     public static final String KEY_UID = "uid";

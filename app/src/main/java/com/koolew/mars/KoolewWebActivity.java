@@ -1,16 +1,16 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.UriProcessor;
 
 
-public class KoolewWebActivity extends Activity {
+public class KoolewWebActivity extends BaseActivity {
 
     public static final String KEY_URL = "url";
 

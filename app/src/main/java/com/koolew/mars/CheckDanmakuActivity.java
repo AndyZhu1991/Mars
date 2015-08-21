@@ -1,12 +1,13 @@
 package com.koolew.mars;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import com.koolew.mars.statistics.BaseV4FragmentActivity;
 
-public class CheckDanmakuActivity extends FragmentActivity {
+
+public class CheckDanmakuActivity extends BaseV4FragmentActivity {
 
     public static final String KEY_VIDEO_ID = CheckDanmakuFragment.KEY_VIDEO_ID;
 

@@ -47,6 +47,7 @@ public class FriendFragment extends MainBaseFragment {
 
     public FriendFragment() {
         // Required empty public constructor
+        isNeedPageStatistics = false;
     }
 
     @Override

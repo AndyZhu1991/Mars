@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseTopicInfo;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.view.LoadMoreFooter;
 import com.koolew.mars.view.TitleBarView;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FriendTaskActivity extends Activity
+public class FriendTaskActivity extends BaseActivity
         implements SwipeRefreshLayout.OnRefreshListener, LoadMoreFooter.OnLoadListener {
 
     public static final String KEY_UID = "uid";

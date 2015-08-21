@@ -2,7 +2,6 @@ package com.koolew.mars;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.Response;
+import com.koolew.mars.statistics.BaseV4Fragment;
 import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONArray;
@@ -19,8 +19,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class FriendCurrentFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
-        AdapterView.OnItemClickListener {
+public class FriendCurrentFragment extends BaseV4Fragment
+        implements SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
 
     private static final String TAG = "koolew-FriendCurrentF";
 

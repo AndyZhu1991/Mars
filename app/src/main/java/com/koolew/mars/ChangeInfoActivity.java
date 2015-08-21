@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +9,7 @@ import android.widget.TextView;
 import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.services.UploadAvatarService;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.PictureSelectUtil;
 import com.koolew.mars.view.PhoneNumberView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -17,7 +17,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class ChangeInfoActivity extends Activity implements View.OnClickListener {
+public class ChangeInfoActivity extends BaseActivity implements View.OnClickListener {
 
     public static final int REQUEST_CODE_CHANGE_NICKNAME = 1;
     public static final int REQUEST_CODE_CHANGE_NUMBER = 2;

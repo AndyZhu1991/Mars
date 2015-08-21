@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseTopicInfo;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiWorker;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AddTopicActivity extends Activity implements TitleBarView.OnRightLayoutClickListener,
+public class AddTopicActivity extends BaseActivity implements TitleBarView.OnRightLayoutClickListener,
         SwipeRefreshLayout.OnRefreshListener, TextWatcher {
 
     private TitleBarView mTitleBar;

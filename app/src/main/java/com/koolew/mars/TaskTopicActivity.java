@@ -2,11 +2,11 @@ package com.koolew.mars;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.android.volley.Response;
+import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiWorker;
@@ -15,7 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class TaskTopicActivity extends FragmentActivity
+public class TaskTopicActivity extends BaseV4FragmentActivity
         implements TitleBarView.OnRightLayoutClickListener, Response.Listener<JSONObject> {
 
     public static final String KEY_TOPIC_ID = BaseVideoListFragment.KEY_TOPIC_ID;

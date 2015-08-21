@@ -1,13 +1,14 @@
 package com.koolew.mars;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.koolew.mars.statistics.BaseV4Fragment;
 
-public class FriendWeiboFragment extends Fragment {
+
+public class FriendWeiboFragment extends BaseV4Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.

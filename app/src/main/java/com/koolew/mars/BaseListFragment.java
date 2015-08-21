@@ -1,7 +1,6 @@
 package com.koolew.mars;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +11,13 @@ import android.widget.ListView;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.statistics.BaseV4Fragment;
 import com.koolew.mars.view.LoadMoreFooter;
 
 import org.json.JSONObject;
 
 
-public abstract class BaseListFragment extends Fragment
+public abstract class BaseListFragment extends BaseV4Fragment
         implements SwipeRefreshLayout.OnRefreshListener, LoadMoreFooter.OnLoadListener,
         AbsListView.OnItemClickListener {
 

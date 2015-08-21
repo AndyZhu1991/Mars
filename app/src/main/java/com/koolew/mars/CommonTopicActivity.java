@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.Response;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONArray;
@@ -17,7 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class CommonTopicActivity extends Activity implements AdapterView.OnItemClickListener {
+public class CommonTopicActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     public static final String KEY_UID = "uid";
     public static final String KEY_NICKNAME = "nickname";

@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +22,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.UriProcessor;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.BannerPagerIndicator;
@@ -40,7 +40,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class TaskActivity extends Activity
+public class TaskActivity extends BaseActivity
         implements SwipeRefreshLayout.OnRefreshListener, LoadMoreFooter.OnLoadListener {
 
     private View mHeaderView;

@@ -53,6 +53,7 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
 
     public KoolewFragment() {
         // Required empty public constructor
+        isNeedPageStatistics = false;
     }
 
     @Override

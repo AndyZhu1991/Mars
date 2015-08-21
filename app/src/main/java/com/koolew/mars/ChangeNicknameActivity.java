@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +10,7 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.MaxLengthWatcher;
 import com.koolew.mars.utils.Utils;
@@ -21,7 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class ChangeNicknameActivity extends Activity implements View.OnClickListener,
+public class ChangeNicknameActivity extends BaseActivity implements View.OnClickListener,
         TitleBarView.OnRightLayoutClickListener {
 
     private EditText mNewNickname;

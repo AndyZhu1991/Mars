@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ListView;
 
@@ -8,10 +7,11 @@ import com.koolew.mars.preference.PreferenceAdapter;
 import com.koolew.mars.preference.PreferenceGroupTitle;
 import com.koolew.mars.preference.PreferenceHelper;
 import com.koolew.mars.preference.SwitchPreference;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.webapi.ApiWorker;
 
 
-public class PushSettingsActivity extends Activity {
+public class PushSettingsActivity extends BaseActivity {
 
     private ListView mListView;
     private PreferenceAdapter mAdapter;

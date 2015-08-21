@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.infos.MyAccountInfo.LOGIN_TYPE;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONException;
@@ -26,7 +26,7 @@ import cn.sharesdk.tencent.qq.QQ;
 import cn.sharesdk.wechat.friends.Wechat;
 
 
-public class FirstLoginActivity extends Activity implements PlatformActionListener {
+public class FirstLoginActivity extends BaseActivity implements PlatformActionListener {
 
     private static final String TAG = "koolew-FirstLoginA";
 

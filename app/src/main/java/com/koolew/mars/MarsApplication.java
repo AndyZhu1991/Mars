@@ -14,6 +14,9 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.tencent.bugly.crashreport.CrashReport;
+import com.umeng.analytics.AnalyticsConfig;
+import com.umeng.analytics.MobclickAgent;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.sharesdk.framework.ShareSDK;
@@ -39,7 +42,8 @@ public class MarsApplication extends Application {
         initBgm(this);
         initJpush(getApplicationContext());
         ShareSDK.initSDK(getApplicationContext());
-        //CrashReport.initCrashReport(getApplicationContext(), "900006713", false);
+        initBugly();
+        initUmeng();
 
         Log.d(TAG, "Init in MarsApplication takes: " + (System.currentTimeMillis() - start));
     }
@@ -56,7 +60,9 @@ public class MarsApplication extends Application {
         config.diskCacheSize(50 * 1024 * 1024); // 50 MiB
         config.tasksProcessingOrder(QueueProcessingType.LIFO);
         config.imageDecoder(new VideoThumbDecoder(true));
-        config.writeDebugLogs(); // Remove for release app
+        if (DEBUG) {
+            config.writeDebugLogs();
+        }
         config.defaultDisplayImageOptions(new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
@@ -80,5 +86,17 @@ public class MarsApplication extends Application {
     private void initJpush(Context context) {
         JPushInterface.setDebugMode(DEBUG);
         JPushInterface.init(context);
+    }
+
+    private void initBugly() {
+        if (!DEBUG) {
+            CrashReport.initCrashReport(getApplicationContext(), "900006713", false);
+        }
+    }
+
+    private void initUmeng() {
+        MobclickAgent.openActivityDurationTrack(false); // 禁止友盟默认的页面统计方式
+        AnalyticsConfig.enableEncrypt(true); // 设置是否对日志信息进行加密
+        MobclickAgent.setDebugMode(DEBUG);
     }
 }

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +24,7 @@ import com.amap.api.maps2d.model.LatLng;
 import com.android.volley.Response;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
+import com.koolew.mars.statistics.BaseV4Fragment;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.BigCountView;
@@ -41,7 +41,8 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class FriendMeetFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class FriendMeetFragment extends BaseV4Fragment
+        implements SwipeRefreshLayout.OnRefreshListener{
 
     private RecyclerView mRecyclerView;
     private FriendRecommendAdapter mAdapter;

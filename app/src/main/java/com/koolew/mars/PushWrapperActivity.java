@@ -2,14 +2,14 @@ package com.koolew.mars;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.view.TitleBarView;
 
 
-public class PushWrapperActivity extends FragmentActivity {
+public class PushWrapperActivity extends BaseV4FragmentActivity {
 
     public static final String KEY_TAB_TYPE = "tab type";
 

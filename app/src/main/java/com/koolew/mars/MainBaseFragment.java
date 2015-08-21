@@ -2,12 +2,13 @@ package com.koolew.mars;
 
 import android.app.Activity;
 import android.net.Uri;
-import android.support.v4.app.Fragment;
+
+import com.koolew.mars.statistics.BaseV4Fragment;
 
 /**
  * Created by jinchangzhu on 5/31/15.
  */
-public class MainBaseFragment extends Fragment {
+public class MainBaseFragment extends BaseV4Fragment {
 
     protected OnFragmentInteractionListener mListener;
     protected ToolbarOperateInterface mToolbarInterface;

@@ -1,12 +1,13 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.koolew.mars.statistics.BaseActivity;
 
-public class VideoPrivacyActivity extends Activity {
+
+public class VideoPrivacyActivity extends BaseActivity {
 
     public static final int AUTHORITY_PUBLIC = 0;
     public static final int AUTHORITY_FRIEND_ONLY = 1;

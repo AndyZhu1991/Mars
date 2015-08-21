@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.InputType;
@@ -12,6 +11,7 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.TitleBarView;
@@ -21,7 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class ChangePhoneNumberActivity extends Activity
+public class ChangePhoneNumberActivity extends BaseActivity
         implements RequestPasswordFragment.OnFragmentInteractionListener,
         TitleBarView.OnRightLayoutClickListener {
 

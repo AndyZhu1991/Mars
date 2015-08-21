@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +17,7 @@ import com.android.volley.Response;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.share.ShareManager;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.TitleBarView;
@@ -38,7 +38,7 @@ import cn.sharesdk.framework.PlatformActionListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class InviteActivity extends Activity implements SwipeRefreshLayout.OnRefreshListener,
+public class InviteActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener,
         TitleBarView.OnRightLayoutClickListener, PlatformActionListener {
 
     public static final String KEY_TOPIC_ID = "topic_id";

@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -23,6 +22,7 @@ import com.koolew.mars.danmaku.DanmakuShowManager;
 import com.koolew.mars.danmaku.DanmakuThread;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.MaxLengthWatcher;
 import com.koolew.mars.utils.Utils;
@@ -40,7 +40,7 @@ import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 
-public class SendDanmakuActivity extends Activity
+public class SendDanmakuActivity extends BaseActivity
         implements IMediaPlayer.OnPreparedListener, IMediaPlayer.OnCompletionListener,
         TextView.OnEditorActionListener, View.OnTouchListener {
 

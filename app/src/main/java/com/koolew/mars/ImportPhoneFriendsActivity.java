@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -32,6 +31,7 @@ import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.FriendInfo;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -44,7 +44,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 
-public class ImportPhoneFriendsActivity extends Activity {
+public class ImportPhoneFriendsActivity extends BaseActivity {
 
     private static final String TAG = "koolew-ImportPhoneFrdsA";
 

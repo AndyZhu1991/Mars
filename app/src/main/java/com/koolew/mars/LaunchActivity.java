@@ -1,13 +1,13 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.statistics.BaseActivity;
 
 
-public class LaunchActivity extends Activity {
+public class LaunchActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

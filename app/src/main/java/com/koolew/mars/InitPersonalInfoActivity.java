@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.services.UploadAvatarService;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.MaxLengthWatcher;
 import com.koolew.mars.utils.PictureSelectUtil;
 import com.koolew.mars.webapi.UrlHelper;
@@ -30,7 +30,7 @@ import org.json.JSONObject;
 import java.util.Map;
 
 
-public class InitPersonalInfoActivity extends Activity {
+public class InitPersonalInfoActivity extends BaseActivity {
 
     private static final String TAG = "koolew-InitPersonalInfo";
 

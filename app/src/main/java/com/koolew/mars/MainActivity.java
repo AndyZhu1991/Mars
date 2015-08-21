@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -34,6 +33,7 @@ import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.notification.NotificationEvent;
 import com.koolew.mars.notification.NotificationManager;
 import com.koolew.mars.preference.PreferenceHelper;
+import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.view.DrawerToggleView;
 import com.koolew.mars.view.NotificationPointView;
 import com.koolew.mars.view.PhoneNumberView;
@@ -48,7 +48,7 @@ import org.simple.eventbus.Subscriber;
 import java.util.Map;
 
 
-public class MainActivity extends FragmentActivity
+public class MainActivity extends BaseV4FragmentActivity
         implements MainBaseFragment.OnFragmentInteractionListener,
                    MainBaseFragment.ToolbarOperateInterface, View.OnClickListener{
 

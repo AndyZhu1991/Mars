@@ -3,7 +3,6 @@ package com.koolew.mars;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.statistics.BaseV4Fragment;
 import com.koolew.mars.view.LoadMoreFooter;
 import com.koolew.mars.webapi.ApiWorker;
 
@@ -28,7 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class KoolewRelatedMeFragment extends Fragment
+public class KoolewRelatedMeFragment extends BaseV4Fragment
         implements SwipeRefreshLayout.OnRefreshListener, LoadMoreFooter.OnLoadListener,
                    AbsListView.OnItemClickListener {
 

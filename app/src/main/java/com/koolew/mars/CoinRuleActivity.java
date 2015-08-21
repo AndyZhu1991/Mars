@@ -1,13 +1,13 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.statistics.BaseActivity;
 
 
-public class CoinRuleActivity extends Activity {
+public class CoinRuleActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

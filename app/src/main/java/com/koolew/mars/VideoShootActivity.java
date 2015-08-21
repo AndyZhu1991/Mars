@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -40,6 +39,7 @@ import com.koolew.mars.media.MediaAudioEncoder;
 import com.koolew.mars.media.MediaEncoder;
 import com.koolew.mars.media.MediaMuxerWrapper;
 import com.koolew.mars.media.MediaVideoEncoder;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.MathUtil;
 import com.koolew.mars.utils.RawImageUtil;
@@ -57,7 +57,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class VideoShootActivity extends Activity
+public class VideoShootActivity extends BaseActivity
         implements OnClickListener, MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnSeekCompleteListener {
 

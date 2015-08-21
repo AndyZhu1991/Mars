@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -28,7 +28,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class CommonFriendActivity extends Activity implements AdapterView.OnItemClickListener {
+public class CommonFriendActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     public static final String KEY_UID = "uid";
 

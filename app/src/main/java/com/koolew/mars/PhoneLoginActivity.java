@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,13 +9,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.Utils;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class PhoneLoginActivity extends Activity {
+public class PhoneLoginActivity extends BaseActivity {
 
     private static final String TAG = "koolew-PhoneLoginA";
 

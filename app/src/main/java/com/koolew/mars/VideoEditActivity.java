@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -21,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.koolew.mars.qiniu.UploadHelper;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.BgmUtil;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Mp4ParserUtil;
@@ -31,7 +31,7 @@ import java.io.File;
 import java.io.IOException;
 
 
-public class VideoEditActivity extends Activity
+public class VideoEditActivity extends BaseActivity
         implements TitleBarView.OnRightLayoutClickListener, View.OnClickListener{
 
     public static final int REQUEST_VIDEO_PRIVACY = 1;

@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +20,7 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.infos.MyAccountInfo.LOGIN_TYPE;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
 
@@ -40,7 +40,7 @@ import cn.sharesdk.tencent.qq.QQ;
 import cn.sharesdk.wechat.friends.Wechat;
 
 
-public class InputPasswordActivity extends Activity implements View.OnClickListener,
+public class InputPasswordActivity extends BaseActivity implements View.OnClickListener,
         RequestPasswordFragment.OnFragmentInteractionListener{
 
     private static final String TAG = "koolew-InputPasswordA";

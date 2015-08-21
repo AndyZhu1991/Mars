@@ -94,6 +94,7 @@ dependencies {
     compile 'com.tencent.bugly:crashreport:1.2.3.6'
     compile 'org.simple:androideventbus:1.0.5'
     compile 'com.7heaven.ioswidget:iosswitch:0.5'
+    compile 'com.umeng.analytics:analytics:latest.integration'
 }
 
 bugly {

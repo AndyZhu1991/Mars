@@ -1,10 +1,11 @@
 package com.koolew.mars;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.webkit.WebView;
 
-public class PrivacyPolicyActivity extends Activity {
+import com.koolew.mars.statistics.BaseActivity;
+
+public class PrivacyPolicyActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
