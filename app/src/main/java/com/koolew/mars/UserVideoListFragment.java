@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseVideoInfo;
@@ -86,8 +84,8 @@ public class UserVideoListFragment extends BaseVideoListFragment {
             View root = super.getVideoItemView(position, convertView, parent);
 
             if (needShowAddFriend(mUserType)) {
-                ((TextView) root.findViewById(R.id.danmaku_send_text)).setText(R.string.ad_friend);
-                ((ImageView) root.findViewById(R.id.danmaku_send_ic)).setImageResource(R.mipmap.ic_add_friend);
+                root.findViewById(R.id.danmaku_send_text).setVisibility(View.INVISIBLE);
+                root.findViewById(R.id.danmaku_send_ic).setVisibility(View.INVISIBLE);
             }
 
             return root;
