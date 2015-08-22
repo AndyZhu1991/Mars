@@ -196,6 +196,10 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
             if (isNeedDanmaku) {
                 DanmakuShowManager danmakuManager = new DanmakuShowManager(mContext,
                         getDanmakuContainer(mCurrentItem), getDanmakuList(mCurrentItem));
+                int duration = 0;
+                if (VideoRepeater.isRepeatedVideo(filePath)) {
+                    duration = VideoRepeater.getVideoRealDuration(filePath);
+                }
                 mDanmakuThread = new DanmakuThread((Activity) mContext, danmakuManager,
                         new DanmakuThread.PlayerWrapper() {
                             @Override
@@ -207,7 +211,8 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
                             public boolean isPlaying() {
                                 return mRecyclerPlayer.isPlaying();
                             }
-                        });
+                        },
+                        duration == 0 ? DanmakuThread.IGNORE_REAL_VIDEO_LEN : duration);
                 mDanmakuThread.start();
             }
 

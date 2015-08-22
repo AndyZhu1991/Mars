@@ -12,7 +12,7 @@ public class VideoRepeater {
 
     private static final double TARGET_VIDEO_LEN = 6.0; // In second
 
-    private static final String REPEATED_DIR_NAME = "repeated/";
+    private static final String REPEATED_DIR_NAME = "repeated";
 
 
     public static boolean isNeedRepeat(String videoPath) {
@@ -67,7 +67,38 @@ public class VideoRepeater {
         return new StringBuilder(originVideoFile.getParent())
                 .append(File.separator)
                 .append(REPEATED_DIR_NAME)
+                .append(File.separator)
                 .append(originVideoFile.getName())
                 .toString();
+    }
+
+    public static int getVideoRealDuration(String videoPath) {
+        if (isRepeatedVideo(videoPath)) {
+            videoPath = getOriginVideoPath(videoPath);
+        }
+        try {
+            return (int) (Mp4ParserUtil.getDuration(videoPath) * 1000);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static boolean isRepeatedVideo(String videoPath) {
+        File videoFile = new File(videoPath);
+        if (videoFile.getParent().endsWith(File.separator + REPEATED_DIR_NAME)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public static String getOriginVideoPath(String repeatedVideoPath) {
+        File repeatedVideoFile = new File(repeatedVideoPath);
+        File repeatedVideoDir = repeatedVideoFile.getParentFile();
+        String originVideoDir = repeatedVideoDir.getParent();
+        String originVideoPath = originVideoDir + File.separator + repeatedVideoFile.getName();
+        return originVideoPath;
     }
 }

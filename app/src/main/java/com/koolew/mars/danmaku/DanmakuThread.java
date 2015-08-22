@@ -7,7 +7,7 @@ import android.app.Activity;
  */
 public class DanmakuThread extends Thread {
 
-    private static final int IGNORE_REAL_VIDEO_LEN = -1;
+    public static final int IGNORE_REAL_VIDEO_LEN = -1;
 
     private Activity mActivity;
     private DanmakuShowManager mDanmakuManager;
