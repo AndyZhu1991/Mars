@@ -9,6 +9,7 @@ import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -50,7 +51,9 @@ import com.koolew.mars.view.VideoPieceView;
 import com.koolew.mars.view.VideosProgressView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -315,7 +318,7 @@ public class VideoShootActivity extends BaseActivity
             mCamera.addCallbackBuffer(new byte[previewWidth * previewHeight * 3 / 2]);
             mCamera.setPreviewCallbackWithBuffer(new MyPreviewCallback());
             List<String> focusModes = params.getSupportedFocusModes();
-            if (focusModes.contains("continuous-video")) {
+            if (focusModes.contains("continuous-video") && shouldAutoFocus()) {
                 params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
             }
             this.mCamera.setParameters(params);
@@ -931,4 +934,33 @@ public class VideoShootActivity extends BaseActivity
         }
     }
 
+    // 已知红米1和红米NOTE1在升级MIUI V6之后，打开自动对焦会在预览界面卡住
+    private boolean shouldAutoFocus() {
+        if ((Build.MODEL.equals("HM 1") || Build.MODEL.startsWith("HM NOTE 1")) ||
+                getMiuiVersionName().equals("V6")) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    public static String getMiuiVersionName() {
+        String line;
+        BufferedReader reader = null;
+        try {
+            Process p = Runtime.getRuntime().exec("getprop ro.miui.ui.version.name" );
+            reader = new BufferedReader(new InputStreamReader(p.getInputStream()), 1024);
+            line = reader.readLine();
+            return line;
+        } catch (IOException e) {
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return "UNKNOWN";
+    }
 }
