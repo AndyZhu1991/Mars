@@ -1,12 +1,9 @@
 package com.koolew.mars;
 
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -27,12 +24,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
-import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.FriendInfo;
 import com.koolew.mars.statistics.BaseActivity;
+import com.koolew.mars.utils.ContactUtil;
 import com.koolew.mars.utils.Utils;
+import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -40,9 +38,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 
 public class ImportPhoneFriendsActivity extends BaseActivity {
@@ -226,65 +223,9 @@ public class ImportPhoneFriendsActivity extends BaseActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            JSONArray contacts = new JSONArray();
-            ContentResolver cr = getContentResolver();
-            Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                    null, null, null, null);
-            if (cur.getCount() > 0) {
-                while (cur.moveToNext()) {
-                    String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-                    String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                    if (Integer.parseInt(cur.getString(
-                            cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                        Cursor pCur = cr.query(
-                                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                null,
-                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
-                                new String[]{id}, null);
-                        while (pCur.moveToNext()) {
-                            String phoneNo = pCur.getString(pCur.getColumnIndex(
-                                    ContactsContract.CommonDataKinds.Phone.NUMBER));
-                            JSONObject contact = new JSONObject();
-                            try {
-                                contact.put("nickname", name);
-                                contact.put("phone", phoneNo);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            contacts.put(contact);
-                        }
-                        pCur.close();
-                    }
-                }
-            }
-
-            String url = UrlHelper.CONTACT_FRIEND_RECOMMEND_V2_URL;
-            RequestFuture<JSONObject> future = RequestFuture.newFuture();
-            JSONObject requestJson = new JSONObject();
-            try {
-                requestJson.put("contacts", contacts);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(
-                    Request.Method.POST, url, requestJson, future, future) {
-                @Override
-                public Map<String, String> getHeaders() {
-                    return UrlHelper.getStandardPostHeaders();
-                }
-            };
-            mRequestQueue.add(jsonRequest);
-
-            JSONObject response = null;
-            try {
-                response = future.get(UrlHelper.REQUEST_TIMEOUT, UrlHelper.TIME_UNIT);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (TimeoutException e) {
-                e.printStackTrace();
-            }
+            List<ContactUtil.SimpleContactInfo> contacts =
+                    ContactUtil.getPhoneContacts(ImportPhoneFriendsActivity.this);
+            JSONObject response = ApiWorker.getInstance().requestContactFriendV2Sync(contacts);
             try {
                 JSONArray friendJsons = response.getJSONObject("result").getJSONArray("relations");
                 friendInfos = new FriendInfo[friendJsons.length()];
@@ -296,6 +237,8 @@ public class ImportPhoneFriendsActivity extends BaseActivity {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (NullPointerException ne) {
+                ne.printStackTrace();
             }
 
             return null;

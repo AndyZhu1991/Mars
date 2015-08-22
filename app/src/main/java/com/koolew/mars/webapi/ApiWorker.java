@@ -1,6 +1,7 @@
 package com.koolew.mars.webapi;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -118,23 +119,45 @@ public class ApiWorker {
 
     public JsonObjectRequest requestContactFriend(List<ContactUtil.SimpleContactInfo> contacts,
             Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        return standardPostRequest(UrlHelper.CONTACT_FRIEND_RECOMMEND_URL,
+                buildContactFriendJson(contacts), listener, errorListener);
+    }
 
-        JSONObject requestJson = new JSONObject();
+    public JSONObject requestContactFriendV2Sync(List<ContactUtil.SimpleContactInfo> contacts) {
+        try {
+            return standardPostRequestSync(UrlHelper.CONTACT_FRIEND_RECOMMEND_V2_URL,
+                    buildContactFriendJson(contacts));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private JSONObject buildContactFriendJson(List<ContactUtil.SimpleContactInfo> contacts) {
+        JSONObject contactJson = new JSONObject();
         JSONArray jsonArrayContacts = new JSONArray();
         try {
             for (ContactUtil.SimpleContactInfo contactInfo : contacts) {
+                if (TextUtils.isEmpty(contactInfo.getName().trim())) {
+                    continue;
+                }
                 JSONObject contact = new JSONObject();
                 contact.put("nickname", contactInfo.getName());
                 contact.put("phone", contactInfo.getNumber());
                 jsonArrayContacts.put(contact);
+                if (jsonArrayContacts.length() >= 1000) {
+                    break;
+                }
             }
-            requestJson.put("contacts", jsonArrayContacts);
+            contactJson.put("contacts", jsonArrayContacts);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        return standardPostRequest(UrlHelper.CONTACT_FRIEND_RECOMMEND_URL,
-                requestJson, listener, errorListener);
+        return contactJson;
     }
 
     public JsonObjectRequest requestCurrentFriend(Response.Listener<JSONObject> listener,
@@ -614,6 +637,13 @@ public class ApiWorker {
             throws InterruptedException, ExecutionException, TimeoutException {
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         standardGetRequest(url, future, future);
+        return future.get(SYNC_REQUEST_TIMEOUT, SYNC_REQUEST_TIME_UNIT);
+    }
+
+    private JSONObject standardPostRequestSync(String url, JSONObject requestObject)
+            throws InterruptedException, ExecutionException, TimeoutException {
+        RequestFuture<JSONObject> future = RequestFuture.newFuture();
+        standardPostRequest(url, requestObject, future, future);
         return future.get(SYNC_REQUEST_TIMEOUT, SYNC_REQUEST_TIME_UNIT);
     }
 
