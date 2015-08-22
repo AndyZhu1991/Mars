@@ -19,9 +19,11 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.statistics.BaseActivity;
+import com.koolew.mars.statistics.StatisticsEvent;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiWorker;
+import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -166,6 +168,7 @@ public class AddTopicActivity extends BaseActivity implements TitleBarView.OnRig
             mConnectingDialog.dismiss();
             try {
                 if (response.getInt("code") == 0) {
+                    MobclickAgent.onEvent(AddTopicActivity.this, StatisticsEvent.EVENT_ADD_TOPIC);
                     finish();
                 }
                 else {

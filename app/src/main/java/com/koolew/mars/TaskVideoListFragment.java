@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.koolew.mars.statistics.StatisticsEvent;
+import com.umeng.analytics.MobclickAgent;
+
 /**
  * Created by jinchangzhu on 7/28/15.
  */
@@ -52,6 +55,7 @@ public class TaskVideoListFragment extends BaseVideoListFragment implements View
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_accept:
+                MobclickAgent.onEvent(getActivity(), StatisticsEvent.EVENT_ACCEPT_INVITATION);
                 capture();
                 break;
         }

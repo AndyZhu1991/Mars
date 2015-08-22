@@ -5,6 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.koolew.mars.statistics.StatisticsEvent;
+import com.umeng.analytics.MobclickAgent;
+
 /**
  * Created by jinchangzhu on 7/27/15.
  */
@@ -30,9 +33,11 @@ public class CaptureInviteVideoListFragment extends BaseVideoListFragment
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.capture:
+                MobclickAgent.onEvent(getActivity(), StatisticsEvent.EVENT_TAKE_VIDEO);
                 capture();
                 break;
             case R.id.invite:
+                MobclickAgent.onEvent(getActivity(), StatisticsEvent.EVENT_INVITE_FRIEND);
                 invite();
                 break;
         }

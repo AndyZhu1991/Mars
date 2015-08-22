@@ -18,10 +18,12 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.statistics.BaseActivity;
+import com.koolew.mars.statistics.StatisticsEvent;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.view.LoadMoreFooter;
 import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiWorker;
+import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -251,6 +253,7 @@ public class FriendTaskActivity extends BaseActivity
             Intent intent = new Intent(FriendTaskActivity.this, VideoShootActivity.class);
             intent.putExtra(VideoShootActivity.KEY_TOPIC_ID, topicId);
             startActivityForResult(intent, REQUEST_CAPTURE);
+            MobclickAgent.onEvent(FriendTaskActivity.this, StatisticsEvent.EVENT_ACCEPT_INVITATION);
         }
     };
 
