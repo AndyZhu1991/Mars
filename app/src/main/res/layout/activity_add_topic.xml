@@ -11,6 +11,7 @@
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:background="#F4D288"
         TitleBarView:title_text="@string/add_topic_title"
         TitleBarView:right_text="@string/done"/>
 

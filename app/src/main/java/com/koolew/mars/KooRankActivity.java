@@ -17,6 +17,7 @@ import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.statistics.BaseActivity;
+import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -49,6 +50,8 @@ public class KooRankActivity extends BaseActivity implements SwipeRefreshLayout.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_koo_rank);
+
+        Utils.setStatusBarColorBurn(this, 0xFF5888B5);
 
         Intent intent = getIntent();
         mUid = intent.getStringExtra(KEY_UID);

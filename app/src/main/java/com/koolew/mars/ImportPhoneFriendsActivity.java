@@ -32,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.FriendInfo;
 import com.koolew.mars.statistics.BaseActivity;
+import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -60,6 +61,8 @@ public class ImportPhoneFriendsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import_phone_friends);
+
+        Utils.setStatusBarColorFromResource(this, R.mipmap.blur_background);
 
         mRequestQueue = Volley.newRequestQueue(this);
 

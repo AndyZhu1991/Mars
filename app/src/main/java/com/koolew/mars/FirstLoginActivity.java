@@ -10,6 +10,7 @@ import com.android.volley.Response;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.infos.MyAccountInfo.LOGIN_TYPE;
 import com.koolew.mars.statistics.BaseActivity;
+import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONException;
@@ -36,6 +37,8 @@ public class FirstLoginActivity extends BaseActivity implements PlatformActionLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_login);
+
+        Utils.setStatusBarColorBurn(this, 0xFFFFFFFF/*white*/);
 
         mProgressDialog = new ProgressDialog(this);
     }

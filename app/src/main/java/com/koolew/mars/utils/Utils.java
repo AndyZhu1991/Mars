@@ -1,11 +1,15 @@
 package com.koolew.mars.utils;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Build;
+import android.support.v7.graphics.Palette;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
@@ -190,5 +194,29 @@ public class Utils {
             this.list = list;
             this.position = position;
         }
+    }
+
+    public static void setStatusBarColorBurn(Activity activity, int color) {
+        setStatusBarColor(activity, ColorUtil.burnColorForStatusBar(color));
+    }
+
+    public static void setStatusBarColor(Activity activity, int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity.getWindow().setStatusBarColor(color);
+        }
+    }
+
+    public static int getStatusBarColorFromPalette(Palette palette) {
+        return palette.getMutedColor(0xFF000000);
+    }
+
+    public static void setStatusBarColorFromResource(final Activity activity, int resourceId) {
+        Palette.from(BitmapFactory.decodeResource(activity.getResources(), resourceId))
+                .generate(new Palette.PaletteAsyncListener() {
+                    @Override
+                    public void onGenerated(Palette palette) {
+                        setStatusBarColorBurn(activity, getStatusBarColorFromPalette(palette));
+                    }
+                });
     }
 }

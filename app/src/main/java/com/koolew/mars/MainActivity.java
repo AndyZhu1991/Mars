@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.graphics.Palette;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,11 +30,14 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.blur.DisplayBlurImage;
+import com.koolew.mars.blur.DisplayBlurImageAndPalette;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.notification.NotificationEvent;
 import com.koolew.mars.notification.NotificationManager;
 import com.koolew.mars.preference.PreferenceHelper;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
+import com.koolew.mars.utils.ColorUtil;
+import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.DrawerToggleView;
 import com.koolew.mars.view.NotificationPointView;
 import com.koolew.mars.view.PhoneNumberView;
@@ -50,7 +54,7 @@ import java.util.Map;
 
 public class MainActivity extends BaseV4FragmentActivity
         implements MainBaseFragment.OnFragmentInteractionListener,
-                   MainBaseFragment.ToolbarOperateInterface, View.OnClickListener{
+                   MainBaseFragment.ToolbarOperateInterface, View.OnClickListener, DrawerLayout.DrawerListener {
 
     private static final String TAG = "koolew-MainActivity";
 
@@ -62,6 +66,8 @@ public class MainActivity extends BaseV4FragmentActivity
     private DrawerToggleView mToggleView;
     private NotificationPointView mToggleNotificationPoint;
     private View mMyToolbar;
+    private int mTitleBarColor;
+    private int mAvatarPaletteColor;
     private String mTitle;
     private TextView mTitleView;
     private FrameLayout mContentFrame;
@@ -92,12 +98,14 @@ public class MainActivity extends BaseV4FragmentActivity
         mRequestQueue = Volley.newRequestQueue(this);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.setDrawerListener(this);
         mMyToolbar = findViewById(R.id.my_toolbar);
         mTitleView = (TextView) findViewById(R.id.title);
         if (!TextUtils.isEmpty(mTitle)) {
             mTitleView.setText(mTitle);
         }
         mToggleView = (DrawerToggleView) findViewById(R.id.my_drawer_toggle);
+        mToggleView.setDrawer(mDrawerLayout);
         mToggleNotificationPoint = (NotificationPointView)
                 findViewById(R.id.toggle_notification_point);
         mContentFrame = (FrameLayout) findViewById(R.id.content_frame);
@@ -135,7 +143,6 @@ public class MainActivity extends BaseV4FragmentActivity
         mTopIconLayouts[1].setOnClickListener(this);
 
         switchFragment(0);
-        configureDrawer();
 
         getUserInfo();
 
@@ -180,14 +187,6 @@ public class MainActivity extends BaseV4FragmentActivity
         }
     }
 
-    private void configureDrawer() {
-        // Configure drawer
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        mDrawerLayout.setDrawerListener(mToggleView);
-        mToggleView.setDrawer(mDrawerLayout);
-    }
-
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -225,7 +224,12 @@ public class MainActivity extends BaseV4FragmentActivity
                                 mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
                                 mCountCoin.setText("" + MyAccountInfo.getCoinNum());
                                 ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(), mAvatar);
-                                new DisplayBlurImage(mInfoBackground, MyAccountInfo.getAvatar()).execute();
+                                new DisplayBlurImageAndPalette(mInfoBackground, MyAccountInfo.getAvatar()) {
+                                    @Override
+                                    protected void onPalette(Palette palette) {
+                                        mAvatarPaletteColor = Utils.getStatusBarColorFromPalette(palette);
+                                    }
+                                }.execute();
                                 mNickname.setText(MyAccountInfo.getNickname());
                                 mCountKoo.setText("" + MyAccountInfo.getKooNum());
                             }
@@ -290,6 +294,8 @@ public class MainActivity extends BaseV4FragmentActivity
 
     @Override
     public void setToolbarColor(int color) {
+        mTitleBarColor = color;
+        Utils.setStatusBarColorBurn(this, color);
         mMyToolbar.setBackgroundColor(color);
     }
 
@@ -368,6 +374,24 @@ public class MainActivity extends BaseV4FragmentActivity
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onDrawerSlide(View drawerView, float slideOffset) {
+        Utils.setStatusBarColorBurn(this, ColorUtil.getTransitionColor
+                (mTitleBarColor, mAvatarPaletteColor, slideOffset));
+    }
+
+    @Override
+    public void onDrawerOpened(View drawerView) {
+    }
+
+    @Override
+    public void onDrawerClosed(View drawerView) {
+    }
+
+    @Override
+    public void onDrawerStateChanged(int newState) {
     }
 
 

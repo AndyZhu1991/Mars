@@ -3,7 +3,6 @@ package com.koolew.mars.view;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -15,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.koolew.mars.R;
+import com.koolew.mars.utils.ColorUtil;
 
 /**
  * Created by jinchangzhu on 6/3/15.
@@ -136,7 +136,7 @@ public class KoolewViewPagerIndicator extends LinearLayout
                     + nextTitle.getRight() * positionOffset);
 
             if (backgroundColors != null && backgroundColors.length != 0) {
-                int backgroundColor = getTransitionColor(
+                int backgroundColor = ColorUtil.getTransitionColor(
                         backgroundColors[position], backgroundColors[position + 1], positionOffset);
                 setBackgroundColor(backgroundColor);
                 if (mOnBackgroundColorChangedListener != null) {
@@ -192,13 +192,5 @@ public class KoolewViewPagerIndicator extends LinearLayout
 
     public interface OnBackgroundColorChangedListener {
         public void onBackgroundColorChanged(int color);
-    }
-
-    private int getTransitionColor(int startColor, int endColor, float offset) {
-        return Color.argb(
-                (int) (Color.alpha(startColor) * (1.0f - offset) + Color.alpha(endColor) * offset),
-                (int) (Color.red(startColor) * (1.0f - offset) + Color.red(endColor)   * offset),
-                (int) (Color.green(startColor) * (1.0f - offset) + Color.green(endColor) * offset),
-                (int) (Color.blue(startColor)  * (1.0f - offset) + Color.blue(endColor)  * offset));
     }
 }

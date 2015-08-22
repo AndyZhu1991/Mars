@@ -21,6 +21,7 @@ import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.infos.MyAccountInfo.LOGIN_TYPE;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.MaxLengthWatcher;
+import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiErrorCode;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
@@ -62,6 +63,8 @@ public class InputPasswordActivity extends BaseActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input_password);
+
+        Utils.setStatusBarColorBurn(this, 0xFFFFFFFF/*white*/);
 
         mLoginType = getIntent().getExtras().getInt(KEY_LOGIN_TYPE);
 

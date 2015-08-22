@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.koolew.mars.blur.DisplayBlurImage;
+import com.koolew.mars.blur.DisplayBlurImageAndStatusBar;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.services.UploadAvatarService;
 import com.koolew.mars.statistics.BaseActivity;
@@ -55,7 +56,7 @@ public class ChangeInfoActivity extends BaseActivity implements View.OnClickList
         mPhoneNumber.setOnClickListener(this);
 
         ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(), mAvatar);
-        new DisplayBlurImage(mBlurAvatar, MyAccountInfo.getAvatar()).execute();
+        new DisplayBlurImageAndStatusBar(this, mBlurAvatar, MyAccountInfo.getAvatar()).execute();
 
         mNickname.setText(MyAccountInfo.getNickname());
         mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());

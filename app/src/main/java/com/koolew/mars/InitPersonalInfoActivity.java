@@ -21,6 +21,7 @@ import com.koolew.mars.services.UploadAvatarService;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.MaxLengthWatcher;
 import com.koolew.mars.utils.PictureSelectUtil;
+import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -46,6 +47,8 @@ public class InitPersonalInfoActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init_personal_info);
+
+        Utils.setStatusBarColorFromResource(this, R.mipmap.blur_background);
 
         mRequestQueue = Volley.newRequestQueue(this);
         mAvatar = (ImageView) findViewById(R.id.avatar);

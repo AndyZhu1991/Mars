@@ -3,6 +3,7 @@ package com.koolew.mars.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.koolew.mars.R;
+import com.koolew.mars.utils.Utils;
 
 /**
  * Created by jinchangzhu on 6/23/15.
@@ -60,9 +62,27 @@ public class TitleBarView extends FrameLayout implements View.OnClickListener {
             mRightLayout.setVisibility(INVISIBLE);
         }
 
+        Drawable backgroundDrawable = getBackground();
+        if (backgroundDrawable instanceof ColorDrawable) {
+            int backgroundColor = ((ColorDrawable) backgroundDrawable).getColor();
+            setStatusBarColor(backgroundColor);
+        }
+
 
         mBackLayout.setOnClickListener(this);
         mRightLayout.setOnClickListener(this);
+    }
+
+    @Override
+    public void setBackgroundColor(int color) {
+        super.setBackgroundColor(color);
+        setStatusBarColor(color);
+    }
+
+    private void setStatusBarColor(int color) {
+        if (getContext() instanceof Activity) {
+            Utils.setStatusBarColorBurn((Activity) getContext(), color);
+        }
     }
 
     public void setTitle(int titleResId) {

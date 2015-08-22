@@ -31,6 +31,8 @@ public class PhoneLoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_login);
 
+        Utils.setStatusBarColorBurn(this, 0xFFFFFFFF/*white*/);
+
         mLoginType = getIntent().getExtras().
                 getInt(KEY_LOGIN_TYPE, MyAccountInfo.LOGIN_TYPE.MOBILE.ordinal());
 

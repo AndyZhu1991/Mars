@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
-import com.koolew.mars.blur.DisplayBlurImage;
+import com.koolew.mars.blur.DisplayBlurImageAndStatusBar;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.TypedUserInfo;
 import com.koolew.mars.statistics.BaseActivity;
@@ -74,7 +74,7 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
         if (avatar != null && !avatar.equals("")) {
             ImageLoader.getInstance().displayImage(avatar, mAvatar,
                     ImageLoaderHelper.avatarLoadOptions);
-            new DisplayBlurImage(mBlurAvatar, avatar).execute();
+            new DisplayBlurImageAndStatusBar(this, mBlurAvatar, avatar).execute();
         }
         mNickname.setText(intent.getStringExtra(KEY_NICKNAME));
 
@@ -123,7 +123,8 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
                 JSONObject user = result.getJSONObject("user");
                 String avatar = user.getString("avatar");
                 ImageLoader.getInstance().displayImage(avatar, mAvatar);
-                new DisplayBlurImage(mBlurAvatar, avatar).execute();
+                new DisplayBlurImageAndStatusBar(FriendInfoActivity.this, mBlurAvatar, avatar)
+                        .execute();
                 mNickname.setText(user.getString("nickname"));
 
                 mKooCount = user.getInt("koo_num");

@@ -4,6 +4,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
+        <item name="colorPrimaryDark">#000000</item>
         <item name="android:textViewStyle">@style/KoolewTextViewStyle</item>
         <item name="android:buttonStyle">@style/KoolewButtonStyle</item>
     </style>

@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.statistics.BaseActivity;
+import com.koolew.mars.utils.Utils;
 
 
 public class CoinRuleActivity extends BaseActivity {
@@ -14,6 +15,9 @@ public class CoinRuleActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coin_rule);
 
-        ((TextView) findViewById(R.id.count_coin)).setText(String.valueOf(MyAccountInfo.getCoinNum()));
+        Utils.setStatusBarColorBurn(this, 0xFFFBD376);
+
+        ((TextView) findViewById(R.id.count_coin))
+                .setText(String.valueOf(MyAccountInfo.getCoinNum()));
     }
 }
