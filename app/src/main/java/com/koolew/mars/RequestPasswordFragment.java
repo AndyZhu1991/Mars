@@ -160,8 +160,11 @@ public class RequestPasswordFragment extends Fragment implements View.OnClickLis
                             mResendTimer.cancel();
                             showSendFrame();
                         }
-                        mResendPassword.setText(
-                                getString(R.string.resend_password_waiting, mResendCounter));
+                        try {
+                            mResendPassword.setText(getString(
+                                    R.string.resend_password_waiting, mResendCounter));
+                        } catch (IllegalStateException ise) {
+                        }
                     }
                 });
             }

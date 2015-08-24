@@ -36,14 +36,14 @@ public class ContactUtil {
 
     private static List<SimpleContactInfo> queryPhoneContacts(Context context) {
 
+        List<SimpleContactInfo> contacts = new LinkedList<SimpleContactInfo>();
+
         ContentResolver contentResolver = context.getContentResolver();
         Cursor contactsCur = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
         if (contactsCur.getCount() == 0) {
-            return null;
+            return contacts;
         }
-
-        List<SimpleContactInfo> contacts = new LinkedList<SimpleContactInfo>();
 
         while (contactsCur.moveToNext()) {
             String id = contactsCur.getString(
@@ -58,12 +58,14 @@ public class ContactUtil {
                         ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
                         new String[] { id },
                         null);
-                while (cursor.moveToNext()) {
-                    String phoneNo = cursor.getString(cursor.getColumnIndex(
-                            ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    contacts.add(new SimpleContactInfo(name, phoneNo));
+                if (cursor != null && cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        String phoneNo = cursor.getString(cursor.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        contacts.add(new SimpleContactInfo(name, phoneNo));
+                    }
+                    cursor.close();
                 }
-                cursor.close();
             }
         }
 

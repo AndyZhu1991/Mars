@@ -28,7 +28,6 @@ import com.android.volley.toolbox.Volley;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.FriendInfo;
 import com.koolew.mars.statistics.BaseActivity;
-import com.koolew.mars.utils.ContactUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
@@ -38,7 +37,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -223,9 +221,7 @@ public class ImportPhoneFriendsActivity extends BaseActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            List<ContactUtil.SimpleContactInfo> contacts =
-                    ContactUtil.getPhoneContacts(ImportPhoneFriendsActivity.this);
-            JSONObject response = ApiWorker.getInstance().requestContactFriendV2Sync(contacts);
+            JSONObject response = ApiWorker.getInstance().requestContactFriendV2Sync(null);
             try {
                 JSONArray friendJsons = response.getJSONObject("result").getJSONArray("relations");
                 friendInfos = new FriendInfo[friendJsons.length()];

@@ -141,16 +141,18 @@ public class ApiWorker {
         JSONObject contactJson = new JSONObject();
         JSONArray jsonArrayContacts = new JSONArray();
         try {
-            for (ContactUtil.SimpleContactInfo contactInfo : contacts) {
-                if (TextUtils.isEmpty(contactInfo.getName().trim())) {
-                    continue;
-                }
-                JSONObject contact = new JSONObject();
-                contact.put("nickname", contactInfo.getName());
-                contact.put("phone", contactInfo.getNumber());
-                jsonArrayContacts.put(contact);
-                if (jsonArrayContacts.length() >= 1000) {
-                    break;
+            if (contacts != null) {
+                for (ContactUtil.SimpleContactInfo contactInfo : contacts) {
+                    if (TextUtils.isEmpty(contactInfo.getName().trim())) {
+                        continue;
+                    }
+                    JSONObject contact = new JSONObject();
+                    contact.put("nickname", contactInfo.getName());
+                    contact.put("phone", contactInfo.getNumber());
+                    jsonArrayContacts.put(contact);
+                    if (jsonArrayContacts.length() >= 1000) {
+                        break;
+                    }
                 }
             }
             contactJson.put("contacts", jsonArrayContacts);
