@@ -346,7 +346,7 @@ public class VideoCardAdapter extends BaseAdapter {
 
         @Override
         public boolean isItemView(View childView) {
-            return childView.getTag() instanceof ViewHolder;
+            return mData.size() > 0 && childView.getTag() instanceof ViewHolder;
         }
 
         @Override

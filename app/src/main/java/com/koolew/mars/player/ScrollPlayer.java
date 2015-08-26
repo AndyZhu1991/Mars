@@ -178,8 +178,10 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
     }
 
     private void setupCurrentPlay() {
-        getProgressView(mCurrentItem).setVisibility(View.VISIBLE);
-        mVideoLoader.loadVideo(null, getVideoUrl(mCurrentItem));
+        if (mCurrentItem != null) {
+            getProgressView(mCurrentItem).setVisibility(View.VISIBLE);
+            mVideoLoader.loadVideo(null, getVideoUrl(mCurrentItem));
+        }
     }
 
     @Override
