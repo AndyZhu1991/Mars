@@ -714,6 +714,10 @@ public class VideoShootActivity extends BaseActivity
         }
     }
 
+    private static final int VIDEO_PROCESS_SUCCESS = 0;
+    private static final int VIDEO_PROCESS_CONCAT_VIDEO_FAILED = 1;
+    private static final int VIDEO_PROCESS_GENERATE_THUMB_FAILED = 2;
+
     private void onRecordCompleteClick() {
         if (isRecording) {
             return;
@@ -724,7 +728,7 @@ public class VideoShootActivity extends BaseActivity
             return;
         }
 
-        new AsyncTask<Void, Void, Void>() {
+        new AsyncTask<Void, Void, Integer>() {
             private ProgressDialog mProgressDialog;
 
             @Override
@@ -735,15 +739,37 @@ public class VideoShootActivity extends BaseActivity
             }
 
             @Override
-            protected Void doInBackground(Void... params) {
-                mRecordingSession.concatVideo();
-                mRecordingSession.generateThumb();
-                return null;
+            protected Integer doInBackground(Void... params) {
+                try {
+                    mRecordingSession.concatVideo();
+                } catch (Exception e) {
+                    return VIDEO_PROCESS_CONCAT_VIDEO_FAILED;
+                }
+                try {
+                    mRecordingSession.generateThumb();
+                } catch (Exception e) {
+                    return VIDEO_PROCESS_GENERATE_THUMB_FAILED;
+                }
+                return VIDEO_PROCESS_SUCCESS;
             }
 
             @Override
-            protected void onPostExecute(Void aVoid) {
+            protected void onPostExecute(Integer result) {
                 mProgressDialog.dismiss();
+
+                switch (result) {
+                    case VIDEO_PROCESS_SUCCESS:
+                        break;
+                    case VIDEO_PROCESS_CONCAT_VIDEO_FAILED:
+                        Toast.makeText(VideoShootActivity.this, R.string.concat_video_failed,
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    case VIDEO_PROCESS_GENERATE_THUMB_FAILED:
+                        Toast.makeText(VideoShootActivity.this, R.string.generate_thumb_failed,
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                }
+
                 Intent intent = new Intent(VideoShootActivity.this, VideoEditActivity.class);
                 intent.putExtra(VideoEditActivity.KEY_CONCATED_VIDEO,
                         mRecordingSession.getConcatedVideoName());
