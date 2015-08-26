@@ -151,4 +151,17 @@ public class RawImageUtil {
         }
         Log.d(TAG, "NV21toI420SemiPlanar: " + (System.currentTimeMillis() - start));
     }
+
+    public static void YUV420SPtoYUV420P(byte[] YUV420SPbytes, int width, int height) {
+        int Ysize = width * height;
+        int UVsize = width * height / 2;
+
+        byte[] UVbytes = new byte[UVsize];
+        System.arraycopy(YUV420SPbytes, Ysize, UVbytes, 0, UVsize);
+
+        for (int i = 0; i < UVsize; i += 2) {
+            YUV420SPbytes[Ysize + i / 2] = UVbytes[i];
+            YUV420SPbytes[Ysize + UVsize / 2 + i / 2] = UVbytes[i + 1];
+        }
+    }
 }

@@ -406,6 +406,10 @@ public class VideoShootActivity extends BaseActivity
         int bestSizeIndex = -1;
         for (int i = 0; i < count; i++) {
             Camera.Size size = sizes.get(i);
+            if (size.width == 480 && size.height == 480) {
+                // 米3在480*480的预览下会显示不正常
+                continue;
+            }
             Log.d(TAG, "width:" + size.width + ", height:" + size.height);
             if (Math.abs(size.height - AppProperty.RECORD_VIDEO_WIDTH) < minSizeDiff) {
                 minSizeDiff = Math.abs(size.height - AppProperty.RECORD_VIDEO_WIDTH);

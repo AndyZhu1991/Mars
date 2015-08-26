@@ -28,6 +28,8 @@ import android.media.MediaCodecList;
 import android.media.MediaFormat;
 import android.util.Log;
 
+import com.koolew.mars.utils.RawImageUtil;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Stack;
@@ -45,6 +47,8 @@ public class MediaVideoEncoder extends MediaEncoder {
 
     private final int mWidth;
     private final int mHeight;
+
+	private int mColorFormat;
 
 	private VideoThread mVideoThread;
 	private YUV420SPFramePool mFramePool = new YUV420SPFramePool();
@@ -99,6 +103,9 @@ public class MediaVideoEncoder extends MediaEncoder {
 	public void putYUV420SPFrame(YUV420SPFrame frame) {
 		try {
 			frame.frameNanoTime = getPTSUs();
+			if (mColorFormat == MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar) {
+				RawImageUtil.YUV420SPtoYUV420P(frame.data, mWidth, mHeight);
+			}
 			mFrameQueue.put(frame);
 		}
 		catch (InterruptedException ie) {
@@ -167,8 +174,10 @@ public class MediaVideoEncoder extends MediaEncoder {
         }
 		if (DEBUG) Log.i(TAG, "selected codec: " + videoCodecInfo.getName());
 
+		mColorFormat = selectColorFormat(videoCodecInfo, MIME_TYPE);
+
         final MediaFormat format = MediaFormat.createVideoFormat(MIME_TYPE, mWidth, mHeight);
-        format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar);	// API >= 18
+        format.setInteger(MediaFormat.KEY_COLOR_FORMAT, mColorFormat);	// API >= 18
         format.setInteger(MediaFormat.KEY_BIT_RATE, calcBitRate());
         format.setInteger(MediaFormat.KEY_FRAME_RATE, FRAME_RATE);
         format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 5);
@@ -266,10 +275,10 @@ public class MediaVideoEncoder extends MediaEncoder {
     protected static int[] recognizedFormats;
 	static {
 		recognizedFormats = new int[] {
-//        	MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar,
-        	MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar,
-//        	MediaCodecInfo.CodecCapabilities.COLOR_QCOM_FormatYUV420SemiPlanar,
-//        	MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface,
+				MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar,
+				MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar,
+//        	    MediaCodecInfo.CodecCapabilities.COLOR_QCOM_FormatYUV420SemiPlanar,
+//        	    MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface,
 		};
 	}
 
