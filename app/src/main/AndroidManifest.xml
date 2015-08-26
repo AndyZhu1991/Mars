@@ -354,6 +354,17 @@
         <!-- YingYongBao: 应用宝 -->
         <!-- MeiPai: 美拍 -->
         <!-- WeiBoYi:  -->
+        <!-- 360: 360手机助手 -->
+        <!-- 91: 91助手 -->
+        <!-- Baidu: 百度应用中心 -->
+        <!-- AnZhi: 安智市场 -->
+        <!-- WanDouJia: 豌豆荚 -->
+        <!-- AnZhuo: 安卓市场 -->
+        <!-- MuMaYi: 木蚂蚁市场 -->
+        <!-- GooglePlay: Google Play -->
+        <!-- JiFeng: 机锋市场 -->
+        <!-- XiaoMi: 小米市场 -->
+        <!-- HuaWei: 华为应用汇 -->
         <meta-data android:value="55d5c5f5e0f55aa46200399a" android:name="UMENG_APPKEY"></meta-data>
         <meta-data android:value="default" android:name="UMENG_CHANNEL"/>
     </application>
