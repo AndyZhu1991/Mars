@@ -911,6 +911,7 @@ public class VideoShootActivity extends BaseActivity
                     piece.invalidate();
                 }
                 if (mRecordingSession.getVideoCount() == 0) {
+                    switchToPreviewMode();
                     mRecordComplete.setImageResource(R.mipmap.video_complete_disable);
                 }
             }
@@ -940,8 +941,10 @@ public class VideoShootActivity extends BaseActivity
 
     // 已知红米1和红米NOTE1在升级MIUI V6之后，打开自动对焦会在预览界面卡住
     private boolean shouldAutoFocus() {
-        if ((Build.MODEL.equals("HM 1") || Build.MODEL.startsWith("HM NOTE 1")) ||
-                getMiuiVersionName().equals("V6")) {
+        String model = Build.MODEL;
+        String miuiVersion = getMiuiVersionName();
+        if ((model.startsWith("HM 1") || model.startsWith("HM NOTE 1")) &&
+                (miuiVersion.equals("V6") || miuiVersion.equals("V7"))) {
             return false;
         }
         else {
