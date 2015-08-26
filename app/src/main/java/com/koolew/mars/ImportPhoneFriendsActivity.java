@@ -102,6 +102,7 @@ public class ImportPhoneFriendsActivity extends BaseActivity {
                 }
             }
             if (friendCount == 0) {
+                startMainActivity();
                 return;
             }
             else {
@@ -121,9 +122,7 @@ public class ImportPhoneFriendsActivity extends BaseActivity {
                                 Toast.makeText(ImportPhoneFriendsActivity.this,
                                         "Add friends success.", Toast.LENGTH_SHORT).show();
                                 Log.d(TAG, "Add friends success.");
-                                Intent intent = new Intent(ImportPhoneFriendsActivity.this, MainActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
+                                startMainActivity();
                             }
                             else {
                                 Toast.makeText(ImportPhoneFriendsActivity.this,
@@ -150,6 +149,12 @@ public class ImportPhoneFriendsActivity extends BaseActivity {
             }
         };
         mRequestQueue.add(jsonRequest);
+    }
+
+    private void startMainActivity() {
+        Intent intent = new Intent(ImportPhoneFriendsActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     class FriendsAdapter extends BaseAdapter {
