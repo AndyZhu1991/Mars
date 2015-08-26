@@ -169,6 +169,13 @@ public class AddTopicActivity extends BaseActivity implements TitleBarView.OnRig
             try {
                 if (response.getInt("code") == 0) {
                     MobclickAgent.onEvent(AddTopicActivity.this, StatisticsEvent.EVENT_ADD_TOPIC);
+
+                    String tid = response.getJSONObject("result").getString("uid");
+                    Intent intent = new Intent(AddTopicActivity.this, FeedsTopicActivity.class);
+                    intent.putExtra(FeedsTopicActivity.KEY_TOPIC_TITLE, mTitleEdit.getText());
+                    intent.putExtra(FeedsTopicActivity.KEY_TOPIC_ID, tid);
+                    startActivity(intent);
+
                     finish();
                 }
                 else {

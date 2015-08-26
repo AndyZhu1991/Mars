@@ -119,8 +119,6 @@ public class ImportPhoneFriendsActivity extends BaseActivity {
                         Log.d(TAG, "response -> " + response.toString());
                         try {
                             if (response.getInt("code") == 0) {
-                                Toast.makeText(ImportPhoneFriendsActivity.this,
-                                        "Add friends success.", Toast.LENGTH_SHORT).show();
                                 Log.d(TAG, "Add friends success.");
                                 startMainActivity();
                             }
