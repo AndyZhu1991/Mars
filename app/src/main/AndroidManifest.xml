@@ -353,6 +353,7 @@
         <!-- koolew: 自己的渠道 -->
         <!-- YingYongBao: 应用宝 -->
         <!-- MeiPai: 美拍 -->
+        <!-- WeiBoYi:  -->
         <meta-data android:value="55d5c5f5e0f55aa46200399a" android:name="UMENG_APPKEY"></meta-data>
         <meta-data android:value="default" android:name="UMENG_CHANNEL"/>
     </application>

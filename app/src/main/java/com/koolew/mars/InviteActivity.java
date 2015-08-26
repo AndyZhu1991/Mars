@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.share.ShareManager;
@@ -138,6 +139,13 @@ public class InviteActivity extends BaseActivity implements SwipeRefreshLayout.O
         }
     };
 
+    private Response.ErrorListener mErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            mConnectingDialog.dismiss();
+        }
+    };
+
     @Override
     public void onRefresh() {
         refreshFriendList();
@@ -150,7 +158,9 @@ public class InviteActivity extends BaseActivity implements SwipeRefreshLayout.O
             Toast.makeText(this, R.string.please_invite_some_friends, Toast.LENGTH_SHORT).show();
             return;
         }
-        ApiWorker.getInstance().sendInvitation(mTopicId, friendIdList, mInviteListener, null);
+        mConnectingDialog.show();
+        ApiWorker.getInstance().sendInvitation(mTopicId, friendIdList,
+                mInviteListener, mErrorListener);
     }
 
     public void onInviteByWeibo(View v) {

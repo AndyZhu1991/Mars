@@ -2,10 +2,13 @@ package com.koolew.mars.webapi;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
@@ -28,6 +31,8 @@ import java.util.concurrent.TimeoutException;
  * Created by jinchangzhu on 6/25/15.
  */
 public class ApiWorker {
+
+    private static final String TAG = "ApiWorker";
 
     private static final int SYNC_REQUEST_TIMEOUT = 8000;
     private static final TimeUnit SYNC_REQUEST_TIME_UNIT = TimeUnit.MILLISECONDS;
@@ -346,7 +351,12 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.SEND_INVITATION_URL, requestObject, listener, errorListener);
+        RetryPolicy retryPolicy = new DefaultRetryPolicy(
+                10000,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        return standardPostRequest(UrlHelper.SEND_INVITATION_URL, requestObject,
+                listener, errorListener, retryPolicy);
     }
 
     public JsonObjectRequest requestWorldTopicVideo(String topicId, int page,
@@ -619,6 +629,13 @@ public class ApiWorker {
     private JsonObjectRequest standardPostRequest(String url, JSONObject requestJson,
                                                   Response.Listener<JSONObject> listener,
                                                   Response.ErrorListener errorListener) {
+        return standardPostRequest(url, requestJson, listener, errorListener, null);
+    }
+
+    private JsonObjectRequest standardPostRequest(String url, JSONObject requestJson,
+                                                  Response.Listener<JSONObject> listener,
+                                                  Response.ErrorListener errorListener,
+                                                  RetryPolicy retryPolicy) {
         if (errorListener == null) {
             errorListener = mErrorListener;
         }
@@ -630,6 +647,9 @@ public class ApiWorker {
                 return UrlHelper.getStandardPostHeaders();
             }
         };
+        if (retryPolicy != null) {
+            jsonObjectRequest.setRetryPolicy(retryPolicy);
+        }
         mRequestQueue.add(jsonObjectRequest);
 
         return jsonObjectRequest;
@@ -658,6 +678,7 @@ public class ApiWorker {
     class StdErrorListener implements Response.ErrorListener {
         @Override
         public void onErrorResponse(VolleyError volleyError) {
+            Log.d(TAG, "onErrorResponse");
         }
     }
 }
