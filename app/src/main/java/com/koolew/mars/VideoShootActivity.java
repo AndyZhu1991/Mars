@@ -698,8 +698,10 @@ public class VideoShootActivity extends BaseActivity
         }
         else {
             if (!isRecording) {
-                if (MathUtil.equalsApproximate(mRecordingSession.getTotalVideoLength() / 1000.0,
-                        AppProperty.RECORD_VIDEO_MAX_LEN, 0.1)) {
+                double recordedLenInSecond = mRecordingSession.getTotalVideoLength() / 1000.0;
+                double totalLenInSecond = AppProperty.RECORD_VIDEO_MAX_LEN;
+                if (MathUtil.equalsApproximate(recordedLenInSecond, totalLenInSecond, 0.1) ||
+                        recordedLenInSecond > totalLenInSecond) {
                     Toast.makeText(this, getString(R.string.max_video_len_hint,
                             (int) AppProperty.RECORD_VIDEO_MAX_LEN), Toast.LENGTH_LONG).show();
                 }
