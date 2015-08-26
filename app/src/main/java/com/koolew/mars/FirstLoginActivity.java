@@ -2,9 +2,13 @@ package com.koolew.mars;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.android.volley.Response;
 import com.koolew.mars.infos.MyAccountInfo;
@@ -31,6 +35,8 @@ public class FirstLoginActivity extends BaseActivity implements PlatformActionLi
 
     private static final String TAG = "koolew-FirstLoginA";
 
+    private VideoView mVideoView;
+
     private ProgressDialog mProgressDialog;
 
     @Override
@@ -38,9 +44,69 @@ public class FirstLoginActivity extends BaseActivity implements PlatformActionLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_login);
 
-        Utils.setStatusBarColorBurn(this, 0xFFFFFFFF/*white*/);
+        setupVideoView();
+
+        initLinearPadding();
 
         mProgressDialog = new ProgressDialog(this);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            intoImmersiveMode();
+        }
+    }
+
+    private void intoImmersiveMode() {
+        // Set the IMMERSIVE flag.
+        // Set the content to appear under the system bars so that the content
+        // doesn't resize when the system bars hide and show.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+
+    private void initLinearPadding() {
+        View mainLinear = findViewById(R.id.bottom_layout);
+        int paddingBottom = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ||
+                Utils.hasNavigationBar()) {
+            paddingBottom = Utils.getNavigationBarHeightPixel(this);
+        }
+        mainLinear.setPadding(0, 0, 0, paddingBottom);
+    }
+
+    private void setupVideoView() {
+        mVideoView = (VideoView) findViewById(R.id.video_view);
+        mVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName()
+                + "/" + R.raw.openning));
+        mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mVideoView.start();
+            }
+        });
+        mVideoView.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mVideoView.pause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mVideoView.start();
     }
 
     public void onLoginClick(View v) {

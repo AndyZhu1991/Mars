@@ -14,7 +14,6 @@
     <!-- For FirstLoginActivity -->
     <dimen name="first_login_logo_margin_top">56dp</dimen>
     <dimen name="first_login_ways_container_height">105dp</dimen>
-    <dimen name="first_login_way_icon_size">45dp</dimen>
 
     <!-- For PhoneLoginActivity -->
     <dimen name="nation_flag_size">20dp</dimen>

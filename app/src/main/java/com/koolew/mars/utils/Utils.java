@@ -13,6 +13,8 @@ import android.support.v7.graphics.Palette;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -31,11 +33,19 @@ public class Utils {
     }
 
     public static int getScreenWidthPixel(Context context) {
+        return getDisplayMetrics(context).widthPixels;
+    }
+
+    public static int getScreenHeightPixel(Context context) {
+        return getDisplayMetrics(context).heightPixels;
+    }
+
+    private static DisplayMetrics getDisplayMetrics(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics ();
         display.getMetrics(outMetrics);
-        return outMetrics.widthPixels;
+        return outMetrics;
     }
 
     public static float pixelsToSp(Context context, float px) {
@@ -138,6 +148,19 @@ public class Utils {
             return resources.getDimensionPixelSize(resourceId);
         }
         return 0;
+    }
+
+    public static boolean hasNavigationBar() {
+        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+        boolean hasHomeKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_HOME);
+
+        if (hasBackKey && hasHomeKey) {
+            // no navigation bar, unless it is enabled in the settings
+            return false;
+        } else {
+            // 99% sure there's a navigation bar
+            return true;
+        }
     }
 
     public static boolean isAppBackground(final Context context) {
