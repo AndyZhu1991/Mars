@@ -22,6 +22,6 @@ public class DisplayBlurImageAndStatusBar extends DisplayBlurImageAndPalette {
     @Override
     protected void onPalette(Palette palette) {
         Utils.setStatusBarColorBurn(mActivity,
-                ColorUtil.burnColor(Utils.getStatusBarColorFromPalette(palette), 0.7f));
+                ColorUtil.burnColorForStatusBar(Utils.getStatusBarColorFromPalette(palette)));
     }
 }
