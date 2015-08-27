@@ -3,7 +3,6 @@ package com.koolew.mars;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -125,7 +124,6 @@ public class InputPasswordActivity extends BaseActivity implements View.OnClickL
     private void updatePasswordDigits(String s) {
         int length = s.length();
         if (length > 4) {
-            Log.e(TAG, "updatePasswordDigits got: " + s);
             return;
         }
         for (int i = 0; i < 4; i++) {
@@ -144,11 +142,9 @@ public class InputPasswordActivity extends BaseActivity implements View.OnClickL
             requestJson.put("phone", MyAccountInfo.getPhoneNumber());
             requestJson.put("code", password);
             if (mLoginType == LOGIN_TYPE.MOBILE.ordinal()) {
-                Log.d(TAG, "Login by mobile");
                 url = UrlHelper.LOGIN_URL;
             }
             else {
-                Log.d(TAG, "Signup by: " + mLoginType);
                 url = UrlHelper.SNS_SIGNUP_URL;
                 addSnsRegisterParams(mLoginType, requestJson);
             }
@@ -159,7 +155,6 @@ public class InputPasswordActivity extends BaseActivity implements View.OnClickL
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d(TAG, "response -> " + response.toString());
                         try {
                             int code = response.getInt("code");
                             if (code == 0) {
@@ -212,7 +207,6 @@ public class InputPasswordActivity extends BaseActivity implements View.OnClickL
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, error.getMessage(), error);
                     }
                 }
         ) {

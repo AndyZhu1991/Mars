@@ -36,7 +36,7 @@
 
     <application
         android:name=".MarsApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -45,38 +45,45 @@
             android:name=".MainActivity"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".VideoShootActivity"
             android:label="@string/title_activity_video_shoot"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".FirstLoginActivity"
             android:label="@string/title_activity_first_login"
             android:launchMode="singleTop"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".PhoneLoginActivity"
             android:label="@string/title_activity_phone_login"
             android:screenOrientation="portrait"
+            android:exported="false"
             android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
         <activity
             android:name=".InputPasswordActivity"
             android:label="@string/title_activity_input_password"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".InitPersonalInfoActivity"
             android:label="@string/title_activity_init_personal_info"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ImportPhoneFriendsActivity"
             android:label="@string/title_activity_import_phone_friends"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -102,131 +109,157 @@
         <activity
             android:name=".FeedsTopicActivity"
             android:label="@string/title_activity_topic"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".PushSettingsActivity"
             android:label="@string/title_activity_push_settings"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ChangeInfoActivity"
             android:label="@string/title_activity_change_info"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ChangeNicknameActivity"
             android:label="@string/title_activity_change_nickname"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ChangePhoneNumberActivity"
             android:label="@string/title_activity_modify_phone_number"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".CoinRuleActivity"
             android:label="@string/title_activity_coin_rule"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".KooRankActivity"
             android:label="@string/title_activity_koo_detail"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".FriendInfoActivity"
             android:label="@string/title_activity_friend_info"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".CommonTopicActivity"
             android:label="@string/title_activity_common_topic"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".CommonFriendActivity"
             android:label="@string/title_activity_common_friend"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".TaskActivity"
             android:label="@string/title_activity_task"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".KoolewWebActivity"
             android:label="@string/title_activity_web"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".PushWrapperActivity"
             android:label="@string/title_activity_push_wrapper"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".FriendTaskActivity"
             android:label="@string/title_activity_friend_task"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".SendDanmakuActivity"
             android:label="@string/title_activity_send_danmaku"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".DanmakuTabActivity"
             android:label="@string/title_activity_danmaku_tab"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".VideoEditActivity"
             android:label="@string/title_activity_video_edit"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".VideoPrivacyActivity"
             android:label="@string/title_activity_video_privacy"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".AddTopicActivity"
             android:label="@string/title_activity_add_topic"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".InviteActivity"
             android:label="@string/title_activity_invite"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".WorldTopicActivity"
             android:label="@string/title_activity_world_topic"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".TaskTopicActivity"
             android:label="@string/title_activity_task_topic"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".UserTopicActivity"
             android:label="@string/title_activity_user_topic"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".CheckDanmakuActivity"
             android:label="@string/title_activity_check_danmaku"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".PrivacyPolicyActivity"
             android:label="@string/title_activity_privacy_policy"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".IJoinedTopicActivity"
             android:label="@string/title_activity_i_joined"
+            android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
 
@@ -302,6 +335,7 @@
         <!-- User defined. 用户自定义的广播接收器 -->
         <receiver
             android:name=".receiver.JpushReceiver"
+            android:exported="false"
             android:enabled="true" >
             <intent-filter>
 
