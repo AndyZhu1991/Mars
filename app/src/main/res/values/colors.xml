@@ -13,6 +13,7 @@
     <color name="koolew_light_green">#80DFA6</color>
     <color name="koolew_deep_green">#51C47D</color>
     <color name="koolew_list_background">#E2E6E9</color>
+    <color name="koolew_gold">#FFE19D</color>
     <color name="divider_color">#6F7D8B90</color>
 
     <!-- For InputPasswordActivity -->

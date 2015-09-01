@@ -1,5 +1,6 @@
 package com.koolew.mars;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -10,10 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.player.ScrollPlayer;
-import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,7 +22,7 @@ import org.json.JSONObject;
 /**
  * Created by jinchangzhu on 7/24/15.
  */
-public class BaseVideoListFragment extends BaseListFragment
+public abstract class BaseVideoListFragment extends BaseListFragment
         implements VideoCardAdapter.OnDanmakuSendListener, VideoCardAdapter.OnKooClickListener,
         VideoCardAdapter.OnMoreMenuClickListener, ShareVideoWindow.OnVideoOperatedListener {
 
@@ -41,19 +40,12 @@ public class BaseVideoListFragment extends BaseListFragment
     private SoundPool mSoundPool;
     private int mKooSound;
 
+    protected TopicInfoInterface mTopicInfoInterface;
+
 
     public BaseVideoListFragment() {
         super();
         isNeedLoadMore = true;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Intent intent = getActivity().getIntent();
-        mTopicId = intent.getStringExtra(KEY_TOPIC_ID);
-        mTopicTitle = intent.getStringExtra(KEY_TOPIC_TITLE);
     }
 
     @Override
@@ -62,7 +54,6 @@ public class BaseVideoListFragment extends BaseListFragment
 
         mListView.setPadding(0, 0, 0, 0);
         mAdapter = useThisAdapter();
-        mAdapter.setTopicTitle(mTopicTitle);
         mAdapter.setOnDanmakuSendListener(this);
         mAdapter.setOnKooClickListener(this);
         mAdapter.setOnMoreMenuClickListener(this);
@@ -76,28 +67,46 @@ public class BaseVideoListFragment extends BaseListFragment
 
     // Override it if need different adapter.
     protected VideoCardAdapter useThisAdapter() {
-        return new VideoCardAdapter(getActivity());
+        return new DetailTitleVideoCardAdapter(getActivity());
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    protected void onPageStart() {
+        super.onPageStart();
         mScrollPlayer.onActivityResume();
         mSoundPool = new SoundPool(5, AudioManager.STREAM_RING, 0);
         mKooSound = mSoundPool.load(getActivity(), R.raw.koo, 1);
     }
 
     @Override
-    public void onPause() {
+    protected void onPageEnd() {
+        super.onPageEnd();
         mScrollPlayer.onActivityPause();
         mSoundPool.release();
-        super.onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mScrollPlayer.onActivityDestroy();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mTopicInfoInterface = (TopicInfoInterface) activity;
+            mTopicId = mTopicInfoInterface.getTopicId();
+        } catch (ClassCastException cce) {
+            throw new ClassCastException(activity.toString() + " must implements TopicInfoInterface");
+        }
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mTopicInfoInterface = null;
     }
 
     @Override
@@ -132,7 +141,7 @@ public class BaseVideoListFragment extends BaseListFragment
         return null;
     }
 
-    private void setupAdapter() {
+    protected void setupAdapter() {
         if (mListView.getAdapter() == null) {
             mListView.setAdapter(mAdapter);
         }
@@ -173,17 +182,6 @@ public class BaseVideoListFragment extends BaseListFragment
     }
 
     @Override
-    protected JsonObjectRequest doRefreshRequest() {
-        return ApiWorker.getInstance().requestFeedsTopicVideo(mTopicId, mRefreshListener, null);
-    }
-
-    @Override
-    protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().requestFeedsTopicVideo(
-                mTopicId, mAdapter.getOldestVideoTime(), mLoadMoreListener, null);
-    }
-
-    @Override
     public void onDanmakuSend(BaseVideoInfo videoInfo) {
         Intent intent = new Intent(getActivity(), SendDanmakuActivity.class);
         intent.putExtra(SendDanmakuActivity.KEY_VIDEO_INFO, videoInfo);
@@ -211,19 +209,6 @@ public class BaseVideoListFragment extends BaseListFragment
         return mTopicTitle;
     }
 
-    protected void capture() {
-        Intent intent = new Intent(getActivity(), VideoShootActivity.class);
-        intent.putExtra(VideoShootActivity.KEY_TOPIC_ID, getTopicId());
-        startActivity(intent);
-    }
-
-    protected void invite() {
-        Intent intent = new Intent(getActivity(), InviteActivity.class);
-        intent.putExtra(InviteActivity.KEY_TOPIC_ID, getTopicId());
-        intent.putExtra(InviteActivity.KEY_TITLE, getTopicTitle());
-        startActivity(intent);
-    }
-
     @Override
     public void onVideoDeleted(String videoId) {
         removeVideo(videoId);
@@ -238,5 +223,9 @@ public class BaseVideoListFragment extends BaseListFragment
         mAdapter.removeVideo(videoId);
         mAdapter.notifyDataSetChanged();
         mScrollPlayer.refreshPlayingItem();
+    }
+
+    public interface TopicInfoInterface {
+        String getTopicId();
     }
 }

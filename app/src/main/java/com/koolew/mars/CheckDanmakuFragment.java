@@ -37,6 +37,11 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
     }
 
     @Override
+    protected JsonObjectRequest doLoadMoreRequest() {
+        return null;
+    }
+
+    @Override
     protected JSONArray getVideosFromResponse(JSONObject response) {
         JSONArray videos = new JSONArray();
         try {

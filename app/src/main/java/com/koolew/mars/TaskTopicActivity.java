@@ -1,63 +1,42 @@
 package com.koolew.mars;
 
-import android.app.Dialog;
-import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 
-import com.android.volley.Response;
-import com.koolew.mars.statistics.BaseV4FragmentActivity;
-import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.view.TitleBarView;
-import com.koolew.mars.webapi.ApiWorker;
+public class TaskTopicActivity extends TopicVideoActivity {
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-
-public class TaskTopicActivity extends BaseV4FragmentActivity
-        implements TitleBarView.OnRightLayoutClickListener, Response.Listener<JSONObject> {
-
-    public static final String KEY_TOPIC_ID = BaseVideoListFragment.KEY_TOPIC_ID;
     public static final String KEY_INVITER = TaskVideoListFragment.KEY_INVITER;
 
     public static final int RESULT_IGNORE = RESULT_FIRST_USER + 1;
 
-    private String mTopicId;
-    private Dialog mProgressDialog;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_task_topic);
-
-        mTopicId = getIntent().getStringExtra(KEY_TOPIC_ID);
-
-        ((TitleBarView) findViewById(R.id.title_bar)).setOnRightLayoutClickListener(this);
-        mProgressDialog = DialogUtil.getConnectingServerDialog(this);
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container, new TaskVideoListFragment());
-        fragmentTransaction.commit();
+    protected int[] getPageColors() {
+        return new int[] {
+                getResources().getColor(R.color.koolew_light_green),
+                getResources().getColor(R.color.koolew_light_blue),
+        };
     }
 
     @Override
-    public void onRightLayoutClick() {
-        ApiWorker.getInstance().ignoreInvitation(mTopicId, this, null);
-        mProgressDialog.show();
+    protected TopicVideoPagerAdapter getPagerAdapter() {
+        return new TaskTopicAdapter(getSupportFragmentManager());
     }
 
-    @Override
-    public void onResponse(JSONObject response) {
-        mProgressDialog.dismiss();
-        try {
-            if (response.getInt("code") == 0) {
-                setResult(RESULT_IGNORE);
-                onBackPressed();
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+    class TaskTopicAdapter extends TopicVideoPagerAdapter {
+
+        public TaskTopicAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        protected void initFragmentList() {
+            fragmentList.add(new TaskVideoListFragment());
+            fragmentList.add(new WorldVideoListFragment());
+        }
+
+        @Override
+        protected void initTitleList() {
+            fragmentTitles.add(getString(R.string.feeds_title_friend));
+            fragmentTitles.add(getString(R.string.world_title_public));
         }
     }
 }

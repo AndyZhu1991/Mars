@@ -147,7 +147,7 @@ public class VideoCardAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         switch (getItemViewType(position)) {
             case TYPE_TITLE:
-                return getTitleView();
+                return getTitleView(convertView);
             case TYPE_NO_VIDEO:
                 return getNoVideoView();
             case TYPE_VIDEO_ITEM:
@@ -156,7 +156,7 @@ public class VideoCardAdapter extends BaseAdapter {
         return null;
     }
 
-    protected View getTitleView() {
+    protected View getTitleView(View convertView) {
         View view = mInflater.inflate(R.layout.topic_title_layout, null);
         mTitleText = ((TextView) view.findViewById(R.id.title));
         mTitleText.setText(mTopicTitle);

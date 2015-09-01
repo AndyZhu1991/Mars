@@ -11,7 +11,8 @@ import com.koolew.mars.view.TitleBarView;
 
 
 public class UserTopicActivity extends BaseV4FragmentActivity
-        implements TitleBarView.OnRightLayoutClickListener {
+        implements TitleBarView.OnRightLayoutClickListener,
+        BaseVideoListFragment.TopicInfoInterface {
 
     public static final String KEY_TOPIC_ID = BaseVideoListFragment.KEY_TOPIC_ID;
     public static final String KEY_UID = UserVideoListFragment.KEY_UID;
@@ -19,6 +20,8 @@ public class UserTopicActivity extends BaseV4FragmentActivity
 
     protected TitleBarView mTitleBar;
     protected UserVideoListFragment mFragment;
+
+    protected String topicId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +37,9 @@ public class UserTopicActivity extends BaseV4FragmentActivity
         fragmentTransaction.add(R.id.fragment_container, mFragment);
         fragmentTransaction.commit();
 
-        String nickname = getIntent().getStringExtra(KEY_NICKNAME);
+        Intent intent = getIntent();
+        topicId = intent.getStringExtra(KEY_TOPIC_ID);
+        String nickname = intent.getStringExtra(KEY_NICKNAME);
         if (!TextUtils.isEmpty(nickname)) {
             mTitleBar.setTitle("@" + nickname);
         }
@@ -46,5 +51,10 @@ public class UserTopicActivity extends BaseV4FragmentActivity
         intent.putExtra(WorldTopicActivity.KEY_TOPIC_ID, mFragment.getTopicId());
         intent.putExtra(WorldTopicActivity.KEY_TOPIC_TITLE, mFragment.getTopicTitle());
         startActivity(intent);
+    }
+
+    @Override
+    public String getTopicId() {
+        return topicId;
     }
 }

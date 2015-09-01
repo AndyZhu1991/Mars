@@ -37,13 +37,13 @@ public abstract class BaseV4Fragment extends Fragment {
         }
     }
 
-    private void onPageStart() {
+    protected void onPageStart() {
         if (isNeedPageStatistics) {
             MobclickAgent.onPageStart(getClass().getSimpleName());
         }
     }
 
-    private void onPageEnd() {
+    protected void onPageEnd() {
         if (isNeedPageStatistics) {
             MobclickAgent.onPageEnd(getClass().getSimpleName());
         }

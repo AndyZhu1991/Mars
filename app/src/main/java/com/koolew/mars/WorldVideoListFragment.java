@@ -1,13 +1,16 @@
 package com.koolew.mars;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.DetailTitleVideoCardAdapter.TopicTitleDetail;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.webapi.ApiWorker;
+
+import org.json.JSONObject;
 
 /**
  * Created by jinchangzhu on 7/27/15.
  */
-public class WorldVideoListFragment extends CaptureInviteVideoListFragment {
+public class WorldVideoListFragment extends DetailTitleVideoListFragment {
 
     private int mCurrentPage;
 
@@ -46,5 +49,14 @@ public class WorldVideoListFragment extends CaptureInviteVideoListFragment {
         mCurrentPage = 0;
         return ApiWorker.getInstance().requestWorldTopicVideo(
                 mTopicId, mCurrentPage, mRefreshListener, null);
+    }
+
+    @Override
+    protected TopicTitleDetail getTopicDetailFromResponse(JSONObject response) {
+        TopicTitleDetail topicTitleDetail = super.getTopicDetailFromResponse(response);
+
+        topicTitleDetail.setType(DetailTitleVideoCardAdapter.TYPE_WORLD);
+
+        return topicTitleDetail;
     }
 }

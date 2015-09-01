@@ -37,7 +37,7 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
     private static final int STATE_PAUSED = 2;
     private static final int STATE_DESTROYED = 3;
 
-    private int mState = STATE_NORMAL;
+    private int mState = STATE_PAUSED;
 
     private ListView mListView;
     private Context mContext;

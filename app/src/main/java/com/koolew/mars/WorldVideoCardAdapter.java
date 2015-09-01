@@ -15,7 +15,7 @@ import org.json.JSONObject;
 /**
  * Created by jinchangzhu on 7/27/15.
  */
-public class WorldVideoCardAdapter extends VideoCardAdapter {
+public class WorldVideoCardAdapter extends DetailTitleVideoCardAdapter {
 
     public WorldVideoCardAdapter(Context context) {
         super(context);

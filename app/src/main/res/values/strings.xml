@@ -29,6 +29,7 @@
     <string name="ignore">忽略</string>
     <string name="not_enough_coin_hint">金币不够了！赶紧去赚金币吧！</string>
     <string name="search">搜索</string>
+    <string name="topic">话题</string>
 
     <!-- For MainActivity -->
     <string name="title_koolew">可见</string>
@@ -89,6 +90,8 @@
     <string name="invited_label" formatted="false">你被%s点名</string>
 
     <!-- For FeedsTopicActivity -->
+    <string name="feeds_title_friend">好友</string>
+    <string name="world_title_public">公开</string>
     <string name="i_want_capture">我要拍</string>
     <string name="send_invitation">点名好友</string>
 
@@ -269,6 +272,10 @@
 
     <string name="mp4_file_broken_hint">视频出错啦</string>
 
+    <!-- For topic detail title -->
+    <string name="stars_rank">话题明星榜（共%d人）</string>
+    <string name="topic_manager">话题主</string>
+
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>
     <string name="website">http://www.mob.com</string>
@@ -377,4 +384,5 @@
     <string name="title_activity_check_danmaku">CheckDanmakuActivity</string>
     <string name="title_activity_privacy_policy">PrivacyPolicyActivity</string>
     <string name="title_activity_i_joined">IJoinedActivity</string>
+    <string name="title_activity_topic_video">TopicVideoActivity</string>
 </resources>
