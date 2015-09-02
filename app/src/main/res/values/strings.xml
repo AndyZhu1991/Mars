@@ -275,6 +275,7 @@
     <!-- For topic detail title -->
     <string name="stars_rank">话题明星榜（共%d人）</string>
     <string name="topic_manager">话题主</string>
+    <string name="topic_koo_rank_title">话题人气榜</string>
 
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>
@@ -385,4 +386,5 @@
     <string name="title_activity_privacy_policy">PrivacyPolicyActivity</string>
     <string name="title_activity_i_joined">IJoinedActivity</string>
     <string name="title_activity_topic_video">TopicVideoActivity</string>
+    <string name="title_activity_topic_koo_rank">TopicKooRankActivity</string>
 </resources>

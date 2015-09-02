@@ -31,6 +31,10 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
         isNeedLoadMore = false;
     }
 
+    protected VideoCardAdapter useThisAdapter() {
+        return new VideoCardAdapter(getActivity());
+    }
+
     @Override
     protected JsonObjectRequest doRefreshRequest() {
         return ApiWorker.getInstance().requestSingleVideo(mVideoId, mRefreshListener, null);

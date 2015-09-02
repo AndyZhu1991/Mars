@@ -7,7 +7,8 @@ import android.support.v4.app.FragmentTransaction;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
 
 
-public class CheckDanmakuActivity extends BaseV4FragmentActivity {
+public class CheckDanmakuActivity extends BaseV4FragmentActivity
+        implements BaseVideoListFragment.TopicInfoInterface {
 
     public static final String KEY_VIDEO_ID = CheckDanmakuFragment.KEY_VIDEO_ID;
 
@@ -20,5 +21,10 @@ public class CheckDanmakuActivity extends BaseV4FragmentActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.fragment_container, new CheckDanmakuFragment());
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public String getTopicId() {
+        return null;
     }
 }

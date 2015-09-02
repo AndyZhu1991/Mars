@@ -1,6 +1,7 @@
 package com.koolew.mars;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,6 +13,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.Serializable;
 
 /**
  * Created by jinchangzhu on 9/1/15.
@@ -112,6 +115,10 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter {
     private View.OnClickListener onStarsClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Intent intent = new Intent(mContext, TopicKooRankActivity.class);
+            intent.putExtra(TopicKooRankActivity.KEY_KOO_COUNT_USER_INFO,
+                    topicTitleDetail.kooRankUsers);
+            mContext.startActivity(intent);
         }
     };
 
@@ -157,7 +164,7 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter {
         }
     }
 
-    public static class KooCountUserInfo extends BaseUserInfo {
+    public static class KooCountUserInfo extends BaseUserInfo implements Serializable {
 
         private int kooCount;
 
@@ -170,6 +177,10 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter {
                     e.printStackTrace();
                 }
             }
+        }
+
+        public int getKooCount() {
+            return kooCount;
         }
     }
 }
