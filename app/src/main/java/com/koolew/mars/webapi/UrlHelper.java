@@ -16,7 +16,7 @@ public class UrlHelper {
     private static final String TEST_API_URL = "http://test.koolew.cn/";
     private static final String REAL_API_URL = "http://api.koolew.com/";
 
-    private static final String BASE_URL = REAL_API_URL;
+    private static final String BASE_URL = TEST_API_URL;
 
     private static final String V1_URL = BASE_URL + "v1/";
     private static final String V2_URL = BASE_URL + "v2/";
@@ -54,6 +54,7 @@ public class UrlHelper {
     public static final String VIDEO_DELETE_URL = V1_URL + "video/delete";
     public static final String VIDEO_AGAINST_URL = V1_URL + "video/against";
     public static final String DEVICE_LOGOUT_URL = V1_URL + "device/logout";
+    private static final String VIDEO_KOO_RANK_URL = V1_URL + "video/koo/rank";
 
     // v2 api
     public static final String FEEDS_TOPIC_URL = V2_URL + "feeds/topic";
@@ -135,6 +136,13 @@ public class UrlHelper {
         return Uri.parse(KOO_RANK_V2_URL)
                 .buildUpon()
                 .appendQueryParameter("uid", uid)
+                .build().toString();
+    }
+
+    public static String getVideoKooRankUrl(String videoId) {
+        return Uri.parse(VIDEO_KOO_RANK_URL)
+                .buildUpon()
+                .appendQueryParameter("video_id", videoId)
                 .build().toString();
     }
 

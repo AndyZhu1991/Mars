@@ -42,8 +42,8 @@ public class LoadMoreFooter extends FrameLayout implements AbsListView.OnScrollL
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mProgressFrame = findViewById(R.id.progress_frame);
-        mNoMoreHintFrame = findViewById(R.id.no_more_hint_label);
+        mProgressFrame = findViewById(R.id.loading_frame);
+        mNoMoreHintFrame = findViewById(R.id.no_more_frame);
 
         mLoadingText = (TextView) findViewById(R.id.loading_text);
         mNoMoreText = (TextView) mNoMoreHintFrame;

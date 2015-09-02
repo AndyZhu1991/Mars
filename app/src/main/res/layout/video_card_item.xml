@@ -1,10 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/video_card_padding"
-    android:background="@null">
+    android:padding="@dimen/video_card_padding">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/video_card_item_bg">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatar"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            app:border_width="2dp"
+            app:border_color="@color/avatar_gray_border"/>
+
+        <TextView
+            android:id="@+id/nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/avatar"
+            android:layout_marginLeft="6dp"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"
+            android:textColor="@color/koolew_dark_gray"/>
+
+        <TextView
+            android:id="@+id/video_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:textSize="10sp"
+            android:textColor="#9EADB7"/>
+    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/video_layout"
@@ -32,113 +71,98 @@
             android:alpha="0.5"/>
     </FrameLayout>
 
-    <ImageView
-        android:id="@+id/more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="15dp"
-        android:paddingTop="10dp"
-        android:paddingRight="15dp"
-        android:paddingBottom="10dp"
-        android:src="@mipmap/video_card_more"/>
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/avatar"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="-25dp"
-        android:layout_below="@id/video_layout"
-        android:layout_centerHorizontal="true"
-        app:border_width="3dp"
-        app:border_color="@color/avatar_gray_border"/>
-
     <TextView
-        android:id="@+id/nickname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/avatar"
-        android:layout_marginTop="7dp"
-        android:layout_centerHorizontal="true"
-        android:textSize="16sp"/>
-
-    <TextView
-        android:id="@+id/video_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/nickname"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_centerHorizontal="true"
+        android:id="@+id/support_count"
+        android:layout_width="match_parent"
+        android:layout_height="22dp"
+        android:text="@string/support_count"
         android:textSize="10sp"
-        android:textColor="#9EADB7"/>
+        android:textColor="#D8D8D8"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@mipmap/horizontal_dash_line"/>
 
     <RelativeLayout
         android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_below="@id/video_layout">
+        android:layout_height="35dp">
 
         <LinearLayout
             android:id="@+id/koo_layout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:padding="15dp"
-            android:gravity="center_vertical"
-            android:clipToPadding="false">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/koo"
-                android:textSize="12sp"
-                android:textColor="@color/koolew_light_gray"/>
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:gravity="center_vertical">
 
             <ImageView
                 android:id="@+id/koo_icon"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
-                android:layout_marginLeft="3dp"
                 android:src="@mipmap/ic_koo"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/danmaku_send_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:padding="15dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:id="@+id/danmaku_send_ic"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:layout_marginRight="3dp"
-                android:src="@mipmap/ic_comment"/>
 
             <TextView
-                android:id="@+id/danmaku_send_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/comment"
+                android:layout_marginLeft="3dp"
+                android:text="@string/koo"
                 android:textSize="12sp"
                 android:textColor="@color/koolew_light_gray"/>
         </LinearLayout>
 
         <com.koolew.mars.view.KooAnimationView
             android:id="@+id/koo_animation_view"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginLeft="6dp"/>
-    </RelativeLayout>
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="20dp"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp"
-        android:layout_below="@id/bottom_layout"
-        android:background="@mipmap/horizontal_dash_line"/>
-</RelativeLayout>
+        <LinearLayout
+            android:id="@+id/danmaku_send_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/danmaku_send_ic"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:src="@mipmap/ic_comment"/>
+
+            <TextView
+                android:id="@+id/danmaku_send_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:text="@string/comment"
+                android:textSize="12sp"
+                android:textColor="@color/koolew_light_gray"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/more_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_share" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:text="@string/more"
+                android:textSize="12sp"
+                android:textColor="@color/koolew_light_gray"/>
+        </LinearLayout>
+    </RelativeLayout>
+    </LinearLayout>
+</FrameLayout>

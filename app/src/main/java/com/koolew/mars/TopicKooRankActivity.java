@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.koolew.mars.imageloader.ImageLoaderHelper;
+import com.koolew.mars.infos.KooCountUserInfo;
 import com.koolew.mars.statistics.BaseActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -19,14 +20,14 @@ public class TopicKooRankActivity extends BaseActivity {
 
     public static final String KEY_KOO_COUNT_USER_INFO = "koo count user info";
 
-    private DetailTitleVideoCardAdapter.KooCountUserInfo[] kooCountUserInfo;
+    private KooCountUserInfo[] kooCountUserInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_koo_rank);
 
-        kooCountUserInfo = (DetailTitleVideoCardAdapter.KooCountUserInfo[])
+        kooCountUserInfo = (KooCountUserInfo[])
                 getIntent().getSerializableExtra(KEY_KOO_COUNT_USER_INFO);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);

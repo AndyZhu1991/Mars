@@ -19,6 +19,7 @@ public class BaseVideoInfo implements Serializable {
     public static final String KEY_THUMB_URL = "thumb_url";
     public static final String KEY_CREATE_TIME = "create_time";
     public static final String KEY_PRIVACY = "privacy";
+    public static final String KEY_KOO_TOTAL = "koo_total";
     public static final String KEY_USER_INFO = "user_info";
     public static final String KEY_DANMAKU = "comment";
 
@@ -27,6 +28,7 @@ public class BaseVideoInfo implements Serializable {
     private String mVideoThumb;
     private long mCreateTime;
     private int mPrivacy;
+    private int mKooTotal;
     private BaseUserInfo mUserInfo;
     private ArrayList<DanmakuItemInfo> mDanmakus;
 
@@ -54,6 +56,9 @@ public class BaseVideoInfo implements Serializable {
             }
             if (jsonObject.has(KEY_PRIVACY)) {
                 mPrivacy = jsonObject.getInt(KEY_PRIVACY);
+            }
+            if (jsonObject.has(KEY_KOO_TOTAL)) {
+                mKooTotal = jsonObject.getInt(KEY_KOO_TOTAL);
             }
             if (jsonObject.has(KEY_USER_INFO)) {
                 mUserInfo = instanceUserInfo(jsonObject.getJSONObject(KEY_USER_INFO));
@@ -87,6 +92,14 @@ public class BaseVideoInfo implements Serializable {
 
     public int getPrivacy() {
         return mPrivacy;
+    }
+
+    public int getKooTotal() {
+        return mKooTotal;
+    }
+
+    public void setKooTotal(int count) {
+        mKooTotal = count;
     }
 
     public BaseUserInfo getUserInfo() {

@@ -1,6 +1,6 @@
 package com.koolew.mars;
 
-import com.koolew.mars.DetailTitleVideoCardAdapter.KooCountUserInfo;
+import com.koolew.mars.infos.KooCountUserInfo;
 import com.koolew.mars.DetailTitleVideoCardAdapter.TopicTitleDetail;
 
 import org.json.JSONArray;

@@ -605,6 +605,12 @@ public class ApiWorker {
         return standardPostRequest(UrlHelper.USER_LOCATION_URL, requestObject, listener, errorListener);
     }
 
+    public JsonObjectRequest requestVideoKooRank(String videoId,
+                                                 Response.Listener<JSONObject> listener,
+                                                 Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getVideoKooRankUrl(videoId), listener, errorListener);
+    }
+
 
     // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,

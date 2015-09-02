@@ -30,6 +30,7 @@
     <string name="not_enough_coin_hint">金币不够了！赶紧去赚金币吧！</string>
     <string name="search">搜索</string>
     <string name="topic">话题</string>
+    <string name="more">更多</string>
 
     <!-- For MainActivity -->
     <string name="title_koolew">可见</string>
@@ -248,6 +249,7 @@
 
     <!-- For VideoCardAdapter -->
     <string name="be_first_in_this_topic">成为此话题卡第一人</string>
+    <string name="support_count" formatted="false">%d支持</string>
 
     <!-- For UserTopicActivity -->
     <string name="ad_friend">加好友</string>
@@ -276,6 +278,11 @@
     <string name="stars_rank">话题明星榜（共%d人）</string>
     <string name="topic_manager">话题主</string>
     <string name="topic_koo_rank_title">话题人气榜</string>
+
+    <!-- For time summary -->
+    <string name="before_n_seconds">%d秒前</string>
+    <string name="before_n_minutes">%d分钟前</string>
+    <string name="before_n_hours">%d小时前</string>
 
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>
@@ -387,4 +394,5 @@
     <string name="title_activity_i_joined">IJoinedActivity</string>
     <string name="title_activity_topic_video">TopicVideoActivity</string>
     <string name="title_activity_topic_koo_rank">TopicKooRankActivity</string>
+    <string name="title_activity_video_koo_rank">VideoKooRankActivity</string>
 </resources>

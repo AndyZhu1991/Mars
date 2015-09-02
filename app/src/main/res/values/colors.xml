@@ -14,6 +14,7 @@
     <color name="koolew_deep_green">#51C47D</color>
     <color name="koolew_list_background">#E2E6E9</color>
     <color name="koolew_gold">#FFE19D</color>
+    <color name="koolew_dark_gray">#3E5467</color>
     <color name="divider_color">#6F7D8B90</color>
 
     <!-- For InputPasswordActivity -->
@@ -42,9 +43,6 @@
     <color name="friend_item_common_text_color">#ADBBC7</color>
     <color name="friend_item_big_num_color">@color/koolew_gray</color>
     <color name="avatar_gray_border">#D8D8D8</color>
-
-    <!-- For friend simple item -->
-    <color name="friend_simple_item_nickname_color">#3E5467</color>
 
     <!-- For settings -->
     <color name="settings_item_text_color">#9B9B9B</color>
