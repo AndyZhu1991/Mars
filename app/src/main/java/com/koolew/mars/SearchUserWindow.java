@@ -14,12 +14,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.utils.Utils;
+import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -172,7 +172,7 @@ public class SearchUserWindow extends PopupWindow implements TextWatcher,
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             ImageLoader.getInstance().displayImage(mData.get(position).getAvatar(), holder.avatar);
-            holder.nickname.setText(mData.get(position).getNickname());
+            holder.nameView.setUser(mData.get(position));
         }
 
         @Override
@@ -182,13 +182,13 @@ public class SearchUserWindow extends PopupWindow implements TextWatcher,
 
         class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             private CircleImageView avatar;
-            private TextView nickname;
+            private UserNameView nameView;
 
             public ViewHolder(View itemView) {
                 super(itemView);
 
                 avatar = (CircleImageView) itemView.findViewById(R.id.avatar);
-                nickname = (TextView) itemView.findViewById(R.id.nickname);
+                nameView = (UserNameView) itemView.findViewById(R.id.name_view);
 
                 itemView.setOnClickListener(this);
             }

@@ -28,6 +28,7 @@ import com.koolew.mars.statistics.BaseV4Fragment;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.BigCountView;
+import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -329,7 +330,7 @@ public class FriendMeetFragment extends BaseV4Fragment
         private void bindBaseHolder(BaseHolder holder, BaseUserInfo item) {
             ImageLoader.getInstance().displayImage(item.getAvatar(), holder.avatar,
                     ImageLoaderHelper.avatarLoadOptions);
-            holder.nickname.setText(item.getNickname());
+            holder.nameView.setUser(item);
         }
 
         @Override
@@ -357,7 +358,7 @@ public class FriendMeetFragment extends BaseV4Fragment
             protected TextView explainLabel;
             protected Button removeButton;
             protected CircleImageView avatar;
-            protected TextView nickname;
+            protected UserNameView nameView;
             protected Button acceptAddButton;
             protected BigCountView gotKoo;
 
@@ -374,7 +375,7 @@ public class FriendMeetFragment extends BaseV4Fragment
                 avatar = (CircleImageView) itemView.findViewById(R.id.avatar);
                 acceptAddButton = (Button) itemView.findViewById(R.id.btn_accept_add);
                 acceptAddButton.setOnClickListener(this);
-                nickname = (TextView) itemView.findViewById(R.id.nickname);
+                nameView = (UserNameView) itemView.findViewById(R.id.name_view);
                 gotKoo = (BigCountView) itemView.findViewById(R.id.got_koo);
 
                 progressDialog = DialogUtil.getConnectingServerDialog(mContext);

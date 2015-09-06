@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.KooCountUserInfo;
 import com.koolew.mars.statistics.BaseActivity;
+import com.koolew.mars.view.UserNameView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -42,7 +43,7 @@ public class TopicKooRankActivity extends BaseActivity {
     class TopicKooRankItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private CircleImageView avatar;
-        private TextView nickname;
+        private UserNameView nameView;
         private ImageView kooIcon;
         private TextView kooCount;
 
@@ -52,7 +53,7 @@ public class TopicKooRankActivity extends BaseActivity {
             itemView.setOnClickListener(this);
 
             avatar = (CircleImageView) itemView.findViewById(R.id.avatar);
-            nickname = (TextView) itemView.findViewById(R.id.nickname);
+            nameView = (UserNameView) itemView.findViewById(R.id.name_view);
             kooIcon = (ImageView) itemView.findViewById(R.id.koo_icon);
             kooCount = (TextView) itemView.findViewById(R.id.koo_count);
         }
@@ -77,7 +78,7 @@ public class TopicKooRankActivity extends BaseActivity {
         public void onBindViewHolder(TopicKooRankItemHolder holder, int position) {
             ImageLoader.getInstance().displayImage(kooCountUserInfo[position].getAvatar(),
                     holder.avatar, ImageLoaderHelper.avatarLoadOptions);
-            holder.nickname.setText(kooCountUserInfo[position].getNickname());
+            holder.nameView.setUser(kooCountUserInfo[position]);
             if (position == 0) {
                 holder.kooIcon.setVisibility(View.VISIBLE);
             }

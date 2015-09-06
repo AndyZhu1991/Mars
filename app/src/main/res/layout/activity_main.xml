@@ -1,5 +1,5 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:UserNameView="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -145,15 +145,15 @@
                         app:border_color="@android:color/white"
                         app:border_width="2dp" />
 
-                    <TextView
-                        android:id="@+id/nickname"
+                    <com.koolew.mars.view.UserNameView
+                        android:id="@+id/name_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="12dp"
                         android:layout_toRightOf="@id/avatar"
-                        android:textColor="@android:color/white"
-                        android:textSize="18sp" />
+                        UserNameView:textColor="@android:color/white"
+                        UserNameView:textSize="18sp" />
 
                     <com.koolew.mars.view.PhoneNumberView
                         android:id="@+id/phone_number"

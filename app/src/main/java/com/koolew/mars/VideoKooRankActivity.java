@@ -16,6 +16,7 @@ import com.koolew.mars.infos.KooCountUserInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
+import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -134,7 +135,7 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
 
             ImageLoader.getInstance().displayImage(userInfo.getAvatar(),
                     videoKooRankItemHolder.avatar, ImageLoaderHelper.avatarLoadOptions);
-            videoKooRankItemHolder.nickname.setText(userInfo.getNickname());
+            videoKooRankItemHolder.nameView.setUser(userInfo);
             if (position == 0) {
                 videoKooRankItemHolder.kooIcon.setVisibility(View.VISIBLE);
             }
@@ -153,7 +154,7 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
     class VideoKooRankItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private CircleImageView avatar;
-        private TextView nickname;
+        private UserNameView nameView;
         private ImageView kooIcon;
         private TextView kooCount;
 
@@ -163,7 +164,7 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
             itemView.setOnClickListener(this);
 
             avatar = (CircleImageView) itemView.findViewById(R.id.avatar);
-            nickname = (TextView) itemView.findViewById(R.id.nickname);
+            nameView = (UserNameView) itemView.findViewById(R.id.name_view);
             kooIcon = (ImageView) itemView.findViewById(R.id.koo_icon);
             kooCount = (TextView) itemView.findViewById(R.id.koo_count);
         }

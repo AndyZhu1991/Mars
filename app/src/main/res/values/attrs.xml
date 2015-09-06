@@ -46,4 +46,9 @@
             <enum name="mms" value="5"/>
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="UserNameView">
+        <attr name="textSize" format="dimension"/>
+        <attr name="textColor" format="color"/>
+    </declare-styleable>
 </resources>

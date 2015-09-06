@@ -41,6 +41,7 @@ import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.DrawerToggleView;
 import com.koolew.mars.view.NotificationPointView;
 import com.koolew.mars.view.PhoneNumberView;
+import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -76,7 +77,7 @@ public class MainActivity extends BaseV4FragmentActivity
     private ListView mDrawerList;
     private DrawerListAdapter mAdapter;
     private ImageView mAvatar;
-    private TextView mNickname;
+    private UserNameView mNameView;
     private PhoneNumberView mPhoneNumber;
     private TextView mCountKoo;
     private TextView mCountCoin;
@@ -114,7 +115,7 @@ public class MainActivity extends BaseV4FragmentActivity
         mDrawerList = (ListView) findViewById(R.id.drawer_list);
         mAvatar = (ImageView) findViewById(R.id.avatar);
         mAvatar.setOnClickListener(this);
-        mNickname = (TextView) findViewById(R.id.nickname);
+        mNameView = (UserNameView) findViewById(R.id.name_view);
         mPhoneNumber = (PhoneNumberView) findViewById(R.id.phone_number);
         mCountKoo = (TextView) findViewById(R.id.count_koo);
         mCountCoin = (TextView) findViewById(R.id.count_coin);
@@ -124,7 +125,7 @@ public class MainActivity extends BaseV4FragmentActivity
         mAdapter = new DrawerListAdapter();
         mDrawerList.setAdapter(mAdapter);
         mDrawerList.setOnItemClickListener(mDrawerItemClickListener);
-        mNickname.setText(MyAccountInfo.getNickname());
+        mNameView.setUserInfo(MyAccountInfo.getNickname(), MyAccountInfo.getVip());
         mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
 
         fragments[0] = KoolewFragment.newInstance();
@@ -172,7 +173,7 @@ public class MainActivity extends BaseV4FragmentActivity
 
     private void syncLocalMyInfo() {
         ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(), mAvatar);
-        mNickname.setText(MyAccountInfo.getNickname());
+        mNameView.setUserInfo(MyAccountInfo.getNickname(), MyAccountInfo.getVip());
         mCountKoo.setText(String.valueOf(MyAccountInfo.getKooNum()));
         mCountCoin.setText(String.valueOf(MyAccountInfo.getCoinNum()));
     }
@@ -218,6 +219,7 @@ public class MainActivity extends BaseV4FragmentActivity
                                 MyAccountInfo.setCoinNum(user.getLong("coin_num"));
                                 MyAccountInfo.setAvatar(user.getString("avatar"));
                                 MyAccountInfo.setNickname(user.getString("nickname"));
+                                MyAccountInfo.setVip(user.getInt("vip"));
                                 MyAccountInfo.setKooNum(user.getLong("koo_num"));
                                 new PreferenceHelper(MainActivity.this).setPushBit(user.getInt("push_bit"));
 
@@ -230,7 +232,7 @@ public class MainActivity extends BaseV4FragmentActivity
                                         mAvatarPaletteColor = Utils.getStatusBarColorFromPalette(palette);
                                     }
                                 }.execute();
-                                mNickname.setText(MyAccountInfo.getNickname());
+                                mNameView.setUserInfo(MyAccountInfo.getNickname(), MyAccountInfo.getVip());
                                 mCountKoo.setText("" + MyAccountInfo.getKooNum());
                             }
                         } catch (JSONException e) {
@@ -368,7 +370,7 @@ public class MainActivity extends BaseV4FragmentActivity
             case REQUEST_CODE_CHANGE_INFO:
                 if (resultCode == RESULT_OK) {
                     mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
-                    mNickname.setText(MyAccountInfo.getNickname());
+                    mNameView.setUserInfo(MyAccountInfo.getNickname(), MyAccountInfo.getVip());
                     ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(), mAvatar);
                     new DisplayBlurImage(mInfoBackground, MyAccountInfo.getAvatar()).execute();
                 }

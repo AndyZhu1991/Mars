@@ -23,17 +23,10 @@ public class FriendCurrentAdapter extends FriendSimpleAdapter {
 
     @Override
     public void add(JSONObject jsonObject) {
-        FriendInfo info = new FriendInfo();
-        try {
-            info.type = TYPE_FRIEND;
-            info.uid = jsonObject.getString("uid");
-            info.nickname = jsonObject.getString("nickname");
-            info.avatar = jsonObject.getString("avatar");
-            retrievalContactName(info);
-            generateSummary(info);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        FriendInfo info = new FriendInfo(jsonObject);
+        info.type = TYPE_FRIEND;
+        retrievalContactName(info);
+        generateSummary(info);
         mData.add(info);
     }
 

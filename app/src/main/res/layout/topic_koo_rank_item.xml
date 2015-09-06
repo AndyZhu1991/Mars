@@ -15,15 +15,15 @@
         app:border_width="3dp"
         app:border_color="#D8D8D8"/>
 
-    <TextView
-        android:id="@+id/nickname"
+    <com.koolew.mars.view.UserNameView
+        android:id="@+id/name_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/avatar"
         android:layout_marginLeft="10dp"
         android:layout_centerVertical="true"
-        android:textSize="14sp"
-        android:textColor="@color/koolew_gray"/>
+        app:textSize="14sp"
+        app:textColor="@color/koolew_gray"/>
 
     <TextView
         android:id="@+id/koo_count"

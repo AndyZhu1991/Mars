@@ -9,12 +9,12 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.statistics.BaseActivity;
+import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -116,7 +116,7 @@ public class CommonFriendActivity extends BaseActivity implements AdapterView.On
                         .inflate(R.layout.friend_item_simple, null);
                 ViewHolder holder = new ViewHolder();
                 holder.avatar = (CircleImageView) convertView.findViewById(R.id.avatar);
-                holder.nickname = (TextView) convertView.findViewById(R.id.nickname);
+                holder.nameView = (UserNameView) convertView.findViewById(R.id.name_view);
                 convertView.setTag(holder);
 
                 Button operateBtn = (Button) convertView.findViewById(R.id.operation_btn);
@@ -132,14 +132,14 @@ public class CommonFriendActivity extends BaseActivity implements AdapterView.On
             BaseUserInfo info = (BaseUserInfo) getItem(position);
             ImageLoader.getInstance().displayImage(info.getAvatar(), holder.avatar,
                     ImageLoaderHelper.avatarLoadOptions);
-            holder.nickname.setText(info.getNickname());
+            holder.nameView.setUser(info);
 
             return convertView;
         }
 
         class ViewHolder {
             CircleImageView avatar;
-            TextView nickname;
+            UserNameView nameView;
         }
     }
 }

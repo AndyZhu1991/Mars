@@ -18,6 +18,7 @@ import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.Utils;
+import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -190,7 +191,7 @@ public class KooRankActivity extends BaseActivity implements SwipeRefreshLayout.
                 convertView = mInflater.inflate(R.layout.good_friend_item, null);
                 ViewHolder holder = new ViewHolder();
                 holder.avatar = (CircleImageView) convertView.findViewById(R.id.avatar);
-                holder.nickname = (TextView) convertView.findViewById(R.id.nickname);
+                holder.nameView = (UserNameView) convertView.findViewById(R.id.name_view);
                 holder.topText = (TextView) convertView.findViewById(R.id.top_text);
                 convertView.setTag(holder);
 
@@ -204,7 +205,7 @@ public class KooRankActivity extends BaseActivity implements SwipeRefreshLayout.
             GoodFriendItemInfo item = (GoodFriendItemInfo) getItem(position);
             ImageLoader.getInstance().displayImage(item.getAvatar(), holder.avatar,
                     ImageLoaderHelper.avatarLoadOptions);
-            holder.nickname.setText(item.getNickname());
+            holder.nameView.setUser(item);
             holder.topText.setText(getString(R.string.top_num, position + 1));
 
             return convertView;
@@ -219,7 +220,7 @@ public class KooRankActivity extends BaseActivity implements SwipeRefreshLayout.
 
     class ViewHolder {
         CircleImageView avatar;
-        TextView nickname;
+        UserNameView nameView;
         TextView topText;
     }
 }

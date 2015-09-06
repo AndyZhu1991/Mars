@@ -15,11 +15,13 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.koolew.mars.blur.DisplayBlurImageAndStatusBar;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
+import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.infos.TypedUserInfo;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.view.AvatarLinearContainer;
 import com.koolew.mars.view.BigCountView;
+import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -45,7 +47,7 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
 
     private CircleImageView mAvatar;
     private ImageView mBlurAvatar;
-    private TextView mNickname;
+    private UserNameView mNameView;
     private TextView mSummary;
     private ImageView mOperationImage;
     private TextView mOperationText;
@@ -76,7 +78,7 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
                     ImageLoaderHelper.avatarLoadOptions);
             new DisplayBlurImageAndStatusBar(this, mBlurAvatar, avatar).execute();
         }
-        mNickname.setText(intent.getStringExtra(KEY_NICKNAME));
+        mNameView.setUserInfo(intent.getStringExtra(KEY_NICKNAME), BaseUserInfo.VIP_TYPE_NO_VIP);
 
         doRefresh();
     }
@@ -86,7 +88,7 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
 
         mAvatar = (CircleImageView) header.findViewById(R.id.avatar);
         mBlurAvatar = (ImageView) header.findViewById(R.id.blur_avatar);
-        mNickname = (TextView) header.findViewById(R.id.nickname);
+        mNameView = (UserNameView) header.findViewById(R.id.name_view);
         mSummary = (TextView) header.findViewById(R.id.summary);
         mOperationImage = (ImageView) header.findViewById(R.id.operation_image);
         mOperationImage.setOnClickListener(this);
@@ -125,7 +127,7 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
                 ImageLoader.getInstance().displayImage(avatar, mAvatar);
                 new DisplayBlurImageAndStatusBar(FriendInfoActivity.this, mBlurAvatar, avatar)
                         .execute();
-                mNickname.setText(user.getString("nickname"));
+                mNameView.setUser(new BaseUserInfo(user));
 
                 mKooCount = user.getInt("koo_num");
                 mKooCountView.setCount(mKooCount);
@@ -244,7 +246,7 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
     private void onCommonTopicClick() {
         Intent intent = new Intent(this, CommonTopicActivity.class);
         intent.putExtra(CommonTopicActivity.KEY_UID, mUid);
-        intent.putExtra(CommonTopicActivity.KEY_NICKNAME, mNickname.getText());
+        intent.putExtra(CommonTopicActivity.KEY_NICKNAME, mNameView.getNickname());
         startActivity(intent);
     }
 
@@ -263,7 +265,7 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
         Intent intent = new Intent(this, UserTopicActivity.class);
         intent.putExtra(UserTopicActivity.KEY_TOPIC_ID, mAdapter.getTopicId(position));
         intent.putExtra(UserTopicActivity.KEY_UID, mUid);
-        intent.putExtra(UserTopicActivity.KEY_NICKNAME, mNickname.getText().toString());
+        intent.putExtra(UserTopicActivity.KEY_NICKNAME, mNameView.getNickname());
         startActivity(intent);
     }
 

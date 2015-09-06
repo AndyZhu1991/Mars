@@ -40,12 +40,12 @@
                 android:layout_centerVertical="true"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/nickname"
+                <com.koolew.mars.view.UserNameView
+                    android:id="@+id/name_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:textColor="@android:color/white"/>
+                    app:textSize="18sp"
+                    app:textColor="@android:color/white"/>
                 <TextView
                     android:id="@+id/summary"
                     android:layout_width="wrap_content"

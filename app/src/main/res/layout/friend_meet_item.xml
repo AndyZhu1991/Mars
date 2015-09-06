@@ -78,13 +78,13 @@
                                 android:layout_height="0dp"
                                 android:layout_weight="4"/>
 
-                            <TextView
-                                android:id="@id/nickname"
+                            <com.koolew.mars.view.UserNameView
+                                android:id="@id/name_view"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_horizontal"
-                                android:textColor="#3E5467"
-                                android:textSize="18sp" />
+                                app:textColor="#3E5467"
+                                app:textSize="18sp" />
 
                             <View
                                 android:layout_width="match_parent"

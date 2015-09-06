@@ -11,6 +11,7 @@ public class MyAccountInfo {
 
     private static final String KEY_KOOLEW_PREFERENCES = "koolew preference";
     private static final String KEY_NICKNAME = "nickname";
+    private static final String KEY_VIP = "vip";
     private static final String KEY_PHONE_NUMBER = "phone number";
     private static final String KEY_TOKEN = "token";
     private static final String KEY_REGISTRATION_ID = "registration id";
@@ -21,6 +22,7 @@ public class MyAccountInfo {
     private static String sUid;
     private static String sAvatar;
     private static String sNickname;
+    private static int sVip;
     private static String sRegistrationId;
     private static long sKooNum;
     private static long sCoinNum;
@@ -33,6 +35,7 @@ public class MyAccountInfo {
     public static void init(Context context) {
         sharedPreferences = context.getSharedPreferences(KEY_KOOLEW_PREFERENCES, Context.MODE_APPEND);
         sNickname = sharedPreferences.getString(KEY_NICKNAME, null);
+        sVip = sharedPreferences.getInt(KEY_VIP, 0);
         sPhoneNumber = sharedPreferences.getString(KEY_PHONE_NUMBER, null);
         sToken = sharedPreferences.getString(KEY_TOKEN, null);
         sRegistrationId = sharedPreferences.getString(KEY_REGISTRATION_ID, null);
@@ -87,6 +90,17 @@ public class MyAccountInfo {
         editor.putString(KEY_NICKNAME, nickname);
         editor.commit();
         sNickname = nickname;
+    }
+
+    public static int getVip() {
+        return sVip;
+    }
+
+    public static void setVip(int vip) {
+        Editor editor = sharedPreferences.edit();
+        editor.putInt(KEY_VIP, vip);
+        editor.commit();
+        sVip = vip;
     }
 
     public static String getToken() {

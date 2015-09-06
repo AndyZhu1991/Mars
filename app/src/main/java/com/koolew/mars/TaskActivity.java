@@ -22,11 +22,13 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
+import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.UriProcessor;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.BannerPagerIndicator;
 import com.koolew.mars.view.LoadMoreFooter;
+import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -353,7 +355,7 @@ public class TaskActivity extends BaseActivity
                 ViewHolder holder = new ViewHolder();
                 holder.newTaskFlag = (ImageView) convertView.findViewById(R.id.new_task_flag);
                 holder.avatar = (CircleImageView) convertView.findViewById(R.id.avatar);
-                holder.nickname = (TextView) convertView.findViewById(R.id.nickname);
+                holder.nameView = (UserNameView) convertView.findViewById(R.id.name_view);
                 holder.topicCount = (TextView) convertView.findViewById(R.id.topic_count);
                 holder.topicLayout = (LinearLayout) convertView.findViewById(R.id.topic_layout);
                 convertView.setTag(holder);
@@ -374,13 +376,13 @@ public class TaskActivity extends BaseActivity
                     holder.avatar.setBorderColor(getResources().getColor(R.color.koolew_light_green));
                 }
 
-                JSONObject user = item.getJSONObject("user");
-                ImageLoader.getInstance().displayImage(user.getString("avatar"), holder.avatar,
+                BaseUserInfo userInfo = new BaseUserInfo(item.getJSONObject("user"));
+                ImageLoader.getInstance().displayImage(userInfo.getAvatar(), holder.avatar,
                         ImageLoaderHelper.avatarLoadOptions);
-                holder.nickname.setText(user.getString("nickname"));
+                holder.nameView.setUser(userInfo);
                 holder.topicCount.setText(getString(R.string.counter_ge, item.getInt("task_cnt")));
 
-                holder.avatar.setTag(user.getString("uid"));
+                holder.avatar.setTag(userInfo.getUid());
 
 
                 for (int i = 0; i < holder.topicLayout.getChildCount(); i++) {
@@ -475,7 +477,7 @@ public class TaskActivity extends BaseActivity
         int position;
         ImageView newTaskFlag;
         CircleImageView avatar;
-        TextView nickname;
+        UserNameView nameView;
         TextView topicCount;
         LinearLayout topicLayout;
 

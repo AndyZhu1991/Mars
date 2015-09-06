@@ -24,15 +24,15 @@
             app:border_width="2dp"
             app:border_color="@color/avatar_gray_border"/>
 
-        <TextView
-            android:id="@+id/nickname"
+        <com.koolew.mars.view.UserNameView
+            android:id="@+id/name_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/avatar"
             android:layout_marginLeft="6dp"
             android:layout_centerVertical="true"
-            android:textSize="16sp"
-            android:textColor="@color/koolew_dark_gray"/>
+            app:textSize="16sp"
+            app:textColor="@color/koolew_dark_gray"/>
 
         <TextView
             android:id="@+id/video_date"

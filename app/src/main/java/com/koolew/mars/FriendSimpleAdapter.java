@@ -16,10 +16,12 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
+import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.infos.TypedUserInfo;
 import com.koolew.mars.utils.ContactUtil;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Utils;
+import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -109,18 +111,9 @@ public class FriendSimpleAdapter extends BaseAdapter {
     }
 
     public void add(JSONObject jsonObject) {
-        FriendInfo info = new FriendInfo();
-        try {
-            info.uid = jsonObject.getString("uid");
-            info.nickname = jsonObject.getString("nickname");
-            info.avatar = jsonObject.getString("avatar");
-            info.phoneNumber = jsonObject.getString("phone");
-            info.type = jsonObject.getInt("type");
-            retrievalContactName(info);
-            generateSummary(info);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        FriendInfo info = new FriendInfo(jsonObject);
+        retrievalContactName(info);
+        generateSummary(info);
         mData.add(info);
     }
 
@@ -147,7 +140,7 @@ public class FriendSimpleAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.friend_item_simple, null);
             ViewHolder holder = new ViewHolder();
             holder.avatar = (CircleImageView) convertView.findViewById(R.id.avatar);
-            holder.nickname = (TextView) convertView.findViewById(R.id.nickname);
+            holder.nameView = (UserNameView) convertView.findViewById(R.id.name_view);
             holder.summary = (TextView) convertView.findViewById(R.id.summary);
             holder.operateBtn = (Button) convertView.findViewById(R.id.operation_btn);
             holder.operateBtn.setOnClickListener(mOperateListener);
@@ -166,7 +159,7 @@ public class FriendSimpleAdapter extends BaseAdapter {
             else if (itemType == TYPE_INVITED_ME) {
                 int color = mContext.getResources().getColor(R.color.koolew_light_green);
                 holder.avatar.setBorderColor(color);
-                holder.nickname.setTextColor(color);
+                holder.nameView.setTextColor(color);
             }
             else if (itemType == TYPE_FRIEND) {
                 holder.operateBtn.setTextSize(14);
@@ -185,13 +178,13 @@ public class FriendSimpleAdapter extends BaseAdapter {
 
         if (itemType == TYPE_NO_REGISTER) {
             ContactUtil.SimpleContactInfo info = (ContactUtil.SimpleContactInfo) getItem(position);
-            holder.nickname.setText(info.getName());
+            holder.nameView.setUserInfo(info.getName(), BaseUserInfo.VIP_TYPE_NO_VIP);
         }
         else {
             FriendInfo info = (FriendInfo) getItem(position);
-            ImageLoader.getInstance().displayImage(info.avatar, holder.avatar,
+            ImageLoader.getInstance().displayImage(info.getAvatar(), holder.avatar,
                     ImageLoaderHelper.avatarLoadOptions);
-            holder.nickname.setText(info.nickname);
+            holder.nameView.setUser(info);
             if (info.summary == null || info.summary.length() == 0) {
                 holder.summary.setVisibility(View.GONE);
             }
@@ -227,7 +220,7 @@ public class FriendSimpleAdapter extends BaseAdapter {
     protected void onOperate(int position) {
         String uid = null;
         if (mData.size() > position) {
-            uid = mData.get(position).uid;
+            uid = mData.get(position).getUid();
         }
         switch (getItemViewType(position)) {
             case TYPE_SELF:
@@ -293,7 +286,7 @@ public class FriendSimpleAdapter extends BaseAdapter {
             mProgressDialog.dismiss();
             int count = mData.size();
             for (int i = 0; i < count; i++) {
-                if (mData.get(i).uid.equals(uid)) {
+                if (mData.get(i).getUid().equals(uid)) {
                     mData.remove(i);
                     notifyDataSetChanged();
                     return;
@@ -323,23 +316,31 @@ public class FriendSimpleAdapter extends BaseAdapter {
         }
     }
 
-    public class FriendInfo {
+    public class FriendInfo extends BaseUserInfo {
         protected int type;
-        protected String uid;
-        protected String nickname;
-        protected String avatar;
         protected String phoneNumber;
         protected String contactName;
         protected String summary;
 
-        public String getUid() {
-            return uid;
+        public FriendInfo(JSONObject jsonObject) {
+            super(jsonObject);
+
+            try {
+                if (jsonObject.has("phone")) {
+                    phoneNumber = jsonObject.getString("phone");
+                }
+                if (jsonObject.has("type")) {
+                    type = jsonObject.getInt("type");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     protected class ViewHolder {
         protected CircleImageView avatar;
-        protected TextView nickname;
+        protected UserNameView nameView;
         protected TextView summary;
         protected Button operateBtn;
     }

@@ -27,6 +27,7 @@ import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.player.ScrollPlayer;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.KooAnimationView;
+import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiErrorCode;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -183,7 +184,7 @@ public class VideoCardAdapter extends BaseAdapter {
         ImageLoader.getInstance().displayImage(userInfo.getAvatar(),
                 holder.avatar, ImageLoaderHelper.avatarLoadOptions);
         holder.avatar.setTag(userInfo.getUid());
-        holder.nickname.setText(userInfo.getNickname());
+        holder.nameView.setUser(userInfo);
         holder.videoDate.setText(Utils.buildTimeSummary(mContext, item.getCreateTime() * 1000));
         holder.supportCount.setText(mContext.getString(R.string.support_count, item.getKooTotal()));
         holder.videoLayout.setTag(item.getVideoUrl());
@@ -294,7 +295,7 @@ public class VideoCardAdapter extends BaseAdapter {
         public ImageView videoThumb;
         public ProgressBar progressBar;
         public CircleImageView avatar;
-        public TextView nickname;
+        public UserNameView nameView;
         public TextView videoDate;
         public TextView supportCount;
 
@@ -313,7 +314,7 @@ public class VideoCardAdapter extends BaseAdapter {
             progressBar = (ProgressBar) convertView.findViewById(R.id.progress);
             avatar = (CircleImageView) convertView.findViewById(R.id.avatar);
             avatar.setOnClickListener(this);
-            nickname = (TextView) convertView.findViewById(R.id.nickname);
+            nameView = (UserNameView) convertView.findViewById(R.id.name_view);
             videoDate = (TextView) convertView.findViewById(R.id.video_date);
             supportCount = (TextView) convertView.findViewById(R.id.support_count);
             supportCount.setOnClickListener(this);
