@@ -17,8 +17,8 @@ import org.json.JSONObject;
  */
 public class WorldVideoCardAdapter extends DetailTitleVideoCardAdapter {
 
-    public WorldVideoCardAdapter(Context context) {
-        super(context);
+    public WorldVideoCardAdapter(Context context, String topicId) {
+        super(context, topicId);
     }
 
     @Override

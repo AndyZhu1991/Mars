@@ -53,7 +53,7 @@ public class CommonTopicActivity extends BaseActivity implements AdapterView.OnI
                 if (jsonObject.getInt("code") == 0) {
                     JSONArray topics = jsonObject.getJSONObject("result").getJSONArray("topics");
                     mAdapter = new CommonTopicAdapter(CommonTopicActivity.this);
-                    mAdapter.setData(topics);
+                    mAdapter.setCards(topics);
                     mListView.setAdapter(mAdapter);
                 }
             } catch (JSONException e) {
@@ -64,7 +64,7 @@ public class CommonTopicActivity extends BaseActivity implements AdapterView.OnI
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String topicId = ((TopicAdapter.TopicItem) mAdapter.getItem(position)).topicId;
+        String topicId = ((TopicAdapter.TopicItem) mAdapter.getItem(position)).getTopicId();
         Intent intent = new Intent(this, UserTopicActivity.class);
         intent.putExtra(UserTopicActivity.KEY_UID, mUid);
         intent.putExtra(UserTopicActivity.KEY_TOPIC_ID, topicId);
@@ -80,26 +80,15 @@ public class CommonTopicActivity extends BaseActivity implements AdapterView.OnI
 
         @Override
         public TopicItem jsonObject2TopicItem(JSONObject jsonObject) {
-            try {
-                return new TopicItem(
-                        jsonObject.getString("topic_id"),
-                        jsonObject.getString("content"),
-                        jsonObject.getString("thumb_url"),
-                        jsonObject.getInt("video_cnt"),
-                        jsonObject.getLong("update_time"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            return null;
+            return new TopicItem(jsonObject);
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View root = super.getView(position, convertView, parent);
 
-            ((ViewHolder) root.getTag()).videoCount.setText(
-                    getString(R.string.part_video_count, ((TopicItem) getItem(position)).videoCount));
+            ((ViewHolder) root.getTag()).videoCount.setText(getString(R.string.part_video_count,
+                    ((TopicItem) getItem(position)).getVideoCount()));
 
             return root;
         }

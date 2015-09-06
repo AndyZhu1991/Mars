@@ -1,44 +1,39 @@
 package com.koolew.mars;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.view.Gravity;
-
-import com.koolew.mars.statistics.BaseV4FragmentActivity;
-import com.koolew.mars.view.TitleBarView;
 
 
-public class WorldTopicActivity extends BaseV4FragmentActivity
-        implements TitleBarView.OnRightLayoutClickListener {
-
-    public static final String KEY_TOPIC_ID = BaseVideoListFragment.KEY_TOPIC_ID;
-    public static final String KEY_TOPIC_TITLE = BaseVideoListFragment.KEY_TOPIC_TITLE;
-
-    private String mTopicId;
-    private String mTitle;
+public class WorldTopicActivity extends TopicVideoActivity{
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_world_topic);
-
-        Intent intent = getIntent();
-        mTopicId = intent.getStringExtra(KEY_TOPIC_ID);
-        mTitle = intent.getStringExtra(KEY_TOPIC_TITLE);
-
-        ((TitleBarView) findViewById(R.id.title_bar)).setOnRightLayoutClickListener(this);
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container, new WorldVideoListFragment());
-        fragmentTransaction.commit();
+    protected int[] getPageColors() {
+        return new int[] {
+                getResources().getColor(R.color.koolew_light_blue),
+                getResources().getColor(R.color.koolew_light_orange),
+        };
     }
 
     @Override
-    public void onRightLayoutClick() {
-        new ShareVideoWindow(this, ShareVideoWindow.TYPE_VIDEO_LIST, mTopicId, mTitle)
-                .showAtLocation(findViewById(R.id.fragment_container), Gravity.TOP, 0, 0);
+    protected TopicVideoPagerAdapter getPagerAdapter() {
+        return new FeedsTopicAdapter(getSupportFragmentManager());
+    }
+
+    class FeedsTopicAdapter extends TopicVideoPagerAdapter {
+
+        public FeedsTopicAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        protected void initFragmentList() {
+            fragmentList.add(new WorldVideoListFragment());
+            fragmentList.add(new FeedsVideoListFragment());
+        }
+
+        @Override
+        protected void initTitleList() {
+            fragmentTitles.add(getString(R.string.world_title_public));
+            fragmentTitles.add(getString(R.string.feeds_title_friend));
+        }
     }
 }

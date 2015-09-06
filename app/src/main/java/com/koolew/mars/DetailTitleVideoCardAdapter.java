@@ -17,9 +17,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class DetailTitleVideoCardAdapter extends VideoCardAdapter {
 
     private TopicTitleDetail topicTitleDetail;
+    protected String mTopicId;
 
-    public DetailTitleVideoCardAdapter(Context context) {
+    public DetailTitleVideoCardAdapter(Context context, String topicId) {
         super(context);
+        mTopicId = topicId;
     }
 
     @Override
@@ -79,9 +81,11 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter {
                     R.id.second_crown,
                     R.id.third_crown,
             };
-            for (int i = 0; i < avatarCrowns.length && i < users.length; i++) {
-                title.findViewById(avatarCrowns[i]).setVisibility(
-                        topicTitleDetail.type == TYPE_WORLD ? View.VISIBLE : View.INVISIBLE);
+            for (int i = 0; i < avatarCrowns.length; i++) {
+                int visibility = (topicTitleDetail.type == TYPE_WORLD && i < users.length)
+                        ? View.VISIBLE
+                        : View.INVISIBLE;
+                title.findViewById(avatarCrowns[i]).setVisibility(visibility);
             }
 
             title.findViewById(R.id.topic_manager).setVisibility(
@@ -89,7 +93,7 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter {
 
             View editTopicDesc = title.findViewById(R.id.edit_topic_desc);
             if (topicTitleDetail.type == TYPE_WORLD &&
-                    users[0].getAvatar().equals(MyAccountInfo.getAvatar())) {
+                    users[0].getUid().equals(MyAccountInfo.getUid())) {
                 editTopicDesc.setVisibility(View.VISIBLE);
                 editTopicDesc.setOnClickListener(onEditTopicDescListener);
             }
@@ -104,6 +108,9 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter {
     private View.OnClickListener onEditTopicDescListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Intent intent = new Intent(mContext, EditTopicDescActivity.class);
+            intent.putExtra(EditTopicDescActivity.KEY_TOPIC_ID, mTopicId);
+            mContext.startActivity(intent);
         }
     };
 

@@ -169,7 +169,11 @@ public class ApiWorker {
 
     public JsonObjectRequest requestCurrentFriend(Response.Listener<JSONObject> listener,
                                                   Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.CURRENT_FRIEND_URL, listener, errorListener);
+        RetryPolicy retryPolicy = new DefaultRetryPolicy(
+                10000,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        return standardGetRequest(UrlHelper.CURRENT_FRIEND_URL, listener, errorListener, retryPolicy);
     }
 
     public JsonObjectRequest requestFeedsTopic(Response.Listener<JSONObject> listener,
@@ -611,11 +615,32 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.getVideoKooRankUrl(videoId), listener, errorListener);
     }
 
+    public JsonObjectRequest postTopicDesc(String topicId, String desc,
+                                           Response.Listener<JSONObject> listener,
+                                           Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        try {
+            requestObject.put("topic_id", topicId);
+            requestObject.put("desc", desc);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.EDIT_TOPIC_DESC_URL, requestObject,
+                listener, errorListener);
+    }
+
 
     // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,
                                                  Response.Listener<JSONObject> listener,
                                                  Response.ErrorListener errorListener) {
+        return standardGetRequest(url, listener, errorListener, null);
+    }
+
+    private JsonObjectRequest standardGetRequest(String url,
+                                                 Response.Listener<JSONObject> listener,
+                                                 Response.ErrorListener errorListener,
+                                                 RetryPolicy retryPolicy) {
         if (errorListener == null) {
             errorListener = mErrorListener;
         }
@@ -627,6 +652,9 @@ public class ApiWorker {
                 return UrlHelper.getStandardPostHeaders();
             }
         };
+        if (retryPolicy != null) {
+            jsonObjectRequest.setRetryPolicy(retryPolicy);
+        }
         mRequestQueue.add(jsonObjectRequest);
 
         return jsonObjectRequest;

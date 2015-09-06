@@ -141,7 +141,7 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
                     mJoinedTopicTitle.setText(R.string.he_or_she_no_topic_joined);
                 }
                 mAdapter = new FriendProfileTopicAdapter(FriendInfoActivity.this);
-                mAdapter.setData(topic);
+                mAdapter.setCards(topic);
                 mListView.setAdapter(mAdapter);
 
                 JSONObject common = user.getJSONObject("common");
@@ -275,17 +275,7 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
 
         @Override
         public TopicItem jsonObject2TopicItem(JSONObject jsonObject) {
-            try {
-                return new TopicItem(
-                        jsonObject.getString("topic_id"),
-                        jsonObject.getString("content"),
-                        jsonObject.getString("thumb_url"),
-                        jsonObject.getInt("video_cnt"),
-                        0l);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
+            return new TopicItem(jsonObject);
         }
 
         @Override
@@ -294,14 +284,20 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
 
             root.setBackgroundColor(0xFFF5F5F5);
 
-            ((ViewHolder) root.getTag()).videoCount.setText(
-                    getString(R.string.part_video_count, ((TopicItem) getItem(position)).videoCount));
+            ((ViewHolder) root.getTag()).videoCount.setText(getString(R.string.part_video_count,
+                    ((TopicItem) getItem(position)).getVideoCount()));
 
             return root;
         }
 
         public String getTopicId(int position) {
-            return mData.get(position).topicId;
+            return mData.get(position).getTopicId();
         }
+    }
+
+    public static void startThisActivity(Context context, String uid) {
+        Intent intent = new Intent(context, FriendInfoActivity.class);
+        intent.putExtra(KEY_UID, uid);
+        context.startActivity(intent);
     }
 }

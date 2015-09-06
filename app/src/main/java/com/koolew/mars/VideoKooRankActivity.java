@@ -34,6 +34,8 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
 
     private String videoId;
 
+    private VideoKooRankFragment mFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +45,8 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container, new VideoKooRankFragment());
+        mFragment = new VideoKooRankFragment();
+        fragmentTransaction.add(R.id.fragment_container, mFragment);
         fragmentTransaction.commit();
     }
 
@@ -56,6 +59,10 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
         @Override
         protected LoadMoreAdapter useThisAdapter() {
             return new VideoKooRankAdapter();
+        }
+
+        private VideoKooRankAdapter getAdapter() {
+            return (VideoKooRankAdapter) mAdapter;
         }
 
         @Override
@@ -143,7 +150,7 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
         }
     }
 
-    class VideoKooRankItemHolder extends RecyclerView.ViewHolder {
+    class VideoKooRankItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private CircleImageView avatar;
         private TextView nickname;
@@ -153,10 +160,18 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
         public VideoKooRankItemHolder(View itemView) {
             super(itemView);
 
+            itemView.setOnClickListener(this);
+
             avatar = (CircleImageView) itemView.findViewById(R.id.avatar);
             nickname = (TextView) itemView.findViewById(R.id.nickname);
             kooIcon = (ImageView) itemView.findViewById(R.id.koo_icon);
             kooCount = (TextView) itemView.findViewById(R.id.koo_count);
+        }
+
+        @Override
+        public void onClick(View v) {
+            FriendInfoActivity.startThisActivity(VideoKooRankActivity.this,
+                    mFragment.getAdapter().userInfos.get(getAdapterPosition()).getUid());
         }
     }
 }

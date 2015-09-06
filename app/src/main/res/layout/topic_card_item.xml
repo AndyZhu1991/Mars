@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/topic_invitation_card_padding"
-    android:paddingRight="@dimen/topic_invitation_card_padding"
-    android:paddingTop="@dimen/topic_invitation_card_padding">
+    android:layout_height="wrap_content">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/topic_invitation_card_padding"
+        android:layout_marginRight="@dimen/topic_invitation_card_padding"
+        android:layout_marginTop="@dimen/topic_invitation_card_padding"
         android:background="@drawable/topic_card_bg">
 
         <LinearLayout
@@ -110,5 +110,14 @@
                 android:orientation="horizontal" />
         </LinearLayout>
     </FrameLayout>
+
+    <ImageView
+        android:id="@+id/recommend_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="3dp"
+        android:src="@mipmap/recommend_topic_label"
+        android:visibility="invisible"/>
 
 </RelativeLayout>

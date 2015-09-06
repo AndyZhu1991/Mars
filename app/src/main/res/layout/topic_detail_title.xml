@@ -87,7 +87,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/into_arrow"/>
+                    android:src="@mipmap/ic_into_stars_list"/>
             </LinearLayout>
 
             <RelativeLayout
@@ -200,6 +200,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:padding="15dp"
-        android:src="@mipmap/ic_edit_topic_desc"/>
+        android:src="@mipmap/ic_edit_topic_desc"
+        android:visibility="invisible"/>
 
 </RelativeLayout>

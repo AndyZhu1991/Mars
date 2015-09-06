@@ -31,6 +31,7 @@
     <string name="search">搜索</string>
     <string name="topic">话题</string>
     <string name="more">更多</string>
+    <string name="unknown_error">未知错误</string>
 
     <!-- For MainActivity -->
     <string name="title_koolew">可见</string>
@@ -284,6 +285,11 @@
     <string name="before_n_minutes">%d分钟前</string>
     <string name="before_n_hours">%d小时前</string>
 
+    <!-- For EditTopicDescActivity -->
+    <string name="edit_topic_desc_title">编辑话题描述</string>
+    <string name="no_topic_desc_hint">还没有输入描述呢~</string>
+    <string name="not_owner_of_topic">你不是此话题的话题主 T_T</string>
+
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>
     <string name="website">http://www.mob.com</string>
@@ -395,4 +401,5 @@
     <string name="title_activity_topic_video">TopicVideoActivity</string>
     <string name="title_activity_topic_koo_rank">TopicKooRankActivity</string>
     <string name="title_activity_video_koo_rank">VideoKooRankActivity</string>
+    <string name="title_activity_edit_topic_desc">EditTopicDescActivity</string>
 </resources>

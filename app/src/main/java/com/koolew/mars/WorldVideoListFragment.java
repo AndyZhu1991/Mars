@@ -34,7 +34,7 @@ public class WorldVideoListFragment extends DetailTitleVideoListFragment {
 
     @Override
     protected VideoCardAdapter useThisAdapter() {
-        return new WorldVideoCardAdapter(getActivity());
+        return new WorldVideoCardAdapter(getActivity(), mTopicId);
     }
 
     @Override

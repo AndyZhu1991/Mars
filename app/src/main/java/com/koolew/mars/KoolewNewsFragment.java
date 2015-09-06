@@ -115,8 +115,16 @@ public class KoolewNewsFragment extends BaseListFragment implements AdapterView.
         try {
             setupAdapter();
             mRefreshRequest = null;
-            JSONArray cards = response.getJSONObject("result").getJSONArray("cards");
-            mAdapter.setData(cards);
+            JSONObject result = response.getJSONObject("result");
+            JSONArray recommends = null;
+            JSONArray cards = null;
+            if (result.has("hot_cards")) {
+                recommends = result.getJSONArray("hot_cards");
+            }
+            if (result.has("cards")) {
+                cards = response.getJSONObject("result").getJSONArray("cards");
+            }
+            mAdapter.setData(recommends, cards);
             mAdapter.notifyDataSetChanged();
             mScrollPlayer.onListRefresh();
             return cards.length() > 0;
@@ -132,7 +140,7 @@ public class KoolewNewsFragment extends BaseListFragment implements AdapterView.
         try {
             mLoadMoreRequest = null;
             JSONArray cards = response.getJSONObject("result").getJSONArray("cards");
-            int loadedCount = mAdapter.addData(cards);
+            int loadedCount = mAdapter.addCards(cards);
             mAdapter.notifyDataSetChanged();
 
             return loadedCount > 0;
@@ -164,23 +172,7 @@ public class KoolewNewsFragment extends BaseListFragment implements AdapterView.
             try {
                 JSONObject topic = jsonObject.getJSONObject("topic");
                 JSONArray parters = jsonObject.getJSONArray("parters");
-                int parterCount = parters.length();
-                UserInfo[] parterInfos = new UserInfo[parterCount];
-                for (int i = 0; i < parterCount; i++) {
-                    JSONObject parter = parters.getJSONObject(i);
-                    parterInfos[i] = new UserInfo(parter);
-                    parterInfos[i].isSpecial = parter.getInt("new") == 1;
-                }
-
-                TopicItem topicItem = new TopicItem(
-                        topic.getString("topic_id"),
-                        topic.getString("content"),
-                        topic.getString("thumb_url"),
-                        topic.getInt("video_cnt"),
-                        topic.getLong("update_time"),
-                        parterInfos);
-                topicItem.videoUrl = topic.getString("video_url");
-                return topicItem;
+                return new TopicItem(topic, parters);
             } catch (JSONException e) {
                 e.printStackTrace();
                 Log.e(TAG, "JsonObject get field error!");
@@ -192,9 +184,15 @@ public class KoolewNewsFragment extends BaseListFragment implements AdapterView.
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         TopicAdapter.TopicItem item = (TopicAdapter.TopicItem) mAdapter.getItem(position);
-        Intent intent = new Intent(getActivity(), FeedsTopicActivity.class);
-        intent.putExtra(FeedsTopicActivity.KEY_TOPIC_ID, item.topicId);
-        intent.putExtra(FeedsTopicActivity.KEY_TOPIC_TITLE, item.title);
+        Intent intent;
+        if (item.isRecommend) {
+            intent = new Intent(getActivity(), WorldTopicActivity.class);
+        }
+        else {
+            intent = new Intent(getActivity(), FeedsTopicActivity.class);
+        }
+        intent.putExtra(TopicVideoActivity.KEY_TOPIC_ID, item.getTopicId());
+        intent.putExtra(TopicVideoActivity.KEY_TOPIC_TITLE, item.getTitle());
         startActivity(intent);
     }
 }

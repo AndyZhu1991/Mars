@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.koolew.mars.danmaku.DanmakuItemInfo;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
+import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.player.ScrollPlayer;
 import com.koolew.mars.utils.Utils;
@@ -48,16 +49,32 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
         mData = new ArrayList<TopicItem>();
     }
 
-    public void setData(JSONArray cards) {
+    public void setData(JSONArray recommends, JSONArray cards) {
         mData.clear();
-        addData(cards);
+        addData(recommends, true);
+        addData(cards, false);
     }
 
-    public int addData(JSONArray cards) {
-        int length = cards.length();
+    public void setCards(JSONArray cards) {
+        mData.clear();
+        addCards(cards);
+    }
+
+    public int addCards(JSONArray cards) {
+        return addData(cards, false);
+    }
+
+    private int addData(JSONArray jsonArray, boolean isRecommend) {
+        if (jsonArray == null) {
+            return 0;
+        }
+
+        int length = jsonArray.length();
         try {
             for (int i = 0; i < length; i++) {
-                mData.add(jsonObject2TopicItem(cards.getJSONObject(i)));
+                TopicItem topicItem = jsonObject2TopicItem(jsonArray.getJSONObject(i));
+                topicItem.isRecommend = isRecommend;
+                mData.add(topicItem);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -66,7 +83,7 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
     }
 
     public long getOldestCardTime() {
-        return mData.get(mData.size() - 1).updateTime;
+        return mData.get(mData.size() - 1).getUpdateTime();
     }
 
     @Override
@@ -110,6 +127,7 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
             holder.partersLayout = (LinearLayout) convertView.findViewById(R.id.parters_layout);
             holder.partersArrow = (ImageView) convertView.findViewById(R.id.parters_arrow);
             holder.progressBar = (ProgressBar) convertView.findViewById(R.id.progress);
+            holder.recommendLabel = (ImageView) convertView.findViewById(R.id.recommend_label);
             holder.parters = new CircleImageView[getMaxShowTopicParterCount()];
             for (int i = 0; i < holder.parters.length; i++) {
                 CircleImageView avatar = new CircleImageView(mContext);
@@ -130,12 +148,18 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
 
         holder.position = position;
 
-        ImageLoader.getInstance().displayImage(topicItem.thumb, holder.thumb,
+        ImageLoader.getInstance().displayImage(topicItem.getThumb(), holder.thumb,
                 ImageLoaderHelper.topicThumbLoadOptions);
-        holder.topicTitle.setText(topicItem.title);
+        holder.topicTitle.setText(topicItem.getTitle());
         holder.videoCount.setText(
-                mContext.getString(R.string.video_count_label, topicItem.videoCount));
+                mContext.getString(R.string.video_count_label, topicItem.getVideoCount()));
         holder.progressBar.setVisibility(View.INVISIBLE);
+        if (topicItem.isRecommend) {
+            holder.recommendLabel.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.recommendLabel.setVisibility(View.INVISIBLE);
+        }
 
         if (holder.parters != null && holder.parters.length != 0 &&
                 topicItem.parters != null && topicItem.parters.length != 0) {
@@ -201,30 +225,53 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
         return maxShowTopicParterCount;
     }
 
-    public class TopicItem {
-        public String topicId;
-        public String title;
-        public String thumb;
-        public String videoUrl;
-        public int videoCount;
-        public long updateTime;
-        public UserInfo[] parters;
+    public class TopicItem extends BaseTopicInfo {
+        private static final String KEY_VIDEO_URL = "video_url";
+        private static final String KEY_PARTERS = "parters";
 
-        public TopicItem() {
+        protected String videoUrl;
+        protected UserInfo[] parters;
+        protected boolean isRecommend;
+
+        public TopicItem(JSONObject jsonObject) {
+            super(jsonObject);
+
+            try {
+                if (jsonObject.has(KEY_VIDEO_URL)) {
+                    videoUrl = jsonObject.getString(KEY_VIDEO_URL);
+                }
+                if (jsonObject.has(KEY_PARTERS)) {
+                    JSONArray parterJSONArray = jsonObject.getJSONArray(KEY_PARTERS);
+                    int count = parterJSONArray.length();
+                    parters = new UserInfo[count];
+                    for (int i = 0; i < count; i++) {
+                        JSONObject parter = parterJSONArray.getJSONObject(i);
+                        parters[i] = new UserInfo(parter);
+                        parters[i].isSpecial = (parter.getInt("new") == 1);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
-        public TopicItem(String topicId, String title, String thumb, int videoCount, long updateTime) {
-            this(topicId, title, thumb, videoCount, updateTime, null);
-        }
+        public TopicItem(JSONObject topicObject, JSONArray partersArray) {
+            super(topicObject);
 
-        public TopicItem(String topicId, String title, String thumb, int videoCount, long updateTime,
-                         UserInfo[] parters) {
-            this.topicId = topicId;
-            this.title = title;
-            this.thumb = thumb;
-            this.videoCount = videoCount;
-            this.updateTime = updateTime;
-            this.parters = parters;
+            try {
+                if (topicObject.has(KEY_VIDEO_URL)) {
+                    videoUrl = topicObject.getString(KEY_VIDEO_URL);
+                }
+                int count = partersArray.length();
+                parters = new UserInfo[count];
+                for (int i = 0; i < count; i++) {
+                    JSONObject parter = partersArray.getJSONObject(i);
+                    parters[i] = new UserInfo(parter);
+                    parters[i].isSpecial = (parter.getInt("new") == 1);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -247,6 +294,7 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
         CircleImageView[] parters;
         ImageView partersArrow;
         ProgressBar progressBar;
+        ImageView recommendLabel;
     }
 
     public class TopicScrollPlayer extends ScrollPlayer {

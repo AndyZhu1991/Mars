@@ -67,7 +67,7 @@ public abstract class BaseVideoListFragment extends BaseListFragment
 
     // Override it if need different adapter.
     protected VideoCardAdapter useThisAdapter() {
-        return new DetailTitleVideoCardAdapter(getActivity());
+        return new DetailTitleVideoCardAdapter(getActivity(), mTopicId);
     }
 
     @Override

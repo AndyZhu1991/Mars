@@ -14,11 +14,11 @@ public class BaseTopicInfo {
     public static final String KEY_THUMB = "thumb_url";
     public static final String KEY_UPDATE_TIME = "update_time";
 
-    private String topicId;
-    private String title;
-    private int videoCount;
-    private String thumb;
-    private long updateTime;
+    protected String topicId;
+    protected String title;
+    protected int videoCount;
+    protected String thumb;
+    protected long updateTime;
 
     public BaseTopicInfo(JSONObject jsonObject) {
         try {

@@ -27,15 +27,19 @@ public class TopicKooRankActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_koo_rank);
 
-        kooCountUserInfo = (KooCountUserInfo[])
-                getIntent().getSerializableExtra(KEY_KOO_COUNT_USER_INFO);
+        Object[] os = (Object[]) getIntent().getSerializableExtra(KEY_KOO_COUNT_USER_INFO);
+        kooCountUserInfo = new KooCountUserInfo[os.length];
+        for (int i = 0; i < os.length; i++) {
+            kooCountUserInfo[i] = (KooCountUserInfo) os[i];
+        }
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new TopicKooRankAdapter());
     }
 
-    class TopicKooRankItemHolder extends RecyclerView.ViewHolder {
+
+    class TopicKooRankItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private CircleImageView avatar;
         private TextView nickname;
@@ -45,10 +49,18 @@ public class TopicKooRankActivity extends BaseActivity {
         public TopicKooRankItemHolder(View itemView) {
             super(itemView);
 
+            itemView.setOnClickListener(this);
+
             avatar = (CircleImageView) itemView.findViewById(R.id.avatar);
             nickname = (TextView) itemView.findViewById(R.id.nickname);
             kooIcon = (ImageView) itemView.findViewById(R.id.koo_icon);
             kooCount = (TextView) itemView.findViewById(R.id.koo_count);
+        }
+
+        @Override
+        public void onClick(View v) {
+            FriendInfoActivity.startThisActivity(TopicKooRankActivity.this,
+                    kooCountUserInfo[getAdapterPosition()].getUid());
         }
     }
 
