@@ -10,8 +10,8 @@ android {
         applicationId "com.koolew.mars"
         minSdkVersion 18
         targetSdkVersion 22
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 3
+        versionName "1.0.2"
         ndk {
             abiFilter "armeabi"
             abiFilter "armeabi-v7a"
@@ -25,7 +25,86 @@ android {
             moduleName "imageblurtool"
             ldLibs "log", "m", "jnigraphics"
         }
+
+        manifestPlaceholders = [UMENG_CHANNEL_VALUE: "default"]
     }
+
+    productFlavors {
+
+        firim {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "firim"]
+        }
+
+        koolew {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "koolew"]
+        }
+
+        YingYongBao {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "YingYongBao"]
+        }
+
+        MeiPai {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "MeiPai"]
+        }
+
+        WeiBoYi {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "WeiBoYi"]
+        }
+
+        _360 {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "360"]
+        }
+
+        _91 {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "91"]
+        }
+
+        Baidu {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "Baidu"]
+        }
+
+        AnZhi {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "AnZhi"]
+        }
+
+        WanDouJia {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "WanDouJia"]
+        }
+
+        AnZhuo {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "AnZhuo"]
+        }
+
+        MuMaYi {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "MuMaYi"]
+        }
+
+        GooglePlay {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "GooglePlay"]
+        }
+
+        JiFeng {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "JiFeng"]
+        }
+
+        XiaoMi {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "XiaoMi"]
+        }
+
+        HuaWei {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "HuaWei"]
+        }
+
+        WeiBo {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "WeiBo"]
+        }
+
+        ChuiZi {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "ChuiZi"]
+        }
+
+    }
+
     buildTypes {
         debug {
             minifyEnabled false
