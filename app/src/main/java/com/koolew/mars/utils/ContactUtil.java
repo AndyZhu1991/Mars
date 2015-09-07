@@ -4,6 +4,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
+import android.widget.Toast;
+
+import com.koolew.mars.R;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -41,7 +44,8 @@ public class ContactUtil {
         ContentResolver contentResolver = context.getContentResolver();
         Cursor contactsCur = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
-        if (contactsCur.getCount() == 0) {
+        if (contactsCur == null || contactsCur.getCount() == 0) {
+            Toast.makeText(context, R.string.can_not_get_contacts, Toast.LENGTH_LONG).show();
             return contacts;
         }
 

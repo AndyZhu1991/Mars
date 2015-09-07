@@ -291,6 +291,9 @@
     <string name="no_topic_desc_hint">还没有输入描述呢~</string>
     <string name="not_owner_of_topic">你不是此话题的话题主 T_T</string>
 
+    <!-- Some error message -->
+    <string name="can_not_get_contacts">读取联系人失败，可能是被安全软件阻止，请检查。</string>
+
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>
     <string name="website">http://www.mob.com</string>
