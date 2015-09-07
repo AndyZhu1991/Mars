@@ -199,6 +199,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
+        android:layout_marginTop="7dp"
         android:padding="15dp"
         android:src="@mipmap/ic_edit_topic_desc"
         android:visibility="invisible"/>

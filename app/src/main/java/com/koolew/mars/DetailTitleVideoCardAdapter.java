@@ -26,13 +26,11 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter {
 
     @Override
     protected View getTitleView(View convertView) {
-        if (convertView != null) {
-            return convertView;
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.topic_detail_title, null);
         }
 
-        View title = mInflater.inflate(R.layout.topic_detail_title, null);
-
-        TextView summary = (TextView) title.findViewById(R.id.summary);
+        TextView summary = (TextView) convertView.findViewById(R.id.summary);
         if (topicTitleDetail.type == TYPE_TASK) {
             summary.setTextColor(mContext.getResources().getColor(R.color.koolew_light_green));
             summary.setText(mContext.getString(R.string.invited_label, topicTitleDetail.inviter));
@@ -41,9 +39,9 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter {
             summary.setVisibility(View.GONE);
         }
 
-        ((TextView) title.findViewById(R.id.title)).setText(topicTitleDetail.title);
+        ((TextView) convertView.findViewById(R.id.title)).setText(topicTitleDetail.title);
 
-        TextView description = ((TextView) title.findViewById(R.id.description));
+        TextView description = ((TextView) convertView.findViewById(R.id.description));
         if (TextUtils.isEmpty(topicTitleDetail.description)) {
             description.setVisibility(View.GONE);
         }
@@ -51,17 +49,17 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter {
             description.setText(topicTitleDetail.description);
         }
 
-        ((TextView) title.findViewById(R.id.video_count)).setText(
+        ((TextView) convertView.findViewById(R.id.video_count)).setText(
                 mContext.getString(R.string.video_count_label, topicTitleDetail.videoCount));
 
         KooCountUserInfo[] users = topicTitleDetail.kooRankUsers;
         if (users.length == 0) {
-            title.findViewById(R.id.stars).setVisibility(View.GONE);
+            convertView.findViewById(R.id.stars).setVisibility(View.GONE);
         }
         else {
-            title.findViewById(R.id.stars).setOnClickListener(onStarsClickListener);
+            convertView.findViewById(R.id.stars).setOnClickListener(onStarsClickListener);
 
-            ((TextView) title.findViewById(R.id.stars_rank_title)).setText(
+            ((TextView) convertView.findViewById(R.id.stars_rank_title)).setText(
                     mContext.getString(R.string.stars_rank, users.length));
 
             int[] avatarUrls = new int[] {
@@ -73,7 +71,7 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter {
             };
             for (int i = 0; i < avatarUrls.length && i < users.length; i++) {
                 ImageLoader.getInstance().displayImage(users[i].getAvatar(),
-                        (ImageView) title.findViewById(avatarUrls[i]));
+                        (ImageView) convertView.findViewById(avatarUrls[i]));
             }
 
             int avatarCrowns[] = new int[]{
@@ -85,13 +83,13 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter {
                 int visibility = (topicTitleDetail.type == TYPE_WORLD && i < users.length)
                         ? View.VISIBLE
                         : View.INVISIBLE;
-                title.findViewById(avatarCrowns[i]).setVisibility(visibility);
+                convertView.findViewById(avatarCrowns[i]).setVisibility(visibility);
             }
 
-            title.findViewById(R.id.topic_manager).setVisibility(
+            convertView.findViewById(R.id.topic_manager).setVisibility(
                     topicTitleDetail.type == TYPE_WORLD ? View.VISIBLE : View.INVISIBLE);
 
-            View editTopicDesc = title.findViewById(R.id.edit_topic_desc);
+            View editTopicDesc = convertView.findViewById(R.id.edit_topic_desc);
             if (topicTitleDetail.type == TYPE_WORLD &&
                     users[0].getUid().equals(MyAccountInfo.getUid())) {
                 editTopicDesc.setVisibility(View.VISIBLE);
@@ -102,7 +100,7 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter {
             }
         }
 
-        return title;
+        return convertView;
     }
 
     private View.OnClickListener onEditTopicDescListener = new View.OnClickListener() {
