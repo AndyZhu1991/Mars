@@ -42,8 +42,15 @@ public class ContactUtil {
         List<SimpleContactInfo> contacts = new LinkedList<SimpleContactInfo>();
 
         ContentResolver contentResolver = context.getContentResolver();
-        Cursor contactsCur = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
-                null, null, null, null);
+        Cursor contactsCur;
+        try {
+            contactsCur = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
+                    null, null, null, null);
+        } catch (SecurityException se) {
+            Toast.makeText(context, R.string.can_not_get_contacts, Toast.LENGTH_LONG).show();
+            return contacts;
+        }
+
         if (contactsCur == null || contactsCur.getCount() == 0) {
             Toast.makeText(context, R.string.can_not_get_contacts, Toast.LENGTH_LONG).show();
             return contacts;
