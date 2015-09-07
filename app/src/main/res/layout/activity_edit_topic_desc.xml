@@ -14,8 +14,16 @@
         app:title_text="@string/edit_topic_desc_title"
         app:right_text="@string/done"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/shadow_height"
+        android:background="@mipmap/shadow"/>
+
     <EditText
         android:id="@+id/edit_desc"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:gravity="top"
+        android:background="@android:color/transparent"/>
 </LinearLayout>
