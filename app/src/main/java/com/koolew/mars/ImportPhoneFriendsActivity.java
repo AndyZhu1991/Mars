@@ -225,10 +225,17 @@ public class ImportPhoneFriendsActivity extends BaseActivity {
         @Override
         protected Void doInBackground(Void... params) {
             JSONObject response = ApiWorker.getInstance().requestContactFriendV2Sync(null);
+            JSONArray friendJsons = null;
             try {
-                JSONArray friendJsons = response.getJSONObject("result").getJSONArray("relations");
-                friendInfos = new FriendInfo[friendJsons.length()];
-                friendSelectedFlag = new boolean[friendJsons.length()];
+                friendJsons = response.getJSONObject("result").getJSONArray("relations");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                int length = friendJsons == null ? 0 : friendJsons.length();
+                friendInfos = new FriendInfo[length];
+                friendSelectedFlag = new boolean[length];
                 for (int i = 0; i < friendJsons.length(); i++) {
                     Log.d(TAG, i + ": " + friendJsons.get(i));
                     friendInfos[i] = FriendInfo.fromJson((JSONObject) friendJsons.get(i));
@@ -236,8 +243,6 @@ public class ImportPhoneFriendsActivity extends BaseActivity {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-            } catch (NullPointerException ne) {
-                ne.printStackTrace();
             }
 
             return null;
