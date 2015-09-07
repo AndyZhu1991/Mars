@@ -25,8 +25,14 @@ public class LoadBlurImageTask extends AsyncTask {
 
     @Override
     protected Object doInBackground(Object[] params) {
-        Bitmap bmp = ImageLoader.getInstance().loadImageSync(mUri);
-        mBluredBitmap = ImageBlurTool.doBlur(bmp, SCALE_BEFORE_BLUR * 3, SCALE_BEFORE_BLUR);
+        Bitmap bmp = null;
+        for (int i = 0; i < 3 && bmp == null; i++) { // Try 3 times
+            bmp = ImageLoader.getInstance().loadImageSync(mUri);
+        }
+
+        if (bmp != null) {
+            mBluredBitmap = ImageBlurTool.doBlur(bmp, SCALE_BEFORE_BLUR * 3, SCALE_BEFORE_BLUR);
+        }
 
         return null;
     }
