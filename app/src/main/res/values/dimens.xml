@@ -38,6 +38,7 @@
 
     <!-- For video card item -->
     <dimen name="video_card_padding">5dp</dimen>
+    <dimen name="video_card_padding_double">10dp</dimen>
 
     <!-- For KoolewViewPagerIndicator -->
     <dimen name="indicator_title_text_size">16sp</dimen>

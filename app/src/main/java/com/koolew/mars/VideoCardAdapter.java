@@ -348,12 +348,6 @@ public class VideoCardAdapter extends BaseAdapter {
                         .setDuration(400)
                         .start();
 
-                PropertyValuesHolder pvhX2 = PropertyValuesHolder.ofFloat("scaleX", 1f, 1.5f);
-                PropertyValuesHolder pvhY2 = PropertyValuesHolder.ofFloat("scaleY", 1f, 1.5f);
-                ObjectAnimator.ofPropertyValuesHolder(kooAnimationView, pvhX2, pvhY2)
-                        .setDuration(500)
-                        .start();
-
                 kooAnimationView.startAnimation();
             }
             else if (v == danmakuSendLayout) {

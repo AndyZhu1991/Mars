@@ -18,9 +18,9 @@ import java.util.Random;
  */
 public class KooAnimationView extends View {
 
-    private static final int DEFAULT_PARTICLE_COUNT = 24;
+    private static final int DEFAULT_PARTICLE_COUNT = 36;
     private static final int DEFAULT_PARTICLE_COLOR = 0xFFFA9193;
-    private static final float DEFAULT_PARTICLE_RADIUS_DP = 1.5f;
+    private static final float DEFAULT_PARTICLE_RADIUS_DP = 2.0f;
     private static final float DEFAULT_START_RATIO = 0.0f;
 
     private int mParticleCount;

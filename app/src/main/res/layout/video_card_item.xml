@@ -2,167 +2,170 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/video_card_padding">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/video_card_item_bg">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/avatar"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
-            android:layout_marginLeft="10dp"
-            android:layout_centerVertical="true"
-            app:border_width="2dp"
-            app:border_color="@color/avatar_gray_border"/>
-
-        <com.koolew.mars.view.UserNameView
-            android:id="@+id/name_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/avatar"
-            android:layout_marginLeft="6dp"
-            android:layout_centerVertical="true"
-            app:textSize="16sp"
-            app:textColor="@color/koolew_dark_gray"/>
-
-        <TextView
-            android:id="@+id/video_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:textSize="10sp"
-            android:textColor="#9EADB7"/>
-    </RelativeLayout>
-
-    <FrameLayout
-        android:id="@+id/video_layout"
-        android:layout_width="match_parent"
-        android:layout_height="262.5dp"
-        android:background="@drawable/topic_card_out_shape">
+        android:layout_marginBottom="@dimen/video_card_padding_double"
+        android:layout_marginLeft="@dimen/video_card_padding"
+        android:layout_marginRight="@dimen/video_card_padding"
+        android:background="@drawable/video_card_item_bg"
+        android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/danmaku_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="50dp">
 
-        <ImageView
-            android:id="@+id/video_thumb"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"/>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/avatar"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                app:border_color="@color/avatar_gray_border"
+                app:border_width="2dp" />
 
-        <ProgressBar
-            android:id="@+id/progress"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:indeterminate="true"
-            android:alpha="0.5"/>
-    </FrameLayout>
-
-    <TextView
-        android:id="@+id/support_count"
-        android:layout_width="match_parent"
-        android:layout_height="22dp"
-        android:text="@string/support_count"
-        android:textSize="10sp"
-        android:textColor="#D8D8D8"
-        android:gravity="center_vertical"
-        android:paddingLeft="10dp"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@mipmap/horizontal_dash_line"/>
-
-    <RelativeLayout
-        android:id="@+id/bottom_layout"
-        android:layout_width="match_parent"
-        android:layout_height="35dp">
-
-        <LinearLayout
-            android:id="@+id/koo_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="30dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:id="@+id/koo_icon"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:src="@mipmap/ic_koo"/>
-
-            <TextView
+            <com.koolew.mars.view.UserNameView
+                android:id="@+id/name_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:text="@string/koo"
-                android:textSize="12sp"
-                android:textColor="@color/koolew_light_gray"/>
-        </LinearLayout>
-
-        <com.koolew.mars.view.KooAnimationView
-            android:id="@+id/koo_animation_view"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginLeft="20dp"/>
-
-        <LinearLayout
-            android:id="@+id/danmaku_send_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:id="@+id/danmaku_send_ic"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:src="@mipmap/ic_comment"/>
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="6dp"
+                android:layout_toRightOf="@+id/avatar"
+                app:textColor="@color/koolew_dark_gray"
+                app:textSize="16sp" />
 
             <TextView
-                android:id="@+id/danmaku_send_text"
+                android:id="@+id/video_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:text="@string/comment"
-                android:textSize="12sp"
-                android:textColor="@color/koolew_light_gray"/>
-        </LinearLayout>
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:textColor="#9EADB7"
+                android:textSize="10sp" />
+        </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/more_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+        <FrameLayout
+            android:id="@+id/video_layout"
+            android:layout_width="match_parent"
+            android:layout_height="262.5dp"
+            android:background="@drawable/topic_card_out_shape">
+
+            <RelativeLayout
+                android:id="@+id/danmaku_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:id="@+id/video_thumb"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:alpha="0.5"
+                android:indeterminate="true" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/support_count"
+            android:layout_width="match_parent"
+            android:layout_height="22dp"
             android:gravity="center_vertical"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="30dp">
+            android:paddingLeft="10dp"
+            android:text="@string/support_count"
+            android:textColor="#D8D8D8"
+            android:textSize="10sp" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_share" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@mipmap/horizontal_dash_line" />
 
-            <TextView
+        <RelativeLayout
+            android:id="@+id/bottom_layout"
+            android:layout_width="match_parent"
+            android:layout_height="35dp">
+
+            <LinearLayout
+                android:id="@+id/koo_layout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:text="@string/more"
-                android:textSize="12sp"
-                android:textColor="@color/koolew_light_gray"/>
-        </LinearLayout>
-    </RelativeLayout>
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/koo_icon"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@mipmap/ic_koo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:text="@string/koo"
+                    android:textColor="@color/koolew_light_gray"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/danmaku_send_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/danmaku_send_ic"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@mipmap/ic_comment" />
+
+                <TextView
+                    android:id="@+id/danmaku_send_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:text="@string/comment"
+                    android:textColor="@color/koolew_light_gray"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/more_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="30dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_share" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:text="@string/more"
+                    android:textColor="@color/koolew_light_gray"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
+
+    <com.koolew.mars.view.KooAnimationView
+        android:id="@+id/koo_animation_view"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_gravity="left|bottom"
+        android:layout_marginLeft="15dp"/>
 </FrameLayout>
