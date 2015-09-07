@@ -351,7 +351,13 @@ public class VideoShootActivity extends BaseActivity
         for (int i = 0; i < numCameras; i++) {
             Camera.getCameraInfo(i, info);
             if (info.facing == which) {
-                mCamera = Camera.open(i);
+                try {
+                    mCamera = Camera.open(i);
+                }
+                catch (RuntimeException re) {
+                    showCameraFailDialog();
+                    return;
+                }
                 break;
             }
         }
@@ -364,6 +370,24 @@ public class VideoShootActivity extends BaseActivity
         }
         Log.i(TAG, "Camera open over....");
         cameraHasOpened();
+    }
+
+    private void showCameraFailDialog() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new AlertDialog.Builder(VideoShootActivity.this)
+                        .setMessage(R.string.fail_to_open_camera)
+                        .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                VideoShootActivity.this.onBackPressed();
+                            }
+                        })
+                        .setPositiveButton(android.R.string.ok, null)
+                        .show();
+            }
+        });
     }
 
     private void cameraHasOpened() {

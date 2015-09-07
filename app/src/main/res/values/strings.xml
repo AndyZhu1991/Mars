@@ -116,6 +116,7 @@
     <string name="max_video_len_hint" formatted="false">视频最多只能拍摄%d秒，右划可以删除视频哦～</string>
     <string name="concat_video_failed">视频处理失败 T_T</string>
     <string name="generate_thumb_failed">缩略图生成失败 T_T</string>
+    <string name="fail_to_open_camera">打开摄像头失败，可能是被安全软件阻止，或被其他应用占用。\n请检查。</string>
 
     <string name="sms_invitation_message" formatted="false">来「可见」和我一起玩视频点名吧，下载链接：%s</string>
 
