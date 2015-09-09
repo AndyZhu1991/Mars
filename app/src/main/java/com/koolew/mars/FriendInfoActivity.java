@@ -16,6 +16,7 @@ import com.android.volley.Response;
 import com.koolew.mars.blur.DisplayBlurImageAndStatusBar;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
+import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.infos.TypedUserInfo;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
@@ -54,8 +55,10 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
     private ListView mListView;
     private FriendProfileTopicAdapter mAdapter;
 
+    private View mKooCommonTopicLayout;
     private BigCountView mKooCountView;
     private BigCountView mCommonTopicCountView;
+    private View mCommonFriendLayout;
     private TextView mCommonFriendTitle;
     private TextView mJoinedTopicTitle;
     private AvatarLinearContainer mAvatarContainer;
@@ -79,6 +82,11 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
             new DisplayBlurImageAndStatusBar(this, mBlurAvatar, avatar).execute();
         }
         mNameView.setUserInfo(intent.getStringExtra(KEY_NICKNAME), BaseUserInfo.VIP_TYPE_NO_VIP);
+        if (mUid.equals(MyAccountInfo.getUid())) {
+            mKooCommonTopicLayout.setVisibility(View.GONE);
+            mCommonFriendLayout.setVisibility(View.GONE);
+            mJoinedTopicTitle.setText(R.string.joined_topic);
+        }
 
         doRefresh();
     }
@@ -98,10 +106,12 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
         mListView.setOnItemClickListener(this);
 
         mListView.addHeaderView(header, null, false);
+        mKooCommonTopicLayout = header.findViewById(R.id.koo_common_topic_layout);
         mKooCountView = (BigCountView) header.findViewById(R.id.count_koo);
         mKooCountView.setOnClickListener(this);
         mCommonTopicCountView = (BigCountView) header.findViewById(R.id.count_common_topic);
         mCommonTopicCountView.setOnClickListener(this);
+        mCommonFriendLayout = header.findViewById(R.id.common_friend_layout);
         mCommonFriendTitle = (TextView) header.findViewById(R.id.common_friend_title);
         mJoinedTopicTitle = (TextView) header.findViewById(R.id.joined_topic_title);
         mAvatarContainer = (AvatarLinearContainer) header.findViewById(R.id.avatar_container);

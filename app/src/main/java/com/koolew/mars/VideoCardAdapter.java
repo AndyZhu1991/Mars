@@ -265,9 +265,6 @@ public class VideoCardAdapter extends BaseAdapter {
     }
 
     protected void onAvatarClick(String uid) {
-        if (uid.equals(MyAccountInfo.getUid())) {
-            return;
-        }
         Intent intent = new Intent(mContext, FriendInfoActivity.class);
         intent.putExtra(FriendInfoActivity.KEY_UID, uid);
         mContext.startActivity(intent);

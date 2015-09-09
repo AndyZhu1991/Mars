@@ -204,6 +204,7 @@
 
     <!-- For FriendInfoActivity -->
     <string name="other_joined_topic">其他参与话题</string>
+    <string name="joined_topic">参与话题</string>
     <string name="he_or_she_no_topic_joined">TA还没有参与任何话题呢</string>
     <string name="part_video_count" formatted="false">参与视频数：%d个</string>
     <string name="add_friend">加好友</string>
