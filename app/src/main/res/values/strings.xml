@@ -251,7 +251,7 @@
 
     <!-- For VideoCardAdapter -->
     <string name="be_first_in_this_topic">成为此话题卡第一人</string>
-    <string name="support_count" formatted="false">%d支持</string>
+    <string name="support_count" formatted="false">%d打赏</string>
 
     <!-- For UserTopicActivity -->
     <string name="ad_friend">加好友</string>
@@ -267,6 +267,13 @@
     <string name="share_topic_description">[小视频合集]</string>
     <string name="invite_desc_wechat" formatted="false">"你被 %s 点名：“%s”（看到点名必须回复！）"</string>
     <string name="invite_desc_weibo_n_qzone" formatted="false">"（对，就是你！）快来支持 %s 发起的点名：“%s”"</string>
+    <string name="share_my_video_to_wechat_desc" formatted="false">"导演 %s 创作了一个小视频「%s」，欢迎围观~"</string>
+    <string name="share_my_video_to_weibo_desc" formatted="false">"我拍了一个视频「%s」，欢迎围观→%s（通过@可见App 拍摄）"</string>
+    <string name="share_others_video_to_wechat_desc" formatted="false">"这个视频不看会后悔！「%s」by%s"</string>
+    <string name="share_others_video_to_weibo_desc" formatted="false">"给你们看一个视频「%s」→%s（通过@可见App 拍摄）"</string>
+    <string name="invite_wechat_friend_desc" formatted="false">"邀请你完成一个火爆的点名：「%s」"</string>
+    <string name="invite_moments_friend_desc" formatted="false">"%s 向所有好友发起了一个火爆点名！立刻点击查看！"</string>
+    <string name="invite_weibo_friend_desc" formatted="false">"你们快来接受我的点名「%s」→%s（来自@可见App ）"</string>
     <string name="share_success">分享成功</string>
     <string name="share_failed">分享失败</string>
     <string name="share_cancel">分享取消</string>

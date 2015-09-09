@@ -7,9 +7,9 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import com.koolew.mars.R;
+import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -57,9 +57,10 @@ public class ShareManager {
         mListener = platformActionListener;
     }
 
-    public void shareVideoTo(ShareChanel shareChanel, String videoId, String content) {
-        share(sharePlatformName[shareChanel.ordinal()], content, videoDescription(),
-                DEFAULT_SHARE_IMAGE, buildVideoUrl(videoId));
+    public void shareVideoTo(ShareChanel shareChanel, BaseVideoInfo videoInfo, String content) {
+        share(sharePlatformName[shareChanel.ordinal()], "",
+                buildVideoDescription(shareChanel, videoInfo, content),
+                new UrlShareImage(videoInfo.getVideoThumb()), buildVideoUrl(videoInfo));
     }
 
     public void shareTopicTo(ShareChanel shareChanel, String topicId, String content) {
@@ -68,20 +69,8 @@ public class ShareManager {
     }
 
     public void inviteBy(ShareChanel shareChanel, String topicId, String content) {
-        String title = null;
-        String description = null;
-
-        if (shareChanel.equals(ShareChanel.WECHAT_FRIENDS) ||
-                shareChanel.equals(ShareChanel.WECHAT_MOMENTS)) {
-            title = inviteDescWechat(content, MyAccountInfo.getNickname());
-            description = mContext.getString(R.string.app_name);
-        }
-        else if (shareChanel.equals(ShareChanel.QZONE)) {
-            title = inviteDescWechat(content, MyAccountInfo.getNickname());
-        }
-        else if (shareChanel.equals(ShareChanel.WEIBO)) {
-            description = inviteDescWechat(content, MyAccountInfo.getNickname());
-        }
+        String title = "";
+        String description = buildInviteDesc(shareChanel, content, topicId);
 
         share(sharePlatformName[shareChanel.ordinal()], title, description,
                 DEFAULT_SHARE_IMAGE, buildInviteUrl(topicId));
@@ -105,11 +94,12 @@ public class ShareManager {
     private void shareWebPage(String platformName,
                               String title, String description, ShareImage shareImage, String url) {
         Platform.ShareParams sp = new Platform.ShareParams();
-        sp.setTitle(title);
-        if (platformName.equals(SinaWeibo.NAME)) {
-            sp.setText(description + " " + url);
+        if (platformName.equals(WechatMoments.NAME)) {
+            sp.setTitle(description);
+            sp.setText(title);
         }
         else {
+            sp.setTitle(title);
             sp.setText(description);
         }
         sp.setUrl(url);
@@ -123,7 +113,7 @@ public class ShareManager {
 
     private void shareText(String platformName, String title, String description, String url) {
         Platform.ShareParams sp = new Platform.ShareParams();
-        sp.setText(buildShareText(title, description, url));
+        sp.setText(buildShareText(description, url));
         sp.setShareType(Platform.SHARE_TEXT);
         Platform platform = ShareSDK.getPlatform(platformName);
         platform.setPlatformActionListener(mListener);
@@ -134,6 +124,37 @@ public class ShareManager {
         return mContext.getString(R.string.share_video_description);
     }
 
+    private String buildVideoDescription(ShareChanel chanel, BaseVideoInfo videoInfo, String content) {
+        if (videoInfo.getUserInfo().getUid().equals(MyAccountInfo.getUid())) {
+            if (chanel == ShareChanel.WECHAT_FRIENDS || chanel == ShareChanel.WECHAT_MOMENTS
+                    || chanel == ShareChanel.QZONE) {
+                return mContext.getString(R.string.share_my_video_to_wechat_desc,
+                        videoInfo.getUserInfo().getNickname(), content);
+            }
+            else if (chanel == ShareChanel.WEIBO) {
+                return mContext.getString(R.string.share_my_video_to_weibo_desc,
+                        content, buildVideoUrl(videoInfo));
+            }
+            else {
+                return content;
+            }
+        }
+        else {
+            if (chanel == ShareChanel.WECHAT_FRIENDS || chanel == ShareChanel.WECHAT_MOMENTS
+                    || chanel == ShareChanel.QZONE) {
+                return mContext.getString(R.string.share_others_video_to_wechat_desc,
+                        content, videoInfo.getUserInfo().getNickname());
+            }
+            else if (chanel == ShareChanel.WEIBO) {
+                return mContext.getString(R.string.share_others_video_to_weibo_desc,
+                        content, buildVideoUrl(videoInfo));
+            }
+            else {
+                return content;
+            }
+        }
+    }
+
     private String topicDescription() {
         return mContext.getString(R.string.share_topic_description);
     }
@@ -142,12 +163,26 @@ public class ShareManager {
         return mContext.getString(R.string.invite_desc_wechat, nickname, title);
     }
 
+    private String buildInviteDesc(ShareChanel chanel, String content, String topicId) {
+        if (chanel == ShareChanel.WECHAT_FRIENDS) {
+            return mContext.getString(R.string.invite_wechat_friend_desc, content);
+        }
+        else if (chanel == ShareChanel.WECHAT_MOMENTS || chanel == ShareChanel.QZONE) {
+            return mContext.getString(R.string.invite_moments_friend_desc, MyAccountInfo.getNickname());
+        }
+        else /*if (chanel == ShareChanel.WEIBO)*/ {
+            return mContext.getString(R.string.invite_weibo_friend_desc,
+                    content, buildInviteUrl(topicId));
+        }
+    }
+
     private String inviteDescWeiboNQzone(String title, String nickname) {
         return mContext.getString(R.string.invite_desc_weibo_n_qzone, nickname, title);
     }
 
-    private String buildVideoUrl(String videoId) {
-        return new StringBuilder("http://k.koolew.com/video?vid=").append(videoId).toString();
+    private String buildVideoUrl(BaseVideoInfo videoInfo) {
+        return new StringBuilder("http://k.koolew.com/video?vid=")
+                .append(videoInfo.getVideoId()).toString();
     }
 
     private String buildTopicUrl(String topicId) {
@@ -162,9 +197,8 @@ public class ShareManager {
                 .build().toString();
     }
 
-    private String buildShareText(String title, String description, String url) {
+    private String buildShareText(String description, String url) {
         return new StringBuilder()
-                .append(title).append("\n")
                 .append(description).append("\n")
                 .append(url)
                 .toString();
@@ -186,6 +220,19 @@ public class ShareManager {
         protected void setImageParam(Platform.ShareParams sp) {
             sp.setImageData(BitmapFactory.decodeResource(
                     mContext.getResources(), mImageResId));
+        }
+    }
+
+    private class UrlShareImage extends ShareImage {
+        private String mUrl;
+
+        private UrlShareImage(String url) {
+            mUrl = url;
+        }
+
+        @Override
+        protected void setImageParam(Platform.ShareParams sp) {
+            sp.setImageUrl(mUrl);
         }
     }
 
@@ -226,7 +273,7 @@ public class ShareManager {
                         JSONObject error = new JSONObject(errorMessage.getString("error"));
                         String errorString = error.getString("error");
                         failedMessage = failedMessage + ": " + errorString;
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     Toast.makeText(mActivity, failedMessage, Toast.LENGTH_SHORT).show();

@@ -136,12 +136,6 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
             ImageLoader.getInstance().displayImage(userInfo.getAvatar(),
                     videoKooRankItemHolder.avatar, ImageLoaderHelper.avatarLoadOptions);
             videoKooRankItemHolder.nameView.setUser(userInfo);
-            if (position == 0) {
-                videoKooRankItemHolder.kooIcon.setVisibility(View.VISIBLE);
-            }
-            else {
-                videoKooRankItemHolder.kooIcon.setVisibility(View.INVISIBLE);
-            }
             videoKooRankItemHolder.kooCount.setText(String.valueOf(userInfo.getKooCount()));
         }
 
@@ -155,7 +149,6 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
 
         private CircleImageView avatar;
         private UserNameView nameView;
-        private ImageView kooIcon;
         private TextView kooCount;
 
         public VideoKooRankItemHolder(View itemView) {
@@ -165,7 +158,6 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
 
             avatar = (CircleImageView) itemView.findViewById(R.id.avatar);
             nameView = (UserNameView) itemView.findViewById(R.id.name_view);
-            kooIcon = (ImageView) itemView.findViewById(R.id.koo_icon);
             kooCount = (TextView) itemView.findViewById(R.id.koo_count);
         }
 

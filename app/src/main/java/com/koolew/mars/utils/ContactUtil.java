@@ -1,5 +1,6 @@
 package com.koolew.mars.utils;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -37,7 +38,7 @@ public class ContactUtil {
         return sPhoneContacts;
     }
 
-    private static List<SimpleContactInfo> queryPhoneContacts(Context context) {
+    private static List<SimpleContactInfo> queryPhoneContacts(final Context context) {
 
         List<SimpleContactInfo> contacts = new LinkedList<SimpleContactInfo>();
 
@@ -47,12 +48,28 @@ public class ContactUtil {
             contactsCur = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
                     null, null, null, null);
         } catch (SecurityException se) {
-            Toast.makeText(context, R.string.can_not_get_contacts, Toast.LENGTH_LONG).show();
+            if (context instanceof Activity) {
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, R.string.can_not_get_contacts, Toast.LENGTH_LONG)
+                                .show();
+                    }
+                });
+            }
             return contacts;
         }
 
         if (contactsCur == null || contactsCur.getCount() == 0) {
-            Toast.makeText(context, R.string.can_not_get_contacts, Toast.LENGTH_LONG).show();
+            if (context instanceof Activity) {
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, R.string.can_not_get_contacts, Toast.LENGTH_LONG)
+                                .show();
+                    }
+                });
+            }
             return contacts;
         }
 

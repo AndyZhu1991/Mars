@@ -282,7 +282,7 @@ public class VideoCardAdapter extends BaseAdapter {
     }
 
     interface OnMoreMenuClickListener {
-        void onMoreMenuClick(String videoId, String uid);
+        void onMoreMenuClick(BaseVideoInfo videoInfo);
     }
 
     class ViewHolder implements View.OnClickListener {
@@ -331,8 +331,7 @@ public class VideoCardAdapter extends BaseAdapter {
             if (v == more) {
                 if (mMoreMenuListener != null) {
                     BaseVideoInfo videoInfo = getItemData(position);
-                    mMoreMenuListener.onMoreMenuClick(videoInfo.getVideoId(),
-                            videoInfo.getUserInfo().getUid());
+                    mMoreMenuListener.onMoreMenuClick(videoInfo);
                 }
             }
             else if (v == avatar) {

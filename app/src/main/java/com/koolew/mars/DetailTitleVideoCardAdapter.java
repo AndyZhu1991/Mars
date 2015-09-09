@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.KooCountUserInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -62,16 +63,17 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter {
             ((TextView) convertView.findViewById(R.id.stars_rank_title)).setText(
                     mContext.getString(R.string.stars_rank, users.length));
 
-            int[] avatarUrls = new int[] {
+            int[] avatarIds = new int[] {
                     R.id.first_koo,
                     R.id.second_koo,
                     R.id.third_koo,
                     R.id.forth_koo,
                     R.id.fifth_koo,
             };
-            for (int i = 0; i < avatarUrls.length && i < users.length; i++) {
+            for (int i = 0; i < avatarIds.length && i < users.length; i++) {
                 ImageLoader.getInstance().displayImage(users[i].getAvatar(),
-                        (ImageView) convertView.findViewById(avatarUrls[i]));
+                        (ImageView) convertView.findViewById(avatarIds[i]),
+                        ImageLoaderHelper.avatarLoadOptions);
             }
 
             int avatarCrowns[] = new int[]{

@@ -11,6 +11,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.android.volley.Response;
+import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.share.ShareManager;
 import com.koolew.mars.utils.DialogUtil;
@@ -34,6 +35,7 @@ public class ShareVideoWindow extends PopupWindow implements View.OnClickListene
 
     private View mContentView;
 
+    private BaseVideoInfo mVideoInfo;
     private int mType;
     private String mId;
     private String mContent;
@@ -43,11 +45,8 @@ public class ShareVideoWindow extends PopupWindow implements View.OnClickListene
     private OnVideoOperatedListener mVideoOperatedListener;
     private ShareManager mShareManager;
 
-    public ShareVideoWindow(Activity activity, int type, String id, String content) {
-        this(activity, type, id, content, null);
-    }
 
-    public ShareVideoWindow(Activity activity, int type, String id, String content, String uid) {
+    public ShareVideoWindow(Activity activity, BaseVideoInfo videoInfo, String content) {
         super(activity);
 
         mActivity = activity;
@@ -55,15 +54,16 @@ public class ShareVideoWindow extends PopupWindow implements View.OnClickListene
 
         mProgressDialog = DialogUtil.getConnectingServerDialog(activity);
 
-        mType = type;
-        mId = id;
+        mVideoInfo = videoInfo;
+        mType = TYPE_VIDEO;
+        mId = videoInfo.getVideoId();
         mContent = content;
-        mUid = uid;
+        mUid = videoInfo.getUserInfo().getUid();
 
         mContentView = LayoutInflater.from(activity).inflate(R.layout.share_video_layout, null);
         setContentView(mContentView);
 
-        if (type == TYPE_VIDEO) {
+        if (mType == TYPE_VIDEO) {
             if (MyAccountInfo.getUid().equals(mUid)) {
                 ((ImageView) mContentView.findViewById(R.id.operation_image))
                         .setVisibility(View.GONE);
@@ -71,7 +71,7 @@ public class ShareVideoWindow extends PopupWindow implements View.OnClickListene
                         .setText(R.string.delete_this_video);
             }
         }
-        else if (type == TYPE_VIDEO_LIST) {
+        else if (mType == TYPE_VIDEO_LIST) {
             ((ImageView) mContentView.findViewById(R.id.icon))
                     .setImageResource(R.mipmap.ic_share_video_list);
             ((TextView) mContentView.findViewById(R.id.text)).setText(R.string.share_video_list);
@@ -98,7 +98,7 @@ public class ShareVideoWindow extends PopupWindow implements View.OnClickListene
         switch (v.getId()) {
             case R.id.wechat_moments:
                 if (mType == TYPE_VIDEO) {
-                    mShareManager.shareVideoTo(ShareManager.ShareChanel.WECHAT_MOMENTS, mId, mContent);
+                    mShareManager.shareVideoTo(ShareManager.ShareChanel.WECHAT_MOMENTS, mVideoInfo, mContent);
                 }
                 else if (mType == TYPE_VIDEO_LIST) {
                     mShareManager.shareTopicTo(ShareManager.ShareChanel.WECHAT_MOMENTS, mId, mContent);
@@ -106,7 +106,7 @@ public class ShareVideoWindow extends PopupWindow implements View.OnClickListene
                 break;
             case R.id.wechat_friends:
                 if (mType == TYPE_VIDEO) {
-                    mShareManager.shareVideoTo(ShareManager.ShareChanel.WECHAT_FRIENDS, mId, mContent);
+                    mShareManager.shareVideoTo(ShareManager.ShareChanel.WECHAT_FRIENDS, mVideoInfo, mContent);
                 }
                 else if (mType == TYPE_VIDEO_LIST) {
                     mShareManager.shareTopicTo(ShareManager.ShareChanel.WECHAT_FRIENDS, mId, mContent);
@@ -114,7 +114,7 @@ public class ShareVideoWindow extends PopupWindow implements View.OnClickListene
                 break;
             case R.id.qzone:
                 if (mType == TYPE_VIDEO) {
-                    mShareManager.shareVideoTo(ShareManager.ShareChanel.QZONE, mId, mContent);
+                    mShareManager.shareVideoTo(ShareManager.ShareChanel.QZONE, mVideoInfo, mContent);
                 }
                 else if (mType == TYPE_VIDEO_LIST) {
                     mShareManager.shareTopicTo(ShareManager.ShareChanel.QZONE, mId, mContent);
@@ -122,7 +122,7 @@ public class ShareVideoWindow extends PopupWindow implements View.OnClickListene
                 break;
             case R.id.weibo:
                 if (mType == TYPE_VIDEO) {
-                    mShareManager.shareVideoTo(ShareManager.ShareChanel.WEIBO, mId, mContent);
+                    mShareManager.shareVideoTo(ShareManager.ShareChanel.WEIBO, mVideoInfo, mContent);
                 }
                 else if (mType == TYPE_VIDEO_LIST) {
                     mShareManager.shareTopicTo(ShareManager.ShareChanel.WEIBO, mId, mContent);
@@ -130,7 +130,7 @@ public class ShareVideoWindow extends PopupWindow implements View.OnClickListene
                 break;
             case R.id.email:
                 if (mType == TYPE_VIDEO) {
-                    mShareManager.shareVideoTo(ShareManager.ShareChanel.EMAIL, mId, mContent);
+                    mShareManager.shareVideoTo(ShareManager.ShareChanel.EMAIL, mVideoInfo, mContent);
                 }
                 else if (mType == TYPE_VIDEO_LIST) {
                     mShareManager.shareTopicTo(ShareManager.ShareChanel.EMAIL, mId, mContent);
@@ -138,7 +138,7 @@ public class ShareVideoWindow extends PopupWindow implements View.OnClickListene
                 break;
             case R.id.sms:
                 if (mType == TYPE_VIDEO) {
-                    mShareManager.shareVideoTo(ShareManager.ShareChanel.SMS, mId, mContent);
+                    mShareManager.shareVideoTo(ShareManager.ShareChanel.SMS, mVideoInfo, mContent);
                 }
                 else if (mType == TYPE_VIDEO_LIST) {
                     mShareManager.shareTopicTo(ShareManager.ShareChanel.SMS, mId, mContent);

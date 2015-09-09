@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.koolew.mars.imageloader.ImageLoaderHelper;
@@ -44,7 +43,6 @@ public class TopicKooRankActivity extends BaseActivity {
 
         private CircleImageView avatar;
         private UserNameView nameView;
-        private ImageView kooIcon;
         private TextView kooCount;
 
         public TopicKooRankItemHolder(View itemView) {
@@ -54,7 +52,6 @@ public class TopicKooRankActivity extends BaseActivity {
 
             avatar = (CircleImageView) itemView.findViewById(R.id.avatar);
             nameView = (UserNameView) itemView.findViewById(R.id.name_view);
-            kooIcon = (ImageView) itemView.findViewById(R.id.koo_icon);
             kooCount = (TextView) itemView.findViewById(R.id.koo_count);
         }
 
@@ -79,12 +76,6 @@ public class TopicKooRankActivity extends BaseActivity {
             ImageLoader.getInstance().displayImage(kooCountUserInfo[position].getAvatar(),
                     holder.avatar, ImageLoaderHelper.avatarLoadOptions);
             holder.nameView.setUser(kooCountUserInfo[position]);
-            if (position == 0) {
-                holder.kooIcon.setVisibility(View.VISIBLE);
-            }
-            else {
-                holder.kooIcon.setVisibility(View.INVISIBLE);
-            }
             holder.kooCount.setText(String.valueOf(kooCountUserInfo[position].getKooCount()));
         }
 
