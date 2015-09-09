@@ -35,6 +35,7 @@
             android:layout_marginTop="9dp"
             android:layout_marginLeft="13dp"
             android:layout_marginRight="13dp"
+            android:gravity="center_horizontal"
             android:textSize="12sp"
             android:textColor="@color/koolew_gray"/>
 

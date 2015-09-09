@@ -48,13 +48,14 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter {
         }
         else {
             description.setText(topicTitleDetail.description);
+            description.setVisibility(View.VISIBLE);
         }
 
         ((TextView) convertView.findViewById(R.id.video_count)).setText(
                 mContext.getString(R.string.video_count_label, topicTitleDetail.videoCount));
 
         KooCountUserInfo[] users = topicTitleDetail.kooRankUsers;
-        if (users.length == 0) {
+        if (users == null || users.length == 0) {
             convertView.findViewById(R.id.stars).setVisibility(View.GONE);
         }
         else {
@@ -131,6 +132,7 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter {
     public static final int TYPE_FEEDS = 0;
     public static final int TYPE_WORLD = 1;
     public static final int TYPE_TASK  = 2;
+    public static final int TYPE_USER  = 3;
 
     public static class TopicTitleDetail {
 

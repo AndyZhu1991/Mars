@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.DetailTitleVideoCardAdapter.TopicTitleDetail;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.webapi.ApiWorker;
 
@@ -15,7 +16,7 @@ import org.json.JSONObject;
 /**
  * Created by jinchangzhu on 7/28/15.
  */
-public class UserVideoListFragment extends BaseVideoListFragment {
+public class UserVideoListFragment extends DetailTitleVideoListFragment {
 
     public static final String KEY_UID = "uid";
 
@@ -56,6 +57,22 @@ public class UserVideoListFragment extends BaseVideoListFragment {
     }
 
     @Override
+    protected TopicTitleDetail getTopicDetailFromResponse(JSONObject response) {
+        TopicTitleDetail topicTitleDetail = new TopicTitleDetail();
+        topicTitleDetail.setType(DetailTitleVideoCardAdapter.TYPE_USER);
+        try {
+            JSONObject result = response.getJSONObject("result");
+            topicTitleDetail.setKooRankUsers(null);
+            topicTitleDetail.setTitle(result.getString("content"));
+            topicTitleDetail.setDescription(result.getString("desc"));
+            topicTitleDetail.setVideoCount(result.getInt("video_cnt"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return topicTitleDetail;
+    }
+
+    @Override
     public void onDanmakuSend(BaseVideoInfo videoInfo) {
         if (needShowAddFriend(mUserType)) {
         }
@@ -73,10 +90,10 @@ public class UserVideoListFragment extends BaseVideoListFragment {
         }
     }
 
-    class UserTopicAdapter extends VideoCardAdapter {
+    class UserTopicAdapter extends DetailTitleVideoCardAdapter {
 
         public UserTopicAdapter(Context context) {
-            super(context);
+            super(context, UserVideoListFragment.this.mTopicId);
         }
 
         @Override
