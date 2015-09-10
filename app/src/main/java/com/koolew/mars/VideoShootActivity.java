@@ -36,7 +36,7 @@ import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchAct
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableSwipeableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.koolew.mars.camerautils.CameraSurfacePreview;
-import com.koolew.mars.media.MediaAudioEncoder;
+import com.koolew.mars.ffmpeg.RealTimeYUV420RecorderWithAutoAudio;
 import com.koolew.mars.media.MediaEncoder;
 import com.koolew.mars.media.MediaMuxerWrapper;
 import com.koolew.mars.media.MediaVideoEncoder;
@@ -101,6 +101,7 @@ public class VideoShootActivity extends BaseActivity
     private byte[] YUV420RotateBuffer;
     private byte[] YUV420CropBuffer;
 
+    private RealTimeYUV420RecorderWithAutoAudio mRecorder;
     private MediaMuxerWrapper mMuxer;
     private MediaVideoEncoder mVideoEncoder;
 
@@ -480,29 +481,54 @@ public class VideoShootActivity extends BaseActivity
     class MyPreviewCallback implements Camera.PreviewCallback {
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
-            if (isEncoding){//mVideoEncoder != null && mVideoEncoder.isEncoding == true) {
-                MediaVideoEncoder.YUV420SPFrame frame = mVideoEncoder.obtainFrame();
-                frame.frameNanoTime = System.nanoTime();
+            if (isRecording){//mVideoEncoder != null && mVideoEncoder.isEncoding == true) {
                 if (mCurrentCamera == Camera.CameraInfo.CAMERA_FACING_BACK) {
                     RawImageUtil.rotateYUV420Degree90(data, YUV420RotateBuffer,
-                                                      previewWidth, previewHeight);
+                            previewWidth, previewHeight);
                     RawImageUtil.cropYUV420VerticalCenter(YUV420RotateBuffer, YUV420CropBuffer,
                             previewHeight, previewWidth, AppProperty.RECORD_VIDEO_HEIGHT);
                 }
                 else {
                     RawImageUtil.rotateYUV420Degree270(data, YUV420RotateBuffer,
-                                                       previewWidth, previewHeight);
+                            previewWidth, previewHeight);
                     RawImageUtil.cropYUV420Vertical(YUV420RotateBuffer, YUV420CropBuffer,
                             previewHeight, previewWidth, 0, AppProperty.RECORD_VIDEO_HEIGHT);
                 }
-                RawImageUtil.NV21toI420SemiPlanar(YUV420CropBuffer, frame.data,
-                        AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
-                mVideoEncoder.putYUV420SPFrame(frame);
+                long start = System.currentTimeMillis();
+                mRecorder.put(YUV420CropBuffer, System.currentTimeMillis() * 1000);
+                Log.d("stdzhu", "camera preview: " + (System.currentTimeMillis() - start));
             }
 
             camera.addCallbackBuffer(data);
         }
     }
+//
+//    class MyPreviewCallback implements Camera.PreviewCallback {
+//        @Override
+//        public void onPreviewFrame(byte[] data, Camera camera) {
+//            if (isEncoding){//mVideoEncoder != null && mVideoEncoder.isEncoding == true) {
+//                MediaVideoEncoder.YUV420SPFrame frame = mVideoEncoder.obtainFrame();
+//                frame.frameNanoTime = System.nanoTime();
+//                if (mCurrentCamera == Camera.CameraInfo.CAMERA_FACING_BACK) {
+//                    RawImageUtil.rotateYUV420Degree90(data, YUV420RotateBuffer,
+//                            previewWidth, previewHeight);
+//                    RawImageUtil.cropYUV420VerticalCenter(YUV420RotateBuffer, YUV420CropBuffer,
+//                            previewHeight, previewWidth, AppProperty.RECORD_VIDEO_HEIGHT);
+//                }
+//                else {
+//                    RawImageUtil.rotateYUV420Degree270(data, YUV420RotateBuffer,
+//                            previewWidth, previewHeight);
+//                    RawImageUtil.cropYUV420Vertical(YUV420RotateBuffer, YUV420CropBuffer,
+//                            previewHeight, previewWidth, 0, AppProperty.RECORD_VIDEO_HEIGHT);
+//                }
+//                RawImageUtil.NV21toI420SemiPlanar(YUV420CropBuffer, frame.data,
+//                        AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
+//                mVideoEncoder.putYUV420SPFrame(frame);
+//            }
+//
+//            camera.addCallbackBuffer(data);
+//        }
+//    }
 
 
     private void switchToPlaybackMode() {
@@ -625,25 +651,43 @@ public class VideoShootActivity extends BaseActivity
     }
 
     private void startRecord() {
-        try {
-            mCurrentRecodingVideo = mRecordingSession.new VideoPieceItem();
-            mVideosProgressView.start();
-            mRecordMonitorTask = new RecordMonitorTask();
-            new Timer().schedule(mRecordMonitorTask,
-                    (long) (AppProperty.RECORD_VIDEO_MAX_LEN * 1000
-                            - mRecordingSession.getTotalVideoLength()));
-            mMuxer = new MediaMuxerWrapper(getCurrentRecordingFile());
-            mVideoEncoder = new MediaVideoEncoder(mMuxer, mMediaEncoderListener,
-                        AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
-            new MediaAudioEncoder(mMuxer, mMediaEncoderListener);
-            mMuxer.prepare();
-            mMuxer.startRecording();
+        mCurrentRecodingVideo = mRecordingSession.new VideoPieceItem();
+        long start = System.currentTimeMillis();
+        mRecorder = new RealTimeYUV420RecorderWithAutoAudio(getCurrentRecordingFile(),
+                AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
+        Log.d("stdzhu", "new recorder: " + (System.currentTimeMillis() - start));
+        mVideosProgressView.start();
+        mRecordMonitorTask = new RecordMonitorTask();
+        new Timer().schedule(mRecordMonitorTask,
+                (long) (AppProperty.RECORD_VIDEO_MAX_LEN * 1000
+                        - mRecordingSession.getTotalVideoLength()));
+        start = System.currentTimeMillis();
+        mRecorder.start();
 
-            isRecording = true;
-        } catch (IOException e) {
-            throw new RuntimeException("IOException: " + e);
-        }
+        isRecording = true;
+        Log.d("stdzhu", "startRecord: " + (System.currentTimeMillis() - start));
     }
+//
+//    private void startRecord() {
+//        try {
+//            mCurrentRecodingVideo = mRecordingSession.new VideoPieceItem();
+//            mVideosProgressView.start();
+//            mRecordMonitorTask = new RecordMonitorTask();
+//            new Timer().schedule(mRecordMonitorTask,
+//                    (long) (AppProperty.RECORD_VIDEO_MAX_LEN * 1000
+//                            - mRecordingSession.getTotalVideoLength()));
+//            mMuxer = new MediaMuxerWrapper(getCurrentRecordingFile());
+//            mVideoEncoder = new MediaVideoEncoder(mMuxer, mMediaEncoderListener,
+//                    AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
+//            new MediaAudioEncoder(mMuxer, mMediaEncoderListener);
+//            mMuxer.prepare();
+//            mMuxer.startRecording();
+//
+//            isRecording = true;
+//        } catch (IOException e) {
+//            throw new RuntimeException("IOException: " + e);
+//        }
+//    }
 
     private void stopRecord() {
         mRecordMonitorTask.cancel();
@@ -653,24 +697,42 @@ public class VideoShootActivity extends BaseActivity
 
     private void doStopRecord() {
         if (isRecording) {
-            if (mMuxer != null) {
-                mMuxer.stopRecording();
-                mMuxer = null;
-                // you should not wait here
-            }
+            isRecording = false;
+
             mCurrentRecodingVideo.finishRecord();
             mRecordingSession.add(mCurrentRecodingVideo);
             mVideosProgressView.finish();
             mCurrentRecodingVideo = null;
-            mAdapter.notifyItemInserted(mRecordingSession.getVideoCount() - 1);
 
-            isRecording = false;
+            mRecorder.stopSynced();
+            mAdapter.notifyItemInserted(mRecordingSession.getVideoCount() - 1);
 
             if (mRecordingSession.getVideoCount() == 1) {
                 mRecordComplete.setImageResource(R.mipmap.video_complete_enable);
             }
         }
     }
+//
+//    private void doStopRecord() {
+//        if (isRecording) {
+//            if (mMuxer != null) {
+//                mMuxer.stopRecording();
+//                mMuxer = null;
+//                // you should not wait here
+//            }
+//            mCurrentRecodingVideo.finishRecord();
+//            mRecordingSession.add(mCurrentRecodingVideo);
+//            mVideosProgressView.finish();
+//            mCurrentRecodingVideo = null;
+//            mAdapter.notifyItemInserted(mRecordingSession.getVideoCount() - 1);
+//
+//            isRecording = false;
+//
+//            if (mRecordingSession.getVideoCount() == 1) {
+//                mRecordComplete.setImageResource(R.mipmap.video_complete_enable);
+//            }
+//        }
+//    }
 
     private final MediaEncoder.MediaEncoderListener mMediaEncoderListener =
             new MediaEncoder.MediaEncoderListener() {

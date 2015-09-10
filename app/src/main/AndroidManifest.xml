@@ -422,7 +422,7 @@
             android:value="55d5c5f5e0f55aa46200399a" />
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="${UMENG_CHANNEL_VALUE}" />
+            android:value="default" />
     </application>
 
 </manifest>

@@ -3,6 +3,7 @@ package com.koolew.mars;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.koolew.mars.imageloader.VideoThumbDecoder;
@@ -44,8 +45,15 @@ public class MarsApplication extends Application {
         ShareSDK.initSDK(getApplicationContext());
         initBugly();
         initUmeng();
+        com.koolew.mars.ffmpeg.Utils.preloadRecorder(this);
 
         Log.d(TAG, "Init in MarsApplication takes: " + (System.currentTimeMillis() - start));
+    }
+
+    @Override
+    public void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(base);
     }
 
     public static void initImageLoader(Context context) {

@@ -86,9 +86,6 @@ public class VideoRecordingSession {
         if (mVideoPieces.size() == 0) {
             throw new RuntimeException("Zero videos to concat!");
         }
-        if (mVideoPieces.size() == 1) {
-            return;
-        }
 
         List<String> videos = new LinkedList<>();
         for (VideoPieceItem videoItem: mVideoPieces) {
