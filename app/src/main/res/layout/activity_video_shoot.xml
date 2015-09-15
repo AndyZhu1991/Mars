@@ -73,13 +73,8 @@
         android:orientation="vertical"
         android:background="#534F50">
 
-        <com.koolew.mars.view.VideosProgressView
-            android:id="@+id/videos_progress"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/video_shoot_progress_height" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
+        <com.koolew.mars.view.RecordingSessionView
+            android:id="@+id/recording_session_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"/>

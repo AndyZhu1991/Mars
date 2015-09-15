@@ -5,6 +5,8 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.util.Log;
 
+import com.koolew.mars.view.RecordingSessionView;
+
 import org.bytedeco.javacpp.opencv_core;
 
 import java.nio.Buffer;
@@ -13,7 +15,8 @@ import java.nio.ShortBuffer;
 /**
  * Created by jinchangzhu on 9/10/15.
  */
-public class RealTimeYUV420RecorderWithAutoAudio extends CachedRecorder {
+public class RealTimeYUV420RecorderWithAutoAudio extends CachedRecorder
+        implements RecordingSessionView.RecordingItem {
 
     private boolean isEncoding = false;
     private long firstFrameTimeStamp = -1;
@@ -76,6 +79,18 @@ public class RealTimeYUV420RecorderWithAutoAudio extends CachedRecorder {
     public void stopSynced() {
         isEncoding = false;
         super.stopSynced();
+    }
+
+    @Override
+    public long getCurrentLength() {
+        return (lastFrameTimeStamp - firstFrameTimeStamp) / 1000;
+    }
+
+    @Override
+    public RecordingSessionView.VideoPieceItem completeSynced() {
+        stopSynced();
+        return new RecordingSessionView.VideoPieceItem(
+                System.currentTimeMillis(), filePath, getCurrentLength());
     }
 
     class YUV420RecycleQueue extends BlockingRecycleQueue<IplImageFrame> {
