@@ -523,7 +523,6 @@ public class RecordingSessionView extends LinearLayout {
             implements DraggableItemAdapter<ViewHolder> {
 
         private Set<View> mVideoPieces;
-        private int selectedPos;
 
         public VideoItemAdapter() {
             mVideoPieces = new HashSet<>();

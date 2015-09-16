@@ -1,7 +1,6 @@
 package com.koolew.mars.videotools;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.koolew.mars.AppProperty;
 
@@ -67,7 +66,6 @@ public class Utils {
 
         try {
             if (startPosition > 0) {
-                Log.d("stdzhu", "set timestamp: " + (startPosition * 1000));
                 grabber.setTimestamp(startPosition * 1000);
             }
         } catch (FrameGrabber.Exception e) {
@@ -83,9 +81,7 @@ public class Utils {
             }
             try {
                 long timestamp = grabber.getTimestamp();
-                Log.d("stdzhu", "before grab: " + grabber.getTimestamp());
                 org.bytedeco.javacv.Frame frame = grabber.grabFrame();
-                Log.d("stdzhu", "after grab " + (frame.image != null ? "image: " : "audio: ") + grabber.getTimestamp());
                 if (frame == null) {
                     break;
                 }
@@ -150,36 +146,6 @@ public class Utils {
     public final static int VIDEO_BIT_RATE = 500000;
     public final static int AUDIO_SAMPLE_RATE = 44100;
     public final static String OUTPUT_FORMAT = "mp4";
-
-    private static void initRecorder(MyFFmpegFrameRecorder recorder) {
-        //mFFmpegFrameRecorder.setInterleaved(true);
-        recorder.setFormat(OUTPUT_FORMAT);
-        recorder.setSampleRate(AUDIO_SAMPLE_RATE);
-        recorder.setFrameRate(VIDEO_FRAME_RATE);
-        recorder.setVideoCodec(VIDEO_CODEC);
-        //recorder.setVideoQuality(VIDEO_QUALITY);
-        //recorder.setVideoBitrate(500000);
-//        recorder.setAudioQuality(VIDEO_QUALITY);
-//        recorder.setAudioCodec(AUDIO_CODEC);
-//        recorder.setVideoBitrate(VIDEO_BIT_RATE);
-//        recorder.setAudioBitrate(AUDIO_BIT_RATE);
-
-        //recorder.setVideoQuality(VIDEO_QUALITY);
-        //recorder.setAudioQuality(VIDEO_QUALITY);
-        recorder.setAudioCodec(AUDIO_CODEC);
-        recorder.setVideoBitrate(VIDEO_BIT_RATE);
-        recorder.setAudioBitrate(AUDIO_BIT_RATE);
-
-        // tradeoff between quality and encode speed
-        // possible values are ultrafast,superfast, veryfast, faster, fast,
-        // medium, slow, slower, veryslow
-        // ultrafast offers us the least amount of compression (lower encoder
-        // CPU) at the cost of a larger stream size
-        // at the other end, veryslow provides the best compression (high
-        // encoder CPU) while lowering the stream size
-        // (see: https://trac.ffmpeg.org/wiki/Encode/H.264)
-        recorder.setVideoOption("preset", "veryfast");
-    }
 
     public static int getVideoDegree(String videoPath) {
         FFmpegMediaMetadataRetriever fmmr = new FFmpegMediaMetadataRetriever();

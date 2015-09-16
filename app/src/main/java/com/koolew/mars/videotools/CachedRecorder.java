@@ -1,7 +1,5 @@
 package com.koolew.mars.videotools;
 
-import android.util.Log;
-
 import com.koolew.mars.AppProperty;
 
 import org.bytedeco.javacpp.avcodec;
@@ -55,15 +53,6 @@ public abstract class CachedRecorder {
         recorder.setSampleRate(AUDIO_SAMPLE_RATE);
         recorder.setFrameRate(VIDEO_FRAME_RATE);
         recorder.setVideoCodec(VIDEO_CODEC);
-        //recorder.setVideoQuality(VIDEO_QUALITY);
-        //recorder.setVideoBitrate(500000);
-//        recorder.setAudioQuality(VIDEO_QUALITY);
-//        recorder.setAudioCodec(AUDIO_CODEC);
-//        recorder.setVideoBitrate(VIDEO_BIT_RATE);
-//        recorder.setAudioBitrate(AUDIO_BIT_RATE);
-
-        //recorder.setVideoQuality(VIDEO_QUALITY);
-        //recorder.setAudioQuality(VIDEO_QUALITY);
         recorder.setAudioCodec(AUDIO_CODEC);
         recorder.setVideoBitrate(VIDEO_BIT_RATE);
         recorder.setAudioBitrate(AUDIO_BIT_RATE);
@@ -121,7 +110,6 @@ public abstract class CachedRecorder {
                     recorder.setTimestamp(imageFrame.getTimeStamp());
                     recorder.record(imageFrame.image);
                     imageCache.recycle(imageFrame);
-                    Log.d("stdzhu", "record a image: " + imageFrame.getTimeStamp());
                 } catch (FrameRecorder.Exception e) {
                     e.printStackTrace();
                 }
@@ -140,7 +128,6 @@ public abstract class CachedRecorder {
                 try {
                     recorder.record(samplesFrame.samples);
                     audioCache.recycle(samplesFrame);
-                    Log.d("stdzhu", "record an audio");
                 } catch (FrameRecorder.Exception e) {
                     e.printStackTrace();
                 }

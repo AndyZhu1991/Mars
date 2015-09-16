@@ -23,21 +23,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.camerautils.CameraSurfacePreview;
-import com.koolew.mars.infos.MyAccountInfo;
-import com.koolew.mars.utils.PictureSelectUtil;
-import com.koolew.mars.videotools.RealTimeYUV420RecorderWithAutoAudio;
-import com.koolew.mars.media.MediaEncoder;
-import com.koolew.mars.media.MediaMuxerWrapper;
-import com.koolew.mars.media.MediaVideoEncoder;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
+import com.koolew.mars.utils.PictureSelectUtil;
 import com.koolew.mars.utils.RawImageUtil;
 import com.koolew.mars.utils.Utils;
+import com.koolew.mars.videotools.RealTimeYUV420RecorderWithAutoAudio;
 import com.koolew.mars.videotools.VideoTranscoder;
 import com.koolew.mars.view.RecordingSessionView;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -79,18 +73,14 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     private RecordingSessionView recordingSessionView;
 
     private boolean isRecording = false;
-    private boolean isEncoding = false;
 
     private byte[] YUV420RotateBuffer;
     private byte[] YUV420CropBuffer;
 
     private RealTimeYUV420RecorderWithAutoAudio mRecorder;
-    private MediaMuxerWrapper mMuxer;
-    private MediaVideoEncoder mVideoEncoder;
 
     // MODE_PREVIEW or MODE_PLAYBACK
     private int mCurrentSurfaceMode;
-    private int mCurrentPlayedIndex;
     private SurfaceView mPlaybackSurface;
     private MediaPlayer mMediaPlayer;
     private ImageView mVideoThumb;
@@ -458,33 +448,6 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
             camera.addCallbackBuffer(data);
         }
     }
-//
-//    class MyPreviewCallback implements Camera.PreviewCallback {
-//        @Override
-//        public void onPreviewFrame(byte[] data, Camera camera) {
-//            if (isEncoding){//mVideoEncoder != null && mVideoEncoder.isEncoding == true) {
-//                MediaVideoEncoder.YUV420SPFrame frame = mVideoEncoder.obtainFrame();
-//                frame.frameNanoTime = System.nanoTime();
-//                if (mCurrentCamera == Camera.CameraInfo.CAMERA_FACING_BACK) {
-//                    RawImageUtil.rotateYUV420Degree90(data, YUV420RotateBuffer,
-//                            previewWidth, previewHeight);
-//                    RawImageUtil.cropYUV420VerticalCenter(YUV420RotateBuffer, YUV420CropBuffer,
-//                            previewHeight, previewWidth, AppProperty.RECORD_VIDEO_HEIGHT);
-//                }
-//                else {
-//                    RawImageUtil.rotateYUV420Degree270(data, YUV420RotateBuffer,
-//                            previewWidth, previewHeight);
-//                    RawImageUtil.cropYUV420Vertical(YUV420RotateBuffer, YUV420CropBuffer,
-//                            previewHeight, previewWidth, 0, AppProperty.RECORD_VIDEO_HEIGHT);
-//                }
-//                RawImageUtil.NV21toI420SemiPlanar(YUV420CropBuffer, frame.data,
-//                        AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
-//                mVideoEncoder.putYUV420SPFrame(frame);
-//            }
-//
-//            camera.addCallbackBuffer(data);
-//        }
-//    }
 
 
     private void switchToPlaybackMode() {
@@ -518,22 +481,6 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
         doOpenCamera(mCurrentCamera);
     }
-
-//    private void setSelectedVideo(int position) {
-//        ImageLoader.getInstance().displayImage(
-//                "file://" + mRecordingSession.get(position).getVideoPath(),
-//                mVideoThumb, null, null, null);
-//    }
-//
-//    private void play() {
-//        mCurrentPlayedIndex = 0;
-//        try {
-//            mMediaPlayer.setDataSource(mRecordingSession.get(0).getVideoPath());
-//            mMediaPlayer.prepareAsync();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     private SurfaceHolder.Callback mPlaybackSurfaceCallback = new SurfaceHolder.Callback() {
         @Override
@@ -586,27 +533,6 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         isRecording = true;
         Log.d("stdzhu", "startRecord: " + (System.currentTimeMillis() - start));
     }
-//
-//    private void startRecord() {
-//        try {
-//            mCurrentRecodingVideo = mRecordingSession.new VideoPieceItem();
-//            mVideosProgressView.start();
-//            mRecordMonitorTask = new RecordMonitorTask();
-//            new Timer().schedule(mRecordMonitorTask,
-//                    (long) (AppProperty.RECORD_VIDEO_MAX_LEN * 1000
-//                            - mRecordingSession.getTotalVideoLength()));
-//            mMuxer = new MediaMuxerWrapper(getCurrentRecordingFile());
-//            mVideoEncoder = new MediaVideoEncoder(mMuxer, mMediaEncoderListener,
-//                    AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
-//            new MediaAudioEncoder(mMuxer, mMediaEncoderListener);
-//            mMuxer.prepare();
-//            mMuxer.startRecording();
-//
-//            isRecording = true;
-//        } catch (IOException e) {
-//            throw new RuntimeException("IOException: " + e);
-//        }
-//    }
 
     private void stopRecord() {
         mRecordMonitorTask.cancel();
@@ -641,44 +567,6 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
             mImportVideo.setImageResource(R.mipmap.import_video_disable);
         }
     }
-//
-//    private void doStopRecord() {
-//        if (isRecording) {
-//            if (mMuxer != null) {
-//                mMuxer.stopRecording();
-//                mMuxer = null;
-//                // you should not wait here
-//            }
-//            mCurrentRecodingVideo.finishRecord();
-//            mRecordingSession.add(mCurrentRecodingVideo);
-//            mVideosProgressView.finish();
-//            mCurrentRecodingVideo = null;
-//            mAdapter.notifyItemInserted(mRecordingSession.getVideoCount() - 1);
-//
-//            isRecording = false;
-//
-//            if (mRecordingSession.getVideoCount() == 1) {
-//                mRecordComplete.setImageResource(R.mipmap.video_complete_enable);
-//            }
-//        }
-//    }
-
-    private final MediaEncoder.MediaEncoderListener mMediaEncoderListener =
-            new MediaEncoder.MediaEncoderListener() {
-        @Override
-        public void onPrepared(final MediaEncoder encoder) {
-            if (encoder == mVideoEncoder) {
-                isEncoding = true;
-            }
-        }
-        @Override
-        public void onStopped(final MediaEncoder encoder) {
-            if (encoder == mVideoEncoder) {
-                isEncoding = false;
-            }
-        }
-    };
-
 
 
     // View click listeners
