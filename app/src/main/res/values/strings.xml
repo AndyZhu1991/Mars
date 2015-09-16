@@ -108,15 +108,17 @@
     <!-- For VideoShootActivity -->
     <string name="import_video">导入</string>
     <string name="capture_video">点一下拍摄</string>
-    <string name="time_text" formatted="false">%.1f秒</string>
+    <string name="video_shoot_time_text" formatted="false">%.1f/%.1f秒</string>
     <string name="processing_video">正在处理视频...</string>
     <string name="there_is_no_video">还没拍视频呢</string>
-    <string name="video_too_long" formatted="false">视频超过%d秒了，右划可删除</string>
+    <string name="video_too_long" formatted="false">视频超过%d秒了，请编辑</string>
     <string name="confirm_give_up_videos">确认放弃已拍摄的视频吗？</string>
     <string name="max_video_len_hint" formatted="false">视频最多只能拍摄%d秒，右划可以删除视频哦～</string>
     <string name="concat_video_failed">视频处理失败 T_T</string>
     <string name="generate_thumb_failed">缩略图生成失败 T_T</string>
     <string name="fail_to_open_camera">打开摄像头失败，可能是被安全软件阻止，或被其他应用占用。\n请检查。</string>
+    <string name="too_short_to_delete" formatted="false">视频已经短于%.1f秒，是否删除？</string>
+    <string name="transcoding">正在转码视频</string>
 
     <string name="sms_invitation_message" formatted="false">来「可见」和我一起玩视频点名吧，下载链接：%s</string>
 

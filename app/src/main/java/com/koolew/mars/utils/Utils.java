@@ -21,6 +21,12 @@ import android.widget.EditText;
 
 import com.koolew.mars.R;
 
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -269,5 +275,71 @@ public class Utils {
         }
 
         return new SimpleDateFormat("yyyy-MM-dd").format(new Date(millis));
+    }
+
+    public static Buffer bufferCopy(Buffer original) {
+        if (original instanceof ByteBuffer) {
+            return byteBufferCopy((ByteBuffer) original);
+        }
+        else if (original instanceof ShortBuffer) {
+            return shortBufferCopy((ShortBuffer) original);
+        }
+        else if (original instanceof IntBuffer) {
+            return intBufferCopy((IntBuffer) original);
+        }
+        else if (original instanceof FloatBuffer) {
+            return floatBufferCopy((FloatBuffer) original);
+        }
+        else if (original instanceof DoubleBuffer) {
+            return doubleBufferCopy((DoubleBuffer) original);
+        }
+        else {
+            throw new RuntimeException("Unsupported buffer copy!");
+        }
+    }
+
+    public static ByteBuffer byteBufferCopy(ByteBuffer original) {
+        ByteBuffer clone = ByteBuffer.allocate(original.capacity());
+        original.rewind();//copy from the beginning
+        clone.put(original);
+        original.rewind();
+        clone.flip();
+        return clone;
+    }
+
+    public static ShortBuffer shortBufferCopy(ShortBuffer original) {
+        ShortBuffer clone = ShortBuffer.allocate(original.capacity());
+        original.rewind();//copy from the beginning
+        clone.put(original);
+        original.rewind();
+        clone.flip();
+        return clone;
+    }
+
+    public static IntBuffer intBufferCopy(IntBuffer original) {
+        IntBuffer clone = IntBuffer.allocate(original.capacity());
+        original.rewind();//copy from the beginning
+        clone.put(original);
+        original.rewind();
+        clone.flip();
+        return clone;
+    }
+
+    public static FloatBuffer floatBufferCopy(FloatBuffer original) {
+        FloatBuffer clone = FloatBuffer.allocate(original.capacity());
+        original.rewind();//copy from the beginning
+        clone.put(original);
+        original.rewind();
+        clone.flip();
+        return clone;
+    }
+
+    public static DoubleBuffer doubleBufferCopy(DoubleBuffer original) {
+        DoubleBuffer clone = DoubleBuffer.allocate(original.capacity());
+        original.rewind();//copy from the beginning
+        clone.put(original);
+        original.rewind();
+        clone.flip();
+        return clone;
     }
 }

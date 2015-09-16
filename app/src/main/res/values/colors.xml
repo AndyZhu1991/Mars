@@ -38,6 +38,8 @@
 
     <!-- For VideosProgressView -->
     <color name="progressing_color">#67D08E</color>
+    <color name="progressing_color_selected">#F4D288</color>
+    <color name="video_over_length_color">#FC8D8E</color>
 
     <!-- For friend meet item -->
     <color name="friend_item_common_text_color">#ADBBC7</color>

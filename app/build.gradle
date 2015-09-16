@@ -27,6 +27,8 @@ android {
         }
 
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "default"]
+
+        multiDexEnabled true
     }
 
     productFlavors {
@@ -139,8 +141,8 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22+'
     compile 'com.android.support:cardview-v7:22+'
     compile 'com.android.support:palette-v7:22+'
-    compile files('libs/libammsdk.jar')
     compile 'com.android.support:support-v13:22+'
+    compile 'com.android.support:multidex:1.0.0'
     compile files('libs/universal-image-loader-1.9.3.jar')
     compile files('libs/ijkplayer.jar')
     compile files('libs/ijkmediawidget.jar')
@@ -160,11 +162,15 @@ dependencies {
     compile files('libs/weibosdkcore.jar')
     compile files('libs/MapApiLocation_1.3.3.jar')
     compile files('libs/Android_2DMapApi_V2.5.0.jar')
+    compile files('libs/javacpp.jar')
+    compile files('libs/javacv.jar')
+    compile files('libs/ffmpeg.jar')
+    compile files('libs/ITEC-MediaPlayer-1.4.2-customed.jar')
+    compile files('libs/FFMpegMediaMetadataRetriever-1.0.1.jar')
 }
 
 dependencies {
     // Open source libs
-    compile 'com.loopj.android:android-async-http:1.4.6'
     compile 'com.mcxiaoke.volley:library:1.0.+'
     compile 'de.hdodenhof:circleimageview:1.3.0'
     compile 'com.qiniu:qiniu-android-sdk:7.0.+'
