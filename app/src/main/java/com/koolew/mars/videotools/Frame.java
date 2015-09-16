@@ -1,4 +1,4 @@
-package com.koolew.mars.ffmpeg;
+package com.koolew.mars.videotools;
 
 /**
  * Created by jinchangzhu on 9/10/15.

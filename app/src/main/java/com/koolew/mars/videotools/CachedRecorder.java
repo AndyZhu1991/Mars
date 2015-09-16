@@ -1,4 +1,4 @@
-package com.koolew.mars.ffmpeg;
+package com.koolew.mars.videotools;
 
 import android.util.Log;
 

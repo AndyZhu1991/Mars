@@ -1,6 +1,7 @@
 package com.koolew.mars;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,17 +23,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.camerautils.CameraSurfacePreview;
-import com.koolew.mars.ffmpeg.RealTimeYUV420RecorderWithAutoAudio;
+import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.utils.PictureSelectUtil;
+import com.koolew.mars.videotools.RealTimeYUV420RecorderWithAutoAudio;
 import com.koolew.mars.media.MediaEncoder;
 import com.koolew.mars.media.MediaMuxerWrapper;
 import com.koolew.mars.media.MediaVideoEncoder;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.utils.MathUtil;
 import com.koolew.mars.utils.RawImageUtil;
 import com.koolew.mars.utils.Utils;
+import com.koolew.mars.videotools.VideoTranscoder;
 import com.koolew.mars.view.RecordingSessionView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,7 +53,9 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
     private final static String TAG = "koolew-VideoShootA";
 
-    private static final int VIDEO_EDIT_REQUEST = 1;
+    private static final int REQUEST_CODE_SELECT_VIDEO = 1;
+
+    private static final int REQUEST_CODE_EDIT_VIDEO = 2;
 
     public static final String KEY_TOPIC_ID = "topic id";
 
@@ -66,6 +73,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     private int previewHeight;
 
     private ImageView mChangeCamera;
+    private ImageView mImportVideo;
     private ImageView mRecordComplete;
 
     private RecordingSessionView recordingSessionView;
@@ -192,6 +200,9 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
         recordingSessionView = (RecordingSessionView) findViewById(R.id.recording_session_view);
         recordingSessionView.setListener(this);
+
+        mImportVideo = (ImageView) findViewById(R.id.import_video);
+        mImportVideo.setOnClickListener(this);
 
         mRecordComplete = (ImageView) findViewById(R.id.record_complete);
         mRecordComplete.setOnClickListener(this);
@@ -565,9 +576,10 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
                 AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
         Log.d("stdzhu", "new recorder: " + (System.currentTimeMillis() - start));
         recordingSessionView.startOneRecording(mRecorder);
+        enableImportBtn(false);
         mRecordMonitorTask = new RecordMonitorTask();
         new Timer().schedule(mRecordMonitorTask,
-                (long) (AppProperty.RECORD_VIDEO_MAX_LEN * 1000));
+                (long) (AppProperty.RECORD_VIDEO_MAX_LEN * 1000 * 2));
         start = System.currentTimeMillis();
         mRecorder.start();
 
@@ -607,6 +619,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
             isRecording = false;
 
             recordingSessionView.postStopRecording();
+            enableImportBtn(true);
         }
     }
 
@@ -617,6 +630,16 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         completeBtnDisableHint = hint;
         mRecordComplete.setImageResource(enable ? R.mipmap.video_complete_enable
                 : R.mipmap.video_complete_disable);
+    }
+
+    private void enableImportBtn(boolean enable) {
+        mImportVideo.setEnabled(enable);
+        if (enable) {
+            mImportVideo.setImageResource(R.mipmap.video_import);
+        }
+        else {
+            mImportVideo.setImageResource(R.mipmap.import_video_disable);
+        }
     }
 //
 //    private void doStopRecord() {
@@ -665,6 +688,9 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
             case R.id.image_record:
                 onRecordClick();
                 break;
+            case R.id.import_video:
+                onImportVideo();
+                break;
             case R.id.record_complete:
                 onRecordCompleteClick();
                 break;
@@ -679,6 +705,13 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
                 mPlayImage.setVisibility(View.INVISIBLE);
                 break;
         }
+    }
+
+    private void onImportVideo() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT); //ACTION_OPEN_DOCUMENT
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("video/*");
+        startActivityForResult(intent, REQUEST_CODE_SELECT_VIDEO);
     }
 
     private void onRecordClick() {
@@ -762,7 +795,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
                 intent.putExtra(VideoEditActivity.KEY_VIDEO_THUMB,
                         recordingSessionView.getThumbName());
                 intent.putExtra(VideoEditActivity.KEY_TOPIC_ID, mTopicId);
-                startActivityForResult(intent, VIDEO_EDIT_REQUEST);
+                startActivityForResult(intent, REQUEST_CODE_EDIT_VIDEO);
             }
         }.execute();
     }
@@ -770,9 +803,50 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case VIDEO_EDIT_REQUEST:
+            case REQUEST_CODE_SELECT_VIDEO:
+                if (resultCode == RESULT_OK) {
+                    String filePath = PictureSelectUtil.getPath(this, data.getData());
+                    new VideoTranscodeTask(filePath).execute();
+                }
+                break;
+            case REQUEST_CODE_EDIT_VIDEO:
                 onVideoEditResult(resultCode);
                 break;
+        }
+    }
+
+    class VideoTranscodeTask extends AsyncTask<Void, Void, Void> {
+        private String filePath;
+        private String transcodedFile;
+        private Dialog progressDialog;
+        public long videoLenMillis;
+        public VideoTranscoder videoTranscoder;
+
+        public VideoTranscodeTask(String filePath) {
+            this.filePath = filePath;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = DialogUtil.getGeneralProgressDialog(
+                    VideoShootActivity.this, R.string.transcoding);
+            progressDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            transcodedFile = recordingSessionView.generateAVideoFilePath();
+            videoTranscoder = new VideoTranscoder(filePath, transcodedFile,
+                    AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
+            videoTranscoder.start();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            videoLenMillis = videoTranscoder.getVideoLenMillis();
+            progressDialog.dismiss();
+            recordingSessionView.addOneItem(transcodedFile, videoLenMillis);
         }
     }
 

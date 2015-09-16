@@ -1,4 +1,4 @@
-package com.koolew.mars.ffmpeg;
+package com.koolew.mars.videotools;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -109,6 +109,11 @@ public class RealTimeYUV420RecorderWithAutoAudio extends CachedRecorder
         public void recycle(IplImageFrame frame) {
             frame.image.getByteBuffer().clear();
             super.recycle(frame);
+        }
+
+        @Override
+        protected void releaseOneItem(IplImageFrame item) {
+            item.image.release();
         }
     }
 

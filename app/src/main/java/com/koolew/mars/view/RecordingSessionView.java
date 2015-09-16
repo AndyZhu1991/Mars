@@ -217,6 +217,13 @@ public class RecordingSessionView extends LinearLayout {
         new CompleteRecordingTask().execute();
     }
 
+    public void addOneItem(String filePath, long videoLen) {
+        recordedItems.add(new VideoPieceItem(System.currentTimeMillis(), filePath, videoLen));
+        mAdapter.notifyItemInserted(recordedItems.size() - 1);
+        videosProgressView.invalidate();
+        updateNextStepBtnStatus();
+    }
+
     private Timer videoProgressUpdateTimer;
     class UpdateVideoProgressTask extends TimerTask {
         @Override
@@ -388,7 +395,7 @@ public class RecordingSessionView extends LinearLayout {
             }
             else {
                 String cutted = videoItem.fileName + ".mp4";
-                com.koolew.mars.ffmpeg.Utils.cutVideo(videoItem.fileName, cutted,
+                com.koolew.mars.videotools.Utils.cutVideo(videoItem.fileName, cutted,
                         videoItem.clipStart, videoItem.clipEnd);
                 videos.add(cutted);
             }

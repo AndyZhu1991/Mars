@@ -1,4 +1,4 @@
-package com.koolew.mars.ffmpeg;
+package com.koolew.mars.videotools;
 
 import java.util.Stack;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -60,6 +60,14 @@ public abstract class BlockingRecycleQueue<T> {
     }
 
     protected abstract T generateNewFrame();
+
+    public void releaseAllCachedItem() {
+        while (cache.size() > 0) {
+            releaseOneItem(cache.pop());
+        }
+    }
+
+    protected void releaseOneItem(T item) {}
 
     private class Wrapper<T> {
         private T element;

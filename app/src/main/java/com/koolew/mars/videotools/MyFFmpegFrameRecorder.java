@@ -46,7 +46,7 @@
  * THE SOFTWARE.
  */
 
-package com.koolew.mars.ffmpeg;
+package com.koolew.mars.videotools;
 
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.DoublePointer;

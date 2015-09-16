@@ -45,7 +45,7 @@ public class MarsApplication extends Application {
         ShareSDK.initSDK(getApplicationContext());
         initBugly();
         initUmeng();
-        com.koolew.mars.ffmpeg.Utils.preloadRecorder(this);
+        com.koolew.mars.videotools.Utils.preloadRecorder(this);
 
         Log.d(TAG, "Init in MarsApplication takes: " + (System.currentTimeMillis() - start));
     }

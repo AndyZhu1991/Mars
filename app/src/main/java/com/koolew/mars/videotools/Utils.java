@@ -1,4 +1,4 @@
-package com.koolew.mars.ffmpeg;
+package com.koolew.mars.videotools;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,6 +12,8 @@ import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.FrameRecorder;
 
 import java.io.File;
+
+import wseemann.media.FFmpegMediaMetadataRetriever;
 
 /**
  * Created by jinchangzhu on 9/10/15.
@@ -177,5 +179,50 @@ public class Utils {
         // encoder CPU) while lowering the stream size
         // (see: https://trac.ffmpeg.org/wiki/Encode/H.264)
         recorder.setVideoOption("preset", "veryfast");
+    }
+
+    public static int getVideoDegree(String videoPath) {
+        FFmpegMediaMetadataRetriever fmmr = new FFmpegMediaMetadataRetriever();
+        fmmr.setDataSource(videoPath);
+        String rotation = fmmr.extractMetadata(
+                FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+        fmmr.release();
+        int degree;
+        try {
+            degree = Integer.valueOf(rotation);
+        }
+        catch (NumberFormatException nfe) {
+            degree = 0;
+        }
+        return degree;
+    }
+
+    /**
+     * 将一个矩形缩放到可以容纳在框架中的最大尺寸
+     * @param frameWidth 框架宽度
+     * @param frameHeight 框架高度
+     * @param srcWidth 原矩形宽度
+     * @param srcHeight 原矩形高度
+     * @return 缩放之后的矩形尺寸
+     */
+    public static opencv_core.CvSize getFrameScaleSize(int frameWidth, int frameHeight,
+                                                       int srcWidth, int srcHeight) {
+        int scaledWidth;
+        int scaledHeight;
+
+        if (frameWidth * srcHeight == frameHeight * srcWidth) {
+            scaledWidth = frameWidth;
+            scaledHeight = frameHeight;
+        }
+        else if (frameWidth * srcHeight < srcWidth * frameHeight) {
+            scaledWidth = frameWidth;
+            scaledHeight = scaledWidth * srcHeight / srcWidth;
+        }
+        else {
+            scaledHeight = frameHeight;
+            scaledWidth = scaledHeight * srcWidth / srcHeight;
+        }
+
+        return opencv_core.cvSize(scaledWidth, scaledHeight);
     }
 }
