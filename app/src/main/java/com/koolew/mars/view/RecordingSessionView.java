@@ -1,6 +1,7 @@
 package com.koolew.mars.view;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -28,6 +29,7 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemView
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.koolew.mars.AppProperty;
 import com.koolew.mars.R;
+import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.FileUtil;
 import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.Utils;
@@ -238,10 +240,14 @@ public class RecordingSessionView extends LinearLayout {
     }
 
     class CompleteRecordingTask extends AsyncTask<Void, Void, Void> {
+        private Dialog waitDialog;
+
         @Override
         protected void onPreExecute() {
+            waitDialog = DialogUtil.getGeneralProgressDialog(getContext(),
+                    R.string.please_wait_a_moment);
+            waitDialog.show();
             videoProgressUpdateTimer.cancel();
-            listener.onNextStepEnable(false, null);
         }
 
         @Override
@@ -256,6 +262,8 @@ public class RecordingSessionView extends LinearLayout {
             mAdapter.notifyItemInserted(recordedItems.size() - 1);
             updateNextStepBtnStatus();
             shader.setVisibility(INVISIBLE);
+            listener.onNextStepEnable(false, null);
+            waitDialog.dismiss();
         }
     }
 
@@ -449,7 +457,7 @@ public class RecordingSessionView extends LinearLayout {
             listener.onSwitchToPreviewMode();
         }
         else {
-            selectVideoItem(position - 1);
+            selectVideoItem(position == 0 ? 0 : position - 1);
         }
     }
 
