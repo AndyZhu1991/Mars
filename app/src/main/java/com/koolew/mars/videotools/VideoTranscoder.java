@@ -208,8 +208,8 @@ public class VideoTranscoder {
                             FrameRecorderStandardSetter.SET_VIDEO_FRAME_RATE |
                             FrameRecorderStandardSetter.SET_VIDEO_BIT_RATE |
                             FrameRecorderStandardSetter.SET_AUDIO_CODEC |
-                            FrameRecorderStandardSetter.SET_AUDIO_SAMPLE_RATE |
                             FrameRecorderStandardSetter.SET_AUDIO_BIT_RATE);
+            mFrameRecorder.setSampleRate(mFrameGrabber.getSampleRate());
             mFrameRecorder.setVideoOption("preset", "veryfast");
             try {
                 mFrameRecorder.start();
