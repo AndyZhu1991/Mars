@@ -156,8 +156,8 @@ public class RealTimeYUV420RecorderWithAutoAudio extends CachedRecorder
                     SamplesFrame samplesFrame = audioCache.obtain();
                     ShortBuffer buffer = (ShortBuffer) samplesFrame.samples[0];
                     int readedShort = audioRecord.read(buffer.array(), 0, buffer.capacity());
-                    buffer.limit(readedShort);
                     if (readedShort > 0) {
+                        buffer.limit(readedShort);
                         audioCache.put(samplesFrame);
                     }
                     else {
