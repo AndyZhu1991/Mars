@@ -42,6 +42,9 @@ public class VideoTranscoder {
 
     public void start() {
         int degree = Utils.getVideoDegree(srcFile);
+        if (degree != 90 && degree != 180 && degree != 270) {
+            degree = 0;
+        }
 
         mFrameGrabber = new FFmpegFrameGrabber(srcFile);
         try {
@@ -78,6 +81,9 @@ public class VideoTranscoder {
             rotatedWidth = scaledSize.width();
             rotatedHeight = scaledSize.height();
         }
+
+        boolean isNeedFlipHorizontal = degree == 90;
+        boolean isNeedFlipVertical = (degree == 270 || degree == 180);
 
         boolean isNeedBorder = !(dstWidth == rotatedWidth && dstHeight == rotatedHeight);
         opencv_core.CvPoint bordeOffset = null;
@@ -138,8 +144,13 @@ public class VideoTranscoder {
                     }
                     if (isNeedRotate) {
                         opencv_core.cvTranspose(currentImage, rotatedImage);
-                        opencv_core.cvFlip(rotatedImage, rotatedImage, degree);
                         currentImage = rotatedImage;
+                    }
+                    if (isNeedFlipHorizontal) {
+                        opencv_core.cvFlip(currentImage, null, 1);
+                    }
+                    if (isNeedFlipVertical) {
+                        opencv_core.cvFlip(currentImage, null, 0);
                     }
                     if (isNeedBorder) {
                         opencv_imgproc.cvCopyMakeBorder(currentImage, borderedImage,
