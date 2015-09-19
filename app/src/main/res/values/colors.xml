@@ -49,4 +49,8 @@
     <!-- For settings -->
     <color name="settings_item_text_color">#9B9B9B</color>
     <color name="setting_background">#F5F5F5</color>
+
+    <!-- For PlayActivity -->
+    <color name="play_left_color">#FFC55E</color>
+    <color name="play_right_color">#6ED7E7</color>
 </resources>

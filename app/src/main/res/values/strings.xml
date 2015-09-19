@@ -312,6 +312,15 @@
     <!-- Some error message -->
     <string name="can_not_get_contacts">读取联系人失败，可能是被安全软件阻止，请检查。</string>
 
+    <!-- For PlayActivity -->
+    <string name="next_group_immediately">马上进入下一组</string>
+    <string name="kooed">被打赏</string>
+    <string name="support_ta">支持TA</string>
+    <string name="judge_mission_completed">你完成了本轮的评委任务！</string>
+    <string name="next_round_text_head">"下一轮将于 "</string>
+    <string name="next_round_text_tail">" 后开启"</string>
+    <string name="next_round_immediately">立即开启下一轮</string>
+
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>
     <string name="website">http://www.mob.com</string>
@@ -424,4 +433,5 @@
     <string name="title_activity_topic_koo_rank">TopicKooRankActivity</string>
     <string name="title_activity_video_koo_rank">VideoKooRankActivity</string>
     <string name="title_activity_edit_topic_desc">EditTopicDescActivity</string>
+    <string name="title_activity_play">PlayActivity</string>
 </resources>
