@@ -1,10 +1,14 @@
 package com.koolew.mars;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,12 +27,15 @@ import com.koolew.mars.qiniu.UploadHelper;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.BgmUtil;
 import com.koolew.mars.utils.DialogUtil;
+import com.koolew.mars.utils.FileUtil;
 import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.TitleBarView;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class VideoEditActivity extends BaseActivity
@@ -135,7 +142,7 @@ public class VideoEditActivity extends BaseActivity
 
     @Override
     public void onRightLayoutClick() {
-        String finalVideo;
+        final String finalVideo;
         if (mSelectedBgmPath == null) {
             finalVideo = mConcatedVideo;
         } else {
@@ -161,10 +168,34 @@ public class VideoEditActivity extends BaseActivity
             protected Boolean doInBackground(String... params) {
                 if (UploadHelper.uploadVideo(params[0], params[1], params[2], mAuthority)
                         == UploadHelper.RESULT_SUCCESS) {
+                    saveAndRegisterVideo();
                     return true;
                 } else {
                     return false;
                 }
+            }
+
+            private void saveAndRegisterVideo() {
+                Uri videoTable = Uri.parse("content://media/external/video/media");
+
+                long timeMillis = System.currentTimeMillis();
+                String newFileName = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss")
+                        .format(new Date(timeMillis)) + ".mp4";
+                String newFilePath = Environment.getExternalStorageDirectory()
+                        + "/koolew/" + newFileName;
+
+                FileUtil.copyFile(finalVideo, newFilePath);
+
+                ContentValues values = new ContentValues(7);
+                //values.put(MediaStore.Video.Media.TITLE, title);
+                values.put(MediaStore.Video.Media.DISPLAY_NAME, newFileName);
+                values.put(MediaStore.Video.Media.DATE_TAKEN, timeMillis);
+                values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+                values.put(MediaStore.Video.Media.DATA, newFilePath);
+
+                values.put(MediaStore.Video.Media.SIZE, new File(newFilePath).length());
+
+                getContentResolver().insert(videoTable, values);
             }
 
             @Override
@@ -178,7 +209,6 @@ public class VideoEditActivity extends BaseActivity
                 }
             }
         }.execute(mTopicId, finalVideo, mVideoThumb);
-
     }
 
     @Override

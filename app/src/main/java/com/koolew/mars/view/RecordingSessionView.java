@@ -262,7 +262,6 @@ public class RecordingSessionView extends LinearLayout {
             mAdapter.notifyItemInserted(recordedItems.size() - 1);
             updateNextStepBtnStatus();
             shader.setVisibility(INVISIBLE);
-            listener.onNextStepEnable(false, null);
             waitDialog.dismiss();
         }
     }
@@ -398,15 +397,10 @@ public class RecordingSessionView extends LinearLayout {
 
         List<String> videos = new LinkedList<>();
         for (VideoPieceItem videoItem: recordedItems) {
-            if (videoItem.clipStart == 0 && videoItem.clipEnd == videoItem.videoLen) {
-                videos.add(videoItem.fileName);
-            }
-            else {
-                String cutted = videoItem.fileName + ".mp4";
-                com.koolew.mars.videotools.Utils.cutVideo(videoItem.fileName, cutted,
-                        videoItem.clipStart, videoItem.clipEnd);
-                videos.add(cutted);
-            }
+            String cutted = videoItem.fileName + ".mp4";
+            com.koolew.mars.videotools.Utils.cutVideo(videoItem.fileName, cutted,
+                    videoItem.clipStart, videoItem.clipEnd);
+            videos.add(cutted);
         }
 
         String concatedFilePath = getConcatedVideoName();
