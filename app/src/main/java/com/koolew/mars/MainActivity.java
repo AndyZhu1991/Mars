@@ -128,10 +128,11 @@ public class MainActivity extends BaseV4FragmentActivity
         mNameView.setUserInfo(MyAccountInfo.getNickname(), MyAccountInfo.getVip());
         mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
 
-        fragments[0] = KoolewFragment.newInstance();
-        fragments[1] = FriendFragment.newInstance();
-        fragments[2] = SettingsFragment.newInstance();
-        mCurFragment = fragments[0];
+//        fragments[0] = KoolewFragment.newInstance();
+//        fragments[1] = FriendFragment.newInstance();
+//        fragments[2] = SettingsFragment.newInstance();
+//        mCurFragment = fragments[0];
+        switchFragment(0);
 
         mTopIconLayouts[0]   = (FrameLayout) findViewById(R.id.top_icon_layout1);
         mTopIcons[0]         = (ImageView) findViewById(R.id.top_icon1);
@@ -259,6 +260,17 @@ public class MainActivity extends BaseV4FragmentActivity
     private void switchFragment(int position) {
         mAdapter.checkedPosition = position;
         mAdapter.notifyDataSetChanged();
+        switch (position) {
+            case 0:
+                fragments[0] = KoolewFragment.newInstance();
+                break;
+            case 1:
+                fragments[1] = FriendFragment.newInstance();
+                break;
+            case 2:
+                fragments[2] = SettingsFragment.newInstance();
+                break;
+        }
         mCurFragment = fragments[position];
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()

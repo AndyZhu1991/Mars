@@ -1,18 +1,13 @@
 package com.koolew.mars;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
-import com.android.volley.Response;
-import com.koolew.mars.statistics.BaseV4Fragment;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.mould.LoadMoreAdapter;
+import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.utils.ContactUtil;
 import com.koolew.mars.webapi.ApiWorker;
 
@@ -22,15 +17,15 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import static com.koolew.mars.infos.TypedUserInfo.TYPE_FAN;
+import static com.koolew.mars.infos.TypedUserInfo.TYPE_NO_REGISTER;
+import static com.koolew.mars.infos.TypedUserInfo.TYPE_FOLLOWED;
+import static com.koolew.mars.infos.TypedUserInfo.TYPE_STRANGER;
 
-public class FriendContactFragment extends BaseV4Fragment
-        implements SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
+
+public class FriendContactFragment extends RecyclerListFragmentMould {
 
     private static final String TAG = "koolew-FriendContactF";
-
-    private ListView mListView;
-    private FriendSimpleAdapter mAdapter;
-    private SwipeRefreshLayout mRefreshLayout;
 
     private List<ContactUtil.SimpleContactInfo> mContacts;
 
@@ -55,89 +50,59 @@ public class FriendContactFragment extends BaseV4Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_friend_contact, container, false);
-
-        mRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.refresh_layout);
-        mRefreshLayout.setColorSchemeResources(R.color.koolew_light_blue);
-        mRefreshLayout.setOnRefreshListener(this);
-        mListView = (ListView) root.findViewById(R.id.list_view);
-        mListView.setOnItemClickListener(this);
-
-        if (mAdapter == null) {
-            mRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mRefreshLayout.setRefreshing(true);
-                    doRefresh();
-                }
-            });
-        }
-        else {
-            mListView.setAdapter(mAdapter);
-        }
-
-        return root;
+    protected LoadMoreAdapter useThisAdapter() {
+        return new FriendContactAdapter(getActivity());
     }
 
     @Override
-    public void onRefresh() {
-        doRefresh();
+    protected int getThemeColor() {
+        return getActivity().getResources().getColor(R.color.koolew_light_blue);
     }
 
-    private void doRefresh() {
+    @Override
+    protected JsonObjectRequest doRefreshRequest() {
         if (mContacts == null || mContacts.size() == 0) {
             new GetContactsTask().execute();
+            return null;
         }
         else {
-            requestContactFriend();
+            return ApiWorker.getInstance().requestContactFriend(mContacts, mRefreshListener, null);
         }
-    }
-
-    private void requestContactFriend() {
-        ApiWorker.getInstance().requestContactFriend(mContacts, new RefreshListener(), null);
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (mAdapter.getItemViewType(position) == FriendSimpleAdapter.TYPE_NO_REGISTER) {
-            return;
-        }
-        Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
-        String uid = ((FriendSimpleAdapter.FriendInfo) mAdapter.getItem(position)).getUid();
-        intent.putExtra(FriendInfoActivity.KEY_UID, uid);
-        startActivity(intent);
+    protected JsonObjectRequest doLoadMoreRequest() {
+        return null;
     }
 
-    class RefreshListener implements Response.Listener<JSONObject> {
-        @Override
-        public void onResponse(JSONObject jsonObject) {
-            try {
-                if (jsonObject.getInt("code") != 0) {
-                    Log.e(TAG, "Error response: " + jsonObject);
-                    return;
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+    @Override
+    protected boolean handleRefresh(JSONObject response) {
+        try {
+            if (response.getInt("code") != 0) {
+                Log.e(TAG, "Error response: " + response);
+                return false;
             }
-
-            if (getActivity() == null) {
-                return;
-            }
-            mAdapter = new FriendContactAdapter(getActivity(), mContacts);
-            try {
-                JSONArray relations = jsonObject.getJSONObject("result").getJSONArray("relations");
-                mAdapter.add(relations);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            mListView.setAdapter(mAdapter);
-
-            mRefreshLayout.setRefreshing(false);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
+        if (getActivity() == null) {
+            return false;
+        }
+
+        try {
+            JSONArray relations = response.getJSONObject("result").getJSONArray("relations");
+            ((FriendContactAdapter) mAdapter).setData(relations);
+            mAdapter.notifyDataSetChanged();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean handleLoadMore(JSONObject response) {
+        return false;
     }
 
     class GetContactsTask extends AsyncTask<Void, Void, List<ContactUtil.SimpleContactInfo>> {
@@ -154,7 +119,74 @@ public class FriendContactFragment extends BaseV4Fragment
                 mRefreshLayout.setRefreshing(false);
             }
             else {
-                requestContactFriend();
+                onRefresh();
+            }
+        }
+    }
+
+
+    public class FriendContactAdapter extends FriendSimpleAdapter {
+
+        public FriendContactAdapter(Context context) {
+            super(context);
+        }
+
+        @Override
+        public int getCustomItemCount() {
+            return super.getCustomItemCount() + (mContacts == null ? 0 : mContacts.size());
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position < mData.size() ? mData.get(position)
+                    : mContacts.get(position - mData.size());
+        }
+
+        @Override
+        public int getCustomItemViewType(int position) {
+            return position < mData.size() ?
+                    super.getCustomItemViewType(position) : TYPE_NO_REGISTER;
+        }
+
+        @Override
+        protected boolean friendTypeFilter(int type) {
+            if (    type == TYPE_FAN ||
+                    type == TYPE_STRANGER ||
+                    type == TYPE_FOLLOWED) {
+                return true;
+            }
+
+            return false;
+        }
+
+        @Override
+        protected void onFriendClick(int position) {
+            if (getCustomItemViewType(position) == TYPE_NO_REGISTER) {
+                return;
+            }
+            super.onFriendClick(position);
+        }
+
+        @Override
+        protected void onOperate(int position) {
+            if (getItemViewType(position) == TYPE_NO_REGISTER) {
+                inviteContact(((ContactUtil.SimpleContactInfo) getItem(position)).getNumber());
+            }
+            else {
+                super.onOperate(position);
+            }
+        }
+
+        protected void retrievalContactName(FriendInfo friendInfo) {
+            if (mContacts == null || mContacts.size() == 0) {
+                return;
+            }
+            for (ContactUtil.SimpleContactInfo contactInfo : mContacts) {
+                if (contactInfo.getNumber().equals(friendInfo.phoneNumber)) {
+                    friendInfo.contactName = contactInfo.getName();
+                    //mAllContacts.remove(contactInfo);
+                    break;
+                }
             }
         }
     }

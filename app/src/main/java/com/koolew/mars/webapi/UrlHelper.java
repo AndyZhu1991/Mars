@@ -16,10 +16,11 @@ public class UrlHelper {
     private static final String TEST_API_URL = "http://test.koolew.cn/";
     private static final String REAL_API_URL = "http://api.koolew.com/";
 
-    private static final String BASE_URL = REAL_API_URL;
+    private static final String BASE_URL = TEST_API_URL;
 
     private static final String V1_URL = BASE_URL + "v1/";
     private static final String V2_URL = BASE_URL + "v2/";
+    private static final String V3_URL = BASE_URL + "v3/";
 
     // v1 api
     private static final String TOPIC_VIDEO_FRIEND_URL = V1_URL + "feeds";
@@ -72,6 +73,12 @@ public class UrlHelper {
     public static final String NOTIFICATION_BRIEF_URL = V2_URL + "activity/brief";
     public static final String USER_LOCATION_URL = V2_URL + "user/loc";
     public static final String EDIT_TOPIC_DESC_URL = V2_URL + "topic/desc";
+
+    // V3 api
+    public static final String FRIEND_FOLLOW_URL = V3_URL + "friend/follow";
+    public static final String FRIEND_UNFOLLOW_URL = V3_URL + "friend/unfollow";
+    public static final String FRIEND_FOLLOWS_URL = V3_URL + "friend/follows";
+    public static final String FRIEND_FANS_URL = V3_URL + "friend/fans";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;

@@ -11,8 +11,8 @@ public class TypedUserInfo extends BaseUserInfo {
     public static final int TYPE_UNKNOWN         = -1;
     public static final int TYPE_SELF            = 0;
     public static final int TYPE_STRANGER        = 1;
-    public static final int TYPE_SENT_INVITATION = 2;
-    public static final int TYPE_INVITED_ME      = 3;
+    public static final int TYPE_FOLLOWED        = 2;
+    public static final int TYPE_FAN             = 3;
     public static final int TYPE_FRIEND          = 4;
     public static final int TYPE_NO_REGISTER     = 5;
 
@@ -34,5 +34,13 @@ public class TypedUserInfo extends BaseUserInfo {
         }
         catch (JSONException jse) {
         }
+    }
+
+    public int getType() {
+        return mType;
+    }
+
+    public void setType(int type) {
+        mType = type;
     }
 }

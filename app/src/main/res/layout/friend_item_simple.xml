@@ -44,14 +44,14 @@
                 android:textColor="#BDBDBD"/>
         </LinearLayout>
 
-        <Button
+        <TextView
             android:id="@+id/operation_btn"
             android:layout_width="52dp"
             android:layout_height="28dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="16dp"
             android:textSize="12sp"
-            android:focusable="false"/>
+            android:gravity="center"/>
     </LinearLayout>
 
     <View

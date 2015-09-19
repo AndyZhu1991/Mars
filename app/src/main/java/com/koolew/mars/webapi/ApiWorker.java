@@ -629,6 +629,66 @@ public class ApiWorker {
                 listener, errorListener);
     }
 
+    public JsonObjectRequest followUser(String uid,
+                                        Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        List<String> uids = new ArrayList<>(1);
+        uids.add(uid);
+        return followUsers(uids, listener, errorListener);
+    }
+
+    public JsonObjectRequest followUsers(List<String> uids,
+                                         Response.Listener<JSONObject> listener,
+                                         Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        JSONArray to = new JSONArray();
+        for (String uid: uids) {
+            to.put(uid);
+        }
+        try {
+            requestObject.put("to", to);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.FRIEND_FOLLOW_URL, requestObject,
+                listener, errorListener);
+    }
+
+    public JsonObjectRequest unfollowUser(String uid,
+                                          Response.Listener<JSONObject> listener,
+                                          Response.ErrorListener errorListener) {
+        List<String> uids = new ArrayList<>(1);
+        uids.add(uid);
+        return unfollowUsers(uids, listener, errorListener);
+    }
+
+    public JsonObjectRequest unfollowUsers(List<String> uids,
+                                           Response.Listener<JSONObject> listener,
+                                           Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        JSONArray to = new JSONArray();
+        for (String uid: uids) {
+            to.put(uid);
+        }
+        try {
+            requestObject.put("to", to);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.FRIEND_UNFOLLOW_URL, requestObject,
+                listener, errorListener);
+    }
+
+    public JsonObjectRequest getFollows(Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.FRIEND_FOLLOWS_URL, listener, errorListener);
+    }
+
+    public JsonObjectRequest getFans(Response.Listener<JSONObject> listener,
+                                     Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.FRIEND_FANS_URL, listener, errorListener);
+    }
+
 
     // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,

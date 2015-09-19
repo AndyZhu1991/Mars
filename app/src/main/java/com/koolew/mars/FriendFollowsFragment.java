@@ -11,29 +11,22 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Created by jinchangzhu on 9/18/15.
+ */
+public class FriendFollowsFragment extends RecyclerListFragmentMould {
 
-public class FriendCurrentFragment extends RecyclerListFragmentMould {
-
-    private static final String TAG = "koolew-FriendCurrentF";
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     * @return A new instance of fragment FriendCurrentFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FriendCurrentFragment newInstance() {
-        FriendCurrentFragment fragment = new FriendCurrentFragment();
-        return fragment;
-    }
-
-    public FriendCurrentFragment() {
-        // Required empty public constructor
-    }
+    private static final String TAG = FriendFollowsFragment.class.getSimpleName();
 
     @Override
     protected LoadMoreAdapter useThisAdapter() {
-        return new FriendCurrentAdapter(getActivity());
+        return new FriendSimpleAdapter(getActivity()) {
+            @Override
+            protected void onFollowedUnfollow(int position) {
+                mData.remove(position);
+                notifyItemRemoved(position);
+            }
+        };
     }
 
     @Override
@@ -43,7 +36,7 @@ public class FriendCurrentFragment extends RecyclerListFragmentMould {
 
     @Override
     protected JsonObjectRequest doRefreshRequest() {
-        return ApiWorker.getInstance().requestCurrentFriend(mRefreshListener, null);
+        return ApiWorker.getInstance().getFollows(mRefreshListener, null);
     }
 
     @Override
@@ -63,8 +56,8 @@ public class FriendCurrentFragment extends RecyclerListFragmentMould {
         }
 
         try {
-            JSONArray users = response.getJSONObject("result").getJSONArray("users");
-            ((FriendCurrentAdapter) mAdapter).setData(users);
+            JSONArray follows = response.getJSONObject("result").getJSONArray("follows");
+            ((FriendSimpleAdapter) mAdapter).setData(follows);
             mAdapter.notifyDataSetChanged();
         } catch (JSONException e) {
             e.printStackTrace();

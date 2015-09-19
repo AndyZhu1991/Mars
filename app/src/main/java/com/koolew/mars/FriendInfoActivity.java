@@ -174,13 +174,13 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
     private void initTypeView(int type) {
         switch (type) {
             case TypedUserInfo.TYPE_STRANGER:
-            case TypedUserInfo.TYPE_INVITED_ME:
+            case TypedUserInfo.TYPE_FAN:
                 mOperationImage.setImageResource(R.mipmap.friend_info_add_friend);
-                mOperationText.setText(R.string.add_friend);
+                mOperationText.setText(R.string.follow);
                 break;
-            case TypedUserInfo.TYPE_SENT_INVITATION:
+            case TypedUserInfo.TYPE_FOLLOWED:
                 mOperationImage.setImageResource(R.mipmap.friend_info_requested);
-                mOperationText.setText(R.string.requested_friend);
+                mOperationText.setText(R.string.followed);
                 break;
             default:
                 mOperationImage.setVisibility(View.INVISIBLE);
@@ -191,11 +191,11 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
     private void onOperationLayoutClick(int type) {
         switch (type) {
             case TypedUserInfo.TYPE_STRANGER:
-            case TypedUserInfo.TYPE_INVITED_ME:
+            case TypedUserInfo.TYPE_FAN:
                 mProgressDialog.show();
                 ApiWorker.getInstance().addFriend(mUid, mFriendOpListener, null);
                 break;
-            case TypedUserInfo.TYPE_SENT_INVITATION:
+            case TypedUserInfo.TYPE_FOLLOWED:
                 break;
             default:
         }
@@ -209,10 +209,10 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
                 if (response.getInt("code") == 0) {
                     switch (mType) {
                         case TypedUserInfo.TYPE_STRANGER:
-                            mType = TypedUserInfo.TYPE_SENT_INVITATION;
+                            mType = TypedUserInfo.TYPE_FOLLOWED;
                             initTypeView(mType);
                             break;
-                        case TypedUserInfo.TYPE_INVITED_ME:
+                        case TypedUserInfo.TYPE_FAN:
                             mType = TypedUserInfo.TYPE_FRIEND;
                             initTypeView(mType);
                             break;

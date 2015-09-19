@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
@@ -119,7 +119,7 @@ public class CommonFriendActivity extends BaseActivity implements AdapterView.On
                 holder.nameView = (UserNameView) convertView.findViewById(R.id.name_view);
                 convertView.setTag(holder);
 
-                Button operateBtn = (Button) convertView.findViewById(R.id.operation_btn);
+                TextView operateBtn = (TextView) convertView.findViewById(R.id.operation_btn);
                 operateBtn.setText(R.string.title_friend);
                 operateBtn.setTextSize(14);
                 operateBtn.setTextColor(getResources().getColor(R.color.koolew_gray));

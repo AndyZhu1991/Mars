@@ -466,9 +466,8 @@ public class FriendMeetFragment extends BaseV4Fragment
                 avatar.setBorderColorResource(R.color.koolew_light_green);
                 acceptAddButton.setBackground(getResources().
                         getDrawable(R.drawable.btn_bg_accept_solid));
-                acceptAddButton.setText(R.string.accept);
-                acceptAddButton.setTextColor(getResources().
-                        getColor(android.R.color.white));
+                acceptAddButton.setText(R.string.follow);
+                acceptAddButton.setTextColor(getResources().getColor(android.R.color.white));
                 paddingGreenBorder.setVisibility(View.VISIBLE);
             }
 
@@ -492,11 +491,9 @@ public class FriendMeetFragment extends BaseV4Fragment
 
                 explainLabel.setText(R.string.recommend_friend_label);
                 avatar.setBorderColorResource(R.color.avatar_gray_border);
-                acceptAddButton.setBackground(getResources().
-                        getDrawable(R.drawable.btn_bg_add));
-                acceptAddButton.setText(R.string.add);
-                acceptAddButton.setTextColor(getResources().
-                        getColor(R.color.koolew_light_blue));
+                acceptAddButton.setBackground(getResources().getDrawable(R.drawable.btn_bg_follow));
+                acceptAddButton.setText(R.string.follow);
+                acceptAddButton.setTextColor(getResources().getColor(R.color.koolew_light_green));
             }
 
             @Override
