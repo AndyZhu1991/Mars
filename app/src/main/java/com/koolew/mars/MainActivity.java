@@ -198,6 +198,9 @@ public class MainActivity extends BaseV4FragmentActivity
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
+        else if(mAdapter.checkedPosition != 0) {
+            switchFragment(0);
+        }
         else {
             super.onBackPressed();
         }
@@ -257,12 +260,14 @@ public class MainActivity extends BaseV4FragmentActivity
     }
 
     private void switchFragment(int position) {
-        mAdapter.checkedPosition = position;
-        mAdapter.notifyDataSetChanged();
-        mCurFragment = fragments[position];
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, mCurFragment).commit();
+        if (mAdapter.checkedPosition != position) {
+            mAdapter.checkedPosition = position;
+            mAdapter.notifyDataSetChanged();
+            mCurFragment = fragments[position];
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, mCurFragment).commit();
+        }
 
         mDrawerLayout.closeDrawer(mLeftDrawer);
     }
@@ -447,6 +452,7 @@ public class MainActivity extends BaseV4FragmentActivity
         private int[] notificationCount = new int[4];
 
         DrawerListAdapter() {
+            checkedPosition = -1;
             inflater = LayoutInflater.from(MainActivity.this);
         }
 
