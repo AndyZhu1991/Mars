@@ -26,6 +26,7 @@
     <string name="counter_ge" formatted="false">"%d个"</string>
     <string name="cancel">取消</string>
     <string name="danmaku">弹幕</string>
+    <string name="notification">通知</string>
     <string name="ignore">忽略</string>
     <string name="not_enough_coin_hint">金币不够了！赶紧去赚金币吧！</string>
     <string name="search">搜索</string>
@@ -320,6 +321,9 @@
     <string name="next_round_text_head">"下一轮将于 "</string>
     <string name="next_round_text_tail">" 后开启"</string>
     <string name="next_round_immediately">立即开启下一轮</string>
+
+    <!-- For MessagesActivity -->
+    <string name="message_area">消息区</string>
 
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>

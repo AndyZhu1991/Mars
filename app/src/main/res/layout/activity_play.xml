@@ -169,24 +169,13 @@
                             android:layout_height="0dp"
                             android:layout_weight="1"/>
 
-                        <LinearLayout
+                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@mipmap/ic_koo_play_big"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="24sp"
-                                android:textColor="@android:color/white"/>
-                        </LinearLayout>
+                            android:drawableLeft="@mipmap/ic_koo_play_big"
+                            android:textColor="@android:color/white"
+                            android:textSize="24sp" />
 
                         <View
                             android:layout_width="match_parent"
@@ -295,24 +284,13 @@
                             android:layout_height="0dp"
                             android:layout_weight="1"/>
 
-                        <LinearLayout
+                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@mipmap/ic_koo_play_big"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="24sp"
-                                android:textColor="@android:color/white"/>
-                        </LinearLayout>
+                            android:drawableLeft="@mipmap/ic_koo_play_big"
+                            android:textColor="@android:color/white"
+                            android:textSize="24sp" />
 
                         <View
                             android:layout_width="match_parent"

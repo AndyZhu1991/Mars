@@ -197,7 +197,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".DanmakuTabActivity"
+            android:name=".MessagesActivity"
             android:exported="false"
             android:label="@string/title_activity_danmaku_tab"
             android:screenOrientation="portrait" >

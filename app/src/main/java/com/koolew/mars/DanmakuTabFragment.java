@@ -1,16 +1,19 @@
 package com.koolew.mars;
 
 import android.content.Intent;
-import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
+import com.koolew.mars.infos.BaseCommentInfo;
+import com.koolew.mars.infos.BaseTopicInfo;
+import com.koolew.mars.infos.BaseVideoInfo;
+import com.koolew.mars.mould.LoadMoreAdapter;
+import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.view.NotificationPointView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -26,9 +29,7 @@ import java.util.List;
 /**
  * Created by jinchangzhu on 7/17/15.
  */
-public class DanmakuTabFragment extends BaseListFragment implements AdapterView.OnItemClickListener {
-
-    private DanmakuTabItemAdapter mAdapter;
+public class DanmakuTabFragment extends RecyclerListFragmentMould {
 
     public DanmakuTabFragment() {
         super();
@@ -36,22 +37,13 @@ public class DanmakuTabFragment extends BaseListFragment implements AdapterView.
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = super.onCreateView(inflater, container, savedInstanceState);
-
-        mListView.setOnItemClickListener(this);
-
-        return root;
-    }
-
-    @Override
-    public String getTitle() {
-        return getString(R.string.danmaku);
+    protected LoadMoreAdapter useThisAdapter() {
+        return new DanmakuTabItemAdapter();
     }
 
     @Override
     public int getThemeColor() {
-        return getResources().getColor(R.color.koolew_light_orange);
+        return getResources().getColor(R.color.koolew_light_blue);
     }
 
     @Override
@@ -60,11 +52,7 @@ public class DanmakuTabFragment extends BaseListFragment implements AdapterView.
             if (jsonObject.getInt("code") == 0) {
                 JSONArray notifications = jsonObject.
                         getJSONObject("result").getJSONArray("notifications");
-                if (mAdapter == null) {
-                    mAdapter = new DanmakuTabItemAdapter();
-                    mListView.setAdapter(mAdapter);
-                }
-                mAdapter.setData(notifications);
+                ((DanmakuTabItemAdapter) mAdapter).setData(notifications);
                 mAdapter.notifyDataSetChanged();
 
                 return notifications.length() > 0;
@@ -83,7 +71,7 @@ public class DanmakuTabFragment extends BaseListFragment implements AdapterView.
                 JSONArray notifications = jsonObject.
                         getJSONObject("result").getJSONArray("notifications");
                 if (notifications != null && notifications.length() > 0) {
-                    mAdapter.addData(notifications);
+                    ((DanmakuTabItemAdapter) mAdapter).addData(notifications);
                     mAdapter.notifyDataSetChanged();
                     return true;
                 }
@@ -102,27 +90,16 @@ public class DanmakuTabFragment extends BaseListFragment implements AdapterView.
     @Override
     protected JsonObjectRequest doLoadMoreRequest() {
         return ApiWorker.getInstance().requestDanmakuTab(
-                mAdapter.getLastUpdateTime(), mLoadMoreListener, null);
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(getActivity(), CheckDanmakuActivity.class);
-        String videoId = mAdapter.mData.get(position).videoId;
-        intent.putExtra(CheckDanmakuActivity.KEY_VIDEO_ID, videoId);
-        startActivity(intent);
-
-        mAdapter.mData.get(position).notifyCount = 0;
-        mAdapter.notifyDataSetChanged();
+                ((DanmakuTabItemAdapter) mAdapter).getLastUpdateTime(), mLoadMoreListener, null);
     }
 
 
-    class DanmakuTabItemAdapter extends BaseAdapter {
+    class DanmakuTabItemAdapter extends LoadMoreAdapter {
 
-        private List<DanmakuItemInfo> mData;
+        private List<DanmakuNotificationItem> mData;
 
         DanmakuTabItemAdapter() {
-            mData = new ArrayList<DanmakuItemInfo>();
+            mData = new ArrayList<>();
         }
 
         public void setData(JSONArray jsonArray) {
@@ -134,67 +111,32 @@ public class DanmakuTabFragment extends BaseListFragment implements AdapterView.
             int count = jsonArray.length();
             for (int i = 0; i < count; i++) {
                 try {
-                    addData(jsonArray.getJSONObject(i));
+                    mData.add(new DanmakuNotificationItem(jsonArray.getJSONObject(i)));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         }
 
-        public void addData(JSONObject jsonObject) {
-            try {
-                String videoId = jsonObject.getJSONObject("video_info").getString("video_id");
-                String thumb = jsonObject.getJSONObject("video_info").getString("thumb_url");
-                String title = jsonObject.getJSONObject("topic").getString("content");
-                int notifyCount = jsonObject.getInt("notify_cnt");
-                long updateTime = jsonObject.getLong("update_time");
-                mData.add(new DanmakuItemInfo(videoId, thumb, title, notifyCount, updateTime));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public long getLastUpdateTime() {
-            if (mData.size() > 0) {
-                return mData.get(mData.size() - 1).updateTime;
-            }
-
-            return 0;
-        }
-
-        @Override
-        public int getCount() {
-            return mData.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
+        public DanmakuNotificationItem getItem(int position) {
             return mData.get(position);
         }
 
         @Override
-        public long getItemId(int position) {
-            return position;
+        public RecyclerView.ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
+            return new ViewHolder(LayoutInflater.from(getActivity())
+                    .inflate(R.layout.danmaku_tab_item, parent, false));
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = LayoutInflater.from(getActivity())
-                        .inflate(R.layout.danmaku_tab_item, null);
-                ViewHolder holder = new ViewHolder();
-                holder.thumb = (RoundedImageView) convertView.findViewById(R.id.thumb);
-                holder.title = (TextView) convertView.findViewById(R.id.title);
-                holder.notifyCount = (NotificationPointView)
-                        convertView.findViewById(R.id.notify_count);
-                convertView.setTag(holder);
-            }
-
-            ViewHolder holder = (ViewHolder) convertView.getTag();
-            DanmakuItemInfo item = (DanmakuItemInfo) getItem(position);
-            ImageLoader.getInstance().displayImage(item.thumb, holder.thumb,
+        public void onBindCustomViewHolder(RecyclerView.ViewHolder originHolder, int position) {
+            ViewHolder holder = (ViewHolder) originHolder;
+            DanmakuNotificationItem item = mData.get(position);
+            ImageLoader.getInstance().displayImage(item.videoInfo.getVideoThumb(), holder.thumb,
                     ImageLoaderHelper.topicThumbLoadOptions);
-            holder.title.setText(item.title);
+            holder.title.setText(item.topicInfo.getTitle());
+            holder.lastComment.setText(item.lastComment.getUserInfo().getNickname()
+                    + ": " + item.lastComment.getContent());
             if (item.notifyCount == 0) {
                 holder.notifyCount.setVisibility(View.INVISIBLE);
             }
@@ -202,30 +144,71 @@ public class DanmakuTabFragment extends BaseListFragment implements AdapterView.
                 holder.notifyCount.setVisibility(View.VISIBLE);
                 holder.notifyCount.setCount(item.notifyCount);
             }
+        }
 
-            return convertView;
+        @Override
+        public int getCustomItemCount() {
+            return mData.size();
+        }
+
+        public long getLastUpdateTime() {
+            if (mData.size() > 0) {
+                return mData.get(mData.size() - 1).updateTime;
+            }
+            return 0;
         }
     }
 
-    class DanmakuItemInfo {
-        String videoId;
-        String thumb;
-        String title;
+    class DanmakuNotificationItem {
+        BaseVideoInfo videoInfo;
+        BaseTopicInfo topicInfo;
+        BaseCommentInfo lastComment;
         int notifyCount;
         long updateTime;
 
-        DanmakuItemInfo(String videoId, String thumb, String title, int notifyCount, long updateTime) {
-            this.videoId = videoId;
-            this.thumb = thumb;
-            this.title = title;
-            this.notifyCount = notifyCount;
-            this.updateTime = updateTime;
+        DanmakuNotificationItem(JSONObject jsonObject) {
+            try {
+                videoInfo = new BaseVideoInfo(jsonObject.getJSONObject("video_info"));
+                topicInfo = new BaseTopicInfo(jsonObject.getJSONObject("topic"));
+                lastComment = new BaseCommentInfo(jsonObject.getJSONObject("comment"));
+                notifyCount = jsonObject.getInt("notify_cnt");
+                updateTime = jsonObject.getLong("update_time");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    class ViewHolder {
+
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         RoundedImageView thumb;
         TextView title;
+        TextView lastComment;
         NotificationPointView notifyCount;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+
+            thumb = (RoundedImageView) itemView.findViewById(R.id.thumb);
+            title = (TextView) itemView.findViewById(R.id.title);
+            lastComment = (TextView) itemView.findViewById(R.id.last_comment);
+            notifyCount = (NotificationPointView) itemView.findViewById(R.id.notify_count);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            DanmakuNotificationItem item = ((DanmakuTabItemAdapter) mAdapter).getItem(position);
+            Intent intent = new Intent(getActivity(), CheckDanmakuActivity.class);
+            String videoId = item.videoInfo.getVideoId();
+            intent.putExtra(CheckDanmakuActivity.KEY_VIDEO_ID, videoId);
+            startActivity(intent);
+
+            if (item.notifyCount > 0) {
+                item.notifyCount = 0;
+                mAdapter.notifyItemChanged(position);
+            }
+        }
     }
 }

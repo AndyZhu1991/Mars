@@ -114,7 +114,7 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
     @Override
     public void onTopIconClick(int position) {
         if (position == 0) {
-            startActivity(new Intent(getActivity(), DanmakuTabActivity.class));
+            startActivity(new Intent(getActivity(), MessagesActivity.class));
             NotificationKeeper.setComment(0);
             mToolbarInterface.notifyTopIcon(0, false);
         }

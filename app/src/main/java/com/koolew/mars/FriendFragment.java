@@ -36,7 +36,6 @@ public class FriendFragment extends MainBaseFragment {
     private IndicatorViewPager indicatorViewPager;
     private ScrollIndicatorView indicator;
     private ViewPager viewPager;
-    private FriendFragmentPagerAdapter mAdapter;
 
 
     /**
@@ -75,7 +74,6 @@ public class FriendFragment extends MainBaseFragment {
 
         viewPager = (ViewPager) root.findViewById(R.id.view_pager);
         indicator = (ScrollIndicatorView) root.findViewById(R.id.indicator);
-        mAdapter = new FriendFragmentPagerAdapter(getChildFragmentManager());
 
         indicator.setScrollBar(new ColorBar(getActivity(), Color.WHITE,
                 getResources().getDimensionPixelSize(R.dimen.underline_height)));
