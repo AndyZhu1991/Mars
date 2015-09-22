@@ -152,50 +152,8 @@ public class SendDanmakuActivity extends BaseActivity
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
-            if (mDanmakuEdit.getText().length() == 0) {
-                Toast.makeText(SendDanmakuActivity.this,
-                        R.string.danmaku_no_word_hint, Toast.LENGTH_SHORT).show();
-                return true;
-            }
-            else {
-                mTitleBar.setVisibility(View.INVISIBLE);
-                mDanmakuEdit.setVisibility(View.INVISIBLE);
-                mBottomLayout.setVisibility(View.VISIBLE);
-
-                mSendingDanmaku = LayoutInflater.from(this).inflate(R.layout.danmaku_item, null);
-                ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(),
-                        (ImageView) mSendingDanmaku.findViewById(R.id.avatar));
-                ((TextView) mSendingDanmaku.findViewById(R.id.message)).setText(mDanmakuEdit.getText());
-
-                mSendingDanmakuLayout.addView(mSendingDanmaku);
-                moveDanmakuTo(mSendingDanmakuLayout.getWidth() / 2,
-                        mSendingDanmakuLayout.getHeight() / 2);
-
-                mMediaPlayer.start();
-                mDanmakuThread.start();
-                new Thread() {
-                    @Override
-                    public void run() {
-                        while (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-                            try {
-                                Thread.sleep(40); // 40ms == 1frame, 25fps
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            if (mMediaPlayer.getCurrentPosition() > 0) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mThumb.setVisibility(View.INVISIBLE);
-                                    }
-                                });
-
-                                break; // break while
-                            }
-                        }
-                    }
-                }.start();
-            }
+            onDanmakuConfirm(null);
+            return true;
         }
         return false;
     }
@@ -238,6 +196,52 @@ public class SendDanmakuActivity extends BaseActivity
 
             mProgressDialog = DialogUtil.getGeneralProgressDialog(this, R.string.sending_danmaku);
             mProgressDialog.show();
+        }
+    }
+
+    public void onDanmakuConfirm(View v) {
+        if (mDanmakuEdit.getText().length() == 0) {
+            Toast.makeText(SendDanmakuActivity.this,
+                    R.string.danmaku_no_word_hint, Toast.LENGTH_SHORT).show();
+        }
+        else {
+            mTitleBar.setVisibility(View.INVISIBLE);
+            mDanmakuEdit.setVisibility(View.INVISIBLE);
+            mBottomLayout.setVisibility(View.VISIBLE);
+
+            mSendingDanmaku = LayoutInflater.from(this).inflate(R.layout.danmaku_item, null);
+            ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(),
+                    (ImageView) mSendingDanmaku.findViewById(R.id.avatar));
+            ((TextView) mSendingDanmaku.findViewById(R.id.message)).setText(mDanmakuEdit.getText());
+
+            mSendingDanmakuLayout.addView(mSendingDanmaku);
+            moveDanmakuTo(mSendingDanmakuLayout.getWidth() / 2,
+                    mSendingDanmakuLayout.getHeight() / 2);
+
+            mMediaPlayer.start();
+            mDanmakuThread.start();
+            new Thread() {
+                @Override
+                public void run() {
+                    while (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                        try {
+                            Thread.sleep(40); // 40ms == 1frame, 25fps
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        if (mMediaPlayer.getCurrentPosition() > 0) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mThumb.setVisibility(View.INVISIBLE);
+                                }
+                            });
+
+                            break; // break while
+                        }
+                    }
+                }
+            }.start();
         }
     }
 

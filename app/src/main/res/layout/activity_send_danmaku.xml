@@ -32,17 +32,34 @@
             android:layout_height="match_parent"
             android:background="#80000000">
 
-            <EditText
-                android:id="@+id/danmaku_edit"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:singleLine="true"
-                android:imeOptions="actionDone"
-                android:textSize="14sp"
-                android:textColor="@android:color/white"
-                android:hint="@string/danmaku_word_limit_hint"
-                android:textColorHint="#D8D8D8"/>
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/danmaku_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/white"
+                    android:hint="@string/danmaku_word_limit_hint"
+                    android:textColorHint="#D8D8D8"/>
+
+                <Button
+                    android:layout_width="50dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/confirm"
+                    android:background="@drawable/danmaku_confirm_bg"
+                    android:onClick="onDanmakuConfirm"/>
+            </LinearLayout>
         </RelativeLayout>
     </FrameLayout>
 
