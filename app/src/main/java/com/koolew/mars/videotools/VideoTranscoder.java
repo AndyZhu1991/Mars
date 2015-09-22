@@ -8,6 +8,8 @@ import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.FrameRecorder;
 
 import java.nio.Buffer;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Created by jinchangzhu on 9/15/15.
@@ -102,13 +104,11 @@ public class VideoTranscoder {
         IplImage borderedImage = null;
 
         long curTimestamp;
-        long nextTimestamp;
         org.bytedeco.javacv.Frame grabedFrame;
         while (true) {
             try {
                 curTimestamp = mFrameGrabber.getTimestamp();
                 grabedFrame = mFrameGrabber.grabFrame();
-                nextTimestamp = mFrameGrabber.getTimestamp();
 
                 if (grabedFrame == null) {
                     imageQueue.stop();
@@ -134,9 +134,6 @@ public class VideoTranscoder {
                 }
 
                 if (grabedFrame.image != null) {
-                    if (curTimestamp > nextTimestamp) {
-                        continue;
-                    }
                     IplImage currentImage = grabedFrame.image;
                     if (isNeedScale) {
                         opencv_imgproc.cvResize(currentImage, scaledImage);
@@ -259,8 +256,63 @@ public class VideoTranscoder {
 
     class OnlyCacheImageQueue extends BlockingRecycleQueue<Frame> {
 
+        private Queue<Frame> tempQueue;
+        private Frame curFrame;
+        private Frame nextFrame;
+
         public OnlyCacheImageQueue() {
             super(16);
+            tempQueue = new LinkedList<>();
+        }
+
+        @Override
+        public void put(Frame frame) {
+            if (frame instanceof IplImageFrame) {
+                if (curFrame == null) {
+                    curFrame = frame;
+                }
+                else {
+                    nextFrame = frame;
+                    if (curFrame.timeStamp < nextFrame.timeStamp) {
+                        tempQueue.offer(curFrame);
+                        putAnImageFrameToWorkQueue();
+                    }
+                    curFrame = nextFrame;
+                    nextFrame = null;
+                }
+            }
+            else {
+                tempQueue.offer(frame);
+            }
+        }
+
+        private void putAnImageFrameToWorkQueue() {
+            while (true) {
+                Frame frame = tempQueue.poll();
+                if (frame == null) {
+                    break;
+                }
+                super.put(frame);
+                if (frame instanceof IplImageFrame) {
+                    break;
+                }
+            }
+        }
+
+        private void putAllFrameToWorkQueue() {
+            while (true) {
+                Frame frame = tempQueue.poll();
+                if (frame == null) {
+                    break;
+                }
+                super.put(frame);
+            }
+        }
+
+        @Override
+        public void stop() {
+            putAllFrameToWorkQueue();
+            super.stop();
         }
 
         @Override
