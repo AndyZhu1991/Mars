@@ -280,12 +280,6 @@
             android:label="@string/title_activity_edit_topic_desc"
             android:screenOrientation="portrait" >
         </activity>
-        <activity
-            android:name=".PlayActivity"
-            android:exported="false"
-            android:label="@string/title_activity_play"
-            android:screenOrientation="portrait" >
-        </activity>
 
         <!-- Jpush -->
         <!-- Required -->
