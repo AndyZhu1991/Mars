@@ -33,6 +33,8 @@
     <string name="topic">话题</string>
     <string name="more">更多</string>
     <string name="unknown_error">未知错误</string>
+    <string name="say">说</string>
+    <string name="colon">：</string>
 
     <!-- For MainActivity -->
     <string name="title_koolew">可见</string>
@@ -324,6 +326,9 @@
 
     <!-- For MessagesActivity -->
     <string name="message_area">消息区</string>
+
+    <!-- For CheckDanmakuActivity -->
+    <string name="support_comment_count" formatted="false">%d支持·%d评论</string>
 
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>

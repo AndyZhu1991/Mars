@@ -49,6 +49,7 @@ public class VideoCardAdapter extends BaseAdapter {
     protected final static int TYPE_TITLE = 0;
     protected final static int TYPE_NO_VIDEO = 1;
     protected final static int TYPE_VIDEO_ITEM = 2;
+    protected final static int TYPE_SUB_CLASS_USE_START = 3;
 
     protected Context mContext;
     protected LayoutInflater mInflater;
