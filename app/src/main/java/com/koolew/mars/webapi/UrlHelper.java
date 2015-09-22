@@ -32,7 +32,6 @@ public class UrlHelper {
     public static final String LOGIN_URL = V1_URL + "user/login";
     public static final String SNS_SIGNUP_URL = V1_URL + "user/signup/sns";
     public static final String REQUEST_QINIU_AVATAR_TOKEN_URL = V1_URL + "qiniu/uptoken?type=avatar";
-    public static final String CURRENT_FRIEND_URL = V1_URL + "friend";
     public static final String KOO_RANK_URL = V1_URL + "koo/rank";
     private static final String COMMON_TOPIC_URL = V1_URL + "profile/topic/common";
     private static final String COMMON_FRIEND_URL = V1_URL + "profile/friend/common";
@@ -79,6 +78,7 @@ public class UrlHelper {
     public static final String FRIEND_UNFOLLOW_URL = V3_URL + "friend/unfollow";
     public static final String FRIEND_FOLLOWS_URL = V3_URL + "friend/follows";
     public static final String FRIEND_FANS_URL = V3_URL + "friend/fans";
+    public static final String CURRENT_FRIEND_URL = V3_URL + "friend";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;

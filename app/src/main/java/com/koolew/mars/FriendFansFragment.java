@@ -59,7 +59,7 @@ public class FriendFansFragment extends RecyclerListFragmentMould {
         }
 
         try {
-            JSONArray follows = response.getJSONObject("result").getJSONArray("fans");
+            JSONArray follows = response.getJSONObject("result").getJSONArray("users");
             ((FriendSimpleAdapter) mAdapter).setData(follows);
             mAdapter.notifyDataSetChanged();
         } catch (JSONException e) {

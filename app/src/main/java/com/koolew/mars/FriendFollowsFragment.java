@@ -56,7 +56,7 @@ public class FriendFollowsFragment extends RecyclerListFragmentMould {
         }
 
         try {
-            JSONArray follows = response.getJSONObject("result").getJSONArray("follows");
+            JSONArray follows = response.getJSONObject("result").getJSONArray("users");
             ((FriendSimpleAdapter) mAdapter).setData(follows);
             mAdapter.notifyDataSetChanged();
         } catch (JSONException e) {
