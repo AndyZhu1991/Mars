@@ -34,8 +34,6 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
 
     private String mVideoId;
 
-    private int mSupportCount;
-    private int mCommentCount;
     private List<BaseCommentInfo> mComments;
 
     @Override
@@ -49,7 +47,7 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
     public CheckDanmakuFragment() {
         super();
 
-        isNeedLoadMore = false;
+        isNeedLoadMore = true;
     }
 
     protected VideoCardAdapter useThisAdapter() {
@@ -63,7 +61,35 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
 
     @Override
     protected JsonObjectRequest doLoadMoreRequest() {
-        return null;
+        return ApiWorker.getInstance().getVideoComment(mVideoId, getLastCommentTime(),
+                mLoadMoreListener, null);
+    }
+
+    @Override
+    protected boolean handleRefresh(JSONObject response) {
+        mComments.clear();
+        return super.handleRefresh(response);
+    }
+
+    @Override
+    protected boolean handleLoadMore(JSONObject response) {
+        try {
+            if (response.getInt("code") == 0) {
+                JSONArray comments = response.getJSONObject("result").getJSONArray("comments");
+                if (comments == null || comments.length() == 0) {
+                    return false;
+                }
+                int length = comments.length();
+                for (int i = 0; i < length; i++) {
+                    mComments.add(new BaseCommentInfo(comments.getJSONObject(i)));
+                }
+                mAdapter.notifyDataSetChanged();
+                return true;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Override
@@ -73,16 +99,20 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
             if (response.getInt("code") == 0) {
                 JSONObject video = response.getJSONObject("result").getJSONObject("video");
                 videos.put(video);
-                JSONArray comment = video.getJSONArray("comment");
-                mCommentCount = comment.length();
-                for (int i = 0; i < mCommentCount; i++) {
-                    mComments.add(new BaseCommentInfo(comment.getJSONObject(i)));
-                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return videos;
+    }
+
+    private long getLastCommentTime() {
+        if (mComments.size() == 0) {
+            return Long.MAX_VALUE;
+        }
+        else {
+            return mComments.get(mComments.size() - 1).getCreateTime();
+        }
     }
 
 
@@ -112,7 +142,7 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
             }
 
             ((TextView) convertView.findViewById(R.id.title)).setText(getString
-                    (R.string.support_comment_count, mData.get(0).getKooTotal(), mCommentCount));
+                    (R.string.support_count, mData.get(0).getKooTotal()));
 
             return convertView;
         }
@@ -153,7 +183,12 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
 
         @Override
         public int getCount() {
-            return mComments.size() + 3 /* TITLE & VIDEO_ITEM & COMMENT_TITLE */;
+//            if (mComments.size() == 0) {
+//                return 0;
+//            }
+//            else {
+                return mComments.size() + 3 /* TITLE & VIDEO_ITEM & COMMENT_TITLE */;
+            //}
         }
 
         @Override

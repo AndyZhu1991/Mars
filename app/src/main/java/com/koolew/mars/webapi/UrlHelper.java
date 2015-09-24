@@ -79,6 +79,7 @@ public class UrlHelper {
     public static final String FRIEND_FOLLOWS_URL = V3_URL + "friend/follows";
     public static final String FRIEND_FANS_URL = V3_URL + "friend/fans";
     public static final String CURRENT_FRIEND_URL = V3_URL + "friend";
+    private static final String VIDEO_COMMENT_URL = V3_URL + "video/comment";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
@@ -210,6 +211,16 @@ public class UrlHelper {
                 .buildUpon()
                 .appendQueryParameter("time", String.valueOf(time))
                 .build().toString();
+    }
+
+    public static String getVideoCommentUrl(String videoId, long before) {
+        Uri.Builder builder = Uri.parse(VIDEO_COMMENT_URL)
+                .buildUpon()
+                .appendQueryParameter("video_id", videoId);
+        if (before != 0 && before != Long.MAX_VALUE) {
+            builder.appendQueryParameter("before", String.valueOf(before));
+        }
+        return builder.build().toString();
     }
 
 

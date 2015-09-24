@@ -689,6 +689,13 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.FRIEND_FANS_URL, listener, errorListener);
     }
 
+    public JsonObjectRequest getVideoComment(String videoId, long before,
+                                             Response.Listener<JSONObject> listener,
+                                             Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getVideoCommentUrl(videoId, before),
+                listener, errorListener);
+    }
+
 
     // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,
