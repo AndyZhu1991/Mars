@@ -3,7 +3,6 @@ package com.koolew.mars;
 import android.util.Log;
 
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.webapi.ApiWorker;
 
@@ -12,7 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class FriendCurrentFragment extends RecyclerListFragmentMould {
+public class FriendCurrentFragment extends RecyclerListFragmentMould<FriendCurrentAdapter> {
 
     private static final String TAG = "koolew-FriendCurrentF";
 
@@ -32,7 +31,7 @@ public class FriendCurrentFragment extends RecyclerListFragmentMould {
     }
 
     @Override
-    protected LoadMoreAdapter useThisAdapter() {
+    protected FriendCurrentAdapter useThisAdapter() {
         return new FriendCurrentAdapter(getActivity());
     }
 
@@ -64,7 +63,7 @@ public class FriendCurrentFragment extends RecyclerListFragmentMould {
 
         try {
             JSONArray users = response.getJSONObject("result").getJSONArray("users");
-            ((FriendCurrentAdapter) mAdapter).setData(users);
+            mAdapter.setData(users);
             mAdapter.notifyDataSetChanged();
         } catch (JSONException e) {
             e.printStackTrace();

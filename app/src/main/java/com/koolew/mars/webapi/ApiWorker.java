@@ -684,9 +684,34 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.FRIEND_FOLLOWS_URL, listener, errorListener);
     }
 
+    public JsonObjectRequest getFollows(String uid,
+                                        Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getFriendFollowsUrl(uid), listener, errorListener);
+    }
+
+    public JsonObjectRequest getFollows(String uid, long before,
+                                        Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getFriendFollowsUrl(uid, before),
+                listener, errorListener);
+    }
+
     public JsonObjectRequest getFans(Response.Listener<JSONObject> listener,
                                      Response.ErrorListener errorListener) {
         return standardGetRequest(UrlHelper.FRIEND_FANS_URL, listener, errorListener);
+    }
+
+    public JsonObjectRequest getFans(String uid,
+                                     Response.Listener<JSONObject> listener,
+                                     Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getFriendFansUrl(uid), listener, errorListener);
+    }
+
+    public JsonObjectRequest getFans(String uid, long before,
+                                     Response.Listener<JSONObject> listener,
+                                     Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getFriendFansUrl(uid, before), listener, errorListener);
     }
 
     public JsonObjectRequest getVideoComment(String videoId, long before,

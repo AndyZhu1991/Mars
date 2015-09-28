@@ -169,6 +169,10 @@ public class FriendSimpleAdapter extends LoadMoreAdapter {
         return mData.get(position).getType();
     }
 
+    public long getLastUpdateTime() {
+        return mData.get(mData.size() - 1).updateTime;
+    }
+
     // Override it in subclass
     protected void retrievalContactName(FriendInfo info) {
     }
@@ -321,6 +325,7 @@ public class FriendSimpleAdapter extends LoadMoreAdapter {
         protected String phoneNumber;
         protected String contactName;
         protected String summary;
+        protected long updateTime;
 
         public FriendInfo(JSONObject jsonObject) {
             super(jsonObject);
@@ -328,6 +333,9 @@ public class FriendSimpleAdapter extends LoadMoreAdapter {
             try {
                 if (jsonObject.has("phone")) {
                     phoneNumber = jsonObject.getString("phone");
+                }
+                if (jsonObject.has("update_time")) {
+                    updateTime = jsonObject.getLong("update_time");
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -352,9 +360,14 @@ public class FriendSimpleAdapter extends LoadMoreAdapter {
             operateBtn = (TextView) itemView.findViewById(R.id.operation_btn);
             operateBtn.setOnClickListener(this);
 
-            operateBtn.setBackgroundResource(OPERATE_BTN_BG[itemType]);
-            operateBtn.setText(OPERATE_BTN_TEXT_RES[itemType]);
-            operateBtn.setTextColor(OPERATE_BTN_COLOR[itemType]);
+            if (itemType == TYPE_SELF) {
+                operateBtn.setVisibility(View.INVISIBLE);
+            }
+            else {
+                operateBtn.setBackgroundResource(OPERATE_BTN_BG[itemType]);
+                operateBtn.setText(OPERATE_BTN_TEXT_RES[itemType]);
+                operateBtn.setTextColor(OPERATE_BTN_COLOR[itemType]);
+            }
 
             if (itemType == TYPE_FAN) {
                 int color = mContext.getResources().getColor(R.color.koolew_light_green);

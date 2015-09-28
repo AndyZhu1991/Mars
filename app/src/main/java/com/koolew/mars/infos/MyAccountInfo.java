@@ -26,6 +26,8 @@ public class MyAccountInfo {
     private static String sRegistrationId;
     private static long sKooNum;
     private static long sCoinNum;
+    private static int sFansCount;
+    private static int sFollowsCount;
     private static int sPushBit;
 
     public static enum LOGIN_TYPE {
@@ -78,7 +80,24 @@ public class MyAccountInfo {
         return sKooNum;
     }
 
-    public static void setKooNum(long kooNum) {sKooNum = kooNum;
+    public static void setKooNum(long kooNum) {
+        sKooNum = kooNum;
+    }
+
+    public static int getFansCount() {
+        return sFansCount;
+    }
+
+    public static void setFansCount(int fansCount) {
+        sFansCount = fansCount;
+    }
+
+    public static int getFollowsCount() {
+        return sFollowsCount;
+    }
+
+    public static void setFollowsCount(int followsCount) {
+        sFollowsCount = followsCount;
     }
 
     public static String getNickname() {

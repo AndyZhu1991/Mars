@@ -78,6 +78,8 @@ public class MainActivity extends BaseV4FragmentActivity
     private ImageView mAvatar;
     private UserNameView mNameView;
     private PhoneNumberView mPhoneNumber;
+    private TextView mFansCountText;
+    private TextView mFollowsCountText;
     private TextView mCountKoo;
     private TextView mCountCoin;
 
@@ -115,6 +117,10 @@ public class MainActivity extends BaseV4FragmentActivity
         mAvatar.setOnClickListener(this);
         mNameView = (UserNameView) findViewById(R.id.name_view);
         mPhoneNumber = (PhoneNumberView) findViewById(R.id.phone_number);
+        mFansCountText = (TextView) findViewById(R.id.fans_count_text);
+        mFansCountText.setOnClickListener(this);
+        mFollowsCountText = (TextView) findViewById(R.id.follows_count_text);
+        mFollowsCountText.setOnClickListener(this);
         mCountKoo = (TextView) findViewById(R.id.count_koo);
         mCountCoin = (TextView) findViewById(R.id.count_coin);
         findViewById(R.id.coin_layout).setOnClickListener(this);
@@ -169,6 +175,8 @@ public class MainActivity extends BaseV4FragmentActivity
     private void syncLocalMyInfo() {
         ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(), mAvatar);
         mNameView.setUserInfo(MyAccountInfo.getNickname(), MyAccountInfo.getVip());
+        mFansCountText.setText(getString(R.string.fans_count, MyAccountInfo.getFansCount()));
+        mFollowsCountText.setText(getString(R.string.follows_count, MyAccountInfo.getFollowsCount()));
         mCountKoo.setText(String.valueOf(MyAccountInfo.getKooNum()));
         mCountCoin.setText(String.valueOf(MyAccountInfo.getCoinNum()));
     }
@@ -216,6 +224,8 @@ public class MainActivity extends BaseV4FragmentActivity
                                 MyAccountInfo.setNickname(user.getString("nickname"));
                                 MyAccountInfo.setVip(user.getInt("vip"));
                                 MyAccountInfo.setKooNum(user.getLong("koo_num"));
+                                MyAccountInfo.setFansCount(user.getInt("fans"));
+                                MyAccountInfo.setFollowsCount(user.getInt("follows"));
                                 new PreferenceHelper(MainActivity.this).setPushBit(user.getInt("push_bit"));
 
                                 mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
@@ -229,6 +239,8 @@ public class MainActivity extends BaseV4FragmentActivity
                                 }.execute();
                                 mNameView.setUserInfo(MyAccountInfo.getNickname(), MyAccountInfo.getVip());
                                 mCountKoo.setText("" + MyAccountInfo.getKooNum());
+                                mFansCountText.setText(getString(R.string.fans_count, MyAccountInfo.getFansCount()));
+                                mFollowsCountText.setText(getString(R.string.follows_count, MyAccountInfo.getFollowsCount()));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -341,6 +353,12 @@ public class MainActivity extends BaseV4FragmentActivity
                 break;
             case R.id.top_icon_layout2:
                 mCurFragment.onTopIconClick(1);
+                break;
+            case R.id.fans_count_text:
+                TitleFragmentActivity.launchFragment(this, FansFragment.class);
+                break;
+            case R.id.follows_count_text:
+                TitleFragmentActivity.launchFragment(this, FollowsFragment.class);
                 break;
         }
     }

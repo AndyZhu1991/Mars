@@ -1,6 +1,7 @@
 package com.koolew.mars.webapi;
 
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.koolew.mars.infos.MyAccountInfo;
 
@@ -217,6 +218,44 @@ public class UrlHelper {
         Uri.Builder builder = Uri.parse(VIDEO_COMMENT_URL)
                 .buildUpon()
                 .appendQueryParameter("video_id", videoId);
+        if (before != 0 && before != Long.MAX_VALUE) {
+            builder.appendQueryParameter("before", String.valueOf(before));
+        }
+        return builder.build().toString();
+    }
+
+    public static String getFriendFansUrl(String uid) {
+        return getFriendFansUrl(uid, Long.MAX_VALUE);
+    }
+
+    public static String getFriendFansUrl(long before) {
+        return getFriendFansUrl(null, before);
+    }
+
+    public static String getFriendFansUrl(String uid, long before) {
+        Uri.Builder builder = Uri.parse(FRIEND_FANS_URL).buildUpon();
+        if (!TextUtils.isEmpty(uid)) {
+            builder.appendQueryParameter("uid", uid);
+        }
+        if (before != 0 && before != Long.MAX_VALUE) {
+            builder.appendQueryParameter("before", String.valueOf(before));
+        }
+        return builder.build().toString();
+    }
+
+    public static String getFriendFollowsUrl(String uid) {
+        return getFriendFollowsUrl(uid, Long.MAX_VALUE);
+    }
+
+    public static String getFriendFollowsUrl(long before) {
+        return getFriendFollowsUrl(null, before);
+    }
+
+    public static String getFriendFollowsUrl(String uid, long before) {
+        Uri.Builder builder = Uri.parse(FRIEND_FOLLOWS_URL).buildUpon();
+        if (!TextUtils.isEmpty(uid)) {
+            builder.appendQueryParameter("uid", uid);
+        }
         if (before != 0 && before != Long.MAX_VALUE) {
             builder.appendQueryParameter("before", String.valueOf(before));
         }

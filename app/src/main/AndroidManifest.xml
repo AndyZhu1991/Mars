@@ -423,6 +423,11 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="default" />
+
+        <activity
+            android:name=".TitleFragmentActivity"
+            android:label="@string/title_activity_title_fragment" >
+        </activity>
     </application>
 
 </manifest>

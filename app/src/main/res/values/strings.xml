@@ -44,6 +44,8 @@
     <string name="title_add">新建话题</string>
     <string name="got_koo">获得打赏</string>
     <string name="coin_count">金币数量</string>
+    <string name="fans_count" formatted="false">%d名粉丝</string>
+    <string name="follows_count" formatted="false">正在关注%d人</string>
 
     <!-- For FirstLoginActivity -->
     <string name="app_name_english">KOOLEW</string>
@@ -444,4 +446,6 @@
     <string name="title_activity_video_koo_rank">VideoKooRankActivity</string>
     <string name="title_activity_edit_topic_desc">EditTopicDescActivity</string>
     <string name="title_activity_play">PlayActivity</string>
+    <string name="title_activity_fans">FansActivity</string>
+    <string name="title_activity_title_fragment">TitleFragmentActivity</string>
 </resources>

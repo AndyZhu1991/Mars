@@ -3,7 +3,6 @@ package com.koolew.mars;
 import android.util.Log;
 
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.webapi.ApiWorker;
 
@@ -14,12 +13,12 @@ import org.json.JSONObject;
 /**
  * Created by jinchangzhu on 9/18/15.
  */
-public class FriendFollowsFragment extends RecyclerListFragmentMould {
+public class FriendFollowsFragment extends RecyclerListFragmentMould<FriendSimpleAdapter> {
 
     private static final String TAG = FriendFollowsFragment.class.getSimpleName();
 
     @Override
-    protected LoadMoreAdapter useThisAdapter() {
+    protected FriendSimpleAdapter useThisAdapter() {
         return new FriendSimpleAdapter(getActivity()) {
             @Override
             protected void onFollowedUnfollow(int position) {
@@ -57,7 +56,7 @@ public class FriendFollowsFragment extends RecyclerListFragmentMould {
 
         try {
             JSONArray follows = response.getJSONObject("result").getJSONArray("users");
-            ((FriendSimpleAdapter) mAdapter).setData(follows);
+            mAdapter.setData(follows);
             mAdapter.notifyDataSetChanged();
         } catch (JSONException e) {
             e.printStackTrace();

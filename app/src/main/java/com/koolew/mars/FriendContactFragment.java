@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.utils.ContactUtil;
 import com.koolew.mars.webapi.ApiWorker;
@@ -18,12 +17,13 @@ import org.json.JSONObject;
 import java.util.List;
 
 import static com.koolew.mars.infos.TypedUserInfo.TYPE_FAN;
-import static com.koolew.mars.infos.TypedUserInfo.TYPE_NO_REGISTER;
 import static com.koolew.mars.infos.TypedUserInfo.TYPE_FOLLOWED;
+import static com.koolew.mars.infos.TypedUserInfo.TYPE_NO_REGISTER;
 import static com.koolew.mars.infos.TypedUserInfo.TYPE_STRANGER;
 
 
-public class FriendContactFragment extends RecyclerListFragmentMould {
+public class FriendContactFragment
+        extends RecyclerListFragmentMould<FriendContactFragment.FriendContactAdapter> {
 
     private static final String TAG = "koolew-FriendContactF";
 
@@ -50,7 +50,7 @@ public class FriendContactFragment extends RecyclerListFragmentMould {
     }
 
     @Override
-    protected LoadMoreAdapter useThisAdapter() {
+    protected FriendContactAdapter useThisAdapter() {
         return new FriendContactAdapter(getActivity());
     }
 
@@ -92,7 +92,7 @@ public class FriendContactFragment extends RecyclerListFragmentMould {
 
         try {
             JSONArray relations = response.getJSONObject("result").getJSONArray("relations");
-            ((FriendContactAdapter) mAdapter).setData(relations);
+            mAdapter.setData(relations);
             mAdapter.notifyDataSetChanged();
         } catch (JSONException e) {
             e.printStackTrace();

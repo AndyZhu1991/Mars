@@ -29,7 +29,8 @@ import java.util.List;
 /**
  * Created by jinchangzhu on 7/17/15.
  */
-public class DanmakuTabFragment extends RecyclerListFragmentMould {
+public class DanmakuTabFragment extends
+        RecyclerListFragmentMould<DanmakuTabFragment.DanmakuTabItemAdapter> {
 
     public DanmakuTabFragment() {
         super();
@@ -37,7 +38,7 @@ public class DanmakuTabFragment extends RecyclerListFragmentMould {
     }
 
     @Override
-    protected LoadMoreAdapter useThisAdapter() {
+    protected DanmakuTabItemAdapter useThisAdapter() {
         return new DanmakuTabItemAdapter();
     }
 
@@ -52,7 +53,7 @@ public class DanmakuTabFragment extends RecyclerListFragmentMould {
             if (jsonObject.getInt("code") == 0) {
                 JSONArray notifications = jsonObject.
                         getJSONObject("result").getJSONArray("notifications");
-                ((DanmakuTabItemAdapter) mAdapter).setData(notifications);
+                mAdapter.setData(notifications);
                 mAdapter.notifyDataSetChanged();
 
                 return notifications.length() > 0;
@@ -71,7 +72,7 @@ public class DanmakuTabFragment extends RecyclerListFragmentMould {
                 JSONArray notifications = jsonObject.
                         getJSONObject("result").getJSONArray("notifications");
                 if (notifications != null && notifications.length() > 0) {
-                    ((DanmakuTabItemAdapter) mAdapter).addData(notifications);
+                    mAdapter.addData(notifications);
                     mAdapter.notifyDataSetChanged();
                     return true;
                 }
@@ -90,7 +91,7 @@ public class DanmakuTabFragment extends RecyclerListFragmentMould {
     @Override
     protected JsonObjectRequest doLoadMoreRequest() {
         return ApiWorker.getInstance().requestDanmakuTab(
-                ((DanmakuTabItemAdapter) mAdapter).getLastUpdateTime(), mLoadMoreListener, null);
+                mAdapter.getLastUpdateTime(), mLoadMoreListener, null);
     }
 
 
@@ -199,7 +200,7 @@ public class DanmakuTabFragment extends RecyclerListFragmentMould {
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            DanmakuNotificationItem item = ((DanmakuTabItemAdapter) mAdapter).getItem(position);
+            DanmakuNotificationItem item = mAdapter.getItem(position);
             Intent intent = new Intent(getActivity(), CheckDanmakuActivity.class);
             String videoId = item.videoInfo.getVideoId();
             intent.putExtra(CheckDanmakuActivity.KEY_VIDEO_ID, videoId);

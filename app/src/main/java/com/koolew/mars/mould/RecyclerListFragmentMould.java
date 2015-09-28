@@ -18,14 +18,14 @@ import org.json.JSONObject;
 /**
  * Created by jinchangzhu on 9/2/15.
  */
-public abstract class RecyclerListFragmentMould extends BaseV4Fragment
+public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> extends BaseV4Fragment
         implements SwipeRefreshLayout.OnRefreshListener, LoadMoreAdapter.LoadMoreListener {
 
     protected static final int DEFAULT_LAYOUT = R.layout.general_refresh_recycler_layout;
 
     protected int mLayoutResId;
 
-    protected LoadMoreAdapter mAdapter;
+    protected A mAdapter;
 
     protected boolean isNeedLoadMore;
 
@@ -46,7 +46,7 @@ public abstract class RecyclerListFragmentMould extends BaseV4Fragment
         super.onCreate(savedInstanceState);
     }
 
-    protected abstract LoadMoreAdapter useThisAdapter();
+    protected abstract A useThisAdapter();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

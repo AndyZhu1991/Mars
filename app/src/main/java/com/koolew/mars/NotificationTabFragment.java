@@ -19,10 +19,11 @@ import java.util.List;
 /**
  * Created by jinchangzhu on 9/21/15.
  */
-public class NotificationTabFragment extends RecyclerListFragmentMould {
+public class NotificationTabFragment
+        extends RecyclerListFragmentMould<NotificationTabFragment.NotificationTabItemAdapter> {
 
     @Override
-    protected LoadMoreAdapter useThisAdapter() {
+    protected NotificationTabItemAdapter useThisAdapter() {
         return new NotificationTabItemAdapter();
     }
 

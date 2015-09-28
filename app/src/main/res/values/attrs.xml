@@ -25,6 +25,7 @@
         <attr name="description_text" />
         <attr name="description_image" format="reference" />
         <attr name="solid_color" format="color" />
+        <attr name="stroke_color" format="color" />
     </declare-styleable>
 
     <declare-styleable name="BannerPagerIndicator">
