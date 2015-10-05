@@ -78,8 +78,8 @@
     <string name="loading_friends">正在加载好友列表...</string>
 
     <!-- For KoolewFragment -->
-    <string name="koolew_news_title">新鲜事</string>
-    <string name="koolew_related_me_title">与我相关</string>
+    <string name="koolew_news_title">关注</string> <!-- 新鲜事 -->
+    <string name="koolew_related_me_title">我的</string> <!-- 与我相关 -->
     <string name="koolew_hot_title">热门</string>
     <string name="koolew_meet_title">遇见</string>
     <string name="koolew_favorite_title">收藏</string>

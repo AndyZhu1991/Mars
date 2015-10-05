@@ -20,27 +20,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class KoolewNewsFragment extends BaseListFragment implements AdapterView.OnItemClickListener,
+public class KoolewHotFragment extends BaseListFragment implements AdapterView.OnItemClickListener,
         SwipeRefreshLayout.OnRefreshListener, LoadMoreFooter.OnLoadListener {
 
     private static final String TAG = "koolew-KoolewNewsF";
 
     private TopicAdapter mAdapter;
+    private int page;
     private ScrollPlayer mScrollPlayer;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment KoolewNewsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static KoolewNewsFragment newInstance() {
-        KoolewNewsFragment fragment = new KoolewNewsFragment();
-        return fragment;
-    }
-
-    public KoolewNewsFragment() {
+    public KoolewHotFragment() {
         // Required empty public constructor
         isNeedLoadMore = true;
     }
@@ -116,15 +105,11 @@ public class KoolewNewsFragment extends BaseListFragment implements AdapterView.
             setupAdapter();
             mRefreshRequest = null;
             JSONObject result = response.getJSONObject("result");
-            JSONArray recommends = null;
             JSONArray cards = null;
             if (result.has("hot_cards")) {
-                recommends = result.getJSONArray("hot_cards");
+                cards = response.getJSONObject("result").getJSONArray("hot_cards");
             }
-            if (result.has("cards")) {
-                cards = response.getJSONObject("result").getJSONArray("cards");
-            }
-            mAdapter.setData(recommends, cards);
+            mAdapter.setCards(cards);
             mAdapter.notifyDataSetChanged();
             mScrollPlayer.onListRefresh();
             return cards.length() > 0;
@@ -153,13 +138,14 @@ public class KoolewNewsFragment extends BaseListFragment implements AdapterView.
 
     @Override
     protected JsonObjectRequest doRefreshRequest() {
-        return ApiWorker.getInstance().requestFeedsTopic(mRefreshListener, null);
+        page = 0;
+        return ApiWorker.getInstance().requestFeedsHot(page, mRefreshListener, null);
     }
 
     @Override
     protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().requestFeedsTopic(
-                mAdapter.getOldestCardTime(), mLoadMoreListener, null);
+        page++;
+        return ApiWorker.getInstance().requestFeedsHot(page, mLoadMoreListener, null);
     }
 
     class FeedsTopicAdapter extends TopicAdapter {

@@ -760,6 +760,12 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.getPayPlayUrl(), listener, errorListener);
     }
 
+    public JsonObjectRequest requestFeedsHot(int page,
+                                             Response.Listener<JSONObject> listener,
+                                             Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getFeedsHotUrl(page), listener, errorListener);
+    }
+
 
     // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,

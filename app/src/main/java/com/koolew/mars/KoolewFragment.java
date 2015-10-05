@@ -134,6 +134,7 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
         if (subPageColors == null) {
             subPageColors = new int[]{
                     getResources().getColor(R.color.koolew_light_orange),
+                    getResources().getColor(R.color.koolew_light_orange),
                     getResources().getColor(R.color.koolew_deep_orange),
             };
         }
@@ -161,6 +162,9 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
 
             fragmentList.add(KoolewNewsFragment.newInstance());
             fragmentTitles.add(getString(R.string.koolew_news_title));
+
+            fragmentList.add(new KoolewHotFragment());
+            fragmentTitles.add(getString(R.string.koolew_hot_title));
 
             fragmentList.add(KoolewRelatedMeFragment.newInstance());
             fragmentTitles.add(getString(R.string.koolew_related_me_title));
