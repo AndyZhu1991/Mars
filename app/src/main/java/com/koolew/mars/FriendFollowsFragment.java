@@ -1,13 +1,10 @@
 package com.koolew.mars;
 
-import android.util.Log;
-
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -16,6 +13,11 @@ import org.json.JSONObject;
 public class FriendFollowsFragment extends RecyclerListFragmentMould<FriendSimpleAdapter> {
 
     private static final String TAG = FriendFollowsFragment.class.getSimpleName();
+
+    public FriendFollowsFragment() {
+        super();
+        isNeedLoadMore = true;
+    }
 
     @Override
     protected FriendSimpleAdapter useThisAdapter() {
@@ -40,32 +42,31 @@ public class FriendFollowsFragment extends RecyclerListFragmentMould<FriendSimpl
 
     @Override
     protected JsonObjectRequest doLoadMoreRequest() {
-        return null;
+        return ApiWorker.getInstance().getFollows(mAdapter.getLastUpdateTime(),
+                mLoadMoreListener, null);
     }
 
     @Override
     protected boolean handleRefresh(JSONObject response) {
-        try {
-            if (response.getInt("code") != 0) {
-                Log.e(TAG, "Error response: " + response);
-                return false;
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+        JSONArray users = FriendCurrentFragment.queryUsers(response);
+        if (users != null && users.length() > 0) {
+            mAdapter.setData(users);
+            mAdapter.notifyDataSetChanged();
+            return true;
         }
 
-        try {
-            JSONArray follows = response.getJSONObject("result").getJSONArray("users");
-            mAdapter.setData(follows);
-            mAdapter.notifyDataSetChanged();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
         return false;
     }
 
     @Override
     protected boolean handleLoadMore(JSONObject response) {
+        JSONArray users = FriendCurrentFragment.queryUsers(response);
+        if (users != null && users.length() > 0) {
+            mAdapter.add(users);
+            mAdapter.notifyDataSetChanged();
+            return true;
+        }
+
         return false;
     }
 }

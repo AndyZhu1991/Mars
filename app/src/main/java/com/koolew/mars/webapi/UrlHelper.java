@@ -27,6 +27,7 @@ public class UrlHelper {
     private static final String TOPIC_VIDEO_FRIEND_URL = V1_URL + "feeds";
     public static final String SNS_LOGIN_URL = V1_URL + "user/login/sns";
     public static final String ADD_FRIEND_URL = V1_URL + "friend/apply";
+    public static final String ALL_FRIENDS_URL = V1_URL + "friend";
     public static final String CONTACT_FRIEND_RECOMMEND_URL = V1_URL + "contact/address";
     public static final String USER_INFO_URL = V1_URL + "user/info";
     private static final String REQUEST_PASSWORD_URL = V1_URL + "user/code";
@@ -223,6 +224,13 @@ public class UrlHelper {
             builder.appendQueryParameter("before", String.valueOf(before));
         }
         return builder.build().toString();
+    }
+
+    public static String getCurrentFriendUrl(long before) {
+        return Uri.parse(CURRENT_FRIEND_URL)
+                .buildUpon()
+                .appendQueryParameter("before", String.valueOf(before))
+                .build().toString();
     }
 
     public static String getFriendFansUrl(String uid) {

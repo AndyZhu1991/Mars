@@ -167,13 +167,13 @@ public class ApiWorker {
         return contactJson;
     }
 
-    public JsonObjectRequest requestCurrentFriend(Response.Listener<JSONObject> listener,
-                                                  Response.ErrorListener errorListener) {
+    public JsonObjectRequest requestAllFriends(Response.Listener<JSONObject> listener,
+                                               Response.ErrorListener errorListener) {
         RetryPolicy retryPolicy = new DefaultRetryPolicy(
                 10000,
                 0,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        return standardGetRequest(UrlHelper.CURRENT_FRIEND_URL, listener, errorListener, retryPolicy);
+        return standardGetRequest(UrlHelper.ALL_FRIENDS_URL, listener, errorListener, retryPolicy);
     }
 
     public JsonObjectRequest requestFeedsTopic(Response.Listener<JSONObject> listener,
@@ -679,9 +679,26 @@ public class ApiWorker {
                 listener, errorListener);
     }
 
+    public JsonObjectRequest getFriends(Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.CURRENT_FRIEND_URL, listener, errorListener);
+    }
+
+    public JsonObjectRequest getFriends(long before,
+                                        Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getCurrentFriendUrl(before), listener, errorListener);
+    }
+
     public JsonObjectRequest getFollows(Response.Listener<JSONObject> listener,
                                         Response.ErrorListener errorListener) {
         return standardGetRequest(UrlHelper.FRIEND_FOLLOWS_URL, listener, errorListener);
+    }
+
+    public JsonObjectRequest getFollows(long before,
+                                        Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getFriendFollowsUrl(before), listener, errorListener);
     }
 
     public JsonObjectRequest getFollows(String uid,
@@ -700,6 +717,12 @@ public class ApiWorker {
     public JsonObjectRequest getFans(Response.Listener<JSONObject> listener,
                                      Response.ErrorListener errorListener) {
         return standardGetRequest(UrlHelper.FRIEND_FANS_URL, listener, errorListener);
+    }
+
+    public JsonObjectRequest getFans(long before,
+                                     Response.Listener<JSONObject> listener,
+                                     Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getFriendFansUrl(before), listener, errorListener);
     }
 
     public JsonObjectRequest getFans(String uid,
