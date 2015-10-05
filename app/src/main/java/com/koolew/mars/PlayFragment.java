@@ -6,7 +6,6 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -449,10 +448,10 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
         switchToResultMode(resultStatus);
 
         int winPosition;
-        if (mLastLeftVideoInfo.getKooNum() > mLastRightVideoInfo.getKooNum()) {
+        if (mLastLeftVideoInfo.getKooTotal() > mLastRightVideoInfo.getKooTotal()) {
             winPosition = POSITION_LEFT;
         }
-        else if (mLastRightVideoInfo.getKooNum() > mLastLeftVideoInfo.getKooNum()) {
+        else if (mLastRightVideoInfo.getKooTotal() > mLastLeftVideoInfo.getKooTotal()) {
             winPosition = POSITION_RIGHT;
         }
         else {
@@ -657,8 +656,8 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
         ImageLoader.getInstance().displayImage(mCurrentRightVideoInfo.userInfo.getAvatar(),
                 mRightAvatar, ImageLoaderHelper.avatarLoadOptions);
 
-        mLeftKooCountText.setText(String.valueOf(mLastLeftVideoInfo.getKooNum()));
-        mRightKooCountText.setText(String.valueOf(mLastRightVideoInfo.getKooNum()));
+        mLeftKooCountText.setText(String.valueOf(mLastLeftVideoInfo.getKooTotal()));
+        mRightKooCountText.setText(String.valueOf(mLastRightVideoInfo.getKooTotal()));
 
         if (mCurrentLeftVideoInfo.userInfo.getType() == TypedUserInfo.TYPE_FOLLOWED
                 || mCurrentLeftVideoInfo.userInfo.getType() == TypedUserInfo.TYPE_FRIEND) {

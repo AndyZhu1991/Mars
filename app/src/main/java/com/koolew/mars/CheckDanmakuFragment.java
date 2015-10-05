@@ -1,6 +1,7 @@
 package com.koolew.mars;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -136,6 +137,14 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
             return super.getView(position, convertView, parent);
         }
 
+        @Override
+        protected View getVideoItemView(int position, View convertView, ViewGroup parent) {
+            View v = super.getVideoItemView(position, convertView, parent);
+            ViewHolder holder = (ViewHolder) v.getTag();
+            holder.kooAndCommentCount.setVisibility(View.GONE);
+            return v;
+        }
+
         private View getCommentTitle(int position, View convertView) {
             if (convertView == null) {
                 convertView = LayoutInflater.from(getActivity())
@@ -143,7 +152,15 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
             }
 
             ((TextView) convertView.findViewById(R.id.title)).setText(getString
-                    (R.string.support_count, mData.get(0).getKooTotal()));
+                    (R.string.kooed_count, mData.get(0).getKooTotal()));
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, VideoKooRankActivity.class);
+                    intent.putExtra(VideoKooRankActivity.KEY_VIDEO_ID, mVideoId);
+                    mContext.startActivity(intent);
+                }
+            });
 
             return convertView;
         }

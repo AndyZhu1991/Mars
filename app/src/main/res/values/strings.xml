@@ -268,7 +268,9 @@
 
     <!-- For VideoCardAdapter -->
     <string name="be_first_in_this_topic">成为此话题卡第一人</string>
-    <string name="support_count" formatted="false">%d打赏</string>
+    <string name="receive">收到</string>
+    <string name="koo_count" formatted="false">%d次打赏</string>
+    <string name="comment_count" formatted="false">%d次评论</string>
 
     <!-- For UserTopicActivity -->
     <string name="ad_friend">加好友</string>
@@ -338,6 +340,7 @@
     <string name="message_area">消息区</string>
 
     <!-- For CheckDanmakuActivity -->
+    <string name="kooed_count" formatted="false">被打赏%d次</string>
     <string name="support_comment_count" formatted="false">%d支持·%d评论</string>
 
     <!-- ShareSDK -->
