@@ -55,9 +55,22 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginLeft="10dp"
+                android:layout_marginRight="5dp"
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/koolew_gray"
                 android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/is_manager"
+                android:layout_width="36dp"
+                android:layout_height="12dp"
+                android:layout_marginRight="4dp"
+                android:layout_gravity="center_vertical"
+                android:textSize="10sp"
+                android:textColor="#FC7B7B"
+                android:text="@string/topic_manager"
+                android:gravity="center"
+                android:background="@color/koolew_gold" />
 
             <ImageView
                 android:layout_width="7dp"

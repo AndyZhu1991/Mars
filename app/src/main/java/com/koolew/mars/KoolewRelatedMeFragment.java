@@ -169,11 +169,13 @@ public class KoolewRelatedMeFragment extends BaseV4Fragment
         String topicId;
         String title;
         int videoCount;
+        boolean isManager;
 
-        RelatedMeItem(String topicId, String title, int videoCount) {
+        RelatedMeItem(String topicId, String title, int videoCount, boolean isManager) {
             this.topicId = topicId;
             this.title = title;
             this.videoCount = videoCount;
+            this.isManager = isManager;
         }
     }
 
@@ -197,7 +199,8 @@ public class KoolewRelatedMeFragment extends BaseV4Fragment
                 for (int i = 0; i < count; i++) {
                     JSONObject topic = cards.getJSONObject(i).getJSONObject("topic");
                     RelatedMeItem item = new RelatedMeItem(topic.getString("topic_id"),
-                            topic.getString("content"), topic.getInt("video_cnt"));
+                            topic.getString("content"), topic.getInt("video_cnt"),
+                            topic.getInt("is_manager") == 1);
                     mData.add(item);
                 }
             }
@@ -217,8 +220,8 @@ public class KoolewRelatedMeFragment extends BaseV4Fragment
                         continue;
                     }
 
-                    RelatedMeItem item = new RelatedMeItem(topicId,
-                            topic.getString("content"), topic.getInt("video_cnt"));
+                    RelatedMeItem item = new RelatedMeItem(topicId, topic.getString("content"),
+                            topic.getInt("video_cnt"), topic.getInt("is_manager") == 1);
                     mData.add(item);
                     addedCount++;
                 }
@@ -262,6 +265,7 @@ public class KoolewRelatedMeFragment extends BaseV4Fragment
                 holder.leftLayout = (LinearLayout) convertView.findViewById(R.id.left_layout);
                 holder.videoCount = (TextView) convertView.findViewById(R.id.video_count);
                 holder.title = (TextView) convertView.findViewById(R.id.title);
+                holder.manager = (TextView) convertView.findViewById(R.id.is_manager);
                 convertView.setTag(holder);
             }
 
@@ -270,6 +274,7 @@ public class KoolewRelatedMeFragment extends BaseV4Fragment
                     .setColor(LEFT_LAYOUT_COLORS[position % 8]);
             holder.videoCount.setText("" + mData.get(position).videoCount);
             holder.title.setText(mData.get(position).title);
+            holder.manager.setVisibility(mData.get(position).isManager ? View.VISIBLE : View.GONE);
 
             return convertView;
         }
@@ -279,5 +284,6 @@ public class KoolewRelatedMeFragment extends BaseV4Fragment
         LinearLayout leftLayout;
         TextView videoCount;
         TextView title;
+        TextView manager;
     }
 }
