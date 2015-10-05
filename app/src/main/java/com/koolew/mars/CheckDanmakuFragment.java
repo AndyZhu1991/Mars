@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseCommentInfo;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
@@ -161,7 +162,8 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
             CommentViewHolder holder = (CommentViewHolder) convertView.getTag();
             holder.position = position;
             BaseCommentInfo item = getCommentItem(position);
-            ImageLoader.getInstance().displayImage(item.getUserInfo().getAvatar(), holder.avatar);
+            ImageLoader.getInstance().displayImage(item.getUserInfo().getAvatar(), holder.avatar,
+                    ImageLoaderHelper.avatarLoadOptions);
             holder.time.setText(Utils.buildTimeSummary(getActivity(), item.getCreateTime() * 1000));
 
             ForegroundColorSpan nicknameSpan = new ForegroundColorSpan(0xFFDB5E5F);
@@ -170,13 +172,14 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
             SpannableStringBuilder ssBuilder = new SpannableStringBuilder();
             ssBuilder.append(item.getUserInfo().getNickname())
                     .append(getString(R.string.say))
-                    .append(getString(R.string.colon))
-                    .append(item.getContent());
+                    .append(getString(R.string.colon));
             ssBuilder.setSpan(nicknameSpan, 0, item.getUserInfo().getNickname().length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             ssBuilder.setSpan(remainSpan, item.getUserInfo().getNickname().length(),
                     ssBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            holder.comment.setText(ssBuilder);
+            holder.nicknameSay.setText(ssBuilder);
+
+            holder.comment.setText(item.getContent());
 
             return convertView;
         }
@@ -216,12 +219,14 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
     class CommentViewHolder implements View.OnClickListener {
         int position;
         CircleImageView avatar;
+        TextView nicknameSay;
         TextView comment;
         TextView time;
 
         public CommentViewHolder(View itemView) {
             avatar = (CircleImageView) itemView.findViewById(R.id.avatar);
             avatar.setOnClickListener(this);
+            nicknameSay = (TextView) itemView.findViewById(R.id.nickname_say);
             comment = (TextView) itemView.findViewById(R.id.comment);
             time = (TextView) itemView.findViewById(R.id.time);
         }
