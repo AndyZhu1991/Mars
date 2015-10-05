@@ -280,6 +280,12 @@
             android:label="@string/title_activity_edit_topic_desc"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".TitleFragmentActivity"
+            android:exported="false"
+            android:label="@string/title_activity_title_fragment"
+            android:screenOrientation="portrait" >
+        </activity>
 
         <!-- Jpush -->
         <!-- Required -->
@@ -422,12 +428,7 @@
             android:value="55d5c5f5e0f55aa46200399a" />
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="default" />
-
-        <activity
-            android:name=".TitleFragmentActivity"
-            android:label="@string/title_activity_title_fragment" >
-        </activity>
+            android:value="${UMENG_CHANNEL_VALUE}" />
     </application>
 
 </manifest>

@@ -53,5 +53,7 @@
 
     <!-- For PlayActivity -->
     <color name="play_left_color">#FFC55E</color>
+    <color name="play_left_dark_color">#C1A466</color>
     <color name="play_right_color">#6ED7E7</color>
+    <color name="play_right_dark_color">#5FAEBA</color>
 </resources>

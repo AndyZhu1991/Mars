@@ -721,6 +721,22 @@ public class ApiWorker {
                 listener, errorListener);
     }
 
+    public JsonObjectRequest requestDefaultPlayGroup(Response.Listener<JSONObject> listener,
+                                                     Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getDefaultPlayGroupUrl(), listener, errorListener);
+    }
+
+    public JsonObjectRequest judgeVideo(String videoId,
+                                        Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getJudgeUrl(videoId), listener, errorListener);
+    }
+
+    public JsonObjectRequest requestPayPlayGroup(Response.Listener<JSONObject> listener,
+                                                 Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getPayPlayUrl(), listener, errorListener);
+    }
+
 
     // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,

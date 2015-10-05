@@ -17,7 +17,7 @@ public class UrlHelper {
     private static final String TEST_API_URL = "http://test.koolew.cn/";
     private static final String REAL_API_URL = "http://api.koolew.com/";
 
-    private static final String BASE_URL = TEST_API_URL;
+    private static final String BASE_URL = REAL_API_URL;
 
     private static final String V1_URL = BASE_URL + "v1/";
     private static final String V2_URL = BASE_URL + "v2/";
@@ -81,6 +81,7 @@ public class UrlHelper {
     public static final String FRIEND_FANS_URL = V3_URL + "friend/fans";
     public static final String CURRENT_FRIEND_URL = V3_URL + "friend";
     private static final String VIDEO_COMMENT_URL = V3_URL + "video/comment";
+    private static final String GUESS_JUDGE_URL = V3_URL + "guess/judge";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
@@ -260,6 +261,28 @@ public class UrlHelper {
             builder.appendQueryParameter("before", String.valueOf(before));
         }
         return builder.build().toString();
+    }
+
+
+    // v3 api
+    public static String getDefaultPlayGroupUrl() {
+        return GUESS_JUDGE_URL;
+    }
+
+    public static String getJudgeUrl(String videoId) {
+        return Uri.parse(GUESS_JUDGE_URL)
+                .buildUpon()
+                .appendQueryParameter("video_id", videoId)
+                .build()
+                .toString();
+    }
+
+    public static String getPayPlayUrl() {
+        return Uri.parse(GUESS_JUDGE_URL)
+                .buildUpon()
+                .appendQueryParameter("pay", String.valueOf(1))
+                .build()
+                .toString();
     }
 
 

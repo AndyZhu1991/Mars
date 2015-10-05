@@ -319,6 +319,11 @@
     <string name="can_not_get_contacts">读取联系人失败，可能是被安全软件阻止，请检查。</string>
 
     <!-- For PlayActivity -->
+    <string name="left_user_desc">挑战者</string>
+    <string name="right_user_desc">擂主</string>
+    <string name="win">WIN</string>
+    <string name="lose">LOSE</string>
+    <string name="guess_false_message">很遗憾，没有获得</string>
     <string name="next_group_immediately">马上进入下一组</string>
     <string name="kooed">被打赏</string>
     <string name="support_ta">支持TA</string>
@@ -326,6 +331,8 @@
     <string name="next_round_text_head">"下一轮将于 "</string>
     <string name="next_round_text_tail">" 后开启"</string>
     <string name="next_round_immediately">立即开启下一轮</string>
+    <string name="wait_time_formatter" formatted="false">%02d:%02d:%02d</string>
+    <string name="follow_failed">关注失败，请重试</string>
 
     <!-- For MessagesActivity -->
     <string name="message_area">消息区</string>
