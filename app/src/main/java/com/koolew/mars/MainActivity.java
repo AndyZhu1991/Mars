@@ -501,6 +501,20 @@ public class MainActivity extends BaseV4FragmentActivity
                         R.color.drawer_list_friend_select,
                         FriendFragment.class),
 
+                new DrawerItem(R.mipmap.ic_drawer_list_clock_in,
+                        R.mipmap.ic_drawer_list_clock_in_selected,
+                        R.string.title_clock_in,
+                        R.color.drawer_list_clock_in_select,
+                        null) {
+                    @Override
+                    public MainBaseFragment getFragment() {
+                        Intent intent = new Intent(MainActivity.this, KoolewWebActivity.class);
+                        intent.putExtra(KoolewWebActivity.KEY_URL, AppProperty.CLOCK_IN_URL);
+                        startActivity(intent);
+                        return null;
+                    }
+                },
+
                 new DrawerItem(R.mipmap.ic_drawer_list_settings,
                         R.mipmap.ic_drawer_list_settings_selected,
                         R.string.title_settings,

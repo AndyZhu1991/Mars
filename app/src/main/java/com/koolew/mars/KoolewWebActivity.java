@@ -6,8 +6,12 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.UriProcessor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class KoolewWebActivity extends BaseActivity {
@@ -26,7 +30,9 @@ public class KoolewWebActivity extends BaseActivity {
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-        mWebView.loadUrl(getIntent().getStringExtra(KEY_URL));
+        Map<String, String> header = new HashMap<>();
+        header.put("Authorization", MyAccountInfo.getToken());
+        mWebView.loadUrl(getIntent().getStringExtra(KEY_URL), header);
     }
 
     private WebViewClient mWebViewClient = new WebViewClient() {
