@@ -243,6 +243,13 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.getFriendProfileUrl(uid), listener, errorListener);
     }
 
+    public JsonObjectRequest requestFriendProfile(String uid, long before,
+                                                  Response.Listener<JSONObject> listener,
+                                                  Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getFriendProfileUrl(uid, before),
+                listener, errorListener);
+    }
+
     public JsonObjectRequest requestCommonTopic(String uid,
                                                 Response.Listener<JSONObject> listener,
                                                 Response.ErrorListener errorListener) {

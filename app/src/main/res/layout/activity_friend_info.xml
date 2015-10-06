@@ -4,13 +4,16 @@
     android:layout_height="match_parent"
     tools:context="com.koolew.mars.FriendInfoActivity">
 
-    <ListView
-        android:id="@+id/list_view"
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@null"/>
+        android:layout_height="match_parent"/>
 
     <com.koolew.mars.view.TitleBarView
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"/>
+
+    <SurfaceView
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
 </FrameLayout>

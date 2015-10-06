@@ -86,15 +86,6 @@ public class KoolewNewsFragment extends BaseListFragment implements AdapterView.
     }
 
     @Override
-    public void onLoad() {
-        if (mRefreshRequest != null) {
-            mRefreshRequest.cancel();
-        }
-        mLoadMoreRequest = ApiWorker.getInstance().requestFeedsTopic(
-                mAdapter.getOldestCardTime(), mLoadMoreListener, null);
-    }
-
-    @Override
     public String getTitle() {
         return null;
     }

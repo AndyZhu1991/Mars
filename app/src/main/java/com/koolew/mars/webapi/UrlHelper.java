@@ -170,6 +170,14 @@ public class UrlHelper {
         return new StringBuilder(FRIEND_PROFILE_URL).append("?uid=").append(uid).toString();
     }
 
+    public static String getFriendProfileUrl(String uid, long before) {
+        return Uri.parse(FRIEND_PROFILE_URL)
+                .buildUpon()
+                .appendQueryParameter("uid", uid)
+                .appendQueryParameter("before", String.valueOf(before))
+                .build().toString();
+    }
+
     public static String getTaskUrl(long before) {
         return new GetUrlBuilder(TASK_URL)
                 .addParameter("before", before)
