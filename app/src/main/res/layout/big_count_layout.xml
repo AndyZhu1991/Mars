@@ -11,25 +11,13 @@
         android:orientation="vertical"
         android:gravity="center">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/description_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/description_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/koolew_light_gray"
-                android:textSize="12sp" />
-
-            <ImageView
-                android:id="@+id/description_image"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:layout_marginLeft="4dp"/>
-        </LinearLayout>
+            android:drawablePadding="5dp"
+            android:textColor="@color/koolew_light_gray"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/count"

@@ -49,6 +49,7 @@ public class VideoCardAdapter extends BaseAdapter {
     protected final static int TYPE_TITLE = 0;
     protected final static int TYPE_NO_VIDEO = 1;
     protected final static int TYPE_VIDEO_ITEM = 2;
+    protected final static int TYPE_SUB_CLASS_USE_START = 3;
 
     protected Context mContext;
     protected LayoutInflater mInflater;
@@ -186,7 +187,23 @@ public class VideoCardAdapter extends BaseAdapter {
         holder.avatar.setTag(userInfo.getUid());
         holder.nameView.setUser(userInfo);
         holder.videoDate.setText(Utils.buildTimeSummary(mContext, item.getCreateTime() * 1000));
-        holder.supportCount.setText(mContext.getString(R.string.support_count, item.getKooTotal()));
+        if (item.getKooTotal() == 0 && item.getCommentCount() == 0) {
+            holder.kooAndCommentCount.setText("");
+        }
+        else {
+            StringBuilder builder = new StringBuilder();
+            builder.append(mContext.getString(R.string.receive));
+            if (item.getKooTotal() != 0) {
+                builder.append(mContext.getString(R.string.koo_count, item.getKooTotal()));
+            }
+            if (item.getKooTotal() != 0 && item.getCommentCount() != 0) {
+                builder.append(mContext.getString(R.string.comma));
+            }
+            if (item.getCommentCount() != 0) {
+                builder.append(mContext.getString(R.string.comment_count, item.getCommentCount()));
+            }
+            holder.kooAndCommentCount.setText(builder.toString());
+        }
         holder.videoLayout.setTag(item.getVideoUrl());
 
         holder.danmakuSendLayout.setTag(item);
@@ -294,7 +311,7 @@ public class VideoCardAdapter extends BaseAdapter {
         public CircleImageView avatar;
         public UserNameView nameView;
         public TextView videoDate;
-        public TextView supportCount;
+        public TextView kooAndCommentCount;
 
         public LinearLayout kooLayout;
         public ImageView kooIcon;
@@ -313,8 +330,8 @@ public class VideoCardAdapter extends BaseAdapter {
             avatar.setOnClickListener(this);
             nameView = (UserNameView) convertView.findViewById(R.id.name_view);
             videoDate = (TextView) convertView.findViewById(R.id.video_date);
-            supportCount = (TextView) convertView.findViewById(R.id.support_count);
-            supportCount.setOnClickListener(this);
+            kooAndCommentCount = (TextView) convertView.findViewById(R.id.koo_and_comment_count);
+            kooAndCommentCount.setOnClickListener(this);
             danmakuSendLayout = (LinearLayout) convertView.findViewById(R.id.danmaku_send_layout);
             danmakuSendLayout.setOnClickListener(this);
             kooLayout = (LinearLayout) convertView.findViewById(R.id.koo_layout);
@@ -351,10 +368,10 @@ public class VideoCardAdapter extends BaseAdapter {
                     mDanmakuSendListener.onDanmakuSend(getItemData(position));
                 }
             }
-            else if (v == supportCount) {
+            else if (v == kooAndCommentCount) {
                 String videoId = getItemData(position).getVideoId();
-                Intent intent = new Intent(mContext, VideoKooRankActivity.class);
-                intent.putExtra(VideoKooRankActivity.KEY_VIDEO_ID, videoId);
+                Intent intent = new Intent(mContext, CheckDanmakuActivity.class);
+                intent.putExtra(CheckDanmakuActivity.KEY_VIDEO_ID, videoId);
                 mContext.startActivity(intent);
             }
         }

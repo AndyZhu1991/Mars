@@ -102,7 +102,7 @@ public class InviteActivity extends BaseActivity implements SwipeRefreshLayout.O
     }
 
     private void refreshFriendList() {
-        ApiWorker.getInstance().requestCurrentFriend(mRefreshListener, null);
+        ApiWorker.getInstance().requestAllFriends(mRefreshListener, null);
     }
 
     private Response.Listener<JSONObject> mRefreshListener = new Response.Listener<JSONObject>() {

@@ -40,6 +40,7 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
     public static final String KEY_AVATAR = "avatar";
     public static final String KEY_NICKNAME = "nickname";
 
+    private BaseUserInfo mUserInfo;
     private String mUid;
     private int mType;
     private int mKooCount;
@@ -52,6 +53,8 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
     private TextView mSummary;
     private ImageView mOperationImage;
     private TextView mOperationText;
+    private TextView mFansCountText;
+    private TextView mFollowsCountText;
     private ListView mListView;
     private FriendProfileTopicAdapter mAdapter;
 
@@ -101,6 +104,10 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
         mOperationImage = (ImageView) header.findViewById(R.id.operation_image);
         mOperationImage.setOnClickListener(this);
         mOperationText = (TextView) header.findViewById(R.id.operation_text);
+        mFansCountText = (TextView) header.findViewById(R.id.fans_count_text);
+        mFansCountText.setOnClickListener(this);
+        mFollowsCountText = (TextView) header.findViewById(R.id.follows_count_text);
+        mFollowsCountText.setOnClickListener(this);
 
         mListView = (ListView) findViewById(R.id.list_view);
         mListView.setOnItemClickListener(this);
@@ -133,11 +140,14 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
                 initTypeView(mType);
 
                 JSONObject user = result.getJSONObject("user");
-                String avatar = user.getString("avatar");
-                ImageLoader.getInstance().displayImage(avatar, mAvatar);
-                new DisplayBlurImageAndStatusBar(FriendInfoActivity.this, mBlurAvatar, avatar)
-                        .execute();
-                mNameView.setUser(new BaseUserInfo(user));
+                mUserInfo = new BaseUserInfo(user);
+                ImageLoader.getInstance().displayImage(mUserInfo.getAvatar(), mAvatar);
+                new DisplayBlurImageAndStatusBar(FriendInfoActivity.this, mBlurAvatar,
+                        mUserInfo.getAvatar()).execute();
+                mNameView.setUser(mUserInfo);
+                mFansCountText.setText(getString(R.string.fans_count, mUserInfo.getFansCount()));
+                mFollowsCountText.setText(getString(
+                        R.string.follows_count, mUserInfo.getFollowsCount()));
 
                 mKooCount = user.getInt("koo_num");
                 mKooCountView.setCount(mKooCount);
@@ -174,13 +184,13 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
     private void initTypeView(int type) {
         switch (type) {
             case TypedUserInfo.TYPE_STRANGER:
-            case TypedUserInfo.TYPE_INVITED_ME:
+            case TypedUserInfo.TYPE_FAN:
                 mOperationImage.setImageResource(R.mipmap.friend_info_add_friend);
-                mOperationText.setText(R.string.add_friend);
+                mOperationText.setText(R.string.follow);
                 break;
-            case TypedUserInfo.TYPE_SENT_INVITATION:
+            case TypedUserInfo.TYPE_FOLLOWED:
                 mOperationImage.setImageResource(R.mipmap.friend_info_requested);
-                mOperationText.setText(R.string.requested_friend);
+                mOperationText.setText(R.string.followed);
                 break;
             default:
                 mOperationImage.setVisibility(View.INVISIBLE);
@@ -191,11 +201,11 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
     private void onOperationLayoutClick(int type) {
         switch (type) {
             case TypedUserInfo.TYPE_STRANGER:
-            case TypedUserInfo.TYPE_INVITED_ME:
+            case TypedUserInfo.TYPE_FAN:
                 mProgressDialog.show();
                 ApiWorker.getInstance().addFriend(mUid, mFriendOpListener, null);
                 break;
-            case TypedUserInfo.TYPE_SENT_INVITATION:
+            case TypedUserInfo.TYPE_FOLLOWED:
                 break;
             default:
         }
@@ -209,10 +219,10 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
                 if (response.getInt("code") == 0) {
                     switch (mType) {
                         case TypedUserInfo.TYPE_STRANGER:
-                            mType = TypedUserInfo.TYPE_SENT_INVITATION;
+                            mType = TypedUserInfo.TYPE_FOLLOWED;
                             initTypeView(mType);
                             break;
-                        case TypedUserInfo.TYPE_INVITED_ME:
+                        case TypedUserInfo.TYPE_FAN:
                             mType = TypedUserInfo.TYPE_FRIEND;
                             initTypeView(mType);
                             break;
@@ -243,6 +253,12 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
             case R.id.operation_image:
                 onOperationLayoutClick(mType);
                 break;
+            case R.id.fans_count_text:
+                onFansCountTextClick();
+                break;
+            case R.id.follows_count_text:
+                onFollowsCountTextClick();
+                break;
         }
     }
 
@@ -264,6 +280,18 @@ public class FriendInfoActivity extends BaseActivity implements View.OnClickList
         Intent intent = new Intent(this, CommonFriendActivity.class);
         intent.putExtra(CommonTopicActivity.KEY_UID, mUid);
         startActivity(intent);
+    }
+
+    private void onFansCountTextClick() {
+        Bundle extras = new Bundle();
+        extras.putString(FansFragment.KEY_UID, mUid);
+        TitleFragmentActivity.launchFragment(this, FansFragment.class, extras);
+    }
+
+    private void onFollowsCountTextClick() {
+        Bundle extras = new Bundle();
+        extras.putString(FollowsFragment.KEY_UID, mUid);
+        TitleFragmentActivity.launchFragment(this, FollowsFragment.class, extras);
     }
 
     @Override

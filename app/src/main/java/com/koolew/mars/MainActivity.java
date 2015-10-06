@@ -8,18 +8,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -55,7 +53,8 @@ import java.util.Map;
 
 public class MainActivity extends BaseV4FragmentActivity
         implements MainBaseFragment.OnFragmentInteractionListener,
-                   MainBaseFragment.ToolbarOperateInterface, View.OnClickListener, DrawerLayout.DrawerListener {
+        MainBaseFragment.ToolbarOperateInterface, View.OnClickListener,
+        DrawerLayout.DrawerListener {
 
     private static final String TAG = "koolew-MainActivity";
 
@@ -74,15 +73,16 @@ public class MainActivity extends BaseV4FragmentActivity
     private FrameLayout mContentFrame;
     private LinearLayout mLeftDrawer;
     private ImageView mInfoBackground;
-    private ListView mDrawerList;
-    private DrawerListAdapter mAdapter;
+    private RecyclerView mDrawerRecycler;
+    private DrawerAdapter mAdapter;
     private ImageView mAvatar;
     private UserNameView mNameView;
     private PhoneNumberView mPhoneNumber;
+    private TextView mFansCountText;
+    private TextView mFollowsCountText;
     private TextView mCountKoo;
     private TextView mCountCoin;
 
-    private MainBaseFragment[] fragments = new MainBaseFragment[3];
     private MainBaseFragment mCurFragment;
 
     private FrameLayout[] mTopIconLayouts = new FrameLayout[2];
@@ -112,26 +112,27 @@ public class MainActivity extends BaseV4FragmentActivity
         mContentFrame = (FrameLayout) findViewById(R.id.content_frame);
         mLeftDrawer = (LinearLayout) findViewById(R.id.left_drawer);
         mInfoBackground = (ImageView) findViewById(R.id.info_background);
-        mDrawerList = (ListView) findViewById(R.id.drawer_list);
+        mDrawerRecycler = (RecyclerView) findViewById(R.id.drawer_recycler);
         mAvatar = (ImageView) findViewById(R.id.avatar);
         mAvatar.setOnClickListener(this);
         mNameView = (UserNameView) findViewById(R.id.name_view);
         mPhoneNumber = (PhoneNumberView) findViewById(R.id.phone_number);
+        mFansCountText = (TextView) findViewById(R.id.fans_count_text);
+        mFansCountText.setOnClickListener(this);
+        mFollowsCountText = (TextView) findViewById(R.id.follows_count_text);
+        mFollowsCountText.setOnClickListener(this);
         mCountKoo = (TextView) findViewById(R.id.count_koo);
         mCountCoin = (TextView) findViewById(R.id.count_coin);
         findViewById(R.id.coin_layout).setOnClickListener(this);
         findViewById(R.id.koo_layout).setOnClickListener(this);
 
-        mAdapter = new DrawerListAdapter();
-        mDrawerList.setAdapter(mAdapter);
-        mDrawerList.setOnItemClickListener(mDrawerItemClickListener);
+        mAdapter = new DrawerAdapter();
+        mDrawerRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mDrawerRecycler.setAdapter(mAdapter);
         mNameView.setUserInfo(MyAccountInfo.getNickname(), MyAccountInfo.getVip());
         mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
 
-        fragments[0] = KoolewFragment.newInstance();
-        fragments[1] = FriendFragment.newInstance();
-        fragments[2] = SettingsFragment.newInstance();
-        mCurFragment = fragments[0];
+        switchFragment(0);
 
         mTopIconLayouts[0]   = (FrameLayout) findViewById(R.id.top_icon_layout1);
         mTopIcons[0]         = (ImageView) findViewById(R.id.top_icon1);
@@ -174,6 +175,8 @@ public class MainActivity extends BaseV4FragmentActivity
     private void syncLocalMyInfo() {
         ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(), mAvatar);
         mNameView.setUserInfo(MyAccountInfo.getNickname(), MyAccountInfo.getVip());
+        mFansCountText.setText(getString(R.string.fans_count, MyAccountInfo.getFansCount()));
+        mFollowsCountText.setText(getString(R.string.follows_count, MyAccountInfo.getFollowsCount()));
         mCountKoo.setText(String.valueOf(MyAccountInfo.getKooNum()));
         mCountCoin.setText(String.valueOf(MyAccountInfo.getCoinNum()));
     }
@@ -184,7 +187,7 @@ public class MainActivity extends BaseV4FragmentActivity
             mToggleNotificationPoint.setVisibility(View.VISIBLE);
             //                        Friends
             mAdapter.notificationCount[1] = event.getSuggestion();
-            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyItemChanged(1);
         }
     }
 
@@ -224,6 +227,8 @@ public class MainActivity extends BaseV4FragmentActivity
                                 MyAccountInfo.setNickname(user.getString("nickname"));
                                 MyAccountInfo.setVip(user.getInt("vip"));
                                 MyAccountInfo.setKooNum(user.getLong("koo_num"));
+                                MyAccountInfo.setFansCount(user.getInt("fans"));
+                                MyAccountInfo.setFollowsCount(user.getInt("follows"));
                                 new PreferenceHelper(MainActivity.this).setPushBit(user.getInt("push_bit"));
 
                                 mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
@@ -237,6 +242,8 @@ public class MainActivity extends BaseV4FragmentActivity
                                 }.execute();
                                 mNameView.setUserInfo(MyAccountInfo.getNickname(), MyAccountInfo.getVip());
                                 mCountKoo.setText("" + MyAccountInfo.getKooNum());
+                                mFansCountText.setText(getString(R.string.fans_count, MyAccountInfo.getFansCount()));
+                                mFollowsCountText.setText(getString(R.string.follows_count, MyAccountInfo.getFollowsCount()));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -260,10 +267,11 @@ public class MainActivity extends BaseV4FragmentActivity
     }
 
     private void switchFragment(int position) {
-        if (mAdapter.checkedPosition != position) {
+        MainBaseFragment fragment = mAdapter.drawerItems[position].getFragment();
+        if (fragment != null) {
             mAdapter.checkedPosition = position;
-            mAdapter.notifyDataSetChanged();
-            mCurFragment = fragments[position];
+            mAdapter.notifyItemChanged(position);
+            mCurFragment = fragment;
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, mCurFragment).commit();
@@ -272,27 +280,20 @@ public class MainActivity extends BaseV4FragmentActivity
         mDrawerLayout.closeDrawer(mLeftDrawer);
     }
 
-    private AbsListView.OnItemClickListener mDrawerItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if (position == 3) {
-                startActivity(new Intent(MainActivity.this, AddTopicActivity.class));
-            } else {
-                switchFragment(position);
-            }
+    private void onItemClick(int position) {
+        switchFragment(position);
 
-            mAdapter.notificationCount[position] = 0;
-            mAdapter.notifyDataSetChanged();
+        mAdapter.notificationCount[position] = 0;
+        mAdapter.notifyItemChanged(position);
 
-            int totalCount = 0;
-            for (int count: mAdapter.notificationCount) {
-                totalCount += count;
-            }
-            if (totalCount == 0) {
-                mToggleNotificationPoint.setVisibility(View.INVISIBLE);
-            }
+        int totalCount = 0;
+        for (int count : mAdapter.notificationCount) {
+            totalCount += count;
         }
-    };
+        if (totalCount == 0) {
+            mToggleNotificationPoint.setVisibility(View.INVISIBLE);
+        }
+    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
@@ -355,6 +356,12 @@ public class MainActivity extends BaseV4FragmentActivity
                 break;
             case R.id.top_icon_layout2:
                 mCurFragment.onTopIconClick(1);
+                break;
+            case R.id.fans_count_text:
+                TitleFragmentActivity.launchFragment(this, FansFragment.class);
+                break;
+            case R.id.follows_count_text:
+                TitleFragmentActivity.launchFragment(this, FollowsFragment.class);
                 break;
         }
     }
@@ -421,97 +428,130 @@ public class MainActivity extends BaseV4FragmentActivity
     }
 
 
-    class DrawerListAdapter extends BaseAdapter {
+    private static final int UNSELECT_COLOR_RES = R.color.koolew_gray;
+    class DrawerItem {
+        private int icon;
+        private int iconSelected;
+        private int titleRes;
+        private int selectedColorRes;
+        private Class fragmentClass;
 
-        private LayoutInflater inflater;
-
-        private int checkedPosition;
-
-        private int[] listIcons = {
-                R.mipmap.ic_drawer_list_koolew,
-                R.mipmap.ic_drawer_list_friend,
-                R.mipmap.ic_drawer_list_settings,
-                R.mipmap.ic_drawer_list_add };
-        private int[] listIconsSelected = {
-                R.mipmap.ic_drawer_list_koolew_selected,
-                R.mipmap.ic_drawer_list_friend_selected,
-                R.mipmap.ic_drawer_list_settings_selected,
-                R.mipmap.ic_drawer_list_add_selected };
-        private int[] listTexts = {
-                R.string.title_koolew,
-                R.string.title_friend,
-                R.string.title_settings,
-                R.string.title_add };
-        private int[] selectedColor = {
-                R.color.drawer_list_koolew_select,
-                R.color.drawer_list_friend_select,
-                R.color.drawer_list_settings_select,
-                R.color.drawer_list_add_select,
-        };
-
-        private int[] notificationCount = new int[4];
-
-        DrawerListAdapter() {
-            checkedPosition = -1;
-            inflater = LayoutInflater.from(MainActivity.this);
+        public DrawerItem(int icon, int iconSelected, int titleRes, int selectedColorRes,
+                          Class fragmentClass) {
+            this.icon = icon;
+            this.iconSelected = iconSelected;
+            this.titleRes = titleRes;
+            this.selectedColorRes = selectedColorRes;
+            this.fragmentClass = fragmentClass;
         }
 
-        @Override
-        public int getCount() {
-            return 4;
-        }
-
-        @Override
-        public Object getItem(int position) {
+        public MainBaseFragment getFragment() {
+            try {
+                return (MainBaseFragment) fragmentClass.newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
             return null;
         }
+    }
 
-        @Override
-        public long getItemId(int position) {
-            return position;
+    class DrawerHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private ImageView icon;
+        private TextView title;
+        private NotificationPointView notificationPoint;
+
+        public DrawerHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+
+            icon = (ImageView) itemView.findViewById(R.id.icon);
+            title = (TextView) itemView.findViewById(R.id.text);
+            notificationPoint = (NotificationPointView) itemView
+                    .findViewById(R.id.notification_point);
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            Log.d(TAG, "getView position: " + position);
-            final ViewHolder holder;
-            View view = convertView;
-            if (view == null) {
-                view = inflater.inflate(R.layout.drawer_list_item, parent, false);
-                holder = new ViewHolder();
-                assert view != null;
-                holder.icon = (ImageView) view.findViewById(R.id.icon);
-                holder.text = (TextView) view.findViewById(R.id.text);
-                holder.notificationPoint = (NotificationPointView)
-                        view.findViewById(R.id.notification_point);
-                view.setTag(holder);
-            } else {
-                holder = (ViewHolder) view.getTag();
-            }
+        public void onClick(View v) {
+            onItemClick(getAdapterPosition());
+        }
+    }
 
+    class DrawerAdapter extends RecyclerView.Adapter<DrawerHolder> {
+        private int checkedPosition;
+
+        private DrawerItem[] drawerItems = new DrawerItem[] {
+                new DrawerItem(R.mipmap.ic_drawer_list_koolew,
+                        R.mipmap.ic_drawer_list_koolew_selected,
+                        R.string.title_koolew,
+                        R.color.drawer_list_koolew_select,
+                        KoolewFragment.class),
+
+                new DrawerItem(R.mipmap.ic_drawer_list_friend,
+                        R.mipmap.ic_drawer_list_play_selected,
+                        R.string.title_play,
+                        R.color.drawer_list_play_select,
+                        PlayFragment.class),
+
+                new DrawerItem(R.mipmap.ic_drawer_list_friend,
+                        R.mipmap.ic_drawer_list_friend_selected,
+                        R.string.title_friend,
+                        R.color.drawer_list_friend_select,
+                        FriendFragment.class),
+
+                new DrawerItem(R.mipmap.ic_drawer_list_settings,
+                        R.mipmap.ic_drawer_list_settings_selected,
+                        R.string.title_settings,
+                        R.color.drawer_list_settings_select,
+                        SettingsFragment.class),
+
+                new DrawerItem(R.mipmap.ic_drawer_list_add,
+                        R.mipmap.ic_drawer_list_add_selected,
+                        R.string.title_add,
+                        R.color.drawer_list_add_select,
+                        null) {
+                    @Override
+                    public MainBaseFragment getFragment() {
+                        startActivity(new Intent(MainActivity.this, AddTopicActivity.class));
+                        return null;
+                    }
+                }
+        };
+
+        private int[] notificationCount = new int[drawerItems.length];
+
+        @Override
+        public DrawerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new DrawerHolder(LayoutInflater.from(MainActivity.this)
+                    .inflate(R.layout.drawer_list_item, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(DrawerHolder holder, int position) {
             if (position == checkedPosition) {
-                holder.icon.setImageDrawable(getResources().getDrawable(listIconsSelected[position]));
-                holder.text.setTextColor(getResources().getColor(selectedColor[position]));
+                holder.icon.setImageDrawable(getResources()
+                        .getDrawable(drawerItems[position].iconSelected));
+                holder.title.setTextColor(getResources()
+                        .getColor(drawerItems[position].selectedColorRes));
             }
             else {
-                holder.icon.setImageDrawable(getResources().getDrawable(listIcons[position]));
-                holder.text.setTextColor(getResources().getColor(R.color.koolew_gray));
+                holder.icon.setImageDrawable(getResources().getDrawable(drawerItems[position].icon));
+                holder.title.setTextColor(getResources().getColor(UNSELECT_COLOR_RES));
             }
-            holder.text.setText(listTexts[position]);
+            holder.title.setText(drawerItems[position].titleRes);
             if (notificationCount[position] > 0) {
                 holder.notificationPoint.setVisibility(View.VISIBLE);
             }
             else {
                 holder.notificationPoint.setVisibility(View.INVISIBLE);
             }
-
-            return view;
         }
-    }
 
-    class ViewHolder {
-        ImageView icon;
-        TextView text;
-        NotificationPointView notificationPoint;
+        @Override
+        public int getItemCount() {
+            return drawerItems.length;
+        }
     }
 }

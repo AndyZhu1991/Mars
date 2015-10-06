@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.koolew.mars.CheckDanmakuActivity;
-import com.koolew.mars.DanmakuTabActivity;
+import com.koolew.mars.MessagesActivity;
 import com.koolew.mars.FriendInfoActivity;
 import com.koolew.mars.KoolewWebActivity;
 import com.koolew.mars.PushWrapperActivity;
@@ -104,7 +104,7 @@ public class UriProcessor {
             mContext.startActivity(newIntent(mContext, TaskActivity.class));
         }
         else if (tabId.equals(TAB_COMMENT)) {
-            Intent intent = newIntent(mContext, DanmakuTabActivity.class);
+            Intent intent = newIntent(mContext, MessagesActivity.class);
             mContext.startActivity(intent);
         }
         else if (tabId.equals(TAB_ME)) {

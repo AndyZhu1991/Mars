@@ -167,13 +167,13 @@ public class ApiWorker {
         return contactJson;
     }
 
-    public JsonObjectRequest requestCurrentFriend(Response.Listener<JSONObject> listener,
-                                                  Response.ErrorListener errorListener) {
+    public JsonObjectRequest requestAllFriends(Response.Listener<JSONObject> listener,
+                                               Response.ErrorListener errorListener) {
         RetryPolicy retryPolicy = new DefaultRetryPolicy(
                 10000,
                 0,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        return standardGetRequest(UrlHelper.CURRENT_FRIEND_URL, listener, errorListener, retryPolicy);
+        return standardGetRequest(UrlHelper.ALL_FRIENDS_URL, listener, errorListener, retryPolicy);
     }
 
     public JsonObjectRequest requestFeedsTopic(Response.Listener<JSONObject> listener,
@@ -627,6 +627,154 @@ public class ApiWorker {
         }
         return standardPostRequest(UrlHelper.EDIT_TOPIC_DESC_URL, requestObject,
                 listener, errorListener);
+    }
+
+    public JsonObjectRequest followUser(String uid,
+                                        Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        List<String> uids = new ArrayList<>(1);
+        uids.add(uid);
+        return followUsers(uids, listener, errorListener);
+    }
+
+    public JsonObjectRequest followUsers(List<String> uids,
+                                         Response.Listener<JSONObject> listener,
+                                         Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        JSONArray to = new JSONArray();
+        for (String uid: uids) {
+            to.put(uid);
+        }
+        try {
+            requestObject.put("to", to);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.FRIEND_FOLLOW_URL, requestObject,
+                listener, errorListener);
+    }
+
+    public JsonObjectRequest unfollowUser(String uid,
+                                          Response.Listener<JSONObject> listener,
+                                          Response.ErrorListener errorListener) {
+        List<String> uids = new ArrayList<>(1);
+        uids.add(uid);
+        return unfollowUsers(uids, listener, errorListener);
+    }
+
+    public JsonObjectRequest unfollowUsers(List<String> uids,
+                                           Response.Listener<JSONObject> listener,
+                                           Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        JSONArray to = new JSONArray();
+        for (String uid: uids) {
+            to.put(uid);
+        }
+        try {
+            requestObject.put("to", to);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.FRIEND_UNFOLLOW_URL, requestObject,
+                listener, errorListener);
+    }
+
+    public JsonObjectRequest getFriends(Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.CURRENT_FRIEND_URL, listener, errorListener);
+    }
+
+    public JsonObjectRequest getFriends(long before,
+                                        Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getCurrentFriendUrl(before), listener, errorListener);
+    }
+
+    public JsonObjectRequest getFollows(Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.FRIEND_FOLLOWS_URL, listener, errorListener);
+    }
+
+    public JsonObjectRequest getFollows(long before,
+                                        Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getFriendFollowsUrl(before), listener, errorListener);
+    }
+
+    public JsonObjectRequest getFollows(String uid,
+                                        Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getFriendFollowsUrl(uid), listener, errorListener);
+    }
+
+    public JsonObjectRequest getFollows(String uid, long before,
+                                        Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getFriendFollowsUrl(uid, before),
+                listener, errorListener);
+    }
+
+    public JsonObjectRequest getFans(Response.Listener<JSONObject> listener,
+                                     Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.FRIEND_FANS_URL, listener, errorListener);
+    }
+
+    public JsonObjectRequest getFans(long before,
+                                     Response.Listener<JSONObject> listener,
+                                     Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getFriendFansUrl(before), listener, errorListener);
+    }
+
+    public JsonObjectRequest getFans(String uid,
+                                     Response.Listener<JSONObject> listener,
+                                     Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getFriendFansUrl(uid), listener, errorListener);
+    }
+
+    public JsonObjectRequest getFans(String uid, long before,
+                                     Response.Listener<JSONObject> listener,
+                                     Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getFriendFansUrl(uid, before), listener, errorListener);
+    }
+
+    public JsonObjectRequest getVideoComment(String videoId, long before,
+                                             Response.Listener<JSONObject> listener,
+                                             Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getVideoCommentUrl(videoId, before),
+                listener, errorListener);
+    }
+
+    public JsonObjectRequest requestDefaultPlayGroup(Response.Listener<JSONObject> listener,
+                                                     Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getDefaultPlayGroupUrl(), listener, errorListener);
+    }
+
+    public JsonObjectRequest judgeVideo(String videoId,
+                                        Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getJudgeUrl(videoId), listener, errorListener);
+    }
+
+    public JsonObjectRequest requestPayPlayGroup(Response.Listener<JSONObject> listener,
+                                                 Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getPayPlayUrl(), listener, errorListener);
+    }
+
+    public JsonObjectRequest requestFeedsHot(int page,
+                                             Response.Listener<JSONObject> listener,
+                                             Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getFeedsHotUrl(page), listener, errorListener);
+    }
+
+    public JsonObjectRequest requestNotification(Response.Listener<JSONObject> listener,
+                                                 Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.NOTIFICATION_URL, listener, errorListener);
+    }
+
+    public JsonObjectRequest requestNotification(long before,
+                                                 Response.Listener<JSONObject> listener,
+                                                 Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getNotificationUrl(before), listener, errorListener);
     }
 
 

@@ -1,17 +1,9 @@
 package com.koolew.mars;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
-import com.android.volley.Response;
-import com.koolew.mars.statistics.BaseV4Fragment;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONArray;
@@ -19,108 +11,75 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class FriendCurrentFragment extends BaseV4Fragment
-        implements SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
+public class FriendCurrentFragment extends RecyclerListFragmentMould<FriendCurrentAdapter> {
 
     private static final String TAG = "koolew-FriendCurrentF";
 
-    private ListView mListView;
-    private FriendSimpleAdapter mAdapter;
-    private SwipeRefreshLayout mRefreshLayout;
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     * @return A new instance of fragment FriendCurrentFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FriendCurrentFragment newInstance() {
-        FriendCurrentFragment fragment = new FriendCurrentFragment();
-        return fragment;
-    }
-
     public FriendCurrentFragment() {
-        // Required empty public constructor
+        super();
+        isNeedLoadMore = true;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected FriendCurrentAdapter useThisAdapter() {
+        return new FriendCurrentAdapter(getActivity());
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_friend_contact, container, false);
+    protected int getThemeColor() {
+        return getResources().getColor(R.color.koolew_light_blue);
+    }
 
-        mRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.refresh_layout);
-        mRefreshLayout.setColorSchemeResources(R.color.koolew_light_blue);
-        mRefreshLayout.setOnRefreshListener(this);
-        mListView = (ListView) root.findViewById(R.id.list_view);
-        mListView.setOnItemClickListener(this);
+    @Override
+    protected JsonObjectRequest doRefreshRequest() {
+        return ApiWorker.getInstance().getFriends(mRefreshListener, null);
+    }
 
-        if (mAdapter == null) {
-            mRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mRefreshLayout.setRefreshing(true);
-                    doRefresh();
-                }
-            });
+    @Override
+    protected JsonObjectRequest doLoadMoreRequest() {
+        return ApiWorker.getInstance().getFriends(mAdapter.getLastUpdateTime(),
+                mLoadMoreListener, null);
+    }
+
+    @Override
+    protected boolean handleRefresh(JSONObject response) {
+        JSONArray users = queryUsers(response);
+        if (users != null && users.length() > 0) {
+            mAdapter.setData(users);
+            mAdapter.notifyDataSetChanged();
+            return true;
         }
-        else {
-            mListView.setAdapter(mAdapter);
+
+        return false;
+    }
+
+    @Override
+    protected boolean handleLoadMore(JSONObject response) {
+        JSONArray users = queryUsers(response);
+        if (users != null && users.length() > 0) {
+            mAdapter.add(users);
+            mAdapter.notifyDataSetChanged();
+            return true;
         }
 
-        return root;
+        return false;
     }
 
-    @Override
-    public void onRefresh() {
-        doRefresh();
-    }
-
-    private void doRefresh() {
-        requestContactFriend();
-    }
-
-    private void requestContactFriend() {
-        ApiWorker.getInstance().requestCurrentFriend(new RefreshListener(), null);
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
-        String uid = ((FriendSimpleAdapter.FriendInfo) mAdapter.getItem(position)).getUid();
-        intent.putExtra(FriendInfoActivity.KEY_UID, uid);
-        startActivity(intent);
-    }
-
-    class RefreshListener implements Response.Listener<JSONObject> {
-        @Override
-        public void onResponse(JSONObject jsonObject) {
-            try {
-                if (jsonObject.getInt("code") != 0) {
-                    Log.e(TAG, "Error response: " + jsonObject);
-                    return;
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+    public static JSONArray queryUsers(JSONObject response) {
+        try {
+            if (response.getInt("code") != 0) {
+                Log.e(TAG, "Error response: " + response);
+                return null;
             }
-
-            mAdapter = new FriendCurrentAdapter(getActivity());
-            try {
-                JSONArray users = jsonObject.getJSONObject("result").getJSONArray("users");
-                mAdapter.add(users);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            mListView.setAdapter(mAdapter);
-
-            mRefreshLayout.setRefreshing(false);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-    }
 
+        try {
+            return response.getJSONObject("result").getJSONArray("users");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

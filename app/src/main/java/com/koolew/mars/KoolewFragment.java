@@ -114,7 +114,7 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
     @Override
     public void onTopIconClick(int position) {
         if (position == 0) {
-            startActivity(new Intent(getActivity(), DanmakuTabActivity.class));
+            startActivity(new Intent(getActivity(), MessagesActivity.class));
             NotificationKeeper.setComment(0);
             mToolbarInterface.notifyTopIcon(0, false);
         }
@@ -133,6 +133,7 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
     private void initSubPageColors() {
         if (subPageColors == null) {
             subPageColors = new int[]{
+                    getResources().getColor(R.color.koolew_light_orange),
                     getResources().getColor(R.color.koolew_light_orange),
                     getResources().getColor(R.color.koolew_deep_orange),
             };
@@ -161,6 +162,9 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
 
             fragmentList.add(KoolewNewsFragment.newInstance());
             fragmentTitles.add(getString(R.string.koolew_news_title));
+
+            fragmentList.add(new KoolewHotFragment());
+            fragmentTitles.add(getString(R.string.koolew_hot_title));
 
             fragmentList.add(KoolewRelatedMeFragment.newInstance());
             fragmentTitles.add(getString(R.string.koolew_related_me_title));

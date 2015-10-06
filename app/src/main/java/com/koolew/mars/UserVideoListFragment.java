@@ -13,6 +13,9 @@ import com.koolew.mars.webapi.ApiWorker;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.koolew.mars.infos.TypedUserInfo.TYPE_SELF;
+import static com.koolew.mars.infos.TypedUserInfo.TYPE_FRIEND;
+
 /**
  * Created by jinchangzhu on 7/28/15.
  */
@@ -82,7 +85,7 @@ public class UserVideoListFragment extends DetailTitleVideoListFragment {
     }
 
     private boolean needShowAddFriend(int type) {
-        if (type != FriendSimpleAdapter.TYPE_SELF && type != FriendSimpleAdapter.TYPE_FRIEND) {
+        if (type != TYPE_SELF && type != TYPE_FRIEND) {
             return true;
         }
         else {

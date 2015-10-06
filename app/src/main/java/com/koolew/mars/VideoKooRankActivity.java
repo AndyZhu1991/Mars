@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -51,19 +50,19 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
         fragmentTransaction.commit();
     }
 
-    class VideoKooRankFragment extends RecyclerListFragmentMould {
+    class VideoKooRankFragment extends RecyclerListFragmentMould<VideoKooRankAdapter> {
 
         public VideoKooRankFragment() {
             isNeedLoadMore = false;
         }
 
         @Override
-        protected LoadMoreAdapter useThisAdapter() {
+        protected VideoKooRankAdapter useThisAdapter() {
             return new VideoKooRankAdapter();
         }
 
         private VideoKooRankAdapter getAdapter() {
-            return (VideoKooRankAdapter) mAdapter;
+            return mAdapter;
         }
 
         @Override
@@ -86,7 +85,7 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
             try {
                 if (response.getInt("code") == 0) {
                     JSONArray rank = response.getJSONObject("result").getJSONArray("rank");
-                    ((VideoKooRankAdapter) mAdapter).setData(rank);
+                    mAdapter.setData(rank);
                     mAdapter.notifyDataSetChanged();
                 }
             } catch (JSONException e) {

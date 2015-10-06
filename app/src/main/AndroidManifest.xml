@@ -197,7 +197,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".DanmakuTabActivity"
+            android:name=".MessagesActivity"
             android:exported="false"
             android:label="@string/title_activity_danmaku_tab"
             android:screenOrientation="portrait" >
@@ -265,20 +265,26 @@
         <activity
             android:name=".TopicKooRankActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_topic_koo_rank" >
+            android:label="@string/title_activity_topic_koo_rank"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".VideoKooRankActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_video_koo_rank" >
+            android:label="@string/title_activity_video_koo_rank"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".EditTopicDescActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_edit_topic_desc" >
+            android:label="@string/title_activity_edit_topic_desc"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".TitleFragmentActivity"
+            android:exported="false"
+            android:label="@string/title_activity_title_fragment"
+            android:screenOrientation="portrait" >
         </activity>
 
         <!-- Jpush -->

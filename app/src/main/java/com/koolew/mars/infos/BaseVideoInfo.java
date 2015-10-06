@@ -19,7 +19,9 @@ public class BaseVideoInfo implements Serializable {
     public static final String KEY_THUMB_URL = "thumb_url";
     public static final String KEY_CREATE_TIME = "create_time";
     public static final String KEY_PRIVACY = "privacy";
+    public static final String KEY_KOO_NUM = "koo_num";
     public static final String KEY_KOO_TOTAL = "koo_total";
+    public static final String KEY_COMMENT_COUNT = "comment_num";
     public static final String KEY_USER_INFO = "user_info";
     public static final String KEY_DANMAKU = "comment";
 
@@ -28,7 +30,9 @@ public class BaseVideoInfo implements Serializable {
     private String mVideoThumb;
     private long mCreateTime;
     private int mPrivacy;
+    private int mKooNum;
     private int mKooTotal;
+    private int mCommentCount;
     private BaseUserInfo mUserInfo;
     private ArrayList<DanmakuItemInfo> mDanmakus;
 
@@ -57,8 +61,14 @@ public class BaseVideoInfo implements Serializable {
             if (jsonObject.has(KEY_PRIVACY)) {
                 mPrivacy = jsonObject.getInt(KEY_PRIVACY);
             }
+            if (jsonObject.has(KEY_KOO_NUM)) {
+                mKooNum = jsonObject.getInt(KEY_KOO_NUM);
+            }
             if (jsonObject.has(KEY_KOO_TOTAL)) {
                 mKooTotal = jsonObject.getInt(KEY_KOO_TOTAL);
+            }
+            if (jsonObject.has(KEY_COMMENT_COUNT)) {
+                mCommentCount = jsonObject.getInt(KEY_COMMENT_COUNT);
             }
             if (jsonObject.has(KEY_USER_INFO)) {
                 mUserInfo = instanceUserInfo(jsonObject.getJSONObject(KEY_USER_INFO));
@@ -94,12 +104,20 @@ public class BaseVideoInfo implements Serializable {
         return mPrivacy;
     }
 
+    public int getKooNum() {
+        return mKooNum;
+    }
+
     public int getKooTotal() {
         return mKooTotal;
     }
 
     public void setKooTotal(int count) {
         mKooTotal = count;
+    }
+
+    public int getCommentCount() {
+        return mCommentCount;
     }
 
     public BaseUserInfo getUserInfo() {

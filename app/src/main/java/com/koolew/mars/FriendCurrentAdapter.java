@@ -3,6 +3,7 @@ package com.koolew.mars;
 import android.app.ProgressDialog;
 import android.content.Context;
 
+import com.koolew.mars.infos.TypedUserInfo;
 import com.koolew.mars.utils.DialogUtil;
 
 import org.json.JSONArray;
@@ -24,7 +25,7 @@ public class FriendCurrentAdapter extends FriendSimpleAdapter {
     @Override
     public void add(JSONObject jsonObject) {
         FriendInfo info = new FriendInfo(jsonObject);
-        info.type = TYPE_FRIEND;
+        info.setType(TypedUserInfo.TYPE_FRIEND);
         retrievalContactName(info);
         generateSummary(info);
         mData.add(info);

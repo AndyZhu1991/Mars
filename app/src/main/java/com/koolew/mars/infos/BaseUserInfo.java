@@ -21,11 +21,15 @@ public class BaseUserInfo implements Serializable {
     public static final String KEY_NICKNAME = "nickname";
     public static final String KEY_AVATAR = "avatar";
     public static final String KEY_VIP = "vip";
+    public static final String KEY_FOLLOWS_COUNT = "follows";
+    public static final String KEY_FANS_COUNT = "fans";
 
     private String uid;
     private String nickname;
     private String avatar;
     private int vip;
+    private int followsCount;
+    private int fansCount;
 
     public BaseUserInfo(JSONObject jsonObject) {
         try {
@@ -40,6 +44,12 @@ public class BaseUserInfo implements Serializable {
             }
             if (jsonObject.has(KEY_VIP)) {
                 vip = jsonObject.getInt(KEY_VIP);
+            }
+            if (jsonObject.has(KEY_FOLLOWS_COUNT)) {
+                followsCount = jsonObject.getInt(KEY_FOLLOWS_COUNT);
+            }
+            if (jsonObject.has(KEY_FANS_COUNT)) {
+                fansCount = jsonObject.getInt(KEY_FANS_COUNT);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -66,6 +76,14 @@ public class BaseUserInfo implements Serializable {
 
     public int getVip() {
         return vip;
+    }
+
+    public int getFansCount() {
+        return fansCount;
+    }
+
+    public int getFollowsCount() {
+        return followsCount;
     }
 
     public static List<BaseUserInfo> fromJSONArray(JSONArray jsonArray) {

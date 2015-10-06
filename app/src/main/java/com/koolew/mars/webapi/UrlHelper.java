@@ -1,6 +1,7 @@
 package com.koolew.mars.webapi;
 
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.koolew.mars.infos.MyAccountInfo;
 
@@ -20,18 +21,19 @@ public class UrlHelper {
 
     private static final String V1_URL = BASE_URL + "v1/";
     private static final String V2_URL = BASE_URL + "v2/";
+    private static final String V3_URL = BASE_URL + "v3/";
 
     // v1 api
     private static final String TOPIC_VIDEO_FRIEND_URL = V1_URL + "feeds";
     public static final String SNS_LOGIN_URL = V1_URL + "user/login/sns";
     public static final String ADD_FRIEND_URL = V1_URL + "friend/apply";
+    public static final String ALL_FRIENDS_URL = V1_URL + "friend";
     public static final String CONTACT_FRIEND_RECOMMEND_URL = V1_URL + "contact/address";
     public static final String USER_INFO_URL = V1_URL + "user/info";
     private static final String REQUEST_PASSWORD_URL = V1_URL + "user/code";
     public static final String LOGIN_URL = V1_URL + "user/login";
     public static final String SNS_SIGNUP_URL = V1_URL + "user/signup/sns";
     public static final String REQUEST_QINIU_AVATAR_TOKEN_URL = V1_URL + "qiniu/uptoken?type=avatar";
-    public static final String CURRENT_FRIEND_URL = V1_URL + "friend";
     public static final String KOO_RANK_URL = V1_URL + "koo/rank";
     private static final String COMMON_TOPIC_URL = V1_URL + "profile/topic/common";
     private static final String COMMON_FRIEND_URL = V1_URL + "profile/friend/common";
@@ -72,6 +74,17 @@ public class UrlHelper {
     public static final String NOTIFICATION_BRIEF_URL = V2_URL + "activity/brief";
     public static final String USER_LOCATION_URL = V2_URL + "user/loc";
     public static final String EDIT_TOPIC_DESC_URL = V2_URL + "topic/desc";
+
+    // V3 api
+    public static final String FRIEND_FOLLOW_URL = V3_URL + "friend/follow";
+    public static final String FRIEND_UNFOLLOW_URL = V3_URL + "friend/unfollow";
+    public static final String FRIEND_FOLLOWS_URL = V3_URL + "friend/follows";
+    public static final String FRIEND_FANS_URL = V3_URL + "friend/fans";
+    public static final String CURRENT_FRIEND_URL = V3_URL + "friend";
+    private static final String VIDEO_COMMENT_URL = V3_URL + "video/comment";
+    private static final String GUESS_JUDGE_URL = V3_URL + "guess/judge";
+    private static final String FEEDS_HOT_URL = V3_URL + "feeds/hot";
+    public static final String NOTIFICATION_URL = V3_URL + "activity";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
@@ -202,6 +215,97 @@ public class UrlHelper {
         return Uri.parse(getUserTopicUrl(uid, topicId))
                 .buildUpon()
                 .appendQueryParameter("time", String.valueOf(time))
+                .build().toString();
+    }
+
+    public static String getVideoCommentUrl(String videoId, long before) {
+        Uri.Builder builder = Uri.parse(VIDEO_COMMENT_URL)
+                .buildUpon()
+                .appendQueryParameter("video_id", videoId);
+        if (before != 0 && before != Long.MAX_VALUE) {
+            builder.appendQueryParameter("before", String.valueOf(before));
+        }
+        return builder.build().toString();
+    }
+
+    public static String getCurrentFriendUrl(long before) {
+        return Uri.parse(CURRENT_FRIEND_URL)
+                .buildUpon()
+                .appendQueryParameter("before", String.valueOf(before))
+                .build().toString();
+    }
+
+    public static String getFriendFansUrl(String uid) {
+        return getFriendFansUrl(uid, Long.MAX_VALUE);
+    }
+
+    public static String getFriendFansUrl(long before) {
+        return getFriendFansUrl(null, before);
+    }
+
+    public static String getFriendFansUrl(String uid, long before) {
+        Uri.Builder builder = Uri.parse(FRIEND_FANS_URL).buildUpon();
+        if (!TextUtils.isEmpty(uid)) {
+            builder.appendQueryParameter("uid", uid);
+        }
+        if (before != 0 && before != Long.MAX_VALUE) {
+            builder.appendQueryParameter("before", String.valueOf(before));
+        }
+        return builder.build().toString();
+    }
+
+    public static String getFriendFollowsUrl(String uid) {
+        return getFriendFollowsUrl(uid, Long.MAX_VALUE);
+    }
+
+    public static String getFriendFollowsUrl(long before) {
+        return getFriendFollowsUrl(null, before);
+    }
+
+    public static String getFriendFollowsUrl(String uid, long before) {
+        Uri.Builder builder = Uri.parse(FRIEND_FOLLOWS_URL).buildUpon();
+        if (!TextUtils.isEmpty(uid)) {
+            builder.appendQueryParameter("uid", uid);
+        }
+        if (before != 0 && before != Long.MAX_VALUE) {
+            builder.appendQueryParameter("before", String.valueOf(before));
+        }
+        return builder.build().toString();
+    }
+
+
+    // v3 api
+    public static String getDefaultPlayGroupUrl() {
+        return GUESS_JUDGE_URL;
+    }
+
+    public static String getJudgeUrl(String videoId) {
+        return Uri.parse(GUESS_JUDGE_URL)
+                .buildUpon()
+                .appendQueryParameter("video_id", videoId)
+                .build()
+                .toString();
+    }
+
+    public static String getPayPlayUrl() {
+        return Uri.parse(GUESS_JUDGE_URL)
+                .buildUpon()
+                .appendQueryParameter("pay", String.valueOf(1))
+                .build()
+                .toString();
+    }
+
+    public static String getFeedsHotUrl(int page) {
+        return Uri.parse(FEEDS_HOT_URL)
+                .buildUpon()
+                .appendQueryParameter("page", String.valueOf(page))
+                .build().toString();
+    }
+
+    public static String getNotificationUrl(long before) {
+        return Uri.parse(NOTIFICATION_URL)
+                .buildUpon()
+                .appendQueryParameter("before", String.valueOf(before))
                 .build().toString();
     }
 

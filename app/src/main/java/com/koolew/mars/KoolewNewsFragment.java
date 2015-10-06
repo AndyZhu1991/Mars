@@ -68,15 +68,15 @@ public class KoolewNewsFragment extends BaseListFragment implements AdapterView.
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mScrollPlayer.onActivityResume();
+    protected void onPageEnd() {
+        super.onPageEnd();
+        mScrollPlayer.onActivityPause();
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        mScrollPlayer.onActivityPause();
+    protected void onPageStart() {
+        super.onPageStart();
+        mScrollPlayer.onActivityResume();
     }
 
     @Override

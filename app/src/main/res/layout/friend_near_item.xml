@@ -57,7 +57,7 @@
                         android:layout_alignParentRight="true"
                         android:background="@drawable/btn_bg_add"
                         android:focusable="false"
-                        android:text="@string/add"
+                        android:text="@string/follow"
                         android:textColor="@color/koolew_light_blue"
                         android:textSize="@dimen/friend_item_common_text_size" />
 

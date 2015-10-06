@@ -1,16 +1,21 @@
 package com.koolew.mars;
 
-import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-import com.koolew.mars.view.KoolewViewPagerIndicator;
+import com.koolew.mars.utils.Utils;
+import com.shizhefei.view.indicator.IndicatorViewPager;
+import com.shizhefei.view.indicator.ScrollIndicatorView;
+import com.shizhefei.view.indicator.slidebar.ColorBar;
+import com.shizhefei.view.indicator.transition.OnTransitionTextListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +33,9 @@ public class FriendFragment extends MainBaseFragment {
 
     private static final String TAG = "koolew-KoolewFragment";
 
-    private ViewPager mViewPager;
-    private FriendFragmentPagerAdapter mAdapter;
-    private KoolewViewPagerIndicator mViewPagerIndicator;
+    private IndicatorViewPager indicatorViewPager;
+    private ScrollIndicatorView indicator;
+    private ViewPager viewPager;
 
 
     /**
@@ -62,24 +67,22 @@ public class FriendFragment extends MainBaseFragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_friend, container, false);
 
-        mViewPager = (ViewPager) root.findViewById(R.id.view_pager);
-        mAdapter = new FriendFragmentPagerAdapter(getChildFragmentManager());
-        mViewPager.setAdapter(mAdapter);
-        mViewPagerIndicator = (KoolewViewPagerIndicator) root.findViewById(R.id.indicator);
-        mViewPagerIndicator.setViewPager(mViewPager);
-        mViewPagerIndicator.setOnBackgroundColorChangedListener(
-                new KoolewViewPagerIndicator.OnBackgroundColorChangedListener() {
-                    @Override
-                    public void onBackgroundColorChanged(int color) {
-                        mToolbarInterface.setToolbarColor(color);
-                    }
-                }
-        );
-
         mToolbarInterface.setToolbarColor(getResources().getColor(R.color.koolew_light_blue));
 
         mToolbarInterface.setTopIconCount(1);
         mToolbarInterface.setTopIconImageResource(0, R.mipmap.ic_search);
+
+        viewPager = (ViewPager) root.findViewById(R.id.view_pager);
+        indicator = (ScrollIndicatorView) root.findViewById(R.id.indicator);
+
+        indicator.setScrollBar(new ColorBar(getActivity(), Color.WHITE,
+                getResources().getDimensionPixelSize(R.dimen.underline_height)));
+        indicator.setOnTransitionListener(new OnTransitionTextListener().setColorId(getActivity(),
+                R.color.title_text_color_indicated, R.color.title_text_color_unindicate));
+
+        viewPager.setOffscreenPageLimit(5);
+        indicatorViewPager = new IndicatorViewPager(indicator, viewPager);
+        indicatorViewPager.setAdapter(new FriendFragmentPagerAdapter(getChildFragmentManager()));
 
         return root;
     }
@@ -90,7 +93,7 @@ public class FriendFragment extends MainBaseFragment {
                 getActivity().findViewById(R.id.my_toolbar), Gravity.TOP, 0, 0);
     }
 
-    class FriendFragmentPagerAdapter extends FragmentPagerAdapter {
+    class FriendFragmentPagerAdapter extends IndicatorViewPager.IndicatorFragmentPagerAdapter {
 
         private List<android.support.v4.app.Fragment> fragmentList;
         private List<String> fragmentTitles;
@@ -98,25 +101,26 @@ public class FriendFragment extends MainBaseFragment {
         public FriendFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
             // TODO Auto-generated constructor stub
-            fragmentList = new ArrayList<android.support.v4.app.Fragment>();
-            fragmentTitles = new ArrayList<String>();
+            fragmentList = new ArrayList<>();
+            fragmentTitles = new ArrayList<>();
 
             fragmentList.add(FriendMeetFragment.newInstance());
             fragmentTitles.add(getString(R.string.friend_meet_title));
 
-            fragmentList.add(FriendContactFragment.newInstance());
-            fragmentTitles.add(getString(R.string.friend_contact_title));
-
             //fragmentList.add(FriendWeiboFragment.newInstance());
             //fragmentTitles.add(getString(R.string.friend_weibo_title));
 
-            fragmentList.add(FriendCurrentFragment.newInstance());
+            fragmentList.add(new FriendCurrentFragment());
             fragmentTitles.add(getString(R.string.friend_current_title));
-        }
 
-        @Override
-        public android.support.v4.app.Fragment getItem(int position) {
-            return fragmentList.get(position);
+            fragmentList.add(new FriendFollowsFragment());
+            fragmentTitles.add(getString(R.string.friend_follows_title));
+
+            fragmentList.add(new FriendFansFragment());
+            fragmentTitles.add(getString(R.string.friend_fans_title));
+
+            fragmentList.add(FriendContactFragment.newInstance());
+            fragmentTitles.add(getString(R.string.friend_contact_title));
         }
 
         @Override
@@ -125,8 +129,21 @@ public class FriendFragment extends MainBaseFragment {
         }
 
         @Override
-        public CharSequence getPageTitle(int position) {
-            return fragmentTitles.get(position);
+        public View getViewForTab(int position, View convertView, ViewGroup container) {
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getActivity())
+                        .inflate(R.layout.indicator_text, container, false);
+            }
+            TextView textView = (TextView) convertView;
+            textView.setText(fragmentTitles.get(position));
+            int paddingLR = (int) Utils.dpToPixels(getActivity(), 10);
+            textView.setPadding(paddingLR, 0, paddingLR, 0);
+            return convertView;
+        }
+
+        @Override
+        public Fragment getFragmentForPage(int position) {
+            return fragmentList.get(position);
         }
     }
 }

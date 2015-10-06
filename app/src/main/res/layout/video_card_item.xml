@@ -74,12 +74,11 @@
         </FrameLayout>
 
         <TextView
-            android:id="@+id/support_count"
+            android:id="@+id/koo_and_comment_count"
             android:layout_width="match_parent"
             android:layout_height="22dp"
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
-            android:text="@string/support_count"
             android:textColor="#D8D8D8"
             android:textSize="10sp" />
 

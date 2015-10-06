@@ -26,6 +26,7 @@
     <string name="counter_ge" formatted="false">"%d个"</string>
     <string name="cancel">取消</string>
     <string name="danmaku">弹幕</string>
+    <string name="notification">通知</string>
     <string name="ignore">忽略</string>
     <string name="not_enough_coin_hint">金币不够了！赶紧去赚金币吧！</string>
     <string name="search">搜索</string>
@@ -33,14 +34,19 @@
     <string name="more">更多</string>
     <string name="unknown_error">未知错误</string>
     <string name="confirm">确认</string>
+    <string name="say">说</string>
+    <string name="colon">：</string>
 
     <!-- For MainActivity -->
     <string name="title_koolew">可见</string>
+    <string name="title_play">PLAY</string>
     <string name="title_friend">朋友</string>
     <string name="title_settings">设置</string>
     <string name="title_add">新建话题</string>
     <string name="got_koo">获得打赏</string>
     <string name="coin_count">金币数量</string>
+    <string name="fans_count" formatted="false">%d名粉丝</string>
+    <string name="follows_count" formatted="false">正在关注%d人</string>
 
     <!-- For FirstLoginActivity -->
     <string name="app_name_english">KOOLEW</string>
@@ -73,8 +79,8 @@
     <string name="loading_friends">正在加载好友列表...</string>
 
     <!-- For KoolewFragment -->
-    <string name="koolew_news_title">新鲜事</string>
-    <string name="koolew_related_me_title">与我相关</string>
+    <string name="koolew_news_title">关注</string> <!-- 新鲜事 -->
+    <string name="koolew_related_me_title">我的</string> <!-- 与我相关 -->
     <string name="koolew_hot_title">热门</string>
     <string name="koolew_meet_title">遇见</string>
     <string name="koolew_favorite_title">收藏</string>
@@ -83,10 +89,12 @@
     <string name="joined_video">参与视频</string>
 
     <!-- For FriendFragment -->
-    <string name="friend_meet_title">遇见</string>
+    <string name="friend_meet_title">" 遇 见 "</string>
     <string name="friend_contact_title">通讯录好友</string>
     <string name="friend_weibo_title">微博好友</string>
     <string name="friend_current_title">现有好友</string>
+    <string name="friend_follows_title">我关注的</string>
+    <string name="friend_fans_title">我的粉丝</string>
 
     <!-- For TopicInvitationList -->
     <string name="video_count_label" formatted="false">视频总数：%d个</string>
@@ -137,7 +145,7 @@
     <!-- For friend meet item -->
     <string name="common_topic">共同话题</string>
     <string name="common_friend" formatted="false">共同好友（%d人）</string>
-    <string name="padding_friend_label">待接受好友申请</string>
+    <string name="padding_friend_label">TA关注了你</string>
     <string name="recommend_friend_label">好友推荐</string>
     <string name="nearby_user">附近的人</string>
     <string name="contact_friend">通讯录好友</string>
@@ -148,9 +156,15 @@
     <string name="waiting_for_accept">等待通过</string>
     <string name="sent_invitation">已发送好友申请</string>
     <string name="delete_friend_confirm">确认删除好友吗？</string>
+    <string name="unfollow_confirm">要取消关注TA吗？</string>
     <string name="distance_less_than_100">距离小于100米</string>
     <string name="distance_100_to_1000" formatted="false">距离%d米</string>
     <string name="distance_more_than_1000" formatted="false">距离%.1f千米</string>
+
+    <!-- For FriendFragment -->
+    <string name="follow">关注</string>
+    <string name="followed">已关注</string>
+    <string name="followed_each_other">互相关注</string>
 
     <!-- For settings -->
     <string name="intelligent">智能</string>
@@ -256,7 +270,9 @@
 
     <!-- For VideoCardAdapter -->
     <string name="be_first_in_this_topic">成为此话题卡第一人</string>
-    <string name="support_count" formatted="false">%d打赏</string>
+    <string name="receive">收到</string>
+    <string name="koo_count" formatted="false">%d次打赏</string>
+    <string name="comment_count" formatted="false">%d次评论</string>
 
     <!-- For UserTopicActivity -->
     <string name="ad_friend">加好友</string>
@@ -305,6 +321,29 @@
 
     <!-- Some error message -->
     <string name="can_not_get_contacts">读取联系人失败，可能是被安全软件阻止，请检查。</string>
+
+    <!-- For PlayActivity -->
+    <string name="left_user_desc">挑战者</string>
+    <string name="right_user_desc">擂主</string>
+    <string name="win">WIN</string>
+    <string name="lose">LOSE</string>
+    <string name="guess_false_message">很遗憾，没有获得</string>
+    <string name="next_group_immediately">马上进入下一组</string>
+    <string name="kooed">被打赏</string>
+    <string name="support_ta">支持TA</string>
+    <string name="judge_mission_completed">你完成了本轮的评委任务！</string>
+    <string name="next_round_text_head">"下一轮将于 "</string>
+    <string name="next_round_text_tail">" 后开启"</string>
+    <string name="next_round_immediately">立即开启下一轮</string>
+    <string name="wait_time_formatter" formatted="false">%02d:%02d:%02d</string>
+    <string name="follow_failed">关注失败，请重试</string>
+
+    <!-- For MessagesActivity -->
+    <string name="message_area">消息区</string>
+
+    <!-- For CheckDanmakuActivity -->
+    <string name="kooed_count" formatted="false">被打赏%d次</string>
+    <string name="support_comment_count" formatted="false">%d支持·%d评论</string>
 
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>
@@ -418,4 +457,7 @@
     <string name="title_activity_topic_koo_rank">TopicKooRankActivity</string>
     <string name="title_activity_video_koo_rank">VideoKooRankActivity</string>
     <string name="title_activity_edit_topic_desc">EditTopicDescActivity</string>
+    <string name="title_activity_play">PlayActivity</string>
+    <string name="title_activity_fans">FansActivity</string>
+    <string name="title_activity_title_fragment">TitleFragmentActivity</string>
 </resources>
