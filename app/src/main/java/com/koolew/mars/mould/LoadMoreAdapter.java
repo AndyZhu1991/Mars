@@ -105,7 +105,12 @@ public abstract class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.
     public void afterRefresh(boolean hasSomething) {
         if (isNeedLoadMore) {
             if (mLoadMoreViewHolder != null) {
-                mLoadMoreViewHolder.setLoading();
+                if (hasSomething) {
+                    mLoadMoreViewHolder.setLoading();
+                }
+                else {
+                    mLoadMoreViewHolder.setNoMore();
+                }
             }
             isLoading = false;
         }
@@ -123,16 +128,20 @@ public abstract class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.
     private RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
-            if (!isLoading && mLoadMoreViewHolder != null && mLoadMoreViewHolder.hasMore &&
-                    getItemViewType(manager.findLastVisibleItemPosition()) == getLoadMoreViewType()) {
-                if (mLoadMoreListener != null) {
-                    isLoading = true;
-                    mLoadMoreListener.onLoadMore();
-                }
-            }
+            notifyRecyclerScrolled(recyclerView);
         }
     };
+
+    void notifyRecyclerScrolled(RecyclerView recyclerView) {
+        LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        if (!isLoading && mLoadMoreViewHolder != null && mLoadMoreViewHolder.hasMore &&
+                getItemViewType(manager.findLastVisibleItemPosition()) == getLoadMoreViewType()) {
+            if (mLoadMoreListener != null) {
+                isLoading = true;
+                mLoadMoreListener.onLoadMore();
+            }
+        }
+    }
 
 
     public int getCustomItemViewType(int position) {

@@ -119,6 +119,7 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
             mRefreshRequest = null;
 
             mAdapter.afterRefresh(handleRefresh(jsonObject));
+            mAdapter.notifyRecyclerScrolled(mRecyclerView);
         }
     };
 
