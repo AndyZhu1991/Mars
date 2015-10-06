@@ -28,7 +28,7 @@ public class PushWrapperActivity extends BaseV4FragmentActivity {
             title = getString(R.string.koolew_news_title);
         }
         else if (tabType.equals("suggestion")) {
-            fragment = FriendMeetFragment.newInstance();
+            fragment = new FriendMeetFragment();
             themeColor = getResources().getColor(R.color.koolew_light_blue);
             title = getString(R.string.friend_meet_title);
         }

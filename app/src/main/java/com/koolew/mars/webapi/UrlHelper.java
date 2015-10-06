@@ -61,7 +61,6 @@ public class UrlHelper {
     // v2 api
     public static final String FEEDS_TOPIC_URL = V2_URL + "feeds/topic";
     public static final String INVOLVE_URL = V2_URL + "feeds/involve";
-    public static final String FRIEND_RECOMMEND_URL = V2_URL + "friend/recommend";
     private static final String FRIEND_PROFILE_URL = V2_URL + "profile";
     public static final String TASK_URL = V2_URL + "task";
     private static final String TASK_DETAIL_URL = V2_URL + "task/detail";
@@ -76,6 +75,7 @@ public class UrlHelper {
     public static final String EDIT_TOPIC_DESC_URL = V2_URL + "topic/desc";
 
     // V3 api
+    public static final String FRIEND_RECOMMEND_URL = V3_URL + "friend/recommend";
     public static final String FRIEND_FOLLOW_URL = V3_URL + "friend/follow";
     public static final String FRIEND_UNFOLLOW_URL = V3_URL + "friend/unfollow";
     public static final String FRIEND_FOLLOWS_URL = V3_URL + "friend/follows";
@@ -279,6 +279,13 @@ public class UrlHelper {
             builder.appendQueryParameter("before", String.valueOf(before));
         }
         return builder.build().toString();
+    }
+
+    public static String getFriendRecommendUrl(double min) {
+        return Uri.parse(FRIEND_RECOMMEND_URL)
+                .buildUpon()
+                .appendQueryParameter("min", String.valueOf(min))
+                .build().toString();
     }
 
 

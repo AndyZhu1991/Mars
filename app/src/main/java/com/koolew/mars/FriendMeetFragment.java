@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +17,12 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
-import com.amap.api.maps2d.AMapUtils;
-import com.amap.api.maps2d.model.LatLng;
 import com.android.volley.Response;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
-import com.koolew.mars.statistics.BaseV4Fragment;
+import com.koolew.mars.mould.LoadMoreAdapter;
+import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.BigCountView;
@@ -42,29 +40,11 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class FriendMeetFragment extends BaseV4Fragment
-        implements SwipeRefreshLayout.OnRefreshListener{
-
-    private RecyclerView mRecyclerView;
-    private FriendRecommendAdapter mAdapter;
-
-    private SwipeRefreshLayout mRefreshLayout;
-
-    private LatLng mLocation;
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     * @return A new instance of fragment FriendMeetFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FriendMeetFragment newInstance() {
-        FriendMeetFragment fragment = new FriendMeetFragment();
-        return fragment;
-    }
+public class FriendMeetFragment
+        extends RecyclerListFragmentMould<FriendMeetFragment.FriendRecommendAdapter>{
 
     public FriendMeetFragment() {
-        // Required empty public constructor
+        isNeedLoadMore = true;
     }
 
     @Override
@@ -80,70 +60,62 @@ public class FriendMeetFragment extends BaseV4Fragment
                         LocationProviderProxy.AMapNetwork, -1, 1, mLocationListener);
             }
         }.start();
-
-        mAdapter = new FriendRecommendAdapter();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_friend_meet, container, false);
-
-        mRecyclerView = (RecyclerView) root.findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(mAdapter);
-
-        mRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.refresh_layout);
-        mRefreshLayout.setColorSchemeResources(R.color.koolew_light_blue);
-        mRefreshLayout.setOnRefreshListener(this);
-
-        requestData();
-
-        return root;
+    protected FriendRecommendAdapter useThisAdapter() {
+        return new FriendRecommendAdapter();
     }
 
-    private void requestData() {
-        if (mAdapter.getItemCount() == 0) {
-            mRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mRefreshLayout.setRefreshing(true);
-                    doRefresh();
+    @Override
+    protected int getThemeColor() {
+        return getResources().getColor(R.color.koolew_light_blue);
+    }
+
+    @Override
+    protected JsonObjectRequest doRefreshRequest() {
+        return ApiWorker.getInstance().requestRecommendFriend(mRefreshListener, null);
+    }
+
+    @Override
+    protected JsonObjectRequest doLoadMoreRequest() {
+        return ApiWorker.getInstance().requestPoiRecommendFriend(mAdapter.getMaxNearbyDistance(),
+                mLoadMoreListener, null);
+    }
+
+    @Override
+    protected boolean handleRefresh(JSONObject response) {
+        try {
+            JSONObject result = response.getJSONObject("result");
+            JSONArray pendings = result.getJSONArray("pendings");
+            JSONArray recommends = result.getJSONArray("recommends");
+            JSONArray poiRecommends = result.getJSONArray("poi_recommends");
+            mAdapter.setData(pendings, recommends, poiRecommends);
+            mAdapter.notifyDataSetChanged();
+            return poiRecommends.length() > 0;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean handleLoadMore(JSONObject response) {
+        try {
+            JSONObject result = response.getJSONObject("result");
+            JSONArray poiRecommends = result.getJSONArray("poi_recommends");
+            if (poiRecommends.length() > 0) {
+                int itemCountBeforeAdd = mAdapter.getCustomItemCount();
+                int addedCount = mAdapter.addNearbys(poiRecommends);
+                if (addedCount > 0) {
+                    mAdapter.notifyItemRangeInserted(itemCountBeforeAdd, addedCount);
+                    return true;
                 }
-            });
-        }
-    }
-
-    @Override
-    public void onRefresh() {
-        doRefresh();
-    }
-
-    private void doRefresh() {
-        ApiWorker.getInstance().requestRecommendFriend(new RefreshListener(), null);
-    }
-
-    private void setLocation(LatLng location) {
-        mLocation = location;
-        mAdapter.notifyNearbys();
-    }
-
-    class RefreshListener implements Response.Listener<JSONObject> {
-        @Override
-        public void onResponse(JSONObject jsonObject) {
-            try {
-                JSONObject result = jsonObject.getJSONObject("result");
-                mAdapter.setData(result.getJSONArray("pendings"),
-                        result.getJSONArray("recommends"),
-                        result.getJSONArray("poi_recommends"));
-                mAdapter.notifyDataSetChanged();
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
-
-            mRefreshLayout.setRefreshing(false);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
     private AMapLocationListener mLocationListener = new AMapLocationListener() {
@@ -153,7 +125,6 @@ public class FriendMeetFragment extends BaseV4Fragment
             if(aMapLocation != null && aMapLocation.getAMapException().getErrorCode() == 0) {
                 double longitude = aMapLocation.getLongitude();
                 double latitude = aMapLocation.getLatitude();
-                setLocation(new LatLng(latitude, longitude));
                 ApiWorker.getInstance().postLocation(longitude, latitude,
                         ApiWorker.getInstance().emptyResponseListener, null);
             }
@@ -181,7 +152,7 @@ public class FriendMeetFragment extends BaseV4Fragment
     private static final int TYPE_RECOMMEND = 1;
     private static final int TYPE_NEARBY    = 2;
 
-    class FriendRecommendAdapter extends RecyclerView.Adapter<FriendRecommendAdapter.BaseHolder> {
+    class FriendRecommendAdapter extends LoadMoreAdapter {
 
         private Context mContext;
 
@@ -234,16 +205,45 @@ public class FriendMeetFragment extends BaseV4Fragment
             abstract Object JSONObject2Item(JSONObject jsonObject);
         }
 
-        public void notifyNearbys() {
-            int penddingRecommendCount = mPendings.size() + mRecommends.size();
-            int nearbyCount = mNearbys.size();
-            for (int i = 0; i < nearbyCount; i++) {
-                notifyItemChanged(penddingRecommendCount + i);
+        private double getMaxNearbyDistance() {
+            return mNearbys.get(mNearbys.size() - 1).distance;
+        }
+
+        /**
+         *
+         * @param nearbys
+         * @return added count
+         */
+        private int addNearbys(JSONArray nearbys) {
+            int addedCount = 0;
+            int length = nearbys.length();
+            for (int i = 0; i < length; i++) {
+                try {
+                    NearbyItem item = new NearbyItem(nearbys.getJSONObject(i));
+                    if (!has(item)) {
+                        mNearbys.add(item);
+                        addedCount++;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
+
+            return addedCount;
+        }
+
+        private boolean has(NearbyItem nearbyItem) {
+            for (NearbyItem item: mNearbys) {
+                if (nearbyItem.getUid().equals(item.getUid())) {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         @Override
-        public BaseHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
             switch (viewType) {
                 case TYPE_PADDING:
                     return createPendingHolder(parent);
@@ -274,7 +274,7 @@ public class FriendMeetFragment extends BaseV4Fragment
         }
 
         @Override
-        public void onBindViewHolder(BaseHolder holder, int position) {
+        public void onBindCustomViewHolder(RecyclerView.ViewHolder holder, int position) {
             switch (getItemViewType(position)) {
                 case TYPE_PADDING:
                 case TYPE_RECOMMEND:
@@ -309,10 +309,7 @@ public class FriendMeetFragment extends BaseV4Fragment
         private void bindNearbyHolder(NearbyHolder holder, NearbyItem item) {
             bindBaseHolder(holder, item);
             holder.gotKoo.setCount(item.kooCount);
-            if (mLocation != null) {
-                float distance = AMapUtils.calculateLineDistance(mLocation, item.location);
-                holder.summaryText.setText(generateReadableDistanceString(distance));
-            }
+            holder.summaryText.setText(generateReadableDistanceString((float) item.distance));
         }
 
         private String generateReadableDistanceString(float distance) {
@@ -334,12 +331,12 @@ public class FriendMeetFragment extends BaseV4Fragment
         }
 
         @Override
-        public int getItemCount() {
+        public int getCustomItemCount() {
             return mPendings.size() + mRecommends.size() + mNearbys.size();
         }
 
         @Override
-        public int getItemViewType(int position) {
+        public int getCustomItemViewType(int position) {
             return Utils.getPositionType(position,
                     new int[]{TYPE_PADDING, TYPE_RECOMMEND, TYPE_NEARBY},
                     mPendings, mRecommends, mNearbys);
@@ -553,17 +550,14 @@ public class FriendMeetFragment extends BaseV4Fragment
         class NearbyItem extends BaseUserInfo {
 
             private int kooCount;
-            private LatLng location;
+            private double distance;
 
             public NearbyItem(JSONObject jsonObject) {
                 super(jsonObject);
 
                 try {
                     kooCount = jsonObject.getInt("koo_num");
-                    JSONObject loc = jsonObject.getJSONObject("loc");
-                    double longitude = loc.getDouble("longitude");
-                    double latitude = loc.getDouble("latitude");
-                    location = new LatLng(latitude, longitude);
+                    distance = jsonObject.getDouble("distance");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

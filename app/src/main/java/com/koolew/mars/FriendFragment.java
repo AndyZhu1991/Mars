@@ -104,7 +104,7 @@ public class FriendFragment extends MainBaseFragment {
             fragmentList = new ArrayList<>();
             fragmentTitles = new ArrayList<>();
 
-            fragmentList.add(FriendMeetFragment.newInstance());
+            fragmentList.add(new FriendMeetFragment());
             fragmentTitles.add(getString(R.string.friend_meet_title));
 
             //fragmentList.add(FriendWeiboFragment.newInstance());

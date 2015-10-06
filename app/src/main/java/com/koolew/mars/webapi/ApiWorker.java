@@ -122,6 +122,12 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.FRIEND_RECOMMEND_URL, listener, errorListener);
     }
 
+    public JsonObjectRequest requestPoiRecommendFriend(double min,
+                                                       Response.Listener<JSONObject> listener,
+                                                       Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getFriendRecommendUrl(min), listener, errorListener);
+    }
+
     public JsonObjectRequest requestContactFriend(List<ContactUtil.SimpleContactInfo> contacts,
             Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         return standardPostRequest(UrlHelper.CONTACT_FRIEND_RECOMMEND_URL,
