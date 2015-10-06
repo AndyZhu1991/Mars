@@ -4,13 +4,13 @@
     android:layout_height="match_parent"
     tools:context="com.koolew.mars.KoolewWebActivity">
 
-    <com.koolew.mars.view.TitleBarView
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/transparent"/>
-
     <WebView
         android:id="@+id/web_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <com.koolew.mars.view.TitleBarView
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"/>
 </FrameLayout>
