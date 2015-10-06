@@ -269,7 +269,9 @@ public class MainActivity extends BaseV4FragmentActivity
     private void switchFragment(int position) {
         MainBaseFragment fragment = mAdapter.drawerItems[position].getFragment();
         if (fragment != null) {
+            int lastCheckedPosition = mAdapter.checkedPosition;
             mAdapter.checkedPosition = position;
+            mAdapter.notifyItemChanged(lastCheckedPosition);
             mAdapter.notifyItemChanged(position);
             mCurFragment = fragment;
             FragmentManager fragmentManager = getSupportFragmentManager();
