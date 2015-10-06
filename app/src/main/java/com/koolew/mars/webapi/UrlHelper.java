@@ -84,6 +84,7 @@ public class UrlHelper {
     private static final String VIDEO_COMMENT_URL = V3_URL + "video/comment";
     private static final String GUESS_JUDGE_URL = V3_URL + "guess/judge";
     private static final String FEEDS_HOT_URL = V3_URL + "feeds/hot";
+    public static final String NOTIFICATION_URL = V3_URL + "activity";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
@@ -298,6 +299,13 @@ public class UrlHelper {
         return Uri.parse(FEEDS_HOT_URL)
                 .buildUpon()
                 .appendQueryParameter("page", String.valueOf(page))
+                .build().toString();
+    }
+
+    public static String getNotificationUrl(long before) {
+        return Uri.parse(NOTIFICATION_URL)
+                .buildUpon()
+                .appendQueryParameter("before", String.valueOf(before))
                 .build().toString();
     }
 

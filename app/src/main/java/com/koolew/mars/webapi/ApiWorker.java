@@ -766,6 +766,17 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.getFeedsHotUrl(page), listener, errorListener);
     }
 
+    public JsonObjectRequest requestNotification(Response.Listener<JSONObject> listener,
+                                                 Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.NOTIFICATION_URL, listener, errorListener);
+    }
+
+    public JsonObjectRequest requestNotification(long before,
+                                                 Response.Listener<JSONObject> listener,
+                                                 Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getNotificationUrl(before), listener, errorListener);
+    }
+
 
     // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,
