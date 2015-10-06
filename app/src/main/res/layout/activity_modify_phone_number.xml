@@ -11,8 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/koolew_deep_blue"
-        TitleBarView:title_text="@string/modify_phone_number"
-        TitleBarView:right_text="@string/save"/>
+        TitleBarView:title_text="@string/modify_phone_number"/>
 
     <FrameLayout
         android:layout_width="match_parent"
