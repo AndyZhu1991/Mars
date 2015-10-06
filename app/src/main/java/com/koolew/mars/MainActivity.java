@@ -489,7 +489,7 @@ public class MainActivity extends BaseV4FragmentActivity
                         R.color.drawer_list_koolew_select,
                         KoolewFragment.class),
 
-                new DrawerItem(R.mipmap.ic_drawer_list_friend,
+                new DrawerItem(R.mipmap.ic_drawer_list_play,
                         R.mipmap.ic_drawer_list_play_selected,
                         R.string.title_play,
                         R.color.drawer_list_play_select,
