@@ -30,6 +30,8 @@ public class ChangeInfoActivity extends BaseActivity implements View.OnClickList
     private TextView mNickname;
     private PhoneNumberView mPhoneNumber;
 
+    private boolean isAvatarChanged = false;
+
     private int mResultCode = RESULT_CANCELED;
 
     @Override
@@ -43,7 +45,9 @@ public class ChangeInfoActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        UploadAvatarService.startActionUpload(this);
+        if (isAvatarChanged) {
+            UploadAvatarService.startActionUpload(this);
+        }
     }
 
     private void initViews() {
@@ -117,6 +121,7 @@ public class ChangeInfoActivity extends BaseActivity implements View.OnClickList
                     MyAccountInfo.setAvatar(fileUri);
                     ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(), mAvatar);
                     new DisplayBlurImage(mBlurAvatar, MyAccountInfo.getAvatar()).execute();
+                    isAvatarChanged = true;
                 }
                 break;
         }
