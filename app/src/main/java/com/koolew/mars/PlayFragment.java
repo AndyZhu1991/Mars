@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
@@ -23,9 +22,9 @@ import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.TypedUserInfo;
-import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.utils.VideoLoader;
+import com.koolew.mars.webapi.ApiErrorCode;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -91,11 +90,13 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     private TextView mNextGroupText;
 
     private View mFinishLayout;
+    private View mCongratulationText;
+    private View mFinishedText;
     private TextView mNextRoundCountDownText;
     private View mNextRoundImmediatelyBtn;
     private TextView mNextRoundPayText;
 
-    private Dialog mConnectingDialog;
+    private View mBlockTouchFrame;
 
     private int mMode;
 
@@ -166,6 +167,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
         mLeftFollowBtn = (TextView) root.findViewById(R.id.left_follow_btn);
         mLeftFollowBtn.setOnClickListener(this);
         mBottomLeftLayout = root.findViewById(R.id.bottom_left_layout);
+        mBottomLeftLayout.setOnClickListener(this);
         mLeftUserDesc = (TextView) root.findViewById(R.id.left_user_desc);
 
         mRightResultText = (TextView) root.findViewById(R.id.right_result_text);
@@ -177,6 +179,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
         mRightFollowBtn = (TextView) root.findViewById(R.id.right_follow_btn);
         mRightFollowBtn.setOnClickListener(this);
         mBottomRightLayout = root.findViewById(R.id.bottom_right_layout);
+        mBottomRightLayout.setOnClickListener(this);
         mRightUserDesc = (TextView) root.findViewById(R.id.right_user_desc);
 
         mBottomResultFrame = root.findViewById(R.id.bottom_result_frame);
@@ -185,12 +188,15 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
         mNextGroupText.setOnClickListener(this);
 
         mFinishLayout = root.findViewById(R.id.finish_layout);
+        mCongratulationText = root.findViewById(R.id.congratulation_text);
+        mFinishedText = root.findViewById(R.id.finished_text);
         mNextRoundCountDownText = (TextView) root.findViewById(R.id.next_round_count_down_text);
         mNextRoundImmediatelyBtn = root.findViewById(R.id.play_next_round_immediately);
         mNextRoundImmediatelyBtn.setOnClickListener(this);
         mNextRoundPayText = (TextView) root.findViewById(R.id.next_round_pay_text);
 
-        mConnectingDialog = DialogUtil.getConnectingServerDialog(getActivity());
+        mBlockTouchFrame = root.findViewById(R.id.block_touch_frame);
+        mBlockTouchFrame.setOnClickListener(this);
 
         requestDefaultGroup();
 
@@ -232,6 +238,9 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
             case R.id.left_follow_btn:
                 onLeftFollowClick();
                 break;
+            case R.id.bottom_left_layout:
+                onBottomLeftLayoutClick();
+                break;
             case R.id.right_avatar:
                 onRightAvatarClick();
                 break;
@@ -240,6 +249,9 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
                 break;
             case R.id.right_follow_btn:
                 onRightFollowClick();
+                break;
+            case R.id.bottom_right_layout:
+                onBottomRightLayoutClick();
                 break;
             case R.id.next_group:
                 onNextGroupClick();
@@ -264,6 +276,12 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
                 new FollowUserListener(mLeftFollowBtn), null);
     }
 
+    private void onBottomLeftLayoutClick() {
+        if (mCurrentPlayPosition == POSITION_RIGHT) {
+            switchVideo();
+        }
+    }
+
     private void onRightAvatarClick() {
         FriendInfoActivity.startThisActivity(getActivity(), mLastRightUserId);
     }
@@ -278,17 +296,54 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
                 new FollowUserListener(mRightFollowBtn), null);
     }
 
+    private void onBottomRightLayoutClick() {
+        if (mCurrentPlayPosition == POSITION_LEFT) {
+            switchVideo();
+        }
+    }
+
     private void onNextGroupClick() {
         nextGroup();
     }
 
     private void onPlayNextRoundImmediatelyClick() {
+        mBlockTouchFrame.setVisibility(View.VISIBLE);
         if (mWaitTime == 0) {
             ApiWorker.getInstance().requestDefaultPlayGroup(new DefaultGroupListener(),
                     new DefaultGroupErrorListener());
         }
         else {
-            ApiWorker.getInstance().requestPayPlayGroup(new DefaultGroupListener(), null);
+            ApiWorker.getInstance().requestPayPlayGroup(new PayRoundListener(),
+                    new DefaultGroupErrorListener());
+        }
+    }
+
+    private class PayRoundListener implements Response.Listener<JSONObject> {
+        @Override
+        public void onResponse(JSONObject response) {
+            mBlockTouchFrame.setVisibility(View.INVISIBLE);
+            try {
+                int code = response.getInt("code");
+                if (code == 0) {
+                    updateCurrentGroup(response.getJSONObject("result").getJSONObject("next"));
+                    if (!hasNextGroup()) {
+                        mLoadingProgress.setVisibility(View.INVISIBLE);
+                        switchToFinishMode();
+                        return;
+                    }
+
+                    startPlayGroup();
+                }
+                else if (code == ApiErrorCode.COIN_NOT_ENOUGH) {
+                    Toast.makeText(getActivity(), R.string.play_not_enough_coin, Toast.LENGTH_LONG)
+                            .show();
+                }
+                else {
+                    onDefaultGroupError(response.getString("msg"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -322,7 +377,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     }
 
     private void requestDefaultGroup() {
-        mConnectingDialog.show();
+        mBlockTouchFrame.setVisibility(View.VISIBLE);
         ApiWorker.getInstance().requestDefaultPlayGroup(
                 new DefaultGroupListener(), new DefaultGroupErrorListener());
     }
@@ -330,7 +385,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     class DefaultGroupListener implements Response.Listener<JSONObject> {
         @Override
         public void onResponse(JSONObject response) {
-            mConnectingDialog.dismiss();
+            mBlockTouchFrame.setVisibility(View.INVISIBLE);
             try {
                 if (response.getInt("code") == 0) {
                     updateCurrentGroup(response.getJSONObject("result").getJSONObject("next"));
@@ -354,7 +409,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     class DefaultGroupErrorListener implements Response.ErrorListener {
         @Override
         public void onErrorResponse(VolleyError error) {
-            mConnectingDialog.dismiss();
+            mBlockTouchFrame.setVisibility(View.INVISIBLE);
             onDefaultGroupError(error.getLocalizedMessage());
         }
     }
@@ -368,12 +423,14 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
         mJudgedVideoId = videoId;
         stopPlayGroup();
         enableSupportBtn(false);
+        mBlockTouchFrame.setVisibility(View.VISIBLE);
         ApiWorker.getInstance().judgeVideo(videoId, mJudgeListener, mJudgeErrorListener);
     }
 
     private Response.Listener<JSONObject> mJudgeListener = new Response.Listener<JSONObject>() {
         @Override
         public void onResponse(JSONObject response) {
+            mBlockTouchFrame.setVisibility(View.INVISIBLE);
             try {
                 if (response.getInt("code") == 0) {
                     JSONObject result = response.getJSONObject("result");
@@ -403,6 +460,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     private Response.ErrorListener mJudgeErrorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
+            mBlockTouchFrame.setVisibility(View.INVISIBLE);
             onJudgeError(error.getLocalizedMessage());
         }
     };
@@ -569,6 +627,10 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
 
     @Override
     public void onCompletion(IMediaPlayer iMediaPlayer) {
+        switchVideo();
+    }
+
+    private void switchVideo() {
         if (mCurrentPlayPosition == POSITION_LEFT) {
             mCurrentPlayPosition = POSITION_RIGHT;
             mVideoLoader.loadVideo(null, mCurrentRightVideoInfo.getVideoUrl());
@@ -644,8 +706,15 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
         mFinishedImage.setVisibility(View.VISIBLE);
         mFinishLayout.setVisibility(View.VISIBLE);
 
+        if (mNextRoundImmediatelyBtn.getBottom() > mFinishLayout.getHeight()) {
+            mCongratulationText.setVisibility(View.GONE);
+            mFinishedText.setVisibility(View.GONE);
+        }
+
         mNextRoundCountDownTimer = new Timer();
         mNextRoundCountDownTimer.schedule(new NextRoundCountDownTimerTask(), 0, 1000);
+
+        mTitle.setText("");
 
         mMode = MODE_FINISH;
     }
@@ -690,8 +759,8 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
                     int second = (int) (mWaitTime % 60);
                     int minute = (int) (mWaitTime / 60 % 60);
                     int hour = (int) (mWaitTime / 60 / 60);
-                    mNextRoundCountDownText.setText(getString(
-                            R.string.wait_time_formatter, hour, minute, second));
+                    mNextRoundCountDownText.setText(
+                            String.format("%02d:%02d:%02d", hour, minute, second));
 
                     mWaitTime--;
                     if (mWaitTime == 0) {
