@@ -30,6 +30,10 @@ public class JpushReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (TextUtils.isEmpty(MyAccountInfo.getToken())) {
+            //ApiWorker.getInstance().logout();
+            return;
+        }
         if (null == nm) {
             nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         }

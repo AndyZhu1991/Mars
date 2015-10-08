@@ -36,18 +36,20 @@
     <string name="confirm">确认</string>
     <string name="say">说</string>
     <string name="colon">：</string>
+    <string name="delete">删除</string>
+    <string name="retain">保留</string>
 
     <!-- For MainActivity -->
     <string name="title_koolew">首页</string>
     <string name="title_play">星探</string>
-    <string name="title_friend">朋友</string>
+    <string name="title_friend">好友</string>
     <string name="title_clock_in">打卡</string>
     <string name="title_settings">设置</string>
     <string name="title_add">新建话题</string>
     <string name="got_koo">获得打赏</string>
     <string name="coin_count">金币数量</string>
-    <string name="fans_count" formatted="false">%d粉丝</string>
-    <string name="follows_count" formatted="false">%d关注</string>
+    <string name="fans_count" formatted="false">"%d 粉丝"</string>
+    <string name="follows_count" formatted="false">"%d 关注"</string>
 
     <!-- For FirstLoginActivity -->
     <string name="app_name_english">KOOLEW</string>
@@ -90,10 +92,10 @@
     <string name="joined_video">参与视频</string>
 
     <!-- For FriendFragment -->
-    <string name="friend_meet_title">" 遇 见 "</string>
+    <string name="friend_meet_title">附近的人</string>
     <string name="friend_contact_title">通讯录好友</string>
     <string name="friend_weibo_title">微博好友</string>
-    <string name="friend_current_title">现有好友</string>
+    <string name="friend_current_title">互相关注</string>
     <string name="friend_follows_title">我关注的</string>
     <string name="friend_fans_title">我的粉丝</string>
 
@@ -102,8 +104,8 @@
     <string name="invited_label" formatted="false">你被%s点名</string>
 
     <!-- For FeedsTopicActivity -->
-    <string name="feeds_title_friend">好友</string>
-    <string name="world_title_public">公开</string>
+    <string name="feeds_title_friend">好友圈</string>
+    <string name="world_title_public">世界</string>
     <string name="i_want_capture">我要拍</string>
     <string name="send_invitation">点名好友</string>
 
@@ -127,7 +129,7 @@
     <string name="concat_video_failed">视频处理失败 T_T</string>
     <string name="generate_thumb_failed">缩略图生成失败 T_T</string>
     <string name="fail_to_open_camera">打开摄像头失败，可能是被安全软件阻止，或被其他应用占用。\n请检查。</string>
-    <string name="too_short_to_delete" formatted="false">视频已经短于%.1f秒，是否删除？</string>
+    <string name="too_short_to_delete">是否删除此段？</string>
     <string name="transcoding">正在转码视频</string>
     <string name="please_wait_a_moment">请稍等</string>
 
@@ -137,7 +139,7 @@
     <string name="video_edit_title">编辑视频</string>
     <string name="who_can_see">可以给谁看</string>
     <string name="authority">权限</string>
-    <string name="only_friend_visible">仅好友可见</string>
+    <string name="only_friend_visible">仅互相关注</string>
     <string name="public_visible">公开</string>
     <string name="music">音乐</string>
     <string name="uploading">正在上传...</string>
@@ -169,7 +171,7 @@
 
     <!-- For settings -->
     <string name="intelligent">智能</string>
-    <string name="push_settings">推送设置</string>
+    <string name="push_settings">新消息通知</string>
     <string name="intelligent_save_data_mode">智能节省流量模式</string>
     <string name="service">服务</string>
     <string name="official_wechat">官方微信</string>
@@ -180,12 +182,12 @@
     <string name="logout">登出</string>
     <string name="logout_confirm">确认登出吗？</string>
     <string name="permission">权限</string>
-    <string name="new_friend_apply">新好友申请</string>
-    <string name="new_video_by_friend">好友发布了新视频</string>
-    <string name="danmakued_by_friend">好友弹幕了我</string>
+    <string name="new_fan">新粉丝</string>
+    <string name="new_video_by_following">关注的人发布了新视频</string>
+    <string name="new_danmaku">新弹幕</string>
     <string name="i_got_koo">我获得了打赏</string>
-    <string name="invited_by_friend">被好友点名</string>
-    <string name="invitation_accepted">好友接受了你的点名</string>
+    <string name="new_task">新任务</string>
+    <string name="invitation_accepted">有人接受了你的点名</string>
     <string name="cache">缓存</string>
     <string name="clear_cache">清空缓存</string>
     <string name="clear_cache_confirm_message">确认清空缓存吗？</string>
@@ -210,13 +212,13 @@
     <string name="consume_koo">消耗金币</string>
     <string name="send_a_koo">打赏一下：</string>
     <string name="how_to_get_koo">获取金币</string>
-    <string name="accept_an_invitation">接受好友点名：</string>
-    <string name="friend_accept_invitation">一个好友接受你的点名：</string>
+    <string name="complete_a_task">完成任务：</string>
+    <string name="somebody_accept_invitation">有人接受你的点名：</string>
     <string name="go_black_market">进入黑市</string>
 
     <!-- For KooRankActivity -->
-    <string name="koo_rank_lable">"好友打赏排行榜"</string>
-    <string name="best_friend">最佳好友</string>
+    <string name="koo_rank_lable">"打赏排行榜"</string>
+    <string name="best_fan">最佳粉丝</string>
     <string name="top_num" formatted="false">"Top %02d"</string>
     <string name="no_koo_info1">还没有好友打赏你</string>
     <string name="no_koo_info2">赶紧发布新的话题吧</string>
@@ -248,8 +250,8 @@
     <string name="danmaku_send_faild">弹幕发送失败</string>
 
     <!-- For AddTopicActivity -->
-    <string name="add_topic_title">添加话题卡</string>
-    <string name="input_topic_content_hint">请输入您想创建的话题内容</string>
+    <string name="add_topic_title">将视频添加至</string>
+    <string name="input_topic_content_hint">搜索你想拍摄的话题</string>
     <string name="recommendation">热门推荐</string>
     <string name="little_video_count" formatted="false">%d个小视频</string>
     <string name="no_title_hint">还没有输入标题呢！</string>

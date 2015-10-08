@@ -73,13 +73,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="9dp"
-            CoinRuleItem:description_text="@string/accept_an_invitation"
+            CoinRuleItem:description_text="@string/complete_a_task"
             CoinRuleItem:coin_count="2"/>
 
         <com.koolew.mars.view.CoinRuleItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            CoinRuleItem:description_text="@string/friend_accept_invitation"
+            CoinRuleItem:description_text="@string/somebody_accept_invitation"
             CoinRuleItem:coin_count="2"/>
     </LinearLayout>
 

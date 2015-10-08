@@ -197,7 +197,7 @@ public class KooRankActivity extends BaseActivity implements SwipeRefreshLayout.
 
                 if (getItemViewType(position) == TYPE_BEST) {
                     convertView.findViewById(R.id.crown).setVisibility(View.VISIBLE);
-                    convertView.findViewById(R.id.best_friend).setVisibility(View.VISIBLE);
+                    convertView.findViewById(R.id.best_fan).setVisibility(View.VISIBLE);
                 }
             }
 

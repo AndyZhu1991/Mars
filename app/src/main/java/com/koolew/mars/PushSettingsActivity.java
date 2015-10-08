@@ -37,13 +37,13 @@ public class PushSettingsActivity extends BaseActivity {
         mAdapter = new PreferenceAdapter(this);
 
         mAdapter.add(new PreferenceGroupTitle(this, R.string.permission));
-        mAdapter.add(new SwitchPreference(this, R.string.new_friend_apply,
+        mAdapter.add(new SwitchPreference(this, R.string.new_fan,
                 PreferenceHelper.KEY_NEW_FRIEND_APPLY, PreferenceHelper.DEFAULT_NEW_FRIEND_APPLY));
-        mAdapter.add(new SwitchPreference(this, R.string.new_video_by_friend,
+        mAdapter.add(new SwitchPreference(this, R.string.new_video_by_following,
                 PreferenceHelper.KEY_NEW_VIDEO_BY_FRIEND, PreferenceHelper.DEFAULT_NEW_VIDEO_BY_FRIEND));
-        mAdapter.add(new SwitchPreference(this, R.string.danmakued_by_friend,
+        mAdapter.add(new SwitchPreference(this, R.string.new_danmaku,
                 PreferenceHelper.KEY_DANMAKUED_BY_FRIEND, PreferenceHelper.DEFAULT_DANMAKUED_BY_FRIEND));
-        mAdapter.add(new SwitchPreference(this, R.string.invited_by_friend,
+        mAdapter.add(new SwitchPreference(this, R.string.new_task,
                 PreferenceHelper.KEY_INVITED, PreferenceHelper.DEFAULT_INVITED));
         mAdapter.add(new SwitchPreference(this, R.string.invitation_accepted,
                 PreferenceHelper.KEY_INVITATION_ACCEPTED, PreferenceHelper.DEFAULT_INVITATION_ACCEPTED));

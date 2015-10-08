@@ -660,15 +660,14 @@ public class RecordingSessionView extends LinearLayout {
         @Override
         public void onVideoDeleteCut() {
             new AlertDialog.Builder(getContext())
-                    .setMessage(getContext().getString(R.string.too_short_to_delete,
-                            VideoPieceView.MIN_CUT_LEN / 1000f))
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    .setMessage(getContext().getString(R.string.too_short_to_delete))
+                    .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             deleteVideoItem(getAdapterPosition());
                         }
                     })
-                    .setNegativeButton(android.R.string.cancel, null)
+                    .setNegativeButton(R.string.retain, null)
                     .show();
         }
 
