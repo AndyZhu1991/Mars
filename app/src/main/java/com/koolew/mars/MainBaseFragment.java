@@ -2,6 +2,7 @@ package com.koolew.mars;
 
 import android.app.Activity;
 import android.net.Uri;
+import android.os.Bundle;
 
 import com.koolew.mars.statistics.BaseV4Fragment;
 
@@ -24,6 +25,12 @@ public class MainBaseFragment extends BaseV4Fragment {
                     + " must implement OnFragmentInteractionListener"
                     + " and ToolbarOperateInterface");
         }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mToolbarInterface.unregisterAllTopRedPoint();
     }
 
     @Override
@@ -60,6 +67,8 @@ public class MainBaseFragment extends BaseV4Fragment {
 
         void setTopIconImageResource(int position, int resource);
 
-        void notifyTopIcon(int position, boolean isNotify);
+        void setTopRedPointPath(int position, String path);
+
+        void unregisterAllTopRedPoint();
     }
 }

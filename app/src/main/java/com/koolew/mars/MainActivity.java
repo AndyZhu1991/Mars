@@ -30,14 +30,13 @@ import com.android.volley.toolbox.Volley;
 import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.blur.DisplayBlurImageAndPalette;
 import com.koolew.mars.infos.MyAccountInfo;
-import com.koolew.mars.notification.NotificationEvent;
-import com.koolew.mars.notification.NotificationManager;
 import com.koolew.mars.preference.PreferenceHelper;
+import com.koolew.mars.redpoint.RedPointManager;
+import com.koolew.mars.redpoint.RedPointView;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.utils.ColorUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.DrawerToggleView;
-import com.koolew.mars.view.NotificationPointView;
 import com.koolew.mars.view.PhoneNumberView;
 import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.UrlHelper;
@@ -45,8 +44,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.simple.eventbus.EventBus;
-import org.simple.eventbus.Subscriber;
 
 import java.util.Map;
 
@@ -64,7 +61,7 @@ public class MainActivity extends BaseV4FragmentActivity
 
     private DrawerLayout mDrawerLayout;
     private DrawerToggleView mToggleView;
-    private NotificationPointView mToggleNotificationPoint;
+    private RedPointView mToggleRedPoint;
     private View mMyToolbar;
     private int mTitleBarColor;
     private int mAvatarPaletteColor;
@@ -87,7 +84,7 @@ public class MainActivity extends BaseV4FragmentActivity
 
     private FrameLayout[] mTopIconLayouts = new FrameLayout[2];
     private ImageView[] mTopIcons = new ImageView[2];
-    private View[] mTopNotifications = new View[2];
+    private RedPointView[] mTopRedPoints = new RedPointView[2];
 
     private RequestQueue mRequestQueue;
 
@@ -107,8 +104,8 @@ public class MainActivity extends BaseV4FragmentActivity
         }
         mToggleView = (DrawerToggleView) findViewById(R.id.my_drawer_toggle);
         mToggleView.setDrawer(mDrawerLayout);
-        mToggleNotificationPoint = (NotificationPointView)
-                findViewById(R.id.toggle_notification_point);
+        mToggleRedPoint = (RedPointView) findViewById(R.id.toggle_red_point);
+        mToggleRedPoint.registerPath(RedPointManager.PATH_DRAWER_TOGGLE);
         mContentFrame = (FrameLayout) findViewById(R.id.content_frame);
         mLeftDrawer = (LinearLayout) findViewById(R.id.left_drawer);
         mInfoBackground = (ImageView) findViewById(R.id.info_background);
@@ -136,10 +133,10 @@ public class MainActivity extends BaseV4FragmentActivity
 
         mTopIconLayouts[0]   = (FrameLayout) findViewById(R.id.top_icon_layout1);
         mTopIcons[0]         = (ImageView) findViewById(R.id.top_icon1);
-        mTopNotifications[0] = findViewById(R.id.top_notification1);
+        mTopRedPoints[0]     = (RedPointView) findViewById(R.id.top_red_point1);
         mTopIconLayouts[1]   = (FrameLayout) findViewById(R.id.top_icon_layout2);
         mTopIcons[1]         = (ImageView) findViewById(R.id.top_icon2);
-        mTopNotifications[1] = findViewById(R.id.top_notification2);
+        mTopRedPoints[1]     = (RedPointView) findViewById(R.id.top_red_point2);
 
         mTopIconLayouts[0].setOnClickListener(this);
         mTopIconLayouts[1].setOnClickListener(this);
@@ -156,14 +153,7 @@ public class MainActivity extends BaseV4FragmentActivity
             }
         }
 
-        EventBus.getDefault().register(this);
-        NotificationManager.refreshNotification();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        RedPointManager.refreshRedPoint();
     }
 
     @Override
@@ -179,16 +169,6 @@ public class MainActivity extends BaseV4FragmentActivity
         mFollowsCountText.setText(getString(R.string.follows_count, MyAccountInfo.getFollowsCount()));
         mCountKoo.setText(String.valueOf(MyAccountInfo.getKooNum()));
         mCountCoin.setText(String.valueOf(MyAccountInfo.getCoinNum()));
-    }
-
-    @Subscriber
-    public void onNotificationUpdate(NotificationEvent event) {
-        if (event.getSuggestion() > 0) {
-            mToggleNotificationPoint.setVisibility(View.VISIBLE);
-            //                        Friends
-            mAdapter.notificationCount[1] = event.getSuggestion();
-            mAdapter.notifyItemChanged(1);
-        }
     }
 
     @Override
@@ -269,10 +249,8 @@ public class MainActivity extends BaseV4FragmentActivity
     private void switchFragment(int position) {
         MainBaseFragment fragment = mAdapter.drawerItems[position].getFragment();
         if (fragment != null) {
-            int lastCheckedPosition = mAdapter.checkedPosition;
             mAdapter.checkedPosition = position;
-            mAdapter.notifyItemChanged(lastCheckedPosition);
-            mAdapter.notifyItemChanged(position);
+            mAdapter.notifyDataSetChanged();
             mCurFragment = fragment;
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
@@ -284,17 +262,6 @@ public class MainActivity extends BaseV4FragmentActivity
 
     private void onItemClick(int position) {
         switchFragment(position);
-
-        mAdapter.notificationCount[position] = 0;
-        mAdapter.notifyItemChanged(position);
-
-        int totalCount = 0;
-        for (int count : mAdapter.notificationCount) {
-            totalCount += count;
-        }
-        if (totalCount == 0) {
-            mToggleNotificationPoint.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override
@@ -332,12 +299,17 @@ public class MainActivity extends BaseV4FragmentActivity
     @Override
     public void setTopIconImageResource(int position, int resource) {
         mTopIcons[position].setImageResource(resource);
-        notifyTopIcon(position, false);
     }
 
     @Override
-    public void notifyTopIcon(int position, boolean isNotify) {
-        mTopNotifications[position].setVisibility(isNotify ? View.VISIBLE : View.INVISIBLE);
+    public void setTopRedPointPath(int position, String path) {
+        mTopRedPoints[position].registerPath(path);
+    }
+
+    @Override
+    public void unregisterAllTopRedPoint() {
+        mTopRedPoints[0].unregisterPath();
+        mTopRedPoints[1].unregisterPath();
     }
 
     @Override
@@ -463,7 +435,7 @@ public class MainActivity extends BaseV4FragmentActivity
 
         private ImageView icon;
         private TextView title;
-        private NotificationPointView notificationPoint;
+        private RedPointView redPoint;
 
         public DrawerHolder(View itemView) {
             super(itemView);
@@ -471,8 +443,8 @@ public class MainActivity extends BaseV4FragmentActivity
 
             icon = (ImageView) itemView.findViewById(R.id.icon);
             title = (TextView) itemView.findViewById(R.id.text);
-            notificationPoint = (NotificationPointView) itemView
-                    .findViewById(R.id.notification_point);
+            redPoint = (RedPointView) itemView
+                    .findViewById(R.id.red_point);
         }
 
         @Override
@@ -536,8 +508,6 @@ public class MainActivity extends BaseV4FragmentActivity
                 }
         };
 
-        private int[] notificationCount = new int[drawerItems.length];
-
         @Override
         public DrawerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new DrawerHolder(LayoutInflater.from(MainActivity.this)
@@ -557,11 +527,8 @@ public class MainActivity extends BaseV4FragmentActivity
                 holder.title.setTextColor(getResources().getColor(UNSELECT_COLOR_RES));
             }
             holder.title.setText(drawerItems[position].titleRes);
-            if (notificationCount[position] > 0) {
-                holder.notificationPoint.setVisibility(View.VISIBLE);
-            }
-            else {
-                holder.notificationPoint.setVisibility(View.INVISIBLE);
+            if (position == 2) { // Friends
+                holder.redPoint.registerPath(RedPointManager.PATH_FRIENDS);
             }
         }
 

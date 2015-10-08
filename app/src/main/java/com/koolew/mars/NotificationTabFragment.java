@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
+import com.koolew.mars.redpoint.RedPointManager;
 import com.koolew.mars.utils.UriProcessor;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -56,6 +57,7 @@ public class NotificationTabFragment
 
     @Override
     protected boolean handleRefresh(JSONObject response) {
+        RedPointManager.clearRedPointByPath(RedPointManager.PATH_NOTIFICATION);
         JSONArray activities = queryActivities(response);
         if (activities == null || activities.length() == 0) {
             return false;

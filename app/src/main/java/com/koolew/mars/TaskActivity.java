@@ -23,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
+import com.koolew.mars.redpoint.RedPointManager;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.UriProcessor;
 import com.koolew.mars.utils.Utils;
@@ -140,6 +141,7 @@ public class TaskActivity extends BaseActivity
     private Response.Listener<JSONObject> mRefreshListener = new Response.Listener<JSONObject>() {
         @Override
         public void onResponse(JSONObject jsonObject) {
+            RedPointManager.clearRedPointByPath(RedPointManager.PATH_TASK);
             if (mRefreshRequest != null) {
                 mRefreshLayout.setRefreshing(false);
                 mRefreshRequest = null;

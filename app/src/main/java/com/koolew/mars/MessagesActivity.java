@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.koolew.mars.redpoint.RedPointManager;
+import com.koolew.mars.redpoint.RedPointView;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.utils.PagerScrollSmoothColorListener;
 import com.koolew.mars.utils.Utils;
@@ -41,7 +43,7 @@ public class MessagesActivity extends BaseV4FragmentActivity {
 
         indicator.setScrollBar(new ColorBar(this, Color.WHITE,
                 getResources().getDimensionPixelSize(R.dimen.underline_height)));
-        indicator.setOnTransitionListener(new OnTransitionTextListener().setColorId(this,
+        indicator.setOnTransitionListener(new TransitionTextListener().setColorId(this,
                 R.color.title_text_color_indicated, R.color.title_text_color_unindicate));
 
         viewPager.setOffscreenPageLimit(2);
@@ -58,17 +60,21 @@ public class MessagesActivity extends BaseV4FragmentActivity {
 
         private List<Fragment> fragmentList;
         private List<String> titleList;
+        private List<String> redPointPathList;
 
         public MessageFragmentPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
             fragmentList = new ArrayList<>();
             titleList = new ArrayList<>();
+            redPointPathList = new ArrayList<>();
 
             fragmentList.add(new DanmakuTabFragment());
             titleList.add(getString(R.string.danmaku));
+            redPointPathList.add(RedPointManager.PATH_DANMAKU);
 
             fragmentList.add(new NotificationTabFragment());
             titleList.add(getString(R.string.notification));
+            redPointPathList.add(RedPointManager.PATH_NOTIFICATION);
         }
 
         @Override
@@ -80,12 +86,14 @@ public class MessagesActivity extends BaseV4FragmentActivity {
         public View getViewForTab(int position, View convertView, ViewGroup container) {
             if (convertView == null) {
                 convertView = LayoutInflater.from(MessagesActivity.this)
-                        .inflate(R.layout.indicator_text, container, false);
+                        .inflate(R.layout.indicator_with_red_point, container, false);
             }
-            TextView textView = (TextView) convertView;
+            TextView textView = (TextView) convertView.findViewById(R.id.text);
             textView.setText(titleList.get(position));
             int paddingLR = (int) Utils.dpToPixels(MessagesActivity.this, 10);
             textView.setPadding(paddingLR, 0, paddingLR, 0);
+            RedPointView redPoint = (RedPointView) convertView.findViewById(R.id.red_point);
+            redPoint.registerPath(redPointPathList.get(position));
             return convertView;
         }
 
@@ -105,6 +113,13 @@ public class MessagesActivity extends BaseV4FragmentActivity {
         public void onColorChanged(int color) {
             titleBar.setBackgroundColor(color);
             indicator.setBackgroundColor(color);
+        }
+    }
+
+    class TransitionTextListener extends OnTransitionTextListener {
+        @Override
+        public TextView getTextView(View tabItemView, int position) {
+            return (TextView) tabItemView.findViewById(R.id.text);
         }
     }
 }

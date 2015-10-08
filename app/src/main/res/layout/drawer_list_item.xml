@@ -20,10 +20,9 @@
         android:textSize="18sp"
         android:textColor="@color/drawer_list_text_color"/>
 
-    <com.koolew.mars.view.NotificationPointView
-        android:id="@+id/notification_point"
+    <com.koolew.mars.redpoint.RedPointView
+        android:id="@+id/red_point"
         android:layout_width="8dp"
         android:layout_height="8dp"
-        android:layout_marginRight="8dp"
-        android:visibility="invisible"/>
+        android:layout_marginRight="8dp"/>
 </LinearLayout>

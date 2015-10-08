@@ -10,12 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.koolew.mars.notification.NotificationEvent;
-import com.koolew.mars.notification.NotificationKeeper;
+import com.koolew.mars.redpoint.RedPointManager;
 import com.koolew.mars.view.KoolewViewPagerIndicator;
-
-import org.simple.eventbus.EventBus;
-import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,19 +58,8 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
         mToolbarInterface.setToolbarTitle(getString(R.string.title_koolew));
         initSubPageColors();
 
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        EventBus.getDefault().unregister(this);
-    }
-
-    @Subscriber
-    public void onNotificationUpdate(NotificationEvent event) {
-        refreshTopIconNotification(event.getComment(), event.getAssignment());
+        mToolbarInterface.setTopRedPointPath(0, RedPointManager.PATH_MESSAGE);
+        mToolbarInterface.setTopRedPointPath(1, RedPointManager.PATH_TASK);
     }
 
     @Override
@@ -103,9 +88,6 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
         mToolbarInterface.setTopIconImageResource(0, R.mipmap.ic_danmaku);
         mToolbarInterface.setTopIconImageResource(1, R.mipmap.ic_task);
 
-        refreshTopIconNotification(NotificationKeeper.getComment(),
-                NotificationKeeper.getAssignment());
-
         root.findViewById(R.id.btn_add_topic).setOnClickListener(this);
 
         return root;
@@ -115,19 +97,10 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
     public void onTopIconClick(int position) {
         if (position == 0) {
             startActivity(new Intent(getActivity(), MessagesActivity.class));
-            NotificationKeeper.setComment(0);
-            mToolbarInterface.notifyTopIcon(0, false);
         }
         else if (position == 1) {
             startActivity(new Intent(getActivity(), TaskActivity.class));
-            NotificationKeeper.setAssignment(0);
-            mToolbarInterface.notifyTopIcon(1, false);
         }
-    }
-
-    private void refreshTopIconNotification(int danmaku, int task) {
-        mToolbarInterface.notifyTopIcon(0, danmaku > 0); // Danmaku icon
-        mToolbarInterface.notifyTopIcon(1, task > 0); // Task icon
     }
 
     private void initSubPageColors() {

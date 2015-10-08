@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.koolew.mars.MainActivity;
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.redpoint.RedPointManager;
 import com.koolew.mars.utils.UriProcessor;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
@@ -50,7 +51,7 @@ public class JpushReceiver extends BroadcastReceiver {
 
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
             Log.d(TAG, "接受到推送下来的通知");
-            com.koolew.mars.notification.NotificationManager.refreshNotification();
+            RedPointManager.refreshRedPoint();
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
             Log.d(TAG, "用户点击打开了通知");
             try {
@@ -66,7 +67,7 @@ public class JpushReceiver extends BroadcastReceiver {
                 e.printStackTrace();
             }
 
-            com.koolew.mars.notification.NotificationManager.refreshDelayed(1000);
+            RedPointManager.refreshDelayed(1000);
         } else {
             Log.d(TAG, "Unhandled intent - " + intent.getAction());
         }

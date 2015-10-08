@@ -31,14 +31,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
 
-                <com.koolew.mars.view.NotificationPointView
-                    android:id="@+id/toggle_notification_point"
+                <com.koolew.mars.redpoint.RedPointView
+                    android:id="@+id/toggle_red_point"
                     android:layout_width="8dp"
                     android:layout_height="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_gravity="top|right"
-                    android:visibility="invisible"/>
+                    android:layout_gravity="top|right"/>
             </FrameLayout>
 
             <TextView
@@ -65,12 +64,11 @@
                     android:id="@+id/top_icon1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
-                <com.koolew.mars.view.NotificationPointView
-                    android:id="@+id/top_notification1"
+                <com.koolew.mars.redpoint.RedPointView
+                    android:id="@+id/top_red_point1"
                     android:layout_width="8dp"
                     android:layout_height="8dp"
-                    android:layout_gravity="top|right"
-                    android:visibility="invisible"/>
+                    android:layout_gravity="top|right"/>
             </FrameLayout>
 
             <FrameLayout
@@ -86,12 +84,11 @@
                     android:id="@+id/top_icon2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
-                <com.koolew.mars.view.NotificationPointView
-                    android:id="@+id/top_notification2"
+                <com.koolew.mars.redpoint.RedPointView
+                    android:id="@+id/top_red_point2"
                     android:layout_width="8dp"
                     android:layout_height="8dp"
-                    android:layout_gravity="top|right"
-                    android:visibility="invisible"/>
+                    android:layout_gravity="top|right"/>
             </FrameLayout>
         </RelativeLayout>
 

@@ -52,4 +52,8 @@
         <attr name="textSize" format="dimension"/>
         <attr name="textColor" format="color"/>
     </declare-styleable>
+
+    <declare-styleable name="RedPointView">
+        <attr name="needCountNum" format="boolean"/>
+    </declare-styleable>
 </resources>

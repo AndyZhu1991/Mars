@@ -14,7 +14,8 @@ import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
-import com.koolew.mars.view.NotificationPointView;
+import com.koolew.mars.redpoint.RedPointManager;
+import com.koolew.mars.redpoint.RedPointView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -49,6 +50,7 @@ public class DanmakuTabFragment extends
 
     @Override
     protected boolean handleRefresh(JSONObject jsonObject) {
+        RedPointManager.clearRedPointByPath(RedPointManager.PATH_DANMAKU);
         try {
             if (jsonObject.getInt("code") == 0) {
                 JSONArray notifications = jsonObject.
@@ -138,13 +140,7 @@ public class DanmakuTabFragment extends
             holder.title.setText(item.topicInfo.getTitle());
             holder.lastComment.setText(item.lastComment.getUserInfo().getNickname()
                     + ": " + item.lastComment.getContent());
-            if (item.notifyCount == 0) {
-                holder.notifyCount.setVisibility(View.INVISIBLE);
-            }
-            else {
-                holder.notifyCount.setVisibility(View.VISIBLE);
-                holder.notifyCount.setCount(item.notifyCount);
-            }
+            holder.notifyCount.setCount(item.notifyCount);
         }
 
         @Override
@@ -185,7 +181,7 @@ public class DanmakuTabFragment extends
         RoundedImageView thumb;
         TextView title;
         TextView lastComment;
-        NotificationPointView notifyCount;
+        RedPointView notifyCount;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -194,7 +190,7 @@ public class DanmakuTabFragment extends
             thumb = (RoundedImageView) itemView.findViewById(R.id.thumb);
             title = (TextView) itemView.findViewById(R.id.title);
             lastComment = (TextView) itemView.findViewById(R.id.last_comment);
-            notifyCount = (NotificationPointView) itemView.findViewById(R.id.notify_count);
+            notifyCount = (RedPointView) itemView.findViewById(R.id.notify_count);
         }
 
         @Override

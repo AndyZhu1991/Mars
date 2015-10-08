@@ -23,6 +23,7 @@ import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
+import com.koolew.mars.redpoint.RedPointManager;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.BigCountView;
@@ -85,6 +86,7 @@ public class FriendMeetFragment
 
     @Override
     protected boolean handleRefresh(JSONObject response) {
+        RedPointManager.clearRedPointByPath(RedPointManager.PATH_FRIENDS);
         try {
             JSONObject result = response.getJSONObject("result");
             JSONArray pendings = result.getJSONArray("pendings");
