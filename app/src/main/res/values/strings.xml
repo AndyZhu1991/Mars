@@ -120,6 +120,7 @@
     <!-- For VideoShootActivity -->
     <string name="import_video">导入</string>
     <string name="capture_video">点一下拍摄</string>
+    <string name="capturing">拍摄中</string>
     <string name="video_shoot_time_text" formatted="false">%.1f/%.1f秒</string>
     <string name="processing_video">正在处理视频...</string>
     <string name="there_is_no_video">还没拍视频呢</string>

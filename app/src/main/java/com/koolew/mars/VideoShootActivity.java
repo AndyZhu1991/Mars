@@ -21,6 +21,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.koolew.mars.camerautils.CameraSurfacePreview;
@@ -69,6 +70,8 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     private ImageView mChangeCamera;
     private ImageView mImportVideo;
     private ImageView mRecordComplete;
+
+    private TextView mCaptureText;
 
     private RecordingSessionView recordingSessionView;
 
@@ -193,6 +196,8 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
         mImportVideo = (ImageView) findViewById(R.id.import_video);
         mImportVideo.setOnClickListener(this);
+
+        mCaptureText = (TextView) findViewById(R.id.capture_text);
 
         mRecordComplete = (ImageView) findViewById(R.id.record_complete);
         mRecordComplete.setOnClickListener(this);
@@ -517,21 +522,18 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     }
 
     private void startRecord() {
-        long start = System.currentTimeMillis();
         mRecorder = new RealTimeYUV420RecorderWithAutoAudio(
                 recordingSessionView.generateAVideoFilePath(),
                 AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
-        Log.d("stdzhu", "new recorder: " + (System.currentTimeMillis() - start));
         recordingSessionView.startOneRecording(mRecorder);
         enableImportBtn(false);
         mRecordMonitorTask = new RecordMonitorTask();
         new Timer().schedule(mRecordMonitorTask,
                 (long) (AppProperty.RECORD_VIDEO_MAX_LEN * 1000 * 2));
-        start = System.currentTimeMillis();
         mRecorder.start();
+        mCaptureText.setText(R.string.capturing);
 
         isRecording = true;
-        Log.d("stdzhu", "startRecord: " + (System.currentTimeMillis() - start));
     }
 
     private void stopRecord() {
@@ -544,6 +546,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         if (isRecording) {
             isRecording = false;
 
+            mCaptureText.setText(R.string.capture_video);
             recordingSessionView.postStopRecording();
             enableImportBtn(true);
         }
