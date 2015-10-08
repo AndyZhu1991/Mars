@@ -33,7 +33,7 @@ public class BaseVideoInfo implements Serializable {
     private int mKooNum;
     private int mKooTotal;
     private int mCommentCount;
-    private BaseUserInfo mUserInfo;
+    protected BaseUserInfo mUserInfo;
     private ArrayList<DanmakuItemInfo> mDanmakus;
 
     protected BaseVideoInfo() {

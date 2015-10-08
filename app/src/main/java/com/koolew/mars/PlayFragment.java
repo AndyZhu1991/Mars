@@ -5,6 +5,7 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -138,7 +139,8 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mToolbarInterface.setTopIconCount(0);
+        mToolbarInterface.setTopIconCount(1);
+        mToolbarInterface.setTopIconImageResource(0, R.mipmap.ic_play_share);
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_play, container, false);
 
@@ -224,6 +226,15 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
         super.onDestroy();
         destoryNextRoundCountDownTimer();
         mPlayerRecycler.destory();
+    }
+
+    @Override
+    public void onTopIconClick(int position) {
+        CurrentVideoInfo shareVideoInfo = mCurrentPlayPosition == POSITION_LEFT
+                ? mCurrentLeftVideoInfo : mCurrentRightVideoInfo;
+        ShareVideoWindow shareVideoWindow = new ShareVideoWindow(getActivity(),
+                shareVideoInfo, shareVideoInfo.topicInfo.getTitle());
+        shareVideoWindow.showAtLocation(getView(), Gravity.TOP, 0, 0);
     }
 
     @Override
@@ -348,11 +359,6 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     }
 
 
-    private void enableSupportBtn(boolean enable) {
-        mLeftSupportBtn.setEnabled(enable);
-        mRightSupportBtn.setEnabled(enable);
-    }
-
     class FollowUserListener implements Response.Listener<JSONObject> {
         private TextView mButton;
 
@@ -422,7 +428,6 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     private void judge(String videoId) {
         mJudgedVideoId = videoId;
         stopPlayGroup();
-        enableSupportBtn(false);
         mBlockTouchFrame.setVisibility(View.VISIBLE);
         ApiWorker.getInstance().judgeVideo(videoId, mJudgeListener, mJudgeErrorListener);
     }
@@ -432,7 +437,8 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
         public void onResponse(JSONObject response) {
             mBlockTouchFrame.setVisibility(View.INVISIBLE);
             try {
-                if (response.getInt("code") == 0) {
+                int code = response.getInt("code");
+                if (code == 0) {
                     JSONObject result = response.getJSONObject("result");
                     JSONObject last = result.getJSONObject("last");
                     JSONArray videos = last.getJSONArray("videos");
@@ -446,7 +452,10 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
                     }
 
                     updateCurrentGroup(result.getJSONObject("next"));
-                    enableSupportBtn(true);
+                }
+                else if (code == ApiErrorCode.COIN_NOT_ENOUGH) {
+                    Toast.makeText(getActivity(), R.string.play_not_enough_coin, Toast.LENGTH_SHORT)
+                            .show();
                 }
                 else {
                     onJudgeError(response.getString("msg"));
@@ -467,7 +476,6 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
 
     private void onJudgeError(String errMsg) {
         Toast.makeText(getActivity(), errMsg, Toast.LENGTH_SHORT).show();
-        enableSupportBtn(true);
     }
 
     private void updateLastVideoInfo(JSONArray videos) {
@@ -681,6 +689,8 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
             mFinishedImage.setVisibility(View.INVISIBLE);
         }
 
+        mToolbarInterface.setToolbarMiddleTitle(String.format("%d/%d", mCurrentGroup, mTotalGroup));
+
         mMode = MODE_WATCH;
     }
 
@@ -696,6 +706,8 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
         else if (judgeStatus == JUDGE_STATUS_TRUE) {
             mResultText.setText("+5");
         }
+
+        mToolbarInterface.setToolbarMiddleTitle("");
 
         mMode = MODE_RESULT;
     }
@@ -808,6 +820,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
             try {
                 if (jsonObject.has("user")) {
                     userInfo = new TypedUserInfo(jsonObject.getJSONObject("user"));
+                    mUserInfo = userInfo;
                 }
                 if (jsonObject.has("topic")) {
                     topicInfo = new BaseTopicInfo(jsonObject.getJSONObject("topic"));

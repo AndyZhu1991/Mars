@@ -31,6 +31,7 @@ public class MainBaseFragment extends BaseV4Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mToolbarInterface.unregisterAllTopRedPoint();
+        mToolbarInterface.setToolbarMiddleTitle("");
     }
 
     @Override
@@ -62,6 +63,8 @@ public class MainBaseFragment extends BaseV4Fragment {
         void setToolbarColor(int color);
 
         void setToolbarTitle(String title);
+
+        void setToolbarMiddleTitle(String middleTitle);
 
         void setTopIconCount(int count);
 

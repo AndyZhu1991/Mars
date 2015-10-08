@@ -339,7 +339,7 @@
     <string name="next_round_text_tail">" 后开启"</string>
     <string name="next_round_immediately">立即开启下一轮</string>
     <string name="follow_failed">关注失败，请重试</string>
-    <string name="play_not_enough_coin">金币不足</string>
+    <string name="play_not_enough_coin">金币不足，快去赚金币吧！</string>
 
     <!-- For MessagesActivity -->
     <string name="message_area">消息区</string>

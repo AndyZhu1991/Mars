@@ -67,6 +67,7 @@ public class MainActivity extends BaseV4FragmentActivity
     private int mAvatarPaletteColor;
     private String mTitle;
     private TextView mTitleView;
+    private TextView mMiddleTitle;
     private FrameLayout mContentFrame;
     private LinearLayout mLeftDrawer;
     private ImageView mInfoBackground;
@@ -102,6 +103,7 @@ public class MainActivity extends BaseV4FragmentActivity
         if (!TextUtils.isEmpty(mTitle)) {
             mTitleView.setText(mTitle);
         }
+        mMiddleTitle = (TextView) findViewById(R.id.middle_title);
         mToggleView = (DrawerToggleView) findViewById(R.id.my_drawer_toggle);
         mToggleView.setDrawer(mDrawerLayout);
         mToggleRedPoint = (RedPointView) findViewById(R.id.toggle_red_point);
@@ -281,6 +283,13 @@ public class MainActivity extends BaseV4FragmentActivity
         mTitle = title;
         if (!TextUtils.isEmpty(title) && mTitleView != null) {
             mTitleView.setText(title);
+        }
+    }
+
+    @Override
+    public void setToolbarMiddleTitle(String middleTitle) {
+        if (mMiddleTitle != null) {
+            mMiddleTitle.setText(middleTitle);
         }
     }
 
