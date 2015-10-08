@@ -58,6 +58,11 @@ public class ApiWorker {
     }
 
 
+    public JsonObjectRequest requestSelfInfo(Response.Listener<JSONObject> listener,
+                                             Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.USER_INFO_URL, listener, errorListener);
+    }
+
     public void requestInvolve(int page, Response.Listener<JSONObject> listener,
                                          Response.ErrorListener errorListener) {
 

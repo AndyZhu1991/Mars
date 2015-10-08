@@ -2,11 +2,13 @@ package com.koolew.mars;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,16 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
-import com.android.volley.toolbox.Volley;
 import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.blur.DisplayBlurImageAndPalette;
 import com.koolew.mars.infos.MyAccountInfo;
@@ -39,19 +34,17 @@ import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.DrawerToggleView;
 import com.koolew.mars.view.PhoneNumberView;
 import com.koolew.mars.view.UserNameView;
-import com.koolew.mars.webapi.UrlHelper;
+import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Map;
-
 
 public class MainActivity extends BaseV4FragmentActivity
         implements MainBaseFragment.OnFragmentInteractionListener,
         MainBaseFragment.ToolbarOperateInterface, View.OnClickListener,
-        DrawerLayout.DrawerListener {
+        DrawerLayout.DrawerListener, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "koolew-MainActivity";
 
@@ -69,7 +62,7 @@ public class MainActivity extends BaseV4FragmentActivity
     private TextView mTitleView;
     private TextView mMiddleTitle;
     private FrameLayout mContentFrame;
-    private LinearLayout mLeftDrawer;
+    private SwipeRefreshLayout mLeftDrawer;
     private ImageView mInfoBackground;
     private RecyclerView mDrawerRecycler;
     private DrawerAdapter mAdapter;
@@ -87,14 +80,10 @@ public class MainActivity extends BaseV4FragmentActivity
     private ImageView[] mTopIcons = new ImageView[2];
     private RedPointView[] mTopRedPoints = new RedPointView[2];
 
-    private RequestQueue mRequestQueue;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mRequestQueue = Volley.newRequestQueue(this);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerListener(this);
@@ -109,7 +98,9 @@ public class MainActivity extends BaseV4FragmentActivity
         mToggleRedPoint = (RedPointView) findViewById(R.id.toggle_red_point);
         mToggleRedPoint.registerPath(RedPointManager.PATH_DRAWER_TOGGLE);
         mContentFrame = (FrameLayout) findViewById(R.id.content_frame);
-        mLeftDrawer = (LinearLayout) findViewById(R.id.left_drawer);
+        mLeftDrawer = (SwipeRefreshLayout) findViewById(R.id.left_drawer);
+        mLeftDrawer.setColorSchemeColors(Color.WHITE);
+        mLeftDrawer.setOnRefreshListener(this);
         mInfoBackground = (ImageView) findViewById(R.id.info_background);
         mDrawerRecycler = (RecyclerView) findViewById(R.id.drawer_recycler);
         mAvatar = (ImageView) findViewById(R.id.avatar);
@@ -145,7 +136,12 @@ public class MainActivity extends BaseV4FragmentActivity
 
         switchFragment(0);
 
-        getUserInfo();
+        mLeftDrawer.post(new Runnable() {
+            @Override
+            public void run() {
+                doRequestSelfInfo();
+            }
+        });
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -170,7 +166,8 @@ public class MainActivity extends BaseV4FragmentActivity
         mFansCountText.setText(getString(R.string.fans_count, MyAccountInfo.getFansCount()));
         mFollowsCountText.setText(getString(R.string.follows_count, MyAccountInfo.getFollowsCount()));
         mCountKoo.setText(String.valueOf(MyAccountInfo.getKooNum()));
-        mCountCoin.setText(String.valueOf(MyAccountInfo.getCoinNum()));
+        long localCoinCount = MyAccountInfo.getCoinNum();
+        mCountCoin.setText(String.valueOf(localCoinCount >= 0 ? localCoinCount : 0));
     }
 
     @Override
@@ -191,61 +188,50 @@ public class MainActivity extends BaseV4FragmentActivity
         }
     }
 
-    private void getUserInfo() {
-        String url = UrlHelper.USER_INFO_URL;
-        JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.GET, url,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, "response -> " + response.toString());
-                        try {
-                            if (response.getInt("code") == 0) {
-                                Log.d(TAG, "code == 0");
-                                JSONObject user = response.getJSONObject("result").getJSONObject("user");
-                                MyAccountInfo.setUid(user.getString("uid"));
-                                MyAccountInfo.setPhoneNumber(user.getString("phone"));
-                                MyAccountInfo.setCoinNum(user.getLong("coin_num"));
-                                MyAccountInfo.setAvatar(user.getString("avatar"));
-                                MyAccountInfo.setNickname(user.getString("nickname"));
-                                MyAccountInfo.setVip(user.getInt("vip"));
-                                MyAccountInfo.setKooNum(user.getLong("koo_num"));
-                                MyAccountInfo.setFansCount(user.getInt("fans"));
-                                MyAccountInfo.setFollowsCount(user.getInt("follows"));
-                                new PreferenceHelper(MainActivity.this).setPushBit(user.getInt("push_bit"));
+    class SelfInfoListener implements Response.Listener<JSONObject> {
+        @Override
+        public void onResponse(JSONObject response) {
+            mLeftDrawer.setRefreshing(false);
+            try {
+                if (response.getInt("code") == 0) {
+                    Log.d(TAG, "code == 0");
+                    JSONObject user = response.getJSONObject("result").getJSONObject("user");
+                    MyAccountInfo.setUid(user.getString("uid"));
+                    MyAccountInfo.setPhoneNumber(user.getString("phone"));
+                    MyAccountInfo.setCoinNum(user.getLong("coin_num"));
+                    MyAccountInfo.setAvatar(user.getString("avatar"));
+                    MyAccountInfo.setNickname(user.getString("nickname"));
+                    MyAccountInfo.setVip(user.getInt("vip"));
+                    MyAccountInfo.setKooNum(user.getLong("koo_num"));
+                    MyAccountInfo.setFansCount(user.getInt("fans"));
+                    MyAccountInfo.setFollowsCount(user.getInt("follows"));
+                    new PreferenceHelper(MainActivity.this).setPushBit(user.getInt("push_bit"));
 
-                                mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
-                                mCountCoin.setText("" + MyAccountInfo.getCoinNum());
-                                ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(), mAvatar);
-                                new DisplayBlurImageAndPalette(mInfoBackground, MyAccountInfo.getAvatar()) {
-                                    @Override
-                                    protected void onPalette(Palette palette) {
-                                        mAvatarPaletteColor = Utils.getStatusBarColorFromPalette(palette);
-                                    }
-                                }.execute();
-                                mNameView.setUserInfo(MyAccountInfo.getNickname(), MyAccountInfo.getVip());
-                                mCountKoo.setText("" + MyAccountInfo.getKooNum());
-                                mFansCountText.setText(getString(R.string.fans_count, MyAccountInfo.getFansCount()));
-                                mFollowsCountText.setText(getString(R.string.follows_count, MyAccountInfo.getFollowsCount()));
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Log.e(TAG, e.toString());
+                    mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
+                    mCountCoin.setText(String.valueOf(MyAccountInfo.getCoinNum()));
+                    ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(), mAvatar);
+                    new DisplayBlurImageAndPalette(mInfoBackground, MyAccountInfo.getAvatar()) {
+                        @Override
+                        protected void onPalette(Palette palette) {
+                            mAvatarPaletteColor = Utils.getStatusBarColorFromPalette(palette);
+                            mLeftDrawer.setColorSchemeColors(mAvatarPaletteColor);
                         }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, error.getMessage(), error);
-                    }
+                    }.execute();
+                    mNameView.setUserInfo(MyAccountInfo.getNickname(), MyAccountInfo.getVip());
+                    mCountKoo.setText(String.valueOf(MyAccountInfo.getKooNum()));
+                    mFansCountText.setText(getString(R.string.fans_count, MyAccountInfo.getFansCount()));
+                    mFollowsCountText.setText(getString(R.string.follows_count, MyAccountInfo.getFollowsCount()));
                 }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() {
-                return UrlHelper.getStandardPostHeaders();
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.e(TAG, e.toString());
             }
-        };
-        mRequestQueue.add(jsonRequest);
+        }
+    }
+
+    private void doRequestSelfInfo() {
+        mLeftDrawer.setRefreshing(true);
+        ApiWorker.getInstance().requestSelfInfo(new SelfInfoListener(), null);
     }
 
     private void switchFragment(int position) {
@@ -389,6 +375,11 @@ public class MainActivity extends BaseV4FragmentActivity
 
     @Override
     public void onDrawerStateChanged(int newState) {
+    }
+
+    @Override
+    public void onRefresh() {
+        doRequestSelfInfo();
     }
 
 

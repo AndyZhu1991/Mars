@@ -106,11 +106,15 @@
             android:layout_weight="1"/>
     </LinearLayout>
 
-    <LinearLayout
+    <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/left_drawer"
         android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
+        android:layout_gravity="start">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:clickable="true"
         android:background="#F8F9FB">
@@ -276,6 +280,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="8dp"/>
     </LinearLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.v4.widget.DrawerLayout>
 
     <SurfaceView
