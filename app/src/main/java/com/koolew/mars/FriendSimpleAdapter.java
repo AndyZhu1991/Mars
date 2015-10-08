@@ -304,19 +304,7 @@ public class FriendSimpleAdapter extends LoadMoreAdapter {
     }
 
     protected void generateSummary(FriendInfo info) {
-        if (info.getType() == TYPE_FAN) {
-            if (info.contactName != null) {
-                info.summary = new StringBuilder()
-                        .append(mContext.getString(R.string.phone_contact_name, info.contactName))
-                        .append(mContext.getString(R.string.comma))
-                        .append(mContext.getString(R.string.request_for_friend))
-                        .toString();
-            }
-            else {
-                info.summary = mContext.getString(R.string.request_for_friend);
-            }
-        }
-        else if (info.getType() != TYPE_NO_REGISTER && info.contactName != null) {
+        if (info.getType() != TYPE_NO_REGISTER && info.contactName != null) {
             info.summary = mContext.getString(R.string.phone_contact_name, info.contactName);
         }
     }
@@ -369,12 +357,7 @@ public class FriendSimpleAdapter extends LoadMoreAdapter {
                 operateBtn.setTextColor(OPERATE_BTN_COLOR[itemType]);
             }
 
-            if (itemType == TYPE_FAN) {
-                int color = mContext.getResources().getColor(R.color.koolew_light_green);
-                avatar.setBorderColor(color);
-                nameView.setTextColor(color);
-            }
-            else if (itemType == TYPE_FRIEND) {
+            if (itemType == TYPE_FRIEND) {
                 LinearLayout.LayoutParams lp =
                         (LinearLayout.LayoutParams) operateBtn.getLayoutParams();
                 lp.width = (int) Utils.dpToPixels(mContext, 70);

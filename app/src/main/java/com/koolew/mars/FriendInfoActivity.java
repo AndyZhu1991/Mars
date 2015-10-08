@@ -1,7 +1,9 @@
 package com.koolew.mars;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -20,12 +22,10 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.blur.DisplayBlurImageAndStatusBar;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
-import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.infos.TypedUserInfo;
 import com.koolew.mars.player.ScrollPlayer;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.view.AvatarLinearContainer;
 import com.koolew.mars.view.BigCountView;
 import com.koolew.mars.view.LoadMoreFooter;
 import com.koolew.mars.view.UserNameView;
@@ -109,13 +109,8 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
         private TextView mFansCountText;
         private TextView mFollowsCountText;
 
-        private View mKooCommonTopicLayout;
         private BigCountView mKooCountView;
         private BigCountView mCommonTopicCountView;
-        private View mCommonFriendLayout;
-        private TextView mCommonFriendTitle;
-        private TextView mJoinedTopicTitle;
-        private AvatarLinearContainer mAvatarContainer;
 
 
         public FriendInfoFragment() {
@@ -155,11 +150,6 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
                 new DisplayBlurImageAndStatusBar(getActivity(), mBlurAvatar, avatar).execute();
             }
             mNameView.setUserInfo(intent.getStringExtra(KEY_NICKNAME), BaseUserInfo.VIP_TYPE_NO_VIP);
-            if (mUid.equals(MyAccountInfo.getUid())) {
-                mKooCommonTopicLayout.setVisibility(View.GONE);
-                mCommonFriendLayout.setVisibility(View.GONE);
-                mJoinedTopicTitle.setText(R.string.joined_topic);
-            }
 
             return root;
         }
@@ -183,17 +173,10 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
             mListView.setOnItemClickListener(this);
 
             mListView.addHeaderView(header, null, false);
-            mKooCommonTopicLayout = header.findViewById(R.id.koo_common_topic_layout);
             mKooCountView = (BigCountView) header.findViewById(R.id.count_koo);
             mKooCountView.setOnClickListener(this);
             mCommonTopicCountView = (BigCountView) header.findViewById(R.id.count_common_topic);
             mCommonTopicCountView.setOnClickListener(this);
-            mCommonFriendLayout = header.findViewById(R.id.common_friend_layout);
-            mCommonFriendTitle = (TextView) header.findViewById(R.id.common_friend_title);
-            mJoinedTopicTitle = (TextView) header.findViewById(R.id.joined_topic_title);
-            mAvatarContainer = (AvatarLinearContainer) header.findViewById(R.id.avatar_container);
-
-            header.findViewById(R.id.common_friend_title_layout).setOnClickListener(this);
         }
 
         @Override
@@ -235,24 +218,43 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
                 case TypedUserInfo.TYPE_STRANGER:
                 case TypedUserInfo.TYPE_FAN:
                     mProgressDialog.show();
-                    ApiWorker.getInstance().addFriend(mUid, mFriendOpListener, null);
+                    ApiWorker.getInstance().followUser(mUid, mFriendOpListener, null);
                     break;
                 case TypedUserInfo.TYPE_FOLLOWED:
+                case TypedUserInfo.TYPE_FRIEND:
+                    unfollowWithConfirm(mUid);
                     break;
                 default:
             }
+        }
+
+        private void unfollowWithConfirm(final String uid) {
+            new AlertDialog.Builder(getActivity())
+                    .setMessage(R.string.unfollow_confirm)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ApiWorker.getInstance().unfollowUser(uid, mFriendOpListener, null);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show();
         }
 
         private void initTypeView(int type) {
             switch (type) {
                 case TypedUserInfo.TYPE_STRANGER:
                 case TypedUserInfo.TYPE_FAN:
-                    mOperationImage.setImageResource(R.mipmap.friend_info_add_friend);
+                    mOperationImage.setImageResource(R.mipmap.friend_info_follow);
                     mOperationText.setText(R.string.follow);
                     break;
                 case TypedUserInfo.TYPE_FOLLOWED:
-                    mOperationImage.setImageResource(R.mipmap.friend_info_requested);
+                    mOperationImage.setImageResource(R.mipmap.friend_info_followed);
                     mOperationText.setText(R.string.followed);
+                    break;
+                case TypedUserInfo.TYPE_FRIEND:
+                    mOperationImage.setImageResource(R.mipmap.friend_info_followed_each_other);
+                    mOperationText.setText(R.string.followed_each_other);
                     break;
                 default:
                     mOperationImage.setVisibility(View.INVISIBLE);
@@ -269,13 +271,18 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
                         switch (mType) {
                             case TypedUserInfo.TYPE_STRANGER:
                                 mType = TypedUserInfo.TYPE_FOLLOWED;
-                                initTypeView(mType);
                                 break;
                             case TypedUserInfo.TYPE_FAN:
                                 mType = TypedUserInfo.TYPE_FRIEND;
-                                initTypeView(mType);
+                                break;
+                            case TypedUserInfo.TYPE_FOLLOWED:
+                                mType = TypedUserInfo.TYPE_STRANGER;
+                                break;
+                            case TypedUserInfo.TYPE_FRIEND:
+                                mType = TypedUserInfo.TYPE_FAN;
                                 break;
                         }
+                        initTypeView(mType);
                     }
                     else {
                         Toast.makeText(FriendInfoActivity.this,
@@ -295,9 +302,6 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
                     break;
                 case R.id.count_common_topic:
                     onCommonTopicClick();
-                    break;
-                case R.id.common_friend_title_layout:
-                    onCommonFriendClick();
                     break;
                 case R.id.operation_image:
                     onOperationLayoutClick(mType);
@@ -322,12 +326,6 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
             Intent intent = new Intent(getActivity(), CommonTopicActivity.class);
             intent.putExtra(CommonTopicActivity.KEY_UID, mUid);
             intent.putExtra(CommonTopicActivity.KEY_NICKNAME, mNameView.getNickname());
-            startActivity(intent);
-        }
-
-        private void onCommonFriendClick() {
-            Intent intent = new Intent(getActivity(), CommonFriendActivity.class);
-            intent.putExtra(CommonTopicActivity.KEY_UID, mUid);
             startActivity(intent);
         }
 
@@ -380,13 +378,6 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
 
                 JSONObject common = user.getJSONObject("common");
                 mCommonTopicCountView.setCount(common.getInt("common_topic"));
-                JSONArray commonFriend = common.getJSONArray("common_friend");
-                int commonFriendCount = commonFriend.length();
-                mCommonFriendTitle.setText(getString(R.string.common_friend, commonFriendCount));
-                for (int i = 0; i < commonFriendCount; i++) {
-                    mAvatarContainer.addAvatar(
-                            new AvatarLinearContainer.PersonInfo(commonFriend.getJSONObject(i)));
-                }
 
                 JSONArray topic;
                 if (result.has("topic")) {
@@ -394,9 +385,6 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
                 }
                 else {
                     topic = new JSONArray();
-                }
-                if (topic.length() == 0) {
-                    mJoinedTopicTitle.setText(R.string.he_or_she_no_topic_joined);
                 }
                 mAdapter.setCards(topic);
                 mAdapter.notifyDataSetChanged();
