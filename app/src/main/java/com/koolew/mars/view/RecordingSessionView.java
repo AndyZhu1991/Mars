@@ -650,7 +650,14 @@ public class RecordingSessionView extends LinearLayout {
         private void tryToSeek(int position) {
             if (!isSeeking) {
                 isSeeking = true;
-                mediaPlayer.seekTo(position);
+                for (int i = 0; i < 10; i++) { // Try 10 times
+                    try {
+                        mediaPlayer.seekTo(position);
+                        break;
+                    } catch (Exception e) {
+                        continue;
+                    }
+                }
             }
             else {
                 nextSeekPosition = position;
