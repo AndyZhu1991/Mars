@@ -227,12 +227,6 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".WorldTopicActivity"
-            android:exported="false"
-            android:label="@string/title_activity_world_topic"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name=".TaskTopicActivity"
             android:exported="false"
             android:label="@string/title_activity_task_topic"

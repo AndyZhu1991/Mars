@@ -47,9 +47,11 @@ public class UserTopicActivity extends BaseV4FragmentActivity
 
     @Override
     public void onRightLayoutClick() {
-        Intent intent = new Intent(this, WorldTopicActivity.class);
-        intent.putExtra(WorldTopicActivity.KEY_TOPIC_ID, mFragment.getTopicId());
-        intent.putExtra(WorldTopicActivity.KEY_TOPIC_TITLE, mFragment.getTopicTitle());
+        Intent intent = new Intent(this, FeedsTopicActivity.class);
+        intent.putExtra(FeedsTopicActivity.KEY_TOPIC_ID, mFragment.getTopicId());
+        intent.putExtra(FeedsTopicActivity.KEY_TOPIC_TITLE, mFragment.getTopicTitle());
+        intent.putExtra(FeedsTopicActivity.KEY_DEFAULT_SHOW_POSITION,
+                FeedsTopicActivity.POSITION_WORLD);
         startActivity(intent);
     }
 

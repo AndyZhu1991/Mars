@@ -170,15 +170,13 @@ public class KoolewHotFragment extends BaseListFragment implements AdapterView.O
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         TopicAdapter.TopicItem item = (TopicAdapter.TopicItem) mAdapter.getItem(position);
-        Intent intent;
-        if (item.isRecommend) {
-            intent = new Intent(getActivity(), WorldTopicActivity.class);
-        }
-        else {
-            intent = new Intent(getActivity(), FeedsTopicActivity.class);
-        }
+        Intent intent = new Intent(getActivity(), FeedsTopicActivity.class);
         intent.putExtra(TopicVideoActivity.KEY_TOPIC_ID, item.getTopicId());
         intent.putExtra(TopicVideoActivity.KEY_TOPIC_TITLE, item.getTitle());
+        if (item.isRecommend) {
+            intent.putExtra(FeedsTopicActivity.KEY_DEFAULT_SHOW_POSITION,
+                    FeedsTopicActivity.POSITION_WORLD);
+        }
         startActivity(intent);
     }
 }

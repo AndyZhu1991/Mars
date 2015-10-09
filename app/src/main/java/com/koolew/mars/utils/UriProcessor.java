@@ -7,12 +7,12 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.koolew.mars.CheckDanmakuActivity;
-import com.koolew.mars.MessagesActivity;
+import com.koolew.mars.FeedsTopicActivity;
 import com.koolew.mars.FriendInfoActivity;
 import com.koolew.mars.KoolewWebActivity;
+import com.koolew.mars.MessagesActivity;
 import com.koolew.mars.PushWrapperActivity;
 import com.koolew.mars.TaskActivity;
-import com.koolew.mars.WorldTopicActivity;
 
 /**
  * Created by jinchangzhu on 7/15/15.
@@ -69,8 +69,10 @@ public class UriProcessor {
             startSingleVideoActivity(videoId);
         }
         else if (authority.equals(AUTH_TOPIC)) {
-            Intent intent = newIntent(mContext, WorldTopicActivity.class);
-            intent.putExtra(WorldTopicActivity.KEY_TOPIC_ID, uri.getQueryParameter(KEY_TOPIC_ID));
+            Intent intent = newIntent(mContext, FeedsTopicActivity.class);
+            intent.putExtra(FeedsTopicActivity.KEY_TOPIC_ID, uri.getQueryParameter(KEY_TOPIC_ID));
+            intent.putExtra(FeedsTopicActivity.KEY_DEFAULT_SHOW_POSITION,
+                    FeedsTopicActivity.POSITION_WORLD);
             mContext.startActivity(intent);
         }
         else if (authority.equals(AUTH_USER)) {

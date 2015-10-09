@@ -21,6 +21,8 @@ public abstract class TopicVideoActivity extends BaseV4FragmentActivity
 
     public static final String KEY_TOPIC_ID = BaseVideoListFragment.KEY_TOPIC_ID;
     public static final String KEY_TOPIC_TITLE = BaseVideoListFragment.KEY_TOPIC_TITLE;
+    public static final String KEY_DEFAULT_SHOW_POSITION = "default show position";
+    public static final int POSITION_WORLD = 1;
 
     protected String topicId;
     protected String topicTitle;
@@ -50,6 +52,10 @@ public abstract class TopicVideoActivity extends BaseV4FragmentActivity
         mAdapter = getPagerAdapter();
 
         mViewPager.setAdapter(mAdapter);
+        int defaultShowPos = intent.getIntExtra(KEY_DEFAULT_SHOW_POSITION, 0);
+        if (defaultShowPos < mAdapter.getCount()) {
+            mViewPager.setCurrentItem(defaultShowPos);
+        }
         mViewPagerIndicator.setViewPager(mViewPager, pageColors);
         mViewPagerIndicator.setOnBackgroundColorChangedListener(this);
     }
