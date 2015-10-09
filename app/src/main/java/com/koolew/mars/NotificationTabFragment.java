@@ -32,6 +32,7 @@ public class NotificationTabFragment
     public NotificationTabFragment() {
         super();
         isNeedLoadMore = true;
+        isLazyLoad = true;
     }
 
     @Override

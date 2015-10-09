@@ -7,9 +7,6 @@ import android.media.SoundPool;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.player.ScrollPlayer;
@@ -22,7 +19,7 @@ import org.json.JSONObject;
 /**
  * Created by jinchangzhu on 7/24/15.
  */
-public abstract class BaseVideoListFragment extends BaseListFragment
+public abstract class BaseVideoListFragment extends BaseLazyListFragment
         implements VideoCardAdapter.OnDanmakuSendListener, VideoCardAdapter.OnKooClickListener,
         VideoCardAdapter.OnMoreMenuClickListener, ShareVideoWindow.OnVideoOperatedListener {
 
@@ -46,11 +43,12 @@ public abstract class BaseVideoListFragment extends BaseListFragment
     public BaseVideoListFragment() {
         super();
         isNeedLoadMore = true;
+        isLazyLoad = true;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = super.onCreateView(inflater, container, savedInstanceState);
+    public void onCreateViewLazy(Bundle savedInstanceState) {
+        super.onCreateViewLazy(savedInstanceState);
 
         mListView.setPadding(0, 0, 0, 0);
         mAdapter = useThisAdapter();
@@ -61,8 +59,6 @@ public abstract class BaseVideoListFragment extends BaseListFragment
         if (isNeedLoadMore) {
             mListFooter.setup(mListView, mScrollPlayer);
         }
-
-        return root;
     }
 
     // Override it if need different adapter.
@@ -88,7 +84,9 @@ public abstract class BaseVideoListFragment extends BaseListFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mScrollPlayer.onActivityDestroy();
+        if (mScrollPlayer != null) {
+            mScrollPlayer.onActivityDestroy();
+        }
     }
 
     @Override

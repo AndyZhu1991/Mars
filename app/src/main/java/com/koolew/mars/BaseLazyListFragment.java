@@ -1,51 +1,50 @@
-package com.koolew.mars.mould;
+package com.koolew.mars;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.koolew.mars.R;
 import com.koolew.mars.statistics.BaseLazyV4Fragment;
+import com.koolew.mars.view.LoadMoreFooter;
 
 import org.json.JSONObject;
 
 /**
- * Created by jinchangzhu on 9/2/15.
+ * Created by jinchangzhu on 10/9/15.
  */
-public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> extends BaseLazyV4Fragment
-        implements SwipeRefreshLayout.OnRefreshListener, LoadMoreAdapter.LoadMoreListener {
+public abstract class BaseLazyListFragment extends BaseLazyV4Fragment
+        implements SwipeRefreshLayout.OnRefreshListener, LoadMoreFooter.OnLoadListener,
+        AbsListView.OnItemClickListener {
 
-    protected static final int DEFAULT_LAYOUT = R.layout.general_refresh_recycler_layout;
+    protected static final int DEFAULT_LAYOUT = R.layout.general_refresh_list_layout;
+
 
     protected int mLayoutResId;
-
-    protected A mAdapter;
 
     protected boolean isNeedLoadMore;
 
     protected SwipeRefreshLayout mRefreshLayout;
-    protected RecyclerView mRecyclerView;
+    protected ListView mListView;
+    protected LoadMoreFooter mListFooter;
 
     protected JsonObjectRequest mRefreshRequest;
     protected JsonObjectRequest mLoadMoreRequest;
 
-
-    public RecyclerListFragmentMould() {
+    protected BaseLazyListFragment() {
         mLayoutResId = DEFAULT_LAYOUT;
         isNeedLoadMore = false;
-        isLazyLoad = false;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
-    protected abstract A useThisAdapter();
 
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
@@ -54,10 +53,17 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
         mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         mRefreshLayout.setOnRefreshListener(this);
         mRefreshLayout.setColorSchemeColors(getThemeColor());
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        setupAdapter();
+        mListView = (ListView) findViewById(R.id.list_view);
+        mListView.setOnItemClickListener(this);
+        if (isNeedLoadMore) {
+            mListFooter = (LoadMoreFooter) LayoutInflater.from(getActivity())
+                    .inflate(R.layout.load_more_footer, null);
+            mListFooter.haveNoMore();
+            mListFooter.setup(mListView);
+            mListFooter.setOnLoadListener(this);
+            mListView.addFooterView(mListFooter, null, false);
+            mListFooter.setVisibility(View.INVISIBLE);
+        }
 
         mRefreshLayout.post(new Runnable() {
             @Override
@@ -71,14 +77,6 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
     @Override
     protected View createDefaultView() {
         return inflater.inflate(R.layout.shadow, null);
-    }
-
-    protected void setupAdapter() {
-        mAdapter = useThisAdapter();
-        mAdapter.setNeedLoadMore(isNeedLoadMore);
-        mAdapter.setLoadMoreListener(this);
-        mAdapter.setupScrollListener(mRecyclerView);
-        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -105,7 +103,7 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
     }
 
     @Override
-    public void onLoadMore() {
+    public void onLoad() {
         if (mRefreshRequest != null) {
             mRefreshRequest.cancel();
             mRefreshRequest = null;
@@ -113,14 +111,28 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
         mLoadMoreRequest = doLoadMoreRequest();
     }
 
+    public abstract String getTitle();
+
+    public abstract int getThemeColor();
+
     protected Response.Listener<JSONObject> mRefreshListener = new Response.Listener<JSONObject>() {
         @Override
         public void onResponse(JSONObject jsonObject) {
             mRefreshLayout.setRefreshing(false);
             mRefreshRequest = null;
 
-            mAdapter.afterRefresh(handleRefresh(jsonObject));
-            mAdapter.notifyRecyclerScrolled(mRecyclerView);
+            if (handleRefresh(jsonObject)) {
+                if (isNeedLoadMore) {
+                    mListFooter.haveMore(true);
+                    mListFooter.setVisibility(View.VISIBLE);
+                }
+            }
+            else {
+                if (isNeedLoadMore) {
+                    mListFooter.haveMore(false);
+                    mListFooter.setVisibility(View.INVISIBLE);
+                }
+            }
         }
     };
 
@@ -129,16 +141,16 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
         public void onResponse(JSONObject jsonObject) {
             mLoadMoreRequest = null;
 
-            mAdapter.afterLoad(handleLoadMore(jsonObject));
+            if (isNeedLoadMore) {
+                mListFooter.loadComplete();
+                mListFooter.haveMore(handleLoadMore(jsonObject));
+            }
         }
     };
 
-
-    protected abstract int getThemeColor();
-
-    protected abstract JsonObjectRequest doRefreshRequest();
-
-    protected abstract JsonObjectRequest doLoadMoreRequest();
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    }
 
     /**
      *
@@ -153,4 +165,8 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
      * @return is something loaded
      */
     protected abstract boolean handleLoadMore(JSONObject response);
+
+    protected abstract JsonObjectRequest doRefreshRequest();
+
+    protected abstract JsonObjectRequest doLoadMoreRequest();
 }
