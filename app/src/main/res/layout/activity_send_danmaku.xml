@@ -51,6 +51,7 @@
                     android:textColorHint="#D8D8D8"/>
 
                 <Button
+                    android:id="@+id/confirm_btn"
                     android:layout_width="50dp"
                     android:layout_height="24dp"
                     android:layout_marginLeft="5dp"

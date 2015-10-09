@@ -10,6 +10,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -56,6 +57,7 @@ public class SendDanmakuActivity extends BaseActivity
 
     private TitleBarView mTitleBar;
     private EditText mDanmakuEdit;
+    private Button mConfirmBtn;
     private View mBottomLayout;
 
     private IjkMediaPlayer mMediaPlayer;
@@ -138,6 +140,7 @@ public class SendDanmakuActivity extends BaseActivity
         mDanmakuEdit.setOnEditorActionListener(this);
         mDanmakuEdit.addTextChangedListener(
                 new DanmakuLengthWatcher(AppProperty.DANMAKU_MAX_WORD, mDanmakuEdit));
+        mConfirmBtn = (Button) findViewById(R.id.confirm_btn);
         mBottomLayout = findViewById(R.id.bottom_layout);
 
         Utils.showSoftKeyInput(mDanmakuEdit, 300);
@@ -207,6 +210,7 @@ public class SendDanmakuActivity extends BaseActivity
         else {
             mTitleBar.setVisibility(View.INVISIBLE);
             mDanmakuEdit.setVisibility(View.INVISIBLE);
+            mConfirmBtn.setVisibility(View.INVISIBLE);
             mBottomLayout.setVisibility(View.VISIBLE);
 
             mSendingDanmaku = LayoutInflater.from(this).inflate(R.layout.danmaku_item, null);
