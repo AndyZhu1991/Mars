@@ -1,6 +1,7 @@
 package com.koolew.mars.webapi;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -581,6 +582,7 @@ public class ApiWorker {
                                         Response.ErrorListener errorListener) {
         JSONObject requestJson = new JSONObject();
         try {
+            requestJson.put("device", Build.FINGERPRINT);
             requestJson.put("type", type.ordinal());
             requestJson.put("open_id", openId);
             requestJson.put("refresh_token", refreshToken);

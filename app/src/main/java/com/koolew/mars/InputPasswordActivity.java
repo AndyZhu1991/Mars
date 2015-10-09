@@ -2,6 +2,7 @@ package com.koolew.mars;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -141,6 +142,7 @@ public class InputPasswordActivity extends BaseActivity implements View.OnClickL
         try {
             requestJson.put("phone", MyAccountInfo.getPhoneNumber());
             requestJson.put("code", password);
+            requestJson.put("device", Build.FINGERPRINT);
             if (mLoginType == LOGIN_TYPE.MOBILE.ordinal()) {
                 url = UrlHelper.LOGIN_URL;
             }
