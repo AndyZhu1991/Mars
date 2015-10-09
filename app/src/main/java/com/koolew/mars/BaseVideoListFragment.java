@@ -77,8 +77,12 @@ public abstract class BaseVideoListFragment extends BaseLazyListFragment
     @Override
     protected void onPageEnd() {
         super.onPageEnd();
-        mScrollPlayer.onActivityPause();
-        mSoundPool.release();
+        if (mScrollPlayer != null) {
+            mScrollPlayer.onActivityPause();
+        }
+        if (mSoundPool != null) {
+            mSoundPool.release();
+        }
     }
 
     @Override
