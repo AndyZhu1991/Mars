@@ -39,6 +39,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -94,10 +96,13 @@ public class TaskActivity extends BaseActivity
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_MOVE:
+                        bannerPressed = true;
                         mRefreshLayout.setEnabled(false);
                         break;
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_CANCEL:
+                        bannerPressed = false;
+                        bannerChangePassedSecond = 0;
                         mRefreshLayout.setEnabled(true);
                         break;
                 }
@@ -113,6 +118,24 @@ public class TaskActivity extends BaseActivity
         mListView.addFooterView(mListFooter);
         mListFooter.setup(mListView);
         mListFooter.setOnLoadListener(this);
+    }
+
+    private boolean bannerPressed = false;
+    private Timer mBannerAutoChangeTask;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mBannerAutoChangeTask = new Timer();
+        mBannerAutoChangeTask.schedule(new BannerAutoChangeTask(), 1000, 1000);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mBannerAutoChangeTask != null) {
+            mBannerAutoChangeTask.cancel();
+        }
     }
 
     private void doRefresh() {
@@ -300,6 +323,22 @@ public class TaskActivity extends BaseActivity
         public Object instantiateItem(ViewGroup container, int position) {
             container.addView(mImageViews[position]);
             return mImageViews[position];
+        }
+    }
+
+    private static final int BANNER_AUTO_CHANGE_SECONDS = 3;
+    private int bannerChangePassedSecond = 0;
+    class BannerAutoChangeTask extends TimerTask {
+        @Override
+        public void run() {
+            if (!bannerPressed) {
+                bannerChangePassedSecond++;
+                if (bannerChangePassedSecond == BANNER_AUTO_CHANGE_SECONDS) {
+                    bannerChangePassedSecond = 0;
+                    mViewPager.setCurrentItem((mViewPager.getCurrentItem() + 1)
+                            % mViewPager.getChildCount(), true);
+                }
+            }
         }
     }
 
