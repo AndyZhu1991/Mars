@@ -2,6 +2,7 @@ package com.koolew.mars.utils;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.koolew.mars.downloadmanager.DownloadRequest;
@@ -42,6 +43,10 @@ public class VideoLoader implements DownloadStatusListener {
     }
 
     public void loadVideo(Object player, String url) {
+
+        if (TextUtils.isEmpty(url)) {
+            return;
+        }
 
         mPlayer = player;
         if (new File(url2LocalFile(url)).exists()) {
