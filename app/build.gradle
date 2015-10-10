@@ -85,8 +85,8 @@ android {
             manifestPlaceholders = [UMENG_CHANNEL_VALUE: "GooglePlay"]
         }
 
-        JiFeng {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "JiFeng"]
+        Oppo {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "Oppo"]
         }
 
         XiaoMi {
