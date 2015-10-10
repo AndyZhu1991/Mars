@@ -230,6 +230,9 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
 
     @Override
     public void onTopIconClick(int position) {
+        if (mMode == MODE_FINISH) {
+            return;
+        }
         CurrentVideoInfo shareVideoInfo = mCurrentPlayPosition == POSITION_LEFT
                 ? mCurrentLeftVideoInfo : mCurrentRightVideoInfo;
         ShareVideoWindow shareVideoWindow = new ShareVideoWindow(getActivity(),
