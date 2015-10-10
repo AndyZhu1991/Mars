@@ -48,7 +48,6 @@ public class UrlHelper {
     public static final String REJECT_FRIEND_PADDING_URL = V1_URL + "friend/reject";
     public static final String AGREE_FRIEND_ADD_URL = V1_URL + "friend/agree";
     public static final String DELETE_FRIEND_URL = V1_URL + "friend/delete";
-    private static final String SINGLE_VIDEO_URL = V1_URL + "video";
     public static final String KOO_URL = V1_URL + "koo";
     public static final String IGNORE_INVITATION_URL = V1_URL + "call/ignore";
     public static final String DEVICE_LOGIN_URL = V1_URL + "device/login";
@@ -75,6 +74,7 @@ public class UrlHelper {
     public static final String EDIT_TOPIC_DESC_URL = V2_URL + "topic/desc";
 
     // V3 api
+    private static final String SINGLE_VIDEO_URL = V3_URL + "video/desc";
     public static final String FRIEND_RECOMMEND_URL = V3_URL + "friend/recommend";
     public static final String FRIEND_FOLLOW_URL = V3_URL + "friend/follow";
     public static final String FRIEND_UNFOLLOW_URL = V3_URL + "friend/unfollow";

@@ -108,6 +108,17 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
         return videos;
     }
 
+    @Override
+    protected String getTopicTitleFromResponse(JSONObject response) {
+        try {
+            return response.getJSONObject("result").getJSONObject("video")
+                    .getJSONObject("topic").getString("content");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private long getLastCommentTime() {
         if (mComments.size() == 0) {
             return Long.MAX_VALUE;
