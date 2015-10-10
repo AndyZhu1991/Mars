@@ -288,7 +288,10 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     }
 
     private void onBottomLeftLayoutClick() {
-        if (mCurrentPlayPosition == POSITION_RIGHT) {
+        if (mCurrentPlayPosition == POSITION_RIGHT &&
+                mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+            mMediaPlayer.stop();
+            mLoadingProgress.setVisibility(View.VISIBLE);
             switchVideo();
         }
     }
@@ -308,7 +311,10 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     }
 
     private void onBottomRightLayoutClick() {
-        if (mCurrentPlayPosition == POSITION_LEFT) {
+        if (mCurrentPlayPosition == POSITION_LEFT &&
+                mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+            mMediaPlayer.stop();
+            mLoadingProgress.setVisibility(View.VISIBLE);
             switchVideo();
         }
     }
