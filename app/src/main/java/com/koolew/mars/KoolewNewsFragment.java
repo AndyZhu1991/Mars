@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -160,15 +159,19 @@ public class KoolewNewsFragment extends BaseListFragment implements AdapterView.
 
         @Override
         public TopicItem jsonObject2TopicItem(JSONObject jsonObject) {
+            JSONObject topic = null;
             try {
-                JSONObject topic = jsonObject.getJSONObject("topic");
-                JSONArray parters = jsonObject.getJSONArray("parters");
-                return new TopicItem(topic, parters);
+                topic = jsonObject.getJSONObject("topic");
             } catch (JSONException e) {
                 e.printStackTrace();
-                Log.e(TAG, "JsonObject get field error!");
             }
-            return null;
+            JSONArray parters = null;
+            try {
+                parters = jsonObject.getJSONArray("parters");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return new TopicItem(topic, parters);
         }
     }
 

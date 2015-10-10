@@ -262,7 +262,7 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
                 if (topicObject.has(KEY_VIDEO_URL)) {
                     videoUrl = topicObject.getString(KEY_VIDEO_URL);
                 }
-                int count = partersArray.length();
+                int count = partersArray == null ? 0 : partersArray.length();
                 parters = new UserInfo[count];
                 for (int i = 0; i < count; i++) {
                     JSONObject parter = partersArray.getJSONObject(i);
