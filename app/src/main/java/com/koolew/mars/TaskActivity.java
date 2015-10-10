@@ -331,14 +331,19 @@ public class TaskActivity extends BaseActivity
     class BannerAutoChangeTask extends TimerTask {
         @Override
         public void run() {
-            if (!bannerPressed) {
-                bannerChangePassedSecond++;
-                if (bannerChangePassedSecond == BANNER_AUTO_CHANGE_SECONDS) {
-                    bannerChangePassedSecond = 0;
-                    mViewPager.setCurrentItem((mViewPager.getCurrentItem() + 1)
-                            % mViewPager.getChildCount(), true);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (!bannerPressed) {
+                        bannerChangePassedSecond++;
+                        if (bannerChangePassedSecond == BANNER_AUTO_CHANGE_SECONDS) {
+                            bannerChangePassedSecond = 0;
+                            mViewPager.setCurrentItem((mViewPager.getCurrentItem() + 1)
+                                    % mViewPager.getChildCount(), true);
+                        }
+                    }
                 }
-            }
+            });
         }
     }
 
