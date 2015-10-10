@@ -87,18 +87,36 @@ public class FriendMeetFragment
     @Override
     protected boolean handleRefresh(JSONObject response) {
         RedPointManager.clearRedPointByPath(RedPointManager.PATH_FRIENDS);
+        JSONObject result = null;
         try {
-            JSONObject result = response.getJSONObject("result");
-            JSONArray pendings = result.getJSONArray("pendings");
-            JSONArray recommends = result.getJSONArray("recommends");
-            JSONArray poiRecommends = result.getJSONArray("poi_recommends");
-            mAdapter.setData(pendings, recommends, poiRecommends);
-            mAdapter.notifyDataSetChanged();
-            return poiRecommends.length() > 0;
+            result = response.getJSONObject("result");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return false;
+        JSONArray pendings;
+        try {
+            pendings = result.getJSONArray("pendings");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            pendings = new JSONArray();
+        }
+        JSONArray recommends;
+        try {
+            recommends = result.getJSONArray("recommends");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            recommends = new JSONArray();
+        }
+        JSONArray poiRecommends;
+        try {
+            poiRecommends = result.getJSONArray("poi_recommends");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            poiRecommends = new JSONArray();
+        }
+        mAdapter.setData(pendings, recommends, poiRecommends);
+        mAdapter.notifyDataSetChanged();
+        return poiRecommends.length() > 0;
     }
 
     @Override
