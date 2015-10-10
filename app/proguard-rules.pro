@@ -42,8 +42,9 @@
 -keep public class * extends android.app.backup.BackupAgentHelper
 -keep public class * extends android.preference.Preference
 -keep public class com.android.vending.licensing.ILicensingService
-#如果有引用v4包可以添加下面这行
--keep public class * extends android.support.v4.app.Fragment
+# support
+-keep public class * extends android.support.v4.*
+-keep public class * extends android.support.v7.*
 #忽略警告
 -ignorewarning
 #####################记录生成的日志数据,gradle build时在本项目根目录输出################
@@ -128,7 +129,7 @@
     static final long serialVersionUID;
     private static final java.io.ObjectStreamField[] serialPersistentFields;
     !static !transient <fields>;
-    !private <fields><span></span>;
+    !private <fields>;
     !private <methods>;
     private void writeObject(java.io.ObjectOutputStream);
     private void readObject(java.io.ObjectInputStream);
