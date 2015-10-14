@@ -1,6 +1,7 @@
 package com.koolew.mars.infos;
 
 import com.koolew.mars.danmaku.DanmakuItemInfo;
+import com.koolew.mars.utils.JsonUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +25,7 @@ public class BaseVideoInfo implements Serializable {
     public static final String KEY_COMMENT_COUNT = "comment_num";
     public static final String KEY_USER_INFO = "user_info";
     public static final String KEY_USER = "user";
+    public static final String KEY_TOPIC = "topic";
     public static final String KEY_DANMAKU = "comment";
     public static final String KEY_DANMAKUS = "comments";
 
@@ -36,6 +38,7 @@ public class BaseVideoInfo implements Serializable {
     private int mKooTotal;
     private int mCommentCount;
     protected BaseUserInfo mUserInfo;
+    protected BaseTopicInfo mTopicInfo;
     private ArrayList<DanmakuItemInfo> mDanmakus;
 
     protected BaseVideoInfo() {
@@ -77,6 +80,10 @@ public class BaseVideoInfo implements Serializable {
             }
             else if (jsonObject.has(KEY_USER)) {
                 mUserInfo = instanceUserInfo(jsonObject.getJSONObject(KEY_USER));
+            }
+            JSONObject topic = JsonUtil.getJSONObjectIfHas(jsonObject, KEY_TOPIC);
+            if (topic != null) {
+                mTopicInfo = new BaseTopicInfo(topic);
             }
             if (jsonObject.has(KEY_DANMAKU)) {
                 mDanmakus = instanceDanmakus(jsonObject.getJSONArray(KEY_DANMAKU));
@@ -142,5 +149,13 @@ public class BaseVideoInfo implements Serializable {
 
     public String getVideoUrl() {
         return mVideoUrl;
+    }
+
+    public BaseTopicInfo getTopicInfo() {
+        return mTopicInfo;
+    }
+
+    public void setTopicInfo(BaseTopicInfo mTopicInfo) {
+        this.mTopicInfo = mTopicInfo;
     }
 }

@@ -121,7 +121,7 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="234dp"
+            android:layout_height="270dp"
             android:background="@android:color/black">
 
             <ImageView
@@ -270,6 +270,26 @@
                             android:textSize="28sp" />
                     </LinearLayout>
                 </LinearLayout>
+
+                <FrameLayout
+                    android:id="@+id/income_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/drawer_koo_coin_border">
+
+                    <TextView
+                        android:id="@+id/income_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:drawableLeft="@mipmap/ic_income"
+                        android:drawablePadding="4dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp" />
+                </FrameLayout>
 
             </LinearLayout>
         </FrameLayout>

@@ -73,6 +73,7 @@ public class MainActivity extends BaseV4FragmentActivity
     private TextView mFollowsCountText;
     private TextView mCountKoo;
     private TextView mCountCoin;
+    private TextView mIncomeNum;
 
     private MainBaseFragment mCurFragment;
 
@@ -113,8 +114,10 @@ public class MainActivity extends BaseV4FragmentActivity
         mFollowsCountText.setOnClickListener(this);
         mCountKoo = (TextView) findViewById(R.id.count_koo);
         mCountCoin = (TextView) findViewById(R.id.count_coin);
+        mIncomeNum = (TextView) findViewById(R.id.income_text);
         findViewById(R.id.coin_layout).setOnClickListener(this);
         findViewById(R.id.koo_layout).setOnClickListener(this);
+        findViewById(R.id.income_layout).setOnClickListener(this);
 
         mAdapter = new DrawerAdapter();
         mDrawerRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -205,6 +208,8 @@ public class MainActivity extends BaseV4FragmentActivity
                     MyAccountInfo.setKooNum(user.getLong("koo_num"));
                     MyAccountInfo.setFansCount(user.getInt("fans"));
                     MyAccountInfo.setFollowsCount(user.getInt("follows"));
+                    mIncomeNum.setText(getString(R.string.today_income_renminbi,
+                            user.getDouble("today_profit")));
                     new PreferenceHelper(MainActivity.this).setPushBit(user.getInt("push_bit"));
 
                     mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
@@ -331,6 +336,9 @@ public class MainActivity extends BaseV4FragmentActivity
                 break;
             case R.id.follows_count_text:
                 TitleFragmentActivity.launchFragment(this, FollowsFragment.class);
+                break;
+            case R.id.income_layout:
+                startActivity(new Intent(this, TodayIncomeActivity.class));
                 break;
         }
     }

@@ -280,6 +280,37 @@
             android:label="@string/title_activity_title_fragment"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".TodayIncomeActivity"
+            android:label="@string/title_activity_today_income"
+            android:exported="false"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".BindAlipayAccountActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".CashOutActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".CashOutRecordActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".IncomeAnalysisActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".IncomeExplainActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" >
+        </activity>
 
         <!-- Jpush -->
         <!-- Required -->

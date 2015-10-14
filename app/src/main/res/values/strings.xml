@@ -1,5 +1,6 @@
 <resources>
     <!-- General -->
+    <string name="koolew">可见</string>
     <string name="app_name">可见</string>
     <string name="hello_world">Hello world!</string>
     <string name="next_step">下一步</string>
@@ -38,6 +39,12 @@
     <string name="colon">：</string>
     <string name="delete">删除</string>
     <string name="retain">保留</string>
+    <string name="date">日期</string>
+    <string name="status">状态</string>
+    <string name="explain">说明</string>
+    <string name="request_data_failed">请求数据失败！</string>
+    <string name="retry_or_not">是否要重试？</string>
+    <string name="retry">重试</string>
 
     <!-- For MainActivity -->
     <string name="title_koolew">首页</string>
@@ -50,6 +57,7 @@
     <string name="coin_count">金币数量</string>
     <string name="fans_count" formatted="false">"%d 粉丝"</string>
     <string name="follows_count" formatted="false">"%d 关注"</string>
+    <string name="today_income_renminbi" formatted="false">今日收益（人民币）：%.3f元</string>
 
     <!-- For FirstLoginActivity -->
     <string name="app_name_english">KOOLEW</string>
@@ -349,6 +357,38 @@
     <string name="kooed_count" formatted="false">被打赏%d次</string>
     <string name="support_comment_count" formatted="false">%d支持·%d评论</string>
 
+    <!-- For income activities -->
+    <string name="today_income_rmb">今日收益（元）</string>
+    <string name="cash_income_desc">在可见上传有趣的视频，吸引粉丝，就可以获得现金收益</string>
+    <string name="total_income_rmb">总收益（元）</string>
+    <string name="this_month_income_rmb">当月收益（元）</string>
+    <string name="remain_income_rmb">未领收益（元）</string>
+    <string name="cash_out">提现</string>
+    <string name="income_analysis">内容获利分析</string>
+    <string name="bind_account">绑定账号</string>
+    <string name="input_alipay_id">输入支付宝ID</string>
+    <string name="please_input_correct_alipay">请输入正确的支付宝账号！</string>
+    <string name="bind_error">绑定失败，请重试</string>
+    <string name="income_can_cash_out_rmb">可提现收益（元）</string>
+    <string name="your_account">您的账号</string>
+    <string name="not_binded">未绑定</string>
+    <string name="cash_out_record">提现记录</string>
+    <string name="cash_out_status_requested">审核中</string>
+    <string name="cash_out_status_done">已发放</string>
+    <string name="cash_out_status_rejected">被拒绝</string>
+    <string name="too_less_money_to_cash_out" formatted="false">必须大于%d才能提现！</string>
+    <string name="please_bind_alipay_first">请先绑定支付宝账号</string>
+    <string name="cash_out_requested">提现请求已发出</string>
+    <string name="cash_out_failed">提现失败，请重试</string>
+    <string name="cash_num_rmb">金额（元）</string>
+    <string name="income_rmb">收益（元）</string>
+    <string name="no_money_num">0.000</string>
+    <string name="income_explain">收入说明</string>
+    <string name="income_explain_title">在可见上传有趣的视频，吸引粉丝就可以获得现金收益</string>
+    <string name="income_explain_detail1">- 打赏你的人越多，收入越多；</string>
+    <string name="income_explain_detail2">- 上传高质量视频，在星探中被更多人支持，可以带来稳定收入；</string>
+    <string name="income_explain_detail3">- 努力上热门可以使收入大幅增长！</string>
+
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>
     <string name="website">http://www.mob.com</string>
@@ -464,4 +504,5 @@
     <string name="title_activity_play">PlayActivity</string>
     <string name="title_activity_fans">FansActivity</string>
     <string name="title_activity_title_fragment">TitleFragmentActivity</string>
+    <string name="title_activity_today_income">TodayIncomeActivity</string>
 </resources>

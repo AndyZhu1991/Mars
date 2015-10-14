@@ -797,6 +797,55 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.getNotificationUrl(before), listener, errorListener);
     }
 
+    public JsonObjectRequest requestIncomeDesc(Response.Listener<JSONObject> listener,
+                                               Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.INCOME_DESC_URL, listener, errorListener);
+    }
+
+    public JsonObjectRequest requestIncomeAnalysis(int page,
+                                                   Response.Listener<JSONObject> listener,
+                                                   Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getIncomeAnalysisUrl(page), listener, errorListener);
+    }
+
+    public JsonObjectRequest bindAlipay(String alipay,
+                                        Response.Listener<JSONObject> listener,
+                                        Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        try {
+            requestObject.put("alipay", alipay);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.BIND_ALIPAY_URL, requestObject,
+                listener, errorListener);
+    }
+
+    public JsonObjectRequest cashOut(String alipay, int amount,
+                                     Response.Listener<JSONObject> listener,
+                                     Response.ErrorListener errorListener) {
+        JSONObject requestObject = new JSONObject();
+        try {
+            requestObject.put("alipay", alipay);
+            requestObject.put("amount", amount);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return standardPostRequest(UrlHelper.CASH_OUT_URL, requestObject,
+                listener, errorListener);
+    }
+
+    public JsonObjectRequest getCashOutRecord(Response.Listener<JSONObject> listener,
+                                              Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.CASH_OUT_RECORD_URL, listener, errorListener);
+    }
+
+    public JsonObjectRequest getCashOutRecord(long before,
+                                              Response.Listener<JSONObject> listener,
+                                              Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getCashOutRecordUrl(before), listener, errorListener);
+    }
+
 
     // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,

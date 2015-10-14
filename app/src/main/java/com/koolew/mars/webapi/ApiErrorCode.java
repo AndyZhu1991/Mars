@@ -9,5 +9,7 @@ public class ApiErrorCode {
 
     public static final int PHONE_CODE_ERROR = 102;
 
+    public static final int NOT_ENOUGH_MONEY = 109;
+
     public static final int NO_RIGHT_EDIT_TOPIC_DESC = 5;
 }

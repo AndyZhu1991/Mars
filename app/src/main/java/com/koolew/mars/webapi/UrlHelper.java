@@ -17,7 +17,7 @@ public class UrlHelper {
     private static final String TEST_API_URL = "http://test.koolew.cn/";
     private static final String REAL_API_URL = "http://api.koolew.com/";
 
-    private static final String BASE_URL = REAL_API_URL;
+    private static final String BASE_URL = TEST_API_URL;
 
     private static final String V1_URL = BASE_URL + "v1/";
     private static final String V2_URL = BASE_URL + "v2/";
@@ -85,6 +85,11 @@ public class UrlHelper {
     private static final String GUESS_JUDGE_URL = V3_URL + "guess/judge";
     private static final String FEEDS_HOT_URL = V3_URL + "feeds/hot";
     public static final String NOTIFICATION_URL = V3_URL + "activity";
+    public static final String INCOME_DESC_URL = V3_URL + "user/profit/desc";
+    private static final String INCOME_ANALYSIS_URL = V3_URL + "user/profit/videos";
+    public static final String BIND_ALIPAY_URL = V3_URL + "user/alipay/bind";
+    public static final String CASH_OUT_URL = V3_URL + "user/profit/withdraw";
+    public static final String CASH_OUT_RECORD_URL = V3_URL + "user/profit/withdrawals";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
@@ -319,6 +324,20 @@ public class UrlHelper {
 
     public static String getNotificationUrl(long before) {
         return Uri.parse(NOTIFICATION_URL)
+                .buildUpon()
+                .appendQueryParameter("before", String.valueOf(before))
+                .build().toString();
+    }
+
+    public static String getIncomeAnalysisUrl(int page) {
+        return Uri.parse(INCOME_ANALYSIS_URL)
+                .buildUpon()
+                .appendQueryParameter("page", String.valueOf(page))
+                .build().toString();
+    }
+
+    public static String getCashOutRecordUrl(long before) {
+        return Uri.parse(CASH_OUT_RECORD_URL)
                 .buildUpon()
                 .appendQueryParameter("before", String.valueOf(before))
                 .build().toString();

@@ -187,3 +187,12 @@ bugly {
     appId = "900006713"
     appKey = "Pd8PQjX2x1LUDaLV"
 }
+dependencies {
+    compile 'com.android.support:design:22.+'
+}
+dependencies {
+    compile 'com.android.support:design:22.+'
+}
+dependencies {
+    compile 'com.android.support:design:22.+'
+}
