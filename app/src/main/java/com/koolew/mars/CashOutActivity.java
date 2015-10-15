@@ -109,11 +109,12 @@ public class CashOutActivity extends BaseActivity implements Response.Listener<J
     public void onResponse(JSONObject response) {
         try {
             if (response.getInt("code") == 0) {
-                Toast.makeText(this, R.string.cash_out_requested, Toast.LENGTH_SHORT).show();
-                mIncomeCanCashOut -= (int) mIncomeCanCashOut;
+                Toast.makeText(this, R.string.cash_out_requested, Toast.LENGTH_LONG).show();
+                int requestedCashOutMoney = (int) mIncomeCanCashOut;
+                mIncomeCanCashOut -= requestedCashOutMoney;
                 mCanCashOutText.setText(TodayIncomeActivity.toIncomeString(mIncomeCanCashOut));
                 Intent intent = new Intent();
-                intent.putExtra(TodayIncomeActivity.KEY_CASH_OUT_AMOUNT, mIncomeCanCashOut);
+                intent.putExtra(TodayIncomeActivity.KEY_CASH_OUT_AMOUNT, requestedCashOutMoney);
                 setResult(RESULT_OK, intent);
                 onBackPressed();
             }

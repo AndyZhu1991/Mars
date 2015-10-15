@@ -88,7 +88,8 @@ public class TodayIncomeActivity extends BaseActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_CASH_OUT) {
             if (resultCode == RESULT_OK) {
-                mRemainIncomeNum -= data.getDoubleExtra(KEY_CASH_OUT_AMOUNT, 0.0);
+                mRemainIncomeNum -= data.getIntExtra(KEY_CASH_OUT_AMOUNT, 0
+                );
                 mRemainIncome.setText(toIncomeString(mRemainIncomeNum));
             }
         }
