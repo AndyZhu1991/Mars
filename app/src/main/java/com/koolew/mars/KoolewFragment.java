@@ -69,6 +69,7 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
         View root = inflater.inflate(R.layout.fragment_koolew, container, false);
 
         mViewPager = (ViewPager) root.findViewById(R.id.view_pager);
+        mViewPager.setOffscreenPageLimit(4);
         mAdapter = new KoolewFragmentPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(mAdapter);
         mViewPagerIndicator = (KoolewViewPagerIndicator) root.findViewById(R.id.indicator);
@@ -143,8 +144,8 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
             fragmentList.add(new KoolewRecommendFragment());
             fragmentTitles.add(getString(R.string.koolew_recommend_title));
 
-            fragmentList.add(KoolewRelatedMeFragment.newInstance());
-            fragmentTitles.add(getString(R.string.koolew_related_me_title));
+            fragmentList.add(new KoolewInvolveFragment());
+            fragmentTitles.add(getString(R.string.koolew_involve_title));
         }
 
         @Override

@@ -38,6 +38,7 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
     public KoolewHotsFragment() {
         super();
         isNeedLoadMore = true;
+        isLazyLoad = true;
     }
 
     @Override

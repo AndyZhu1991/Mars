@@ -11,7 +11,7 @@ public class IJoinedTopicActivity extends UserTopicActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mTitleBar.setTitle(R.string.koolew_related_me_title);
+        mTitleBar.setTitle(R.string.koolew_involve_title);
         mTitleBar.setBackgroundColor(getResources().getColor(R.color.koolew_deep_orange));
     }
 }

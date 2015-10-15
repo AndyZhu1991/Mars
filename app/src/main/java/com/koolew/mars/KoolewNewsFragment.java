@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -19,8 +17,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class KoolewNewsFragment extends BaseListFragment implements AdapterView.OnItemClickListener,
-        SwipeRefreshLayout.OnRefreshListener, LoadMoreFooter.OnLoadListener {
+public class KoolewNewsFragment extends BaseLazyListFragment
+        implements AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener,
+        LoadMoreFooter.OnLoadListener {
 
     private static final String TAG = "koolew-KoolewNewsF";
 
@@ -50,10 +49,8 @@ public class KoolewNewsFragment extends BaseListFragment implements AdapterView.
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View root =  super.onCreateView(inflater, container, savedInstanceState);
+    public void onCreateViewLazy(Bundle savedInstanceState) {
+        super.onCreateViewLazy(savedInstanceState);
 
         mAdapter = new FeedsTopicAdapter(getActivity());
         mScrollPlayer = mAdapter.new TopicScrollPlayer(mListView);
@@ -62,26 +59,30 @@ public class KoolewNewsFragment extends BaseListFragment implements AdapterView.
         if (isNeedLoadMore) {
             mListFooter.setup(mListView, mScrollPlayer);
         }
-
-        return root;
     }
 
     @Override
     protected void onPageEnd() {
         super.onPageEnd();
-        mScrollPlayer.onActivityPause();
+        if (mScrollPlayer != null) {
+            mScrollPlayer.onActivityPause();
+        }
     }
 
     @Override
     protected void onPageStart() {
         super.onPageStart();
-        mScrollPlayer.onActivityResume();
+        if (mScrollPlayer != null) {
+            mScrollPlayer.onActivityResume();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mScrollPlayer.onActivityDestroy();
+        if (mScrollPlayer != null) {
+            mScrollPlayer.onActivityDestroy();
+        }
     }
 
     @Override

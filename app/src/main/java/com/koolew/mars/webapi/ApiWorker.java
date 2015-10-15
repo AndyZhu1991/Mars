@@ -64,23 +64,9 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.USER_INFO_URL, listener, errorListener);
     }
 
-    public void requestInvolve(int page, Response.Listener<JSONObject> listener,
-                                         Response.ErrorListener errorListener) {
-
-        if (errorListener == null) {
-            errorListener = mErrorListener;
-        }
-
-        String url = UrlHelper.getInvolveUrl(page);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, url, listener, errorListener) {
-            @Override
-            public Map<String, String> getHeaders() {
-                return UrlHelper.getStandardPostHeaders();
-            }
-        };
-
-        mRequestQueue.add(jsonObjectRequest);
+    public JsonObjectRequest requestInvolve(int page, Response.Listener<JSONObject> listener,
+                                            Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getInvolveUrl(page), listener, errorListener);
     }
 
     public JsonObjectRequest requestFeedsTopicVideo(String topicId,
