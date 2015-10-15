@@ -114,8 +114,9 @@ public class InitPersonalInfoActivity extends BaseActivity {
                                 if (!isDefaultAvatar()) {
                                     UploadAvatarService.startActionUpload(InitPersonalInfoActivity.this);
                                 }
-                                startActivity(new Intent(InitPersonalInfoActivity.this,
-                                        ImportPhoneFriendsActivity.class));
+                                Intent intent = new Intent(InitPersonalInfoActivity.this, MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

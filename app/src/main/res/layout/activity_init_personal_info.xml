@@ -84,7 +84,7 @@
         android:layout_marginRight="@dimen/big_round_corner_btn_lr_margin"
         android:layout_marginTop="20dp"
         android:background="@drawable/big_round_corner_orange_bg"
-        android:text="@string/next_step"
+        android:text="@string/done"
         android:textColor="@android:color/white"
         android:textSize="@dimen/big_round_corner_btn_text_size"
         android:onClick="onNextClick"/>
