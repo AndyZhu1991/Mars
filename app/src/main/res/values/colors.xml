@@ -16,6 +16,7 @@
     <color name="koolew_gold">#FFE19D</color>
     <color name="koolew_dark_gray">#3E5467</color>
     <color name="koolew_red">#FF5656</color>
+    <color name="koolew_black">#1F1F1F</color>
     <color name="divider_color">#6F7D8B90</color>
 
     <!-- For InputPasswordActivity -->

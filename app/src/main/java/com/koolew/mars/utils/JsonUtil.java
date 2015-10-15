@@ -1,5 +1,6 @@
 package com.koolew.mars.utils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -70,6 +71,25 @@ public class JsonUtil {
         try {
             if (jsonObject.has(key)) {
                 return jsonObject.getJSONObject(key);
+            }
+        }
+        catch (JSONException jse) {
+            // Here should never arrive
+            throw new RuntimeException("Here should never arrive");
+        }
+        return defaultValue;
+    }
+
+
+    public static JSONArray getJSONArrayIfHas(JSONObject jsonObject, String key) {
+        return getJSONArrayIfHas(jsonObject, key, null);
+    }
+
+    public static JSONArray getJSONArrayIfHas(JSONObject jsonObject, String key,
+                                              JSONArray defaultValue) {
+        try {
+            if (jsonObject.has(key)) {
+                return jsonObject.getJSONArray(key);
             }
         }
         catch (JSONException jse) {

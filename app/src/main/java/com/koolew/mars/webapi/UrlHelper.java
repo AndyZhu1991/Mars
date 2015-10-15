@@ -17,7 +17,7 @@ public class UrlHelper {
     private static final String TEST_API_URL = "http://test.koolew.cn/";
     private static final String REAL_API_URL = "http://api.koolew.com/";
 
-    private static final String BASE_URL = TEST_API_URL;
+    private static final String BASE_URL = REAL_API_URL;
 
     private static final String V1_URL = BASE_URL + "v1/";
     private static final String V2_URL = BASE_URL + "v2/";
@@ -90,6 +90,7 @@ public class UrlHelper {
     public static final String BIND_ALIPAY_URL = V3_URL + "user/alipay/bind";
     public static final String CASH_OUT_URL = V3_URL + "user/profit/withdraw";
     public static final String CASH_OUT_RECORD_URL = V3_URL + "user/profit/withdrawals";
+    private static final String SQUARE_URL = V3_URL + "square";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
@@ -340,6 +341,14 @@ public class UrlHelper {
         return Uri.parse(CASH_OUT_RECORD_URL)
                 .buildUpon()
                 .appendQueryParameter("before", String.valueOf(before))
+                .build().toString();
+    }
+
+    public static String getSquareUrl(int before, int page) {
+        return Uri.parse(SQUARE_URL)
+                .buildUpon()
+                .appendQueryParameter("before", String.valueOf(before))
+                .appendQueryParameter("page", String.valueOf(page))
                 .build().toString();
     }
 

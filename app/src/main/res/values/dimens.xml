@@ -95,6 +95,9 @@
     <!-- For PlayActivity -->
     <dimen name="display_area_padding">5dp</dimen>
 
+    <!-- For square -->
+    <dimen name="square_item_padding_half">5dp</dimen>
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>

@@ -3,10 +3,12 @@ package com.koolew.mars.infos;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
  * Created by jinchangzhu on 7/15/15.
  */
-public class BaseTopicInfo {
+public class BaseTopicInfo implements Serializable {
 
     public static final String KEY_TOPIC_ID = "topic_id";
     public static final String KEY_TITLE = "content";

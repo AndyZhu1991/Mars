@@ -19,7 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class KoolewHotFragment extends BaseListFragment implements AdapterView.OnItemClickListener,
+public class KoolewRecommendFragment extends BaseListFragment implements AdapterView.OnItemClickListener,
         SwipeRefreshLayout.OnRefreshListener, LoadMoreFooter.OnLoadListener {
 
     private static final String TAG = "koolew-KoolewNewsF";
@@ -28,7 +28,7 @@ public class KoolewHotFragment extends BaseListFragment implements AdapterView.O
     private int page;
     private ScrollPlayer mScrollPlayer;
 
-    public KoolewHotFragment() {
+    public KoolewRecommendFragment() {
         // Required empty public constructor
         isNeedLoadMore = true;
     }
