@@ -31,8 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="28dp"
             android:layout_marginLeft="1dp"
-            android:layout_marginRight="1dp"
-            android:background="@android:color/white">
+            android:layout_marginRight="1dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -56,70 +55,70 @@
                 android:drawablePadding="2dp"/>
         </RelativeLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#D8D8D8"/>
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:background="#D8D8D8"/>-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="23dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="23dp"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:orientation="horizontal">-->
 
-            <TextView
-                android:id="@+id/first_nickname"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:singleLine="true"
-                android:textColor="#696969"
-                android:textSize="12sp"/>
+            <!--<TextView-->
+                <!--android:id="@+id/first_nickname"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:layout_marginLeft="5dp"-->
+                <!--android:layout_marginRight="5dp"-->
+                <!--android:singleLine="true"-->
+                <!--android:textColor="#696969"-->
+                <!--android:textSize="12sp"/>-->
 
-            <TextView
-                android:id="@+id/first_koo_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:textColor="#9B9B9B"
-                android:textSize="10sp"
-                android:drawableRight="@mipmap/ic_koo_square_gray"
-                android:drawablePadding="2dp"/>
-        </LinearLayout>
+            <!--<TextView-->
+                <!--android:id="@+id/first_koo_count"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginRight="5dp"-->
+                <!--android:textColor="#9B9B9B"-->
+                <!--android:textSize="10sp"-->
+                <!--android:drawableRight="@mipmap/ic_koo_square_gray"-->
+                <!--android:drawablePadding="2dp"/>-->
+        <!--</LinearLayout>-->
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@mipmap/horizontal_dash_line"/>
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:background="@mipmap/horizontal_dash_line"/>-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="23dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="23dp"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:orientation="horizontal">-->
 
-            <TextView
-                android:id="@+id/second_nickname"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:singleLine="true"
-                android:textColor="#696969"
-                android:textSize="12sp"/>
+            <!--<TextView-->
+                <!--android:id="@+id/second_nickname"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:layout_marginLeft="5dp"-->
+                <!--android:layout_marginRight="5dp"-->
+                <!--android:singleLine="true"-->
+                <!--android:textColor="#696969"-->
+                <!--android:textSize="12sp"/>-->
 
-            <TextView
-                android:id="@+id/second_koo_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:textColor="#9B9B9B"
-                android:textSize="10sp"
-                android:drawableRight="@mipmap/ic_koo_square_gray"
-                android:drawablePadding="2dp"/>
-        </LinearLayout>
+            <!--<TextView-->
+                <!--android:id="@+id/second_koo_count"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginRight="5dp"-->
+                <!--android:textColor="#9B9B9B"-->
+                <!--android:textSize="10sp"-->
+                <!--android:drawableRight="@mipmap/ic_koo_square_gray"-->
+                <!--android:drawablePadding="2dp"/>-->
+        <!--</LinearLayout>-->
     </LinearLayout>
 </RelativeLayout>

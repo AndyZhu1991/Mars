@@ -182,10 +182,10 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
                 private ImageView thumb;
                 private View bottomLayout;
                 private TextView kooTotal;
-                private TextView firstNickname;
-                private TextView firstKooCount;
-                private TextView secondNickname;
-                private TextView secondKooCount;
+//                private TextView firstNickname;
+//                private TextView firstKooCount;
+//                private TextView secondNickname;
+//                private TextView secondKooCount;
 
                 public SubItemHolder(View itemView, int position) {
                     this.position = position;
@@ -199,10 +199,10 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
                     bottomLayout = itemView.findViewById(R.id.bottom_layout);
                     bottomLayout.setOnClickListener(this);
                     kooTotal = (TextView) itemView.findViewById(R.id.koo_total);
-                    firstNickname = (TextView) itemView.findViewById(R.id.first_nickname);
-                    firstKooCount = (TextView) itemView.findViewById(R.id.first_koo_count);
-                    secondNickname = (TextView) itemView.findViewById(R.id.second_nickname);
-                    secondKooCount = (TextView) itemView.findViewById(R.id.second_koo_count);
+//                    firstNickname = (TextView) itemView.findViewById(R.id.first_nickname);
+//                    firstKooCount = (TextView) itemView.findViewById(R.id.first_koo_count);
+//                    secondNickname = (TextView) itemView.findViewById(R.id.second_nickname);
+//                    secondKooCount = (TextView) itemView.findViewById(R.id.second_koo_count);
                 }
 
                 private int calcThumbHeight() {
@@ -230,22 +230,22 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
                         ImageLoader.getInstance().displayImage(item.videoInfo.getVideoThumb(),
                                 thumb, ImageLoaderHelper.topicThumbLoadOptions);
                         kooTotal.setText(String.valueOf(item.videoInfo.getKooTotal()));
-                        if (item.supporters.length >= 1) {
-                            firstNickname.setText(item.supporters[0].getNickname());
-                            firstKooCount.setText(String.valueOf(item.supporters[0].kooTotal));
-                        }
-                        else {
-                            firstNickname.setText("");
-                            firstKooCount.setText("0");
-                        }
-                        if (item.supporters.length >= 2) {
-                            secondNickname.setText(item.supporters[1].getNickname());
-                            secondKooCount.setText(String.valueOf(item.supporters[1].kooTotal));
-                        }
-                        else {
-                            secondNickname.setText("");
-                            secondKooCount.setText("0");
-                        }
+//                        if (item.supporters.length >= 1) {
+//                            firstNickname.setText(item.supporters[0].getNickname());
+//                            firstKooCount.setText(String.valueOf(item.supporters[0].kooTotal));
+//                        }
+//                        else {
+//                            firstNickname.setText("");
+//                            firstKooCount.setText("0");
+//                        }
+//                        if (item.supporters.length >= 2) {
+//                            secondNickname.setText(item.supporters[1].getNickname());
+//                            secondKooCount.setText(String.valueOf(item.supporters[1].kooTotal));
+//                        }
+//                        else {
+//                            secondNickname.setText("");
+//                            secondKooCount.setText("0");
+//                        }
                     }
                 }
 
@@ -278,7 +278,7 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
     static class SquareItem {
         private BaseVideoInfo videoInfo;
         private BaseUserInfo userInfo;
-        private Supporter[] supporters;
+//        private Supporter[] supporters;
 
         public SquareItem(JSONObject jsonObject) {
             JSONObject video = JsonUtil.getJSONObjectIfHas(jsonObject, "video");
@@ -291,29 +291,29 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
                 userInfo = new BaseUserInfo(user);
             }
 
-            JSONArray supportersArray = JsonUtil.getJSONArrayIfHas(jsonObject, "supporters");
-            if (supportersArray != null) {
-                int length = supportersArray.length();
-                supporters = new Supporter[length];
-                for (int i = 0; i < length; i++) {
-                    try {
-                        supporters[i] = new Supporter(supportersArray.getJSONObject(i));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+//            JSONArray supportersArray = JsonUtil.getJSONArrayIfHas(jsonObject, "supporters");
+//            if (supportersArray != null) {
+//                int length = supportersArray.length();
+//                supporters = new Supporter[length];
+//                for (int i = 0; i < length; i++) {
+//                    try {
+//                        supporters[i] = new Supporter(supportersArray.getJSONObject(i));
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
         }
 
     }
 
-    static class Supporter extends BaseUserInfo {
-        private int kooTotal;
-
-        public Supporter(JSONObject jsonObject) {
-            super(jsonObject);
-
-            kooTotal = JsonUtil.getIntIfHas(jsonObject, "koo_total");
-        }
-    }
+//    static class Supporter extends BaseUserInfo {
+//        private int kooTotal;
+//
+//        public Supporter(JSONObject jsonObject) {
+//            super(jsonObject);
+//
+//            kooTotal = JsonUtil.getIntIfHas(jsonObject, "koo_total");
+//        }
+//    }
 }
