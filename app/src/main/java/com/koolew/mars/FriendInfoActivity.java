@@ -22,6 +22,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.blur.DisplayBlurImageAndStatusBar;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
+import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.infos.TypedUserInfo;
 import com.koolew.mars.player.ScrollPlayer;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
@@ -109,6 +110,7 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
         private TextView mFansCountText;
         private TextView mFollowsCountText;
 
+        private View mBottomLayout;
         private BigCountView mKooCountView;
         private BigCountView mCommonTopicCountView;
 
@@ -137,12 +139,12 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
                 mListFooter.setup(mListView, mScrollPlayer);
             }
 
+            Intent intent = getIntent();
+            mUid = intent.getStringExtra(KEY_UID);
+
             initViews();
 
             mProgressDialog = DialogUtil.getConnectingServerDialog(getActivity());
-
-            Intent intent = getIntent();
-            mUid = intent.getStringExtra(KEY_UID);
             String avatar = intent.getStringExtra(KEY_AVATAR);
             if (avatar != null && !avatar.equals("")) {
                 ImageLoader.getInstance().displayImage(avatar, mAvatar,
@@ -169,6 +171,10 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
             mFansCountText.setOnClickListener(this);
             mFollowsCountText = (TextView) header.findViewById(R.id.follows_count_text);
             mFollowsCountText.setOnClickListener(this);
+            mBottomLayout = header.findViewById(R.id.koo_common_topic_layout);
+            if (mUid.equals(MyAccountInfo.getUid())) {
+                mBottomLayout.setVisibility(View.GONE);
+            }
 
             mListView.setOnItemClickListener(this);
 
@@ -373,11 +379,13 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
                 mFollowsCountText.setText(getString(
                         R.string.follows_count, mUserInfo.getFollowsCount()));
 
-                mKooCount = user.getInt("koo_num");
-                mKooCountView.setCount(mKooCount);
+                if (!mUid.equals(MyAccountInfo.getUid())) {
+                    mKooCount = user.getInt("koo_num");
+                    mKooCountView.setCount(mKooCount);
 
-                JSONObject common = user.getJSONObject("common");
-                mCommonTopicCountView.setCount(common.getInt("common_topic"));
+                    JSONObject common = user.getJSONObject("common");
+                    mCommonTopicCountView.setCount(common.getInt("common_topic"));
+                }
 
                 JSONArray topic;
                 if (result.has("topic")) {

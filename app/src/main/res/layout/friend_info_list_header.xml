@@ -110,37 +110,31 @@
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/koo_common_topic_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="-10dp"
         android:background="@drawable/top_corner_bg"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:paddingBottom="15dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="15dp">
 
-        <LinearLayout
-            android:id="@+id/koo_common_topic_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="10dp"
-            android:paddingTop="15dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="15dp">
+        <com.koolew.mars.view.BigCountView
+            android:id="@+id/count_koo"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            BigCountView:description_image="@mipmap/ic_count_koo"
+            BigCountView:description_text="@string/got_koo" />
 
-            <com.koolew.mars.view.BigCountView
-                android:id="@+id/count_koo"
-                android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                BigCountView:description_image="@mipmap/ic_count_koo"
-                BigCountView:description_text="@string/got_koo" />
-
-            <com.koolew.mars.view.BigCountView
-                android:id="@+id/count_common_topic"
-                android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight="1"
-                BigCountView:description_text="@string/common_topic" />
-        </LinearLayout>
+        <com.koolew.mars.view.BigCountView
+            android:id="@+id/count_common_topic"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            BigCountView:description_text="@string/common_topic" />
     </LinearLayout>
 </LinearLayout>
