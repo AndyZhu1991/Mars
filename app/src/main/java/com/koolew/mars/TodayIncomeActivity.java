@@ -27,6 +27,7 @@ public class TodayIncomeActivity extends BaseActivity
 
     private double mRemainIncomeNum;
     private String mAlipayAccount;
+    private int mCashOutLimit;
 
     private TextView mTodayIncome;
     private TextView mTotalIncome;
@@ -74,6 +75,7 @@ public class TodayIncomeActivity extends BaseActivity
         Intent intent = new Intent(this, CashOutActivity.class);
         intent.putExtra(CashOutActivity.KEY_INCOME_CAN_CASH_OUT, mRemainIncomeNum);
         intent.putExtra(CashOutActivity.KEY_ALIPAY_ACCOUNT, mAlipayAccount);
+        intent.putExtra(CashOutActivity.KEY_CASH_OUT_LIMIT, mCashOutLimit);
         startActivityForResult(intent, REQUEST_CODE_CASH_OUT);
     }
 
@@ -110,6 +112,7 @@ public class TodayIncomeActivity extends BaseActivity
                 mRemainIncomeNum = result.getDouble("rest_profit");
                 mRemainIncome.setText(toIncomeString(mRemainIncomeNum));
                 mAlipayAccount = result.getString("alipay");
+                mCashOutLimit = result.getInt("limit");
             }
             else {
                 onError();

@@ -20,13 +20,14 @@ public class CashOutActivity extends BaseActivity implements Response.Listener<J
 
     public static final String KEY_INCOME_CAN_CASH_OUT = "can cash out";
     public static final String KEY_ALIPAY_ACCOUNT = "alipay account";
+    public static final String KEY_CASH_OUT_LIMIT = "cash out limit";
 
     public static final int REQUEST_CODE_REBIND_ALIPAY = RESULT_FIRST_USER + 1;
 
-    private static final int MIN_CASH_OUT_AMOUNT = 500;
 
     private double mIncomeCanCashOut;
     private String mAlipayAccount;
+    private int mCashOutLimit;
 
     private TextView mCanCashOutText;
     private TextView mAlipayText;
@@ -44,6 +45,7 @@ public class CashOutActivity extends BaseActivity implements Response.Listener<J
         Intent intent = getIntent();
         mIncomeCanCashOut = intent.getDoubleExtra(KEY_INCOME_CAN_CASH_OUT, 0.0);
         mAlipayAccount = intent.getStringExtra(KEY_ALIPAY_ACCOUNT);
+        mCashOutLimit = intent.getIntExtra(KEY_CASH_OUT_LIMIT, 0);
     }
 
     private void initViews() {
@@ -68,8 +70,8 @@ public class CashOutActivity extends BaseActivity implements Response.Listener<J
     }
 
     public void onCashOut(View v) {
-        if (mIncomeCanCashOut < MIN_CASH_OUT_AMOUNT) {
-            Toast.makeText(this, getString(R.string.too_less_money_to_cash_out, MIN_CASH_OUT_AMOUNT)
+        if (mIncomeCanCashOut < mCashOutLimit) {
+            Toast.makeText(this, getString(R.string.too_less_money_to_cash_out, mCashOutLimit)
                     , Toast.LENGTH_SHORT).show();
             return;
         }
