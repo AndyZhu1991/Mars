@@ -31,6 +31,7 @@ public class CashOutActivity extends BaseActivity implements Response.Listener<J
 
     private TextView mCanCashOutText;
     private TextView mAlipayText;
+    private TextView mCashOutLimitText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,8 @@ public class CashOutActivity extends BaseActivity implements Response.Listener<J
         setAlipayText();
         mCanCashOutText = (TextView) findViewById(R.id.income_can_cash_out);
         mCanCashOutText.setText(TodayIncomeActivity.toIncomeString(mIncomeCanCashOut));
+        mCashOutLimitText = (TextView) findViewById(R.id.cash_out_limit_text);
+        mCashOutLimitText.setText(getString(R.string.cash_out_limit_text, mCashOutLimit));
     }
 
     private void setAlipayText() {
@@ -107,6 +110,11 @@ public class CashOutActivity extends BaseActivity implements Response.Listener<J
         try {
             if (response.getInt("code") == 0) {
                 Toast.makeText(this, R.string.cash_out_requested, Toast.LENGTH_SHORT).show();
+                mIncomeCanCashOut -= (int) mIncomeCanCashOut;
+                mCanCashOutText.setText(TodayIncomeActivity.toIncomeString(mIncomeCanCashOut));
+                Intent intent = new Intent();
+                intent.putExtra(TodayIncomeActivity.KEY_CASH_OUT_AMOUNT, mIncomeCanCashOut);
+                setResult(RESULT_OK, intent);
                 onBackPressed();
             }
             else {

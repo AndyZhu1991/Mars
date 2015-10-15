@@ -377,7 +377,8 @@
     <string name="cash_out_status_requested">审核中</string>
     <string name="cash_out_status_done">已发放</string>
     <string name="cash_out_status_rejected">被拒绝</string>
-    <string name="too_less_money_to_cash_out" formatted="false">必须大于%d才能提现！</string>
+    <string name="cash_out_limit_text" formatted="false">%d元以上才能提现</string>
+    <string name="too_less_money_to_cash_out" formatted="false">余额必须大于%d元才能提现！</string>
     <string name="please_bind_alipay_first">请先绑定支付宝账号</string>
     <string name="cash_out_requested">提现请求已发出</string>
     <string name="cash_out_failed">提现失败，请重试</string>

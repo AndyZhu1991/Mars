@@ -42,6 +42,7 @@ public class CashOutRecordActivity extends BaseV4FragmentActivity {
 
         public CashOutRecordFragment() {
             isNeedLoadMore = true;
+            mLayoutResId = R.layout.refresh_recycler_without_shadow;
         }
 
         @Override
