@@ -489,18 +489,6 @@ public class MainActivity extends BaseV4FragmentActivity
                         R.color.drawer_list_settings_select,
                         SettingsFragment.class),
 
-                new DrawerItem(R.mipmap.ic_drawer_list_add,
-                        R.mipmap.ic_drawer_list_add_selected,
-                        R.string.title_add,
-                        R.color.drawer_list_add_select,
-                        null) {
-                    @Override
-                    public MainBaseFragment getFragment() {
-                        startActivity(new Intent(MainActivity.this, AddTopicActivity.class));
-                        return null;
-                    }
-                },
-
                 new DrawerItem(R.mipmap.ic_drawer_list_clock_in,
                         R.mipmap.ic_drawer_list_clock_in_selected,
                         R.string.title_clock_in,
