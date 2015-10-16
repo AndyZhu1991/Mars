@@ -391,9 +391,6 @@
     <string name="income_explain_detail2">- 上传高质量视频，在星探中被更多人支持，可以带来稳定收入；</string>
     <string name="income_explain_detail3">- 努力上热门可以使收入大幅增长！</string>
 
-    <!-- Square -->
-    <string name="koo_total">总打赏</string>
-
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>
     <string name="website">http://www.mob.com</string>
