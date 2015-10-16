@@ -109,6 +109,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     private int mCurrentGroup;
     private int mTotalGroup;
     private long mWaitTime;
+    private int mNextRoundPay;
 
     private BaseVideoInfo mLastLeftVideoInfo;
     private BaseVideoInfo mLastRightVideoInfo;
@@ -571,6 +572,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
             mCurrentGroup = jsonObject.getInt("cur");
             mTotalGroup = jsonObject.getInt("total");
             mWaitTime = jsonObject.getLong("wait_time");
+            mNextRoundPay = jsonObject.getInt("pay");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -734,6 +736,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
 
         mNextRoundCountDownTimer = new Timer();
         mNextRoundCountDownTimer.schedule(new NextRoundCountDownTimerTask(), 0, 1000);
+        mNextRoundPayText.setText("-" + mNextRoundPay);
 
         mTitle.setText("");
 

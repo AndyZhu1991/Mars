@@ -512,8 +512,7 @@
                     android:layout_marginLeft="5dp"
                     android:drawableRight="@mipmap/ic_coin_play_next_round"
                     android:textColor="#FFAB4B"
-                    android:textSize="16sp"
-                    android:text="-10"/>
+                    android:textSize="16sp"/>
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>
