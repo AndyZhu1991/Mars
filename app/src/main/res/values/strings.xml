@@ -221,9 +221,9 @@
     <!-- For CoinRuleActivity -->
     <string name="consume_koo">消耗金币</string>
     <string name="send_a_koo">打赏一下：</string>
-    <string name="how_to_get_koo">获取金币</string>
-    <string name="complete_a_task">完成任务：</string>
-    <string name="somebody_accept_invitation">有人接受你的点名：</string>
+    <string name="how_to_get_koo">如何获取金币</string>
+    <string name="daily_clock_in">每日登录打卡</string>
+    <string name="star_detective">星探</string>
     <string name="go_black_market">进入黑市</string>
 
     <!-- For KooRankActivity -->
