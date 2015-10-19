@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.koolew.mars.R;
@@ -66,6 +67,11 @@ public class ShareManager {
     public void shareTopicTo(ShareChanel shareChanel, String topicId, String content) {
         share(sharePlatformName[shareChanel.ordinal()], content, topicDescription(),
                 DEFAULT_SHARE_IMAGE, buildTopicUrl(topicId));
+    }
+
+    public void shareUrlTo(ShareChanel shareChanel, String url, String title, String imageUrl) {
+        share(sharePlatformName[shareChanel.ordinal()], title, null,
+                new UrlShareImage(imageUrl), url);
     }
 
     public void inviteBy(ShareChanel shareChanel, String topicId, String content) {
@@ -198,6 +204,9 @@ public class ShareManager {
     }
 
     private String buildShareText(String description, String url) {
+        if (TextUtils.isEmpty(description)) {
+            return url;
+        }
         return new StringBuilder()
                 .append(description).append("\n")
                 .append(url)

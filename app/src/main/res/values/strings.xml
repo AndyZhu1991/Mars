@@ -292,6 +292,7 @@
 
     <!-- For ShareVideoWindow -->
     <string name="share_video">分享视频</string>
+    <string name="share_url">分享网址</string>
     <string name="share_video_list">分享视频合集</string>
     <string name="report_this_video">举报此视频</string>
     <string name="delete_this_video">删除此视频</string>

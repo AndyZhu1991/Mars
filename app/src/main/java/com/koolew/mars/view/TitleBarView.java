@@ -93,6 +93,10 @@ public class TitleBarView extends FrameLayout implements View.OnClickListener {
         mTitleView.setText(title);
     }
 
+    public void setRightLayoutVisibility(int visibility) {
+        mRightLayout.setVisibility(visibility);
+    }
+
     public void setOnBackClickListener(OnBackClickListener listener) {
         mBackClickListener = listener;
     }

@@ -497,6 +497,7 @@ public class MainActivity extends BaseV4FragmentActivity
                     @Override
                     public MainBaseFragment getFragment() {
                         Intent intent = new Intent(MainActivity.this, KoolewWebActivity.class);
+                        intent.putExtra(KoolewWebActivity.KEY_NO_TITLE_BAR, true);
                         intent.putExtra(KoolewWebActivity.KEY_URL, AppProperty.CLOCK_IN_URL);
                         startActivity(intent);
                         return null;
