@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
+import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
@@ -178,9 +179,9 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
                 private int position;
 
                 private View itemView;
+                private TextView title;
                 private ImageView avatar;
                 private ImageView thumb;
-                private View bottomLayout;
                 private TextView kooTotal;
 //                private TextView firstNickname;
 //                private TextView firstKooCount;
@@ -191,14 +192,15 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
                     this.position = position;
 
                     this.itemView = itemView;
+                    title = (TextView) itemView.findViewById(R.id.title);
+                    title.setOnClickListener(this);
                     avatar = (ImageView) itemView.findViewById(R.id.avatar);
                     avatar.setOnClickListener(this);
                     thumb = (ImageView) itemView.findViewById(R.id.video_thumb);
                     thumb.getLayoutParams().height = calcThumbHeight();
                     thumb.setOnClickListener(this);
-                    bottomLayout = itemView.findViewById(R.id.bottom_layout);
-                    bottomLayout.setOnClickListener(this);
                     kooTotal = (TextView) itemView.findViewById(R.id.koo_total);
+                    kooTotal.setOnClickListener(this);
 //                    firstNickname = (TextView) itemView.findViewById(R.id.first_nickname);
 //                    firstKooCount = (TextView) itemView.findViewById(R.id.first_koo_count);
 //                    secondNickname = (TextView) itemView.findViewById(R.id.second_nickname);
@@ -225,6 +227,8 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
                         if (itemView.getVisibility() == View.INVISIBLE) {
                             itemView.setVisibility(View.VISIBLE);
                         }
+                        title.setText(getString(R.string.topic) + getString(R.string.colon)
+                                + item.topicInfo.getTitle());
                         ImageLoader.getInstance().displayImage(item.userInfo.getAvatar(), avatar,
                                 ImageLoaderHelper.avatarLoadOptions);
                         ImageLoader.getInstance().displayImage(item.videoInfo.getVideoThumb(),
@@ -263,11 +267,15 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
                                     item.videoInfo.getVideoId());
                             startActivity(intent);
                             break;
-                        case R.id.bottom_layout:
+                        case R.id.koo_total:
                             Intent intent2 = new Intent(getActivity(), VideoKooRankActivity.class);
                             intent2.putExtra(VideoKooRankActivity.KEY_VIDEO_ID,
                                     item.videoInfo.getVideoId());
                             startActivity(intent2);
+                            break;
+                        case R.id.title:
+                            FeedsTopicActivity.startTopicWorld(getActivity(),
+                                    item.topicInfo.getTopicId(), item.topicInfo.getTitle());
                             break;
                     }
                 }
@@ -277,6 +285,7 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
 
     static class SquareItem {
         private BaseVideoInfo videoInfo;
+        private BaseTopicInfo topicInfo;
         private BaseUserInfo userInfo;
 //        private Supporter[] supporters;
 
@@ -284,6 +293,11 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
             JSONObject video = JsonUtil.getJSONObjectIfHas(jsonObject, "video");
             if (video != null) {
                 videoInfo = new BaseVideoInfo(video);
+            }
+
+            JSONObject topic = JsonUtil.getJSONObjectIfHas(jsonObject, "topic");
+            if (topic != null) {
+                topicInfo = new BaseTopicInfo(topic);
             }
 
             JSONObject user = JsonUtil.getJSONObjectIfHas(jsonObject, "user");

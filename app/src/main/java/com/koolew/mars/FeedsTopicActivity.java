@@ -1,5 +1,7 @@
 package com.koolew.mars;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 
 public class FeedsTopicActivity extends TopicVideoActivity {
@@ -15,6 +17,21 @@ public class FeedsTopicActivity extends TopicVideoActivity {
     @Override
     protected TopicVideoPagerAdapter getPagerAdapter() {
         return new FeedsTopicAdapter(getSupportFragmentManager());
+    }
+
+    public static void startTopicFollowed(Context context, String topicId, String title) {
+        Intent intent = new Intent(context, FeedsTopicActivity.class);
+        intent.putExtra(KEY_TOPIC_ID, topicId);
+        intent.putExtra(KEY_TOPIC_TITLE, title);
+        context.startActivity(intent);
+    }
+
+    public static void startTopicWorld(Context context, String topicId, String title) {
+        Intent intent = new Intent(context, FeedsTopicActivity.class);
+        intent.putExtra(KEY_TOPIC_ID, topicId);
+        intent.putExtra(KEY_TOPIC_TITLE, title);
+        intent.putExtra(KEY_DEFAULT_SHOW_POSITION, POSITION_WORLD);
+        context.startActivity(intent);
     }
 
     class FeedsTopicAdapter extends TopicVideoPagerAdapter {
