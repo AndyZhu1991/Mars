@@ -2,7 +2,6 @@ package com.koolew.mars;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.DetailTitleVideoCardAdapter.TopicTitleDetail;
-import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONObject;
@@ -24,12 +23,6 @@ public class WorldVideoListFragment extends DetailTitleVideoListFragment {
     @Override
     public int getThemeColor() {
         return getResources().getColor(R.color.koolew_light_blue);
-    }
-
-    // This is share in fact
-    // They used same layout
-    @Override
-    public void onDanmakuSend(BaseVideoInfo videoInfo) {
     }
 
     @Override

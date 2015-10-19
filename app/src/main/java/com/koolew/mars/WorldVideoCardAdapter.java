@@ -1,10 +1,6 @@
 package com.koolew.mars;
 
 import android.content.Context;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.koolew.mars.infos.BaseVideoInfo;
 
@@ -19,19 +15,6 @@ public class WorldVideoCardAdapter extends DetailTitleVideoCardAdapter {
 
     public WorldVideoCardAdapter(Context context, String topicId) {
         super(context, topicId);
-    }
-
-    @Override
-    protected View getVideoItemView(int position, View convertView, ViewGroup parent) {
-        View root = super.getVideoItemView(position, convertView, parent);
-
-        ((TextView) root.findViewById(R.id.danmaku_send_text)).setText(R.string.share);
-        ((ImageView) root.findViewById(R.id.danmaku_send_ic)).setImageResource(R.mipmap.ic_share);
-
-        root.findViewById(R.id.danmaku_send_text).setVisibility(View.INVISIBLE);
-        root.findViewById(R.id.danmaku_send_ic).setVisibility(View.INVISIBLE);
-
-        return root;
     }
 
     @Override
