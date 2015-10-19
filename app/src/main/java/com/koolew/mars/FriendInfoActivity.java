@@ -59,7 +59,7 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
     }
 
 
-    class FriendProfileTopicAdapter extends TopicAdapter {
+    static class FriendProfileTopicAdapter extends TopicAdapter {
 
         FriendProfileTopicAdapter(Context context) {
             super(context);
@@ -76,7 +76,8 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
 
             root.setBackgroundColor(0xFFF5F5F5);
 
-            ((ViewHolder) root.getTag()).videoCount.setText(getString(R.string.part_video_count,
+            ((ViewHolder) root.getTag()).videoCount.setText(
+                    mContext.getString(R.string.part_video_count,
                     ((TopicItem) getItem(position)).getVideoCount()));
 
             return root;
@@ -87,9 +88,9 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
         }
     }
 
-    class FriendInfoFragment extends BaseListFragment implements AdapterView.OnItemClickListener,
-            SwipeRefreshLayout.OnRefreshListener, LoadMoreFooter.OnLoadListener,
-            View.OnClickListener {
+    public static class FriendInfoFragment extends BaseListFragment
+            implements AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener,
+            LoadMoreFooter.OnLoadListener, View.OnClickListener {
 
         private ScrollPlayer mScrollPlayer;
         private FriendProfileTopicAdapter mAdapter;
@@ -139,7 +140,7 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
                 mListFooter.setup(mListView, mScrollPlayer);
             }
 
-            Intent intent = getIntent();
+            Intent intent = getActivity().getIntent();
             mUid = intent.getStringExtra(KEY_UID);
 
             initViews();
@@ -291,8 +292,8 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
                         initTypeView(mType);
                     }
                     else {
-                        Toast.makeText(FriendInfoActivity.this,
-                                R.string.connect_server_failed, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.connect_server_failed,
+                                Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -372,8 +373,8 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
                 JSONObject user = result.getJSONObject("user");
                 mUserInfo = new BaseUserInfo(user);
                 ImageLoader.getInstance().displayImage(mUserInfo.getAvatar(), mAvatar);
-                new DisplayBlurImageAndStatusBar(FriendInfoActivity.this, mBlurAvatar,
-                        mUserInfo.getAvatar()).execute();
+                new DisplayBlurImageAndStatusBar(getActivity(), mBlurAvatar, mUserInfo.getAvatar())
+                        .execute();
                 mNameView.setUser(mUserInfo);
                 mFansCountText.setText(getString(R.string.fans_count, mUserInfo.getFansCount()));
                 mFollowsCountText.setText(getString(

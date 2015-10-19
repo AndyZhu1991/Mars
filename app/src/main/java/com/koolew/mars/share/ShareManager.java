@@ -70,7 +70,7 @@ public class ShareManager {
     }
 
     public void shareUrlTo(ShareChanel shareChanel, String url, String title, String imageUrl) {
-        share(sharePlatformName[shareChanel.ordinal()], title, null,
+        share(sharePlatformName[shareChanel.ordinal()], null, title,
                 new UrlShareImage(imageUrl), url);
     }
 
@@ -103,6 +103,13 @@ public class ShareManager {
         if (platformName.equals(WechatMoments.NAME)) {
             sp.setTitle(description);
             sp.setText(title);
+        }
+        else if (platformName.equals(QZone.NAME)) {
+            sp.setTitle(description);
+            if (TextUtils.isEmpty(description)) {
+                sp.setText("");
+            }
+            sp.setText(description);
         }
         else {
             sp.setTitle(title);
@@ -263,12 +270,22 @@ public class ShareManager {
 
         @Override
         public void onCancel(Platform platform, int i) {
-            Toast.makeText(mActivity, mCancelMessage, Toast.LENGTH_SHORT).show();
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(mActivity, mCancelMessage, Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         @Override
         public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
-            Toast.makeText(mActivity, mSuccessMessage, Toast.LENGTH_SHORT).show();
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(mActivity, mSuccessMessage, Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         @Override

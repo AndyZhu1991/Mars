@@ -38,7 +38,7 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
 
     private static final String TAG = "koolew-TopicAdapter";
 
-    private Context mContext;
+    protected Context mContext;
     private LayoutInflater mInflater;
     protected List<TopicItem> mData;
 

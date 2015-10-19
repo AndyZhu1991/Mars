@@ -1,5 +1,6 @@
 package com.koolew.mars;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -38,7 +39,7 @@ public class CashOutRecordActivity extends BaseV4FragmentActivity {
         fragmentTransaction.commit();
     }
 
-    class CashOutRecordFragment extends RecyclerListFragmentMould<CashOutRecordAdapter> {
+    public static class CashOutRecordFragment extends RecyclerListFragmentMould<CashOutRecordAdapter> {
 
         public CashOutRecordFragment() {
             isNeedLoadMore = true;
@@ -47,7 +48,7 @@ public class CashOutRecordActivity extends BaseV4FragmentActivity {
 
         @Override
         protected CashOutRecordAdapter useThisAdapter() {
-            return new CashOutRecordAdapter();
+            return new CashOutRecordAdapter(getActivity());
         }
 
         @Override
@@ -90,9 +91,14 @@ public class CashOutRecordActivity extends BaseV4FragmentActivity {
         }
     }
 
-    class CashOutRecordAdapter extends LoadMoreAdapter {
+    static class CashOutRecordAdapter extends LoadMoreAdapter {
 
+        private Context mContext;
         private List<CashOutRecord> mData = new ArrayList<>();
+
+        public CashOutRecordAdapter(Context context) {
+            mContext = context;
+        }
 
         public void setData(JSONArray records) {
             mData.clear();
@@ -119,7 +125,7 @@ public class CashOutRecordActivity extends BaseV4FragmentActivity {
 
         @Override
         public RecyclerView.ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
-            return new CashOutRecordItemHolder(LayoutInflater.from(CashOutRecordActivity.this)
+            return new CashOutRecordItemHolder(LayoutInflater.from(mContext)
                     .inflate(R.layout.cash_out_record, parent, false));
         }
 
@@ -131,7 +137,7 @@ public class CashOutRecordActivity extends BaseV4FragmentActivity {
                     .format(new Date(record.date * 1000)));
             recordHolder.amount.setText(String.valueOf(record.amount));
             recordHolder.status.setText(CASH_OUT_STATUS_TEXT[record.status]);
-            recordHolder.status.setTextColor(getResources().
+            recordHolder.status.setTextColor(mContext.getResources().
                     getColor(CASH_OUT_STATUS_TEXT_COLOR[record.status]));
         }
 
@@ -181,7 +187,7 @@ public class CashOutRecordActivity extends BaseV4FragmentActivity {
             R.color.settings_item_text_color,
     };
 
-    class CashOutRecord {
+    static class CashOutRecord {
         private long date;
         private double amount;
         private int status;

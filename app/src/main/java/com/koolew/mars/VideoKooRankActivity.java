@@ -32,28 +32,31 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
 
     public static final String KEY_VIDEO_ID = "video id";
 
-    private String videoId;
-
-    private VideoKooRankFragment mFragment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_koo_rank);
 
-        videoId = getIntent().getStringExtra(KEY_VIDEO_ID);
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        mFragment = new VideoKooRankFragment();
-        fragmentTransaction.add(R.id.fragment_container, mFragment);
+        fragmentTransaction.add(R.id.fragment_container, new VideoKooRankFragment());
         fragmentTransaction.commit();
     }
 
-    class VideoKooRankFragment extends RecyclerListFragmentMould<VideoKooRankAdapter> {
+    public static class VideoKooRankFragment
+            extends RecyclerListFragmentMould<VideoKooRankFragment.VideoKooRankAdapter>{
+
+        private String videoId;
 
         public VideoKooRankFragment() {
             isNeedLoadMore = false;
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            videoId = getActivity().getIntent().getStringExtra(KEY_VIDEO_ID);
         }
 
         @Override
@@ -98,72 +101,73 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
         protected boolean handleLoadMore(JSONObject response) {
             return false;
         }
-    }
 
-    class VideoKooRankAdapter extends LoadMoreAdapter {
 
-        private List<KooCountUserInfo> userInfos;
+        class VideoKooRankAdapter extends LoadMoreAdapter {
 
-        public VideoKooRankAdapter() {
-            userInfos = new ArrayList<>();
-        }
+            private List<KooCountUserInfo> userInfos;
 
-        public void setData(JSONArray jsonArray) {
-            userInfos.clear();
-            int length = jsonArray.length();
-            for (int i = 0; i < length; i++) {
-                try {
-                    userInfos.add(new KooCountUserInfo(jsonArray.getJSONObject(i)));
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            public VideoKooRankAdapter() {
+                userInfos = new ArrayList<>();
+            }
+
+            public void setData(JSONArray jsonArray) {
+                userInfos.clear();
+                int length = jsonArray.length();
+                for (int i = 0; i < length; i++) {
+                    try {
+                        userInfos.add(new KooCountUserInfo(jsonArray.getJSONObject(i)));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
+            }
+
+            @Override
+            public RecyclerView.ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
+                View itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.topic_koo_rank_item, parent, false);
+                return new VideoKooRankItemHolder(itemView);
+            }
+
+            @Override
+            public void onBindCustomViewHolder(RecyclerView.ViewHolder holder, int position) {
+                VideoKooRankItemHolder videoKooRankItemHolder = (VideoKooRankItemHolder) holder;
+                KooCountUserInfo userInfo = userInfos.get(position);
+
+                ImageLoader.getInstance().displayImage(userInfo.getAvatar(),
+                        videoKooRankItemHolder.avatar, ImageLoaderHelper.avatarLoadOptions);
+                videoKooRankItemHolder.nameView.setUser(userInfo);
+                videoKooRankItemHolder.kooCount.setText(String.valueOf(userInfo.getKooCount()));
+            }
+
+            @Override
+            public int getCustomItemCount() {
+                return userInfos.size();
             }
         }
 
-        @Override
-        public RecyclerView.ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.topic_koo_rank_item, parent, false);
-            return new VideoKooRankItemHolder(itemView);
-        }
+        class VideoKooRankItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @Override
-        public void onBindCustomViewHolder(RecyclerView.ViewHolder holder, int position) {
-            VideoKooRankItemHolder videoKooRankItemHolder = (VideoKooRankItemHolder) holder;
-            KooCountUserInfo userInfo = userInfos.get(position);
+            private CircleImageView avatar;
+            private UserNameView nameView;
+            private TextView kooCount;
 
-            ImageLoader.getInstance().displayImage(userInfo.getAvatar(),
-                    videoKooRankItemHolder.avatar, ImageLoaderHelper.avatarLoadOptions);
-            videoKooRankItemHolder.nameView.setUser(userInfo);
-            videoKooRankItemHolder.kooCount.setText(String.valueOf(userInfo.getKooCount()));
-        }
+            public VideoKooRankItemHolder(View itemView) {
+                super(itemView);
 
-        @Override
-        public int getCustomItemCount() {
-            return userInfos.size();
-        }
-    }
+                itemView.setOnClickListener(this);
 
-    class VideoKooRankItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+                avatar = (CircleImageView) itemView.findViewById(R.id.avatar);
+                nameView = (UserNameView) itemView.findViewById(R.id.name_view);
+                kooCount = (TextView) itemView.findViewById(R.id.koo_count);
+            }
 
-        private CircleImageView avatar;
-        private UserNameView nameView;
-        private TextView kooCount;
-
-        public VideoKooRankItemHolder(View itemView) {
-            super(itemView);
-
-            itemView.setOnClickListener(this);
-
-            avatar = (CircleImageView) itemView.findViewById(R.id.avatar);
-            nameView = (UserNameView) itemView.findViewById(R.id.name_view);
-            kooCount = (TextView) itemView.findViewById(R.id.koo_count);
-        }
-
-        @Override
-        public void onClick(View v) {
-            FriendInfoActivity.startThisActivity(VideoKooRankActivity.this,
-                    mFragment.getAdapter().userInfos.get(getAdapterPosition()).getUid());
+            @Override
+            public void onClick(View v) {
+                FriendInfoActivity.startThisActivity(getActivity(),
+                        getAdapter().userInfos.get(getAdapterPosition()).getUid());
+            }
         }
     }
 }

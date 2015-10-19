@@ -99,7 +99,12 @@ public abstract class ShareWindow extends PopupWindow {
         @Override
         public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
             super.onComplete(platform, i, hashMap);
-            ShareWindow.this.dismiss();
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ShareWindow.this.dismiss();
+                }
+            });
         }
     }
 }

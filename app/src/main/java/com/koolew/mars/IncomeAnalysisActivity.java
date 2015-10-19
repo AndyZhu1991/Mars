@@ -1,5 +1,6 @@
 package com.koolew.mars;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -41,7 +42,8 @@ public class IncomeAnalysisActivity extends BaseV4FragmentActivity {
         fragmentTransaction.commit();
     }
 
-    class IncomeAnalysisFragment extends RecyclerListFragmentMould<IncomeAnalysisAdapter> {
+    public static class IncomeAnalysisFragment
+            extends RecyclerListFragmentMould<IncomeAnalysisAdapter> {
 
         private int mPage;
 
@@ -51,7 +53,7 @@ public class IncomeAnalysisActivity extends BaseV4FragmentActivity {
 
         @Override
         protected IncomeAnalysisAdapter useThisAdapter() {
-            return new IncomeAnalysisAdapter();
+            return new IncomeAnalysisAdapter(getActivity());
         }
 
         @Override
@@ -97,12 +99,14 @@ public class IncomeAnalysisActivity extends BaseV4FragmentActivity {
         }
     }
 
-    class IncomeAnalysisAdapter extends LoadMoreAdapter {
+    static class IncomeAnalysisAdapter extends LoadMoreAdapter {
 
+        private Context mContext;
         private List<IncomeVideoInfo> mData;
 
-        public IncomeAnalysisAdapter() {
+        public IncomeAnalysisAdapter(Context context) {
             mData = new ArrayList<>();
+            mContext = context;
         }
 
         public void setData(JSONArray jsonArray) {
@@ -131,7 +135,7 @@ public class IncomeAnalysisActivity extends BaseV4FragmentActivity {
 
         @Override
         public RecyclerView.ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
-            return new IncomeAnalysisHolder(LayoutInflater.from(IncomeAnalysisActivity.this)
+            return new IncomeAnalysisHolder(LayoutInflater.from(mContext)
                     .inflate(R.layout.danmaku_tab_item, parent, false));
         }
 
@@ -142,8 +146,9 @@ public class IncomeAnalysisActivity extends BaseV4FragmentActivity {
             ImageLoader.getInstance().displayImage(info.getVideoThumb(), incomeHolder.mVideoThumb,
                     ImageLoaderHelper.topicThumbLoadOptions);
             incomeHolder.mTopicTitle.setText(info.getTopicInfo().getTitle());
-            incomeHolder.mIncomeText.setText(getString(R.string.income_rmb) +
-                    getString(R.string.colon) + TodayIncomeActivity.toIncomeString(info.income));
+            incomeHolder.mIncomeText.setText(mContext.getString(R.string.income_rmb) +
+                    mContext.getString(R.string.colon) +
+                    TodayIncomeActivity.toIncomeString(info.income));
         }
 
         @Override
@@ -165,15 +170,15 @@ public class IncomeAnalysisActivity extends BaseV4FragmentActivity {
                 mVideoThumb = (ImageView) itemView.findViewById(R.id.thumb);
                 mTopicTitle = (TextView) itemView.findViewById(R.id.title);
                 mIncomeText = (TextView) itemView.findViewById(R.id.last_comment);
-                mIncomeText.setTextColor(getResources().getColor(R.color.koolew_red));
+                mIncomeText.setTextColor(mContext.getResources().getColor(R.color.koolew_red));
             }
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(IncomeAnalysisActivity.this, CheckDanmakuActivity.class);
+                Intent intent = new Intent(mContext, CheckDanmakuActivity.class);
                 intent.putExtra(CheckDanmakuActivity.KEY_VIDEO_ID,
                         mData.get(getAdapterPosition()).getVideoId());
-                startActivity(intent);
+                mContext.startActivity(intent);
             }
         }
     }
