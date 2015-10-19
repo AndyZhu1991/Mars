@@ -81,7 +81,8 @@ public class TodayIncomeActivity extends BaseActivity
 
     @Override
     public void onRightLayoutClick() {
-        startActivity(new Intent(this, IncomeExplainActivity.class));
+        KoolewWebActivity.startThisActivity(this, AppProperty.INCOME_EXPLAIN_URL,
+                getString(R.string.income_explain), getResources().getColor(R.color.koolew_red));
     }
 
     @Override

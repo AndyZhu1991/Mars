@@ -105,6 +105,28 @@ public class KoolewWebActivity extends BaseActivity
                 mWebParams.get(PARAM_KEY_THUMB)).showAtLocation(mTitleBar, Gravity.TOP, 0, 0);
     }
 
+    public static void startThisActivity(Context context, String url) {
+        Intent intent = new Intent(context, KoolewWebActivity.class);
+        intent.putExtra(KEY_URL, url);
+        context.startActivity(intent);
+    }
+
+    public static void startThisActivity(Context context, String url,
+                                         String title, int titleBarBg) {
+        Intent intent = new Intent(context, KoolewWebActivity.class);
+        intent.putExtra(KEY_URL, url);
+        intent.putExtra(KEY_TITLE, title);
+        intent.putExtra(KEY_TITLE_BAR_BG, titleBarBg);
+        context.startActivity(intent);
+    }
+
+    public static void startThisActivityWithoutTitleBar(Context context, String url) {
+        Intent intent = new Intent(context, KoolewWebActivity.class);
+        intent.putExtra(KEY_URL, url);
+        intent.putExtra(KEY_NO_TITLE_BAR, true);
+        context.startActivity(intent);
+    }
+
     class WebUriProcessor extends UriProcessor {
         public WebUriProcessor(Context context) {
             super(context);

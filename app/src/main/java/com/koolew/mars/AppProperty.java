@@ -13,6 +13,7 @@ public class AppProperty {
     public static final String DEFAULT_AVATAR_URL = "http://avatar.koolew.com/default_avatar.jpg";
     public static final String APP_DOWNLOAD_URL = "d.koolew.com";
     public static final String CLOCK_IN_URL = "http://k.koolew.com/dynamic/register";
+    public static final String INCOME_EXPLAIN_URL = "http://www.koolew.com/cash.html";
 
     public static final int DANMAKU_MAX_WORD = 15;
 
