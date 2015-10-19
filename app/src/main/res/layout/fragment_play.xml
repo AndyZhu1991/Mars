@@ -63,231 +63,257 @@
             android:orientation="horizontal"
             android:visibility="invisible">
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:background="@color/play_left_color"
-                android:orientation="vertical">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="2"/>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/left_result_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:textSize="48sp"
-                        android:textColor="@android:color/white"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:text="V"
-                        android:textColor="#FF9D4B"
-                        android:textSize="36sp" />
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"/>
+                android:layout_weight="1">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@color/play_left_color"
                     android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp">
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="2" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/left_result_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:textColor="@android:color/white"
+                            android:textSize="48sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:text="V"
+                            android:textColor="#FF9D4B"
+                            android:textSize="36sp" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:text="@string/kooed"
+                            android:textColor="@android:color/white"
+                            android:textSize="12sp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginBottom="5dp"
+                            android:background="@android:color/white" />
+
+                        <TextView
+                            android:id="@+id/left_koo_count_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="5dp"
+                            android:drawableLeft="@mipmap/ic_koo_play_big"
+                            android:drawablePadding="4dp"
+                            android:textColor="@android:color/white"
+                            android:textSize="24sp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@android:color/white" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/left_avatar"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        app:border_color="@android:color/white"
+                        app:border_width="3dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
-                        android:text="@string/kooed"
+                        android:id="@+id/left_follow_btn"
+                        android:layout_width="90dp"
+                        android:layout_height="24dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/play_follow_btn_bg"
+                        android:gravity="center"
+                        android:text="@string/follow"
                         android:textColor="@android:color/white"
                         android:textSize="12sp" />
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@android:color/white" />
-
-                    <TextView
-                        android:id="@+id/left_koo_count_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
-                        android:layout_gravity="center_horizontal"
-                        android:drawableLeft="@mipmap/ic_koo_play_big"
-                        android:drawablePadding="4dp"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/white" />
+                        android:layout_height="0dp"
+                        android:layout_weight="2" />
                 </LinearLayout>
 
                 <View
+                    android:id="@+id/top_left_shader"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"/>
+                    android:layout_height="match_parent"
+                    android:background="@android:color/black"
+                    android:alpha="0.6"
+                    android:visibility="invisible"/>
+            </FrameLayout>
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/left_avatar"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    app:border_width="3dp"
-                    app:border_color="@android:color/white" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"/>
-
-                <TextView
-                    android:id="@+id/left_follow_btn"
-                    android:layout_width="90dp"
-                    android:layout_height="24dp"
-                    android:layout_marginBottom="12dp"
-                    android:background="@drawable/play_follow_btn_bg"
-                    android:gravity="center"
-                    android:text="@string/follow"
-                    android:textColor="@android:color/white"
-                    android:textSize="12sp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="2"/>
-            </LinearLayout>
-
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:background="@color/play_right_color"
-                android:orientation="vertical">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="2"/>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/right_result_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:textSize="48sp"
-                        android:textColor="@android:color/white"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_centerVertical="true"
-                        android:text="S"
-                        android:textColor="#50B8C6"
-                        android:textSize="36sp" />
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"/>
+                android:layout_weight="1">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@color/play_right_color"
                     android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp">
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="2" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/right_result_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:textColor="@android:color/white"
+                            android:textSize="48sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:text="S"
+                            android:textColor="#50B8C6"
+                            android:textSize="36sp" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:text="@string/kooed"
+                            android:textColor="@android:color/white"
+                            android:textSize="12sp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginBottom="5dp"
+                            android:background="@android:color/white" />
+
+                        <TextView
+                            android:id="@+id/right_koo_count_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="5dp"
+                            android:drawableLeft="@mipmap/ic_koo_play_big"
+                            android:drawablePadding="4dp"
+                            android:textColor="@android:color/white"
+                            android:textSize="24sp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@android:color/white" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/right_avatar"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        app:border_color="@android:color/white"
+                        app:border_width="3dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
-                        android:text="@string/kooed"
+                        android:id="@+id/right_follow_btn"
+                        android:layout_width="90dp"
+                        android:layout_height="24dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/play_follow_btn_bg"
+                        android:gravity="center"
+                        android:text="@string/follow"
                         android:textColor="@android:color/white"
                         android:textSize="12sp" />
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@android:color/white" />
-
-                    <TextView
-                        android:id="@+id/right_koo_count_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
-                        android:layout_gravity="center_horizontal"
-                        android:drawableLeft="@mipmap/ic_koo_play_big"
-                        android:drawablePadding="4dp"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@android:color/white" />
+                        android:layout_height="0dp"
+                        android:layout_weight="2" />
                 </LinearLayout>
 
                 <View
+                    android:id="@+id/top_right_shader"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"/>
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/right_avatar"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    app:border_width="3dp"
-                    app:border_color="@android:color/white"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"/>
-
-                <TextView
-                    android:id="@+id/right_follow_btn"
-                    android:layout_width="90dp"
-                    android:layout_height="24dp"
-                    android:layout_marginBottom="12dp"
-                    android:background="@drawable/play_follow_btn_bg"
-                    android:gravity="center"
-                    android:text="@string/follow"
-                    android:textColor="@android:color/white"
-                    android:textSize="12sp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="2"/>
-            </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:background="@android:color/black"
+                    android:alpha="0.6"
+                    android:visibility="invisible"/>
+            </FrameLayout>
         </LinearLayout>
     </FrameLayout>
 

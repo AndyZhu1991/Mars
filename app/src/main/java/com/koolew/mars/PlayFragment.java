@@ -75,6 +75,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     private TextView mLeftSupportBtn;
     private TextView mLeftKooCountText;
     private TextView mLeftFollowBtn;
+    private View mTopLeftShader;
     private View mBottomLeftLayout;
     private TextView mLeftUserDesc;
 
@@ -83,6 +84,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     private TextView mRightSupportBtn;
     private TextView mRightKooCountText;
     private TextView mRightFollowBtn;
+    private View mTopRightShader;
     private View mBottomRightLayout;
     private TextView mRightUserDesc;
 
@@ -169,6 +171,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
         mLeftKooCountText = (TextView) root.findViewById(R.id.left_koo_count_text);
         mLeftFollowBtn = (TextView) root.findViewById(R.id.left_follow_btn);
         mLeftFollowBtn.setOnClickListener(this);
+        mTopLeftShader = root.findViewById(R.id.top_left_shader);
         mBottomLeftLayout = root.findViewById(R.id.bottom_left_layout);
         mBottomLeftLayout.setOnClickListener(this);
         mLeftUserDesc = (TextView) root.findViewById(R.id.left_user_desc);
@@ -181,6 +184,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
         mRightKooCountText = (TextView) root.findViewById(R.id.right_koo_count_text);
         mRightFollowBtn = (TextView) root.findViewById(R.id.right_follow_btn);
         mRightFollowBtn.setOnClickListener(this);
+        mTopRightShader = root.findViewById(R.id.top_right_shader);
         mBottomRightLayout = root.findViewById(R.id.bottom_right_layout);
         mBottomRightLayout.setOnClickListener(this);
         mRightUserDesc = (TextView) root.findViewById(R.id.right_user_desc);
@@ -708,6 +712,15 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     private void switchToResultMode(int judgeStatus) {
         mTopResultFrame.setVisibility(View.VISIBLE);
         mBottomResultFrame.setVisibility(View.VISIBLE);
+
+        if (mJudgedVideoId.equals(mLastLeftVideoInfo.getVideoId())) {
+            mTopLeftShader.setVisibility(View.INVISIBLE);
+            mTopRightShader.setVisibility(View.VISIBLE);
+        }
+        else {
+            mTopLeftShader.setVisibility(View.VISIBLE);
+            mTopRightShader.setVisibility(View.INVISIBLE);
+        }
 
         refreshUserInfo();
 
