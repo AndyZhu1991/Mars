@@ -86,6 +86,14 @@ public class BaseUserInfo implements Serializable {
         return followsCount;
     }
 
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
     public static List<BaseUserInfo> fromJSONArray(JSONArray jsonArray) {
         List<BaseUserInfo> list = new ArrayList<>();
 

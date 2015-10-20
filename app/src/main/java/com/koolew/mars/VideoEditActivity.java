@@ -23,7 +23,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.koolew.mars.infos.BaseUserInfo;
+import com.koolew.mars.infos.BaseVideoInfo;
+import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.qiniu.UploadHelper;
+import com.koolew.mars.share.ShareManager;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.BgmUtil;
 import com.koolew.mars.utils.DialogUtil;
@@ -32,10 +36,15 @@ import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.TitleBarView;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+
+import cn.sharesdk.framework.Platform;
 
 
 public class VideoEditActivity extends BaseActivity
@@ -49,12 +58,15 @@ public class VideoEditActivity extends BaseActivity
     public static final String KEY_CONCATED_VIDEO = "concated video";
     public static final String KEY_VIDEO_THUMB = "video thumb";
     public static final String KEY_TOPIC_ID = "topic id";
+    public static final String KEY_TOPIC_TITLE = "topic title";
 
     private static final int NO_MUSIC_SELECTED = -1;
 
     private String mConcatedVideo;
     private String mVideoThumb;
     private String mTopicId;
+    private String mTopicTitle;
+    private BaseVideoInfo mUploadedVideo;
 
     private String mSelectedBgmPath;
 
@@ -73,6 +85,11 @@ public class VideoEditActivity extends BaseActivity
 
     private BgmPlayer mBgmPlayer;
 
+    private View mShareItemWechatMoments;
+    private View mShareItemWechatFriends;
+    private View mShareItemQQ;
+    private View mShareItemWeibo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +98,7 @@ public class VideoEditActivity extends BaseActivity
         mConcatedVideo = getIntent().getStringExtra(KEY_CONCATED_VIDEO);
         mVideoThumb = getIntent().getStringExtra(KEY_VIDEO_THUMB);
         mTopicId = getIntent().getStringExtra(KEY_TOPIC_ID);
+        mTopicTitle = getIntent().getStringExtra(KEY_TOPIC_TITLE);
 
         initMembers();
 
@@ -120,6 +138,11 @@ public class VideoEditActivity extends BaseActivity
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new MusicSelectAdapter();
         mRecyclerView.setAdapter(mAdapter);
+
+        mShareItemWechatMoments = findViewById(R.id.wechat_moments);
+        mShareItemWechatFriends = findViewById(R.id.wechat_friends);
+        mShareItemQQ = findViewById(R.id.qq);
+        mShareItemWeibo = findViewById(R.id.weibo);
     }
 
     @Override
@@ -166,9 +189,15 @@ public class VideoEditActivity extends BaseActivity
 
             @Override
             protected Boolean doInBackground(String... params) {
-                if (UploadHelper.uploadVideo(params[0], params[1], params[2], mAuthority)
-                        == UploadHelper.RESULT_SUCCESS) {
+                mUploadedVideo = UploadHelper.uploadVideo(params[0], params[1],
+                        params[2], mAuthority);
+                if (mUploadedVideo != null) {
+                    BaseUserInfo userInfo = new BaseUserInfo(new JSONObject());
+                    userInfo.setNickname(MyAccountInfo.getNickname());
+                    userInfo.setUid(MyAccountInfo.getUid());
+                    mUploadedVideo.setUserInfo(userInfo);
                     saveAndRegisterVideo();
+                    shareVideoIfNeed();
                     return true;
                 } else {
                     return false;
@@ -211,6 +240,84 @@ public class VideoEditActivity extends BaseActivity
         }.execute(mTopicId, finalVideo, mVideoThumb);
     }
 
+    private void shareVideoIfNeed() {
+        ShareManager.ShareChanel shareChanel = null;
+        if (mShareItemWechatMoments.isSelected()) {
+            shareChanel = ShareManager.ShareChanel.WECHAT_MOMENTS;
+        }
+        else if (mShareItemWechatFriends.isSelected()) {
+            shareChanel = ShareManager.ShareChanel.WECHAT_FRIENDS;
+        }
+        else if (mShareItemQQ.isSelected()) {
+            shareChanel = ShareManager.ShareChanel.QZONE;
+        }
+        else if (mShareItemWeibo.isSelected()) {
+            shareChanel = ShareManager.ShareChanel.WEIBO;
+        }
+
+        if (shareChanel != null) {
+            ShareManager.ShareListener shareListener;
+            if (ShareManager.ShareChanel.WEIBO.equals(shareChanel)) {
+                shareListener = new WeiboShareListener();
+            } else {
+                shareListener = new ShareListener();
+            }
+            new ShareManager(this, shareListener).
+                    shareVideoTo(shareChanel, mUploadedVideo, mTopicTitle);
+        }
+    }
+
+    class ShareListener extends ShareManager.ShareListener {
+
+        public ShareListener() {
+            super(VideoEditActivity.this);
+        }
+
+        @Override
+        protected void initMessages() {
+            mSuccessMessage = mActivity.getString(R.string.share_success);
+            mErrorMessage = mActivity.getString(R.string.share_failed);
+            mCancelMessage = mActivity.getString(R.string.share_cancel);
+        }
+
+        @Override
+        public void onCancel(Platform platform, int i) {
+            super.onCancel(platform, i);
+            shareToWeibo();
+        }
+
+        @Override
+        public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
+            super.onComplete(platform, i, hashMap);
+            shareToWeibo();
+        }
+
+        @Override
+        public void onError(Platform platform, int i, Throwable throwable) {
+            super.onError(platform, i, throwable);
+            shareToWeibo();
+        }
+
+        private void shareToWeibo() {
+            new ShareManager(VideoEditActivity.this, new WeiboShareListener()).
+                    shareVideoTo(ShareManager.ShareChanel.WEIBO, mUploadedVideo, mTopicTitle);
+        }
+    }
+
+    class WeiboShareListener extends ShareManager.ShareListener {
+
+        public WeiboShareListener() {
+            super(VideoEditActivity.this);
+        }
+
+        @Override
+        protected void initMessages() {
+            mSuccessMessage = mActivity.getString(R.string.share_success);
+            mErrorMessage = mActivity.getString(R.string.share_failed);
+            mCancelMessage = mActivity.getString(R.string.share_cancel);
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -224,6 +331,22 @@ public class VideoEditActivity extends BaseActivity
                 onBgmSwitchClick();
                 break;
         }
+    }
+
+    public void onShareItemClick(View v) {
+        boolean originalState = v.isSelected();
+        switch (v.getId()) {
+            case R.id.wechat_moments:
+            case R.id.wechat_friends:
+            case R.id.qq:
+                mShareItemWechatMoments.setSelected(false);
+                mShareItemWechatFriends.setSelected(false);
+                mShareItemQQ.setSelected(false);
+                break;
+            case R.id.weibo:
+                break;
+        }
+        v.setSelected(!originalState);
     }
 
     private void onVideoPlayClick() {

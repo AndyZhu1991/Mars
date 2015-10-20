@@ -135,6 +135,10 @@ public class BaseVideoInfo implements Serializable {
         return mCommentCount;
     }
 
+    public void setUserInfo(BaseUserInfo userInfo) {
+        mUserInfo = userInfo;
+    }
+
     public BaseUserInfo getUserInfo() {
         return mUserInfo;
     }

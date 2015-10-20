@@ -248,10 +248,11 @@ public class FriendTaskActivity extends BaseActivity
     private View.OnClickListener mAcceptListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String topicId = (String) v.getTag();
-            mOperatingTopicId = topicId;
+            BaseTopicInfo topicInfo = (BaseTopicInfo) v.getTag();
+            mOperatingTopicId = topicInfo.getTopicId();
             Intent intent = new Intent(FriendTaskActivity.this, VideoShootActivity.class);
-            intent.putExtra(VideoShootActivity.KEY_TOPIC_ID, topicId);
+            intent.putExtra(VideoShootActivity.KEY_TOPIC_ID, topicInfo.getTopicId());
+            intent.putExtra(VideoShootActivity.KEY_TOPIC_TITLE, topicInfo.getTitle());
             startActivityForResult(intent, REQUEST_CAPTURE);
             MobclickAgent.onEvent(FriendTaskActivity.this, StatisticsEvent.EVENT_ACCEPT_INVITATION);
         }
@@ -325,7 +326,7 @@ public class FriendTaskActivity extends BaseActivity
             holder.title.setText(info.getTitle());
             holder.videoCount.setText(getString(R.string.video_count_label, info.getVideoCount()));
             holder.removeBtn.setTag(info.getTopicId());
-            holder.acceptBtn.setTag(info.getTopicId());
+            holder.acceptBtn.setTag(info);
 
             return convertView;
         }

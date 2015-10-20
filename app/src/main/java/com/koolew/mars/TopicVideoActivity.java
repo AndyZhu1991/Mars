@@ -83,6 +83,7 @@ public abstract class TopicVideoActivity extends BaseV4FragmentActivity
     public void onCapture(View view) {
         Intent intent = new Intent(this, VideoShootActivity.class);
         intent.putExtra(VideoShootActivity.KEY_TOPIC_ID, topicId);
+        intent.putExtra(VideoShootActivity.KEY_TOPIC_TITLE, topicTitle);
         startActivity(intent);
     }
 

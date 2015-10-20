@@ -53,11 +53,13 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     private static final int REQUEST_CODE_EDIT_VIDEO = 2;
 
     public static final String KEY_TOPIC_ID = "topic id";
+    public static final String KEY_TOPIC_TITLE = "topic title";
 
     private static final int MODE_PREVIEW = 0;
     private static final int MODE_PLAYBACK = 1;
 
     private String mTopicId;
+    private String mTopicTitle;
 
     private FrameLayout mPreviewFrame;
     //private CameraSurfacePreview mPreview;
@@ -97,8 +99,9 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         setContentView(R.layout.activity_video_shoot);
 
         mTopicId = getIntent().getStringExtra(KEY_TOPIC_ID);
-        if (mTopicId == null || mTopicId.length() == 0) {
-            throw new RuntimeException("Start VideoShootActivity must has a KEY_TOPIC_ID extra");
+        mTopicTitle = getIntent().getStringExtra(KEY_TOPIC_TITLE);
+        if (TextUtils.isEmpty(mTopicId) || TextUtils.isEmpty(mTopicTitle)) {
+            throw new RuntimeException("Start VideoShootActivity must has KEY_TOPIC_ID and KEY_TOPIC_TITLE extras");
         }
 
         initMembers();
@@ -686,6 +689,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
                 intent.putExtra(VideoEditActivity.KEY_VIDEO_THUMB,
                         recordingSessionView.getThumbName());
                 intent.putExtra(VideoEditActivity.KEY_TOPIC_ID, mTopicId);
+                intent.putExtra(VideoEditActivity.KEY_TOPIC_TITLE, mTopicTitle);
                 startActivityForResult(intent, REQUEST_CODE_EDIT_VIDEO);
             }
         }.execute();

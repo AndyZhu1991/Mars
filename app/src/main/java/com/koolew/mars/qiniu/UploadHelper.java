@@ -1,5 +1,6 @@
 package com.koolew.mars.qiniu;
 
+import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.webapi.ApiWorker;
@@ -21,10 +22,8 @@ import java.util.concurrent.TimeoutException;
  */
 public class UploadHelper {
 
-    public static final int RESULT_SUCCESS = 0;
-    public static final int RESULT_FAILED = -1;
-
-    public static int uploadVideo(String topicId, String videoPath, String thumbPath, int privacy) {
+    public static BaseVideoInfo uploadVideo(String topicId, String videoPath, String thumbPath,
+                                            int privacy) {
         try {
             JSONObject thumbTokenJson = ApiWorker.getInstance().requestQiniuThumbTokenSync();
             String thumbToken = null;
@@ -58,9 +57,10 @@ public class UploadHelper {
             videoOption.put("x:privacy", String.valueOf(privacy));
             uploadManager.put(videoPath, key, videoToken, videoFuture,
                     new UploadOptions(videoOption, null, false, null, null));
-            videoFuture.upload();
+            UploadFuture.UploadResponse response = videoFuture.upload();
 
-            return RESULT_SUCCESS;
+            return new BaseVideoInfo(response.getResponse()
+                    .getJSONObject("result").getJSONObject("video"));
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -74,6 +74,6 @@ public class UploadHelper {
             e.printStackTrace();
         }
 
-        return RESULT_FAILED;
+        return null;
     }
 }
