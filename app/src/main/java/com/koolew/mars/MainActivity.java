@@ -29,6 +29,7 @@ import com.koolew.mars.preference.PreferenceHelper;
 import com.koolew.mars.redpoint.RedPointManager;
 import com.koolew.mars.redpoint.RedPointView;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
+import com.koolew.mars.update.Updater;
 import com.koolew.mars.utils.ColorUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.DrawerToggleView;
@@ -155,6 +156,11 @@ public class MainActivity extends BaseV4FragmentActivity
         }
 
         RedPointManager.refreshRedPoint();
+
+        Updater updater = Updater.newInstance(this);
+        if (updater != null) {
+            updater.checkUpdateAutomatic();
+        }
     }
 
     @Override

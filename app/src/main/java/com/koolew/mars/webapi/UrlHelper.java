@@ -23,6 +23,7 @@ public class UrlHelper {
     private static final String V2_URL = BASE_URL + "v2/";
     private static final String V3_URL = BASE_URL + "v3/";
 
+    public static final String CHECK_VERSION_URL = BASE_URL + "version";
     // v1 api
     private static final String TOPIC_VIDEO_FRIEND_URL = V1_URL + "feeds";
     public static final String SNS_LOGIN_URL = V1_URL + "user/login/sns";

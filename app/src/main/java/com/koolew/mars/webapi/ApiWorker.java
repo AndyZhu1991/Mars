@@ -838,6 +838,11 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.getSquareUrl(before, page), listener, errorListener);
     }
 
+    public JsonObjectRequest checkVersion(Response.Listener<JSONObject> listener,
+                                          Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.CHECK_VERSION_URL, listener, errorListener);
+    }
+
 
     // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,

@@ -22,6 +22,7 @@ import com.koolew.mars.preference.PreferenceGroupTitle;
 import com.koolew.mars.preference.PreferenceHelper;
 import com.koolew.mars.preference.SwitchPreference;
 import com.koolew.mars.preference.TreePreference;
+import com.koolew.mars.update.Updater;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.FileUtil;
 import com.koolew.mars.utils.Utils;
@@ -115,6 +116,16 @@ public class SettingsFragment extends MainBaseFragment implements View.OnClickLi
         }
     };
 
+    private View.OnClickListener mCheckUpdateListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Updater updater = Updater.newInstance(getActivity());
+            if (updater != null) {
+                updater.checkUpdate();
+            }
+        }
+    };
+
     private void clearCache() {
 
         new AsyncTask<Void, Void, Void>() {
@@ -168,6 +179,10 @@ public class SettingsFragment extends MainBaseFragment implements View.OnClickLi
         mAdapter.add(new PreferenceGroupTitle(context, R.string.about));
         //mAdapter.add(new TreePreference(context, R.string.want_talk, null));
         mAdapter.add(new TreePreference(context, R.string.privacy_policy, PrivacyPolicyActivity.class));
+        mAdapter.add(new TreePreference(context, R.string.user_agreement, UserAgreementActivity.class));
+        OperationPreference checkUpdatePref = new OperationPreference(context, R.string.check_update);
+        checkUpdatePref.setOnClickListener(mCheckUpdateListener);
+        mAdapter.add(checkUpdatePref);
     }
 
     @Override

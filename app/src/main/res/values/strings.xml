@@ -189,6 +189,8 @@
     <string name="about">关于</string>
     <string name="want_talk">我想和你谈谈</string>
     <string name="privacy_policy">隐私条款</string>
+    <string name="user_agreement">用户协议</string>
+    <string name="check_update">检查更新</string>
     <string name="logout">登出</string>
     <string name="logout_confirm">确认登出吗？</string>
     <string name="permission">权限</string>
@@ -391,6 +393,12 @@
     <string name="income_explain_detail1">- 打赏你的人越多，收入越多；</string>
     <string name="income_explain_detail2">- 上传高质量视频，在星探中被更多人支持，可以带来稳定收入；</string>
     <string name="income_explain_detail3">- 努力上热门可以使收入大幅增长！</string>
+
+    <!-- For Updater -->
+    <string name="checking_for_update">正在检查更新...</string>
+    <string name="downloading_update_package">正在下载安装包...</string>
+    <string name="new_version" formatted="false">新版本：%s</string>
+    <string name="update">更新</string>
 
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>
