@@ -45,14 +45,6 @@ android {
             manifestPlaceholders = [UMENG_CHANNEL_VALUE: "YingYongBao"]
         }
 
-        MeiPai {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "MeiPai"]
-        }
-
-        WeiBoYi {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "WeiBoYi"]
-        }
-
         _360 {
             manifestPlaceholders = [UMENG_CHANNEL_VALUE: "360"]
         }
@@ -77,10 +69,6 @@ android {
             manifestPlaceholders = [UMENG_CHANNEL_VALUE: "AnZhuo"]
         }
 
-        MuMaYi {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "MuMaYi"]
-        }
-
         GooglePlay {
             manifestPlaceholders = [UMENG_CHANNEL_VALUE: "GooglePlay"]
         }
@@ -95,14 +83,6 @@ android {
 
         HuaWei {
             manifestPlaceholders = [UMENG_CHANNEL_VALUE: "HuaWei"]
-        }
-
-        WeiBo {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "WeiBo"]
-        }
-
-        ChuiZi {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "ChuiZi"]
         }
 
     }

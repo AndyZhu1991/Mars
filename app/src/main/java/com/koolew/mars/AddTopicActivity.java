@@ -1,29 +1,23 @@
 package com.koolew.mars;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.statistics.BaseActivity;
-import com.koolew.mars.statistics.StatisticsEvent;
-import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.view.TitleBarView;
+import com.koolew.mars.utils.MaxLengthWatcher;
 import com.koolew.mars.webapi.ApiWorker;
-import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,10 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AddTopicActivity extends BaseActivity implements TitleBarView.OnRightLayoutClickListener,
-        SwipeRefreshLayout.OnRefreshListener, TextWatcher {
+public class AddTopicActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-    private TitleBarView mTitleBar;
+    private static final int REQUEST_CODE_CREATE_TOPIC = 1;
+
     private EditText mTitleEdit;
     private SwipeRefreshLayout mRefreshLayout;
     private View mRecommendationFrame;
@@ -50,14 +44,10 @@ public class AddTopicActivity extends BaseActivity implements TitleBarView.OnRig
     private JsonObjectRequest mRecommendationRequest;
     private JsonObjectRequest mAssociationRequest;
 
-    private ProgressDialog mConnectingDialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_topic);
-
-        initMembers();
 
         initViews();
 
@@ -70,16 +60,10 @@ public class AddTopicActivity extends BaseActivity implements TitleBarView.OnRig
         });
     }
 
-    private void initMembers() {
-        mConnectingDialog = DialogUtil.getConnectingServerDialog(this);
-    }
-
     private void initViews() {
-        mTitleBar = (TitleBarView) findViewById(R.id.title_bar);
-        mTitleBar.setOnRightLayoutClickListener(this);
-
         mTitleEdit = (EditText) findViewById(R.id.edit_text);
-        mTitleEdit.addTextChangedListener(this);
+        mTitleEdit.addTextChangedListener(
+                new TextWatcher(AppProperty.TOPIC_TITLE_MAX_WORDS, mTitleEdit));
 
         mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         mRefreshLayout.setColorSchemeColors(0xFFF4D288);
@@ -92,8 +76,9 @@ public class AddTopicActivity extends BaseActivity implements TitleBarView.OnRig
         mRecommendationAdapter = new RecommendationAdapter();
         mRecommendationRecyler.setAdapter(mRecommendationAdapter);
 
+        mAssociationFrame = findViewById(R.id.association_frame);
+
         mAssociationRecycler = (RecyclerView) findViewById(R.id.association_recycler);
-        mAssociationFrame = mAssociationRecycler;
         mAssociationRecycler.setLayoutManager(new LinearLayoutManager(this));
         mAssociationAdapter = new AssociationAdapter();
         mAssociationRecycler.setAdapter(mAssociationAdapter);
@@ -117,14 +102,21 @@ public class AddTopicActivity extends BaseActivity implements TitleBarView.OnRig
         mTitleEdit.setText("");
     }
 
+    public void onNewTopicClick(View v) {
+        Intent intent = new Intent(this, CreateTopicActivity.class);
+        intent.putExtra(CreateTopicActivity.KEY_TOPIC_TITLE, mTitleEdit.getText().toString());
+        startActivityForResult(intent, REQUEST_CODE_CREATE_TOPIC);
+    }
+
     @Override
-    public void onRightLayoutClick() {
-        if (mTitleEdit.getText().length() == 0) {
-            Toast.makeText(this, R.string.no_title_hint, Toast.LENGTH_SHORT).show();
-            return;
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_CREATE_TOPIC:
+                if (resultCode == RESULT_OK) {
+                    finish();
+                }
+                break;
         }
-        mConnectingDialog.show();
-        ApiWorker.getInstance().addTopic(mTitleEdit.getText().toString(), mAddTopicListener, null);
     }
 
     @Override
@@ -162,50 +154,35 @@ public class AddTopicActivity extends BaseActivity implements TitleBarView.OnRig
         }
     };
 
-    private Response.Listener<JSONObject> mAddTopicListener = new Response.Listener<JSONObject>() {
+    class TextWatcher extends MaxLengthWatcher {
+        public TextWatcher(int maxLen, EditText editText) {
+            super(maxLen, editText);
+        }
+
         @Override
-        public void onResponse(JSONObject response) {
-            mConnectingDialog.dismiss();
-            try {
-                if (response.getInt("code") == 0) {
-                    MobclickAgent.onEvent(AddTopicActivity.this, StatisticsEvent.EVENT_ADD_TOPIC);
-
-                    String tid = response.getJSONObject("result").getString("uid");
-                    Intent intent = new Intent(AddTopicActivity.this, FeedsTopicActivity.class);
-                    intent.putExtra(FeedsTopicActivity.KEY_TOPIC_TITLE, mTitleEdit.getText().toString());
-                    intent.putExtra(FeedsTopicActivity.KEY_TOPIC_ID, tid);
-                    startActivity(intent);
-
-                    finish();
-                }
-                else {
-                    Toast.makeText(AddTopicActivity.this,
-                            R.string.connect_server_failed, Toast.LENGTH_SHORT).show();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+        public void afterTextChanged(Editable s) {
+            if (s.length() == 0) {
+                mRecommendationFrame.setVisibility(View.VISIBLE);
+                mAssociationFrame.setVisibility(View.INVISIBLE);
             }
         }
-    };
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        if (s.length() == 0) {
-            mRecommendationFrame.setVisibility(View.INVISIBLE);
-            mAssociationFrame.setVisibility(View.VISIBLE);
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            if (s.length() == 0) {
+                mRecommendationFrame.setVisibility(View.INVISIBLE);
+                mAssociationFrame.setVisibility(View.VISIBLE);
+            }
         }
-    }
 
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        refreshAssociation(s.toString());
-    }
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            super.onTextChanged(s, start, before, count);
+            refreshAssociation(s.toString());
+        }
 
-    @Override
-    public void afterTextChanged(Editable s) {
-        if (s.length() == 0) {
-            mRecommendationFrame.setVisibility(View.VISIBLE);
-            mAssociationFrame.setVisibility(View.INVISIBLE);
+        @Override
+        public void onTextOverInput() {
         }
     }
 

@@ -17,6 +17,8 @@ public class AppProperty {
 
     public static final int DANMAKU_MAX_WORD = 15;
 
+    public static final int TOPIC_TITLE_MAX_WORDS = 18;
+
     public static int getNicknameMaxLen() {
         return 10;
     }

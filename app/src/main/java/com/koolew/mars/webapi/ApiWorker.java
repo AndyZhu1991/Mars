@@ -334,12 +334,13 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.getSearchTopicUrl(keyWord), listener, errorListener);
     }
 
-    public JsonObjectRequest addTopic(String title,
+    public JsonObjectRequest addTopic(String title, String desc,
                                       Response.Listener<JSONObject> listener,
                                       Response.ErrorListener errorListener) {
         JSONObject requestJson = new JSONObject();
         try {
             requestJson.put("content", title);
+            requestJson.put("desc", desc);
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -331,6 +331,12 @@
             android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".CreateTopicActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" >
+        </activity>
 
         <!-- Jpush -->
         <!-- Required -->

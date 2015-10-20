@@ -12,13 +12,14 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="#F4D288"
-        TitleBarView:title_text="@string/add_topic_title"
-        TitleBarView:right_text="@string/done"/>
+        TitleBarView:title_text="@string/add_topic_title"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:layout_margin="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:background="@drawable/add_topic_input_bg">
@@ -63,10 +64,9 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical"
                 android:text="@string/recommendation"
                 android:textSize="16sp"
                 android:textColor="#FCEDCB"/>
@@ -89,12 +89,38 @@
                     android:layout_height="match_parent"/>
             </android.support.v4.widget.SwipeRefreshLayout>
         </LinearLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/association_recycler"
+        
+        <LinearLayout
+            android:id="@+id/association_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="invisible"/>
+            android:orientation="vertical"
+            android:visibility="invisible">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:text="@string/add_new_topic"
+                android:drawableLeft="@mipmap/ic_new_topic"
+                android:drawablePadding="5dp"
+                android:onClick="onNewTopicClick"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="#FFE19D"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/association_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
     </FrameLayout>
 
 </LinearLayout>
