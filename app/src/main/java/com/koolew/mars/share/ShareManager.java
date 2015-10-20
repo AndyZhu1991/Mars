@@ -42,7 +42,7 @@ public class ShareManager {
         SMS,
     }
 
-    private String[] sharePlatformName = new String[] {
+    private static String[] sharePlatformName = new String[] {
             Wechat.NAME,
             WechatMoments.NAME,
             QZone.NAME,
@@ -115,7 +115,12 @@ public class ShareManager {
             sp.setTitle(title);
             sp.setText(description);
         }
-        sp.setUrl(url);
+        if (platformName.equals(QZone.NAME)) {
+            sp.setTitleUrl(url);
+        }
+        else {
+            sp.setUrl(url);
+        }
         sp.setShareType(Platform.SHARE_WEBPAGE);
         shareImage.setImageParam(sp);
         Platform platform = ShareSDK.getPlatform(platformName);
@@ -218,6 +223,16 @@ public class ShareManager {
                 .append(description).append("\n")
                 .append(url)
                 .toString();
+    }
+
+    public static boolean isAuthValid(ShareChanel shareChanel) {
+        return ShareSDK.getPlatform(sharePlatformName[shareChanel.ordinal()]).isAuthValid();
+    }
+
+    public static void authorize(ShareChanel shareChanel, ShareListener shareListener) {
+        Platform platform = ShareSDK.getPlatform(sharePlatformName[shareChanel.ordinal()]);
+        platform.setPlatformActionListener(shareListener);
+        platform.authorize();
     }
 
 

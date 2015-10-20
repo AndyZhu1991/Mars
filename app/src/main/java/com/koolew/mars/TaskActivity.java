@@ -531,6 +531,7 @@ public class TaskActivity extends BaseActivity
         public void onClick(View v) {
             Intent intent = new Intent(TaskActivity.this, TaskTopicActivity.class);
             intent.putExtra(TaskTopicActivity.KEY_TOPIC_ID, v.getTag().toString());
+            intent.putExtra(TaskTopicActivity.KEY_TOPIC_TITLE, ((TextView) v).getText().toString());
             try {
                 String nickname = ((JSONObject) mListAdapter.getItem(position))
                         .getJSONObject("user").getString("nickname");

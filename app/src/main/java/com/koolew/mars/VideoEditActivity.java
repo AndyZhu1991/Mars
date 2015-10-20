@@ -334,6 +334,86 @@ public class VideoEditActivity extends BaseActivity
     }
 
     public void onShareItemClick(View v) {
+        ShareManager.ShareChanel shareChanel = null;
+        switch (v.getId()) {
+            case R.id.wechat_moments:
+                shareChanel = ShareManager.ShareChanel.WECHAT_MOMENTS;
+                break;
+            case R.id.wechat_friends:
+                shareChanel = ShareManager.ShareChanel.WECHAT_FRIENDS;
+                break;
+            case R.id.qq:
+                shareChanel = ShareManager.ShareChanel.QZONE;
+                break;
+            case R.id.weibo:
+                shareChanel = ShareManager.ShareChanel.WEIBO;
+                break;
+        }
+
+        if (ShareManager.isAuthValid(shareChanel)) {
+            onShareItemClickReal(v);
+        }
+        else {
+            authorizeByChanel(shareChanel, v);
+        }
+    }
+
+    private void authorizeByChanel(ShareManager.ShareChanel shareChanel, View originView) {
+        Toast.makeText(this, R.string.request_authorize, Toast.LENGTH_SHORT).show();
+        ShareManager.authorize(shareChanel, new AuthorizeListener(originView));
+    }
+
+    class AuthorizeListener extends ShareManager.ShareListener {
+        private View originView;
+
+        public AuthorizeListener(View originView) {
+            super(VideoEditActivity.this);
+
+            this.originView = originView;
+        }
+
+        @Override
+        protected void initMessages() {
+        }
+
+        @Override
+        public void onCancel(Platform platform, int i) {
+            onAuthorizeFailed();
+        }
+
+        @Override
+        public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
+            onAuthorizeSuccess();
+        }
+
+        @Override
+        public void onError(Platform platform, int i, Throwable throwable) {
+            onAuthorizeFailed();
+        }
+
+        private void onAuthorizeFailed() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(VideoEditActivity.this, R.string.authorize_failed,
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        private void onAuthorizeSuccess() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(VideoEditActivity.this, R.string.authorize_success,
+                            Toast.LENGTH_SHORT).show();
+                    onShareItemClickReal(originView);
+                }
+            });
+        }
+    }
+
+    private void onShareItemClickReal(View v) {
         boolean originalState = v.isSelected();
         switch (v.getId()) {
             case R.id.wechat_moments:

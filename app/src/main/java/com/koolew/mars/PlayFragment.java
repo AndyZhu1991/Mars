@@ -111,7 +111,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     private int mCurrentGroup;
     private int mTotalGroup;
     private long mWaitTime;
-    private int mNextRoundPay;
+    private int mNextRoundPay = 10; // Default: 10
 
     private BaseVideoInfo mLastLeftVideoInfo;
     private BaseVideoInfo mLastRightVideoInfo;

@@ -317,6 +317,9 @@
     <string name="invite_success">点名成功</string>
     <string name="invite_failed">点名失败</string>
     <string name="invite_cancel">点名取消</string>
+    <string name="request_authorize">请求授权...</string>
+    <string name="authorize_failed">授权失败</string>
+    <string name="authorize_success">授权成功</string>
 
     <string name="mp4_file_broken_hint">视频出错啦</string>
 

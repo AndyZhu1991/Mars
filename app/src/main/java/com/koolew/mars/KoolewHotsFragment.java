@@ -227,8 +227,7 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
                         if (itemView.getVisibility() == View.INVISIBLE) {
                             itemView.setVisibility(View.VISIBLE);
                         }
-                        title.setText(getString(R.string.topic) + getString(R.string.colon)
-                                + item.topicInfo.getTitle());
+                        title.setText(item.topicInfo.getTitle());
                         ImageLoader.getInstance().displayImage(item.userInfo.getAvatar(), avatar,
                                 ImageLoaderHelper.avatarLoadOptions);
                         ImageLoader.getInstance().displayImage(item.videoInfo.getVideoThumb(),

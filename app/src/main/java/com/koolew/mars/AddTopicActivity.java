@@ -172,7 +172,7 @@ public class AddTopicActivity extends BaseActivity implements TitleBarView.OnRig
 
                     String tid = response.getJSONObject("result").getString("uid");
                     Intent intent = new Intent(AddTopicActivity.this, FeedsTopicActivity.class);
-                    intent.putExtra(FeedsTopicActivity.KEY_TOPIC_TITLE, mTitleEdit.getText());
+                    intent.putExtra(FeedsTopicActivity.KEY_TOPIC_TITLE, mTitleEdit.getText().toString());
                     intent.putExtra(FeedsTopicActivity.KEY_TOPIC_ID, tid);
                     startActivity(intent);
 
@@ -268,6 +268,7 @@ public class AddTopicActivity extends BaseActivity implements TitleBarView.OnRig
                 BaseTopicInfo topicInfo = mData.get(position);
                 Intent intent = new Intent(AddTopicActivity.this, FeedsTopicActivity.class);
                 intent.putExtra(FeedsTopicActivity.KEY_TOPIC_ID, topicInfo.getTopicId());
+                intent.putExtra(FeedsTopicActivity.KEY_TOPIC_TITLE, topicInfo.getTitle());
                 intent.putExtra(FeedsTopicActivity.KEY_DEFAULT_SHOW_POSITION,
                         FeedsTopicActivity.POSITION_WORLD);
                 startActivity(intent);
