@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AddTopicActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class AddTopicActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
 
     private static final int REQUEST_CODE_CREATE_TOPIC = 1;
 
@@ -37,6 +37,7 @@ public class AddTopicActivity extends BaseActivity implements SwipeRefreshLayout
     private RecyclerView mRecommendationRecyler;
     private View mAssociationFrame;
     private RecyclerView mAssociationRecycler;
+    private View mAddTopicText;
 
     private TopicItemAdapter mRecommendationAdapter;
     private TopicItemAdapter mAssociationAdapter;
@@ -82,6 +83,9 @@ public class AddTopicActivity extends BaseActivity implements SwipeRefreshLayout
         mAssociationRecycler.setLayoutManager(new LinearLayoutManager(this));
         mAssociationAdapter = new AssociationAdapter();
         mAssociationRecycler.setAdapter(mAssociationAdapter);
+
+        mAddTopicText = findViewById(R.id.add_topic_text);
+        mAddTopicText.setOnClickListener(this);
     }
 
     private void refreshRecommendation() {
@@ -102,7 +106,7 @@ public class AddTopicActivity extends BaseActivity implements SwipeRefreshLayout
         mTitleEdit.setText("");
     }
 
-    public void onNewTopicClick(View v) {
+    public void onNewTopicClick() {
         Intent intent = new Intent(this, CreateTopicActivity.class);
         intent.putExtra(CreateTopicActivity.KEY_TOPIC_TITLE, mTitleEdit.getText().toString());
         startActivityForResult(intent, REQUEST_CODE_CREATE_TOPIC);
@@ -153,6 +157,15 @@ public class AddTopicActivity extends BaseActivity implements SwipeRefreshLayout
             }
         }
     };
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.add_topic_text:
+                onNewTopicClick();
+                break;
+        }
+    }
 
     class TextWatcher extends MaxLengthWatcher {
         public TextWatcher(int maxLen, EditText editText) {

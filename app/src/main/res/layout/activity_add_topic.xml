@@ -98,6 +98,7 @@
             android:visibility="invisible">
             
             <TextView
+                android:id="@+id/add_topic_text"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_gravity="center_horizontal"
@@ -106,8 +107,7 @@
                 android:textColor="@android:color/white"
                 android:text="@string/add_new_topic"
                 android:drawableLeft="@mipmap/ic_new_topic"
-                android:drawablePadding="5dp"
-                android:onClick="onNewTopicClick"/>
+                android:drawablePadding="5dp"/>
 
             <View
                 android:layout_width="match_parent"
