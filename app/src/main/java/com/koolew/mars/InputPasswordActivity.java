@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cn.jpush.android.api.JPushInterface;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformDb;
 import cn.sharesdk.framework.ShareSDK;
@@ -163,6 +164,8 @@ public class InputPasswordActivity extends BaseActivity implements View.OnClickL
                                 JSONObject result = response.getJSONObject("result");
                                 MyAccountInfo.setToken(result.getString("token"));
                                 // For jpush
+                                String registrationId = JPushInterface.getRegistrationID(InputPasswordActivity.this);
+                                MyAccountInfo.setRegistrationId(registrationId);
                                 ApiWorker.getInstance().postRegistrationId(
                                         MyAccountInfo.getRegistrationId(),
                                         ApiWorker.getInstance().emptyResponseListener, null);

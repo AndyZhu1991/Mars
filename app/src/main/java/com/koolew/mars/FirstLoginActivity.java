@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import cn.jpush.android.api.JPushInterface;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.PlatformDb;
@@ -174,6 +175,8 @@ public class FirstLoginActivity extends BaseActivity implements PlatformActionLi
                     MyAccountInfo.setPhoneNumber(info.getString("phone"));
                     MyAccountInfo.setKooNum(info.getInt("koo_num"));
                     MyAccountInfo.setCoinNum(info.getInt("coin_num"));
+                    String registrationId = JPushInterface.getRegistrationID(FirstLoginActivity.this);
+                    MyAccountInfo.setRegistrationId(registrationId);
                     ApiWorker.getInstance().postRegistrationId(MyAccountInfo.getRegistrationId(),
                             ApiWorker.getInstance().emptyResponseListener, null);
 
