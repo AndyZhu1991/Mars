@@ -74,15 +74,6 @@ public class KoolewRecommendFragment extends BaseLazyListFragment
     }
 
     @Override
-    public void onLoad() {
-        if (mRefreshRequest != null) {
-            mRefreshRequest.cancel();
-        }
-        mLoadMoreRequest = ApiWorker.getInstance().requestFeedsTopic(
-                mAdapter.getOldestCardTime(), mLoadMoreListener, null);
-    }
-
-    @Override
     public String getTitle() {
         return null;
     }
@@ -123,7 +114,7 @@ public class KoolewRecommendFragment extends BaseLazyListFragment
     protected boolean handleLoadMore(JSONObject response) {
         try {
             mLoadMoreRequest = null;
-            JSONArray cards = response.getJSONObject("result").getJSONArray("cards");
+            JSONArray cards = response.getJSONObject("result").getJSONArray("hot_cards");
             int loadedCount = mAdapter.addCards(cards);
             mAdapter.notifyDataSetChanged();
 
