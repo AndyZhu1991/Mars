@@ -40,6 +40,7 @@ public class JpushReceiver extends BroadcastReceiver {
 
         Bundle bundle = intent.getExtras();
         Log.d(TAG, "onReceive - " + intent.getAction() + ", extras: " + bundle);
+        Log.d(TAG, "registrationId: " + bundle.getString(JPushInterface.EXTRA_REGISTRATION_ID));
 
         if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
             String registrationId = bundle.getString(JPushInterface.EXTRA_REGISTRATION_ID);

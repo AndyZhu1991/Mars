@@ -27,7 +27,7 @@ import cn.sharesdk.framework.ShareSDK;
  */
 public class MarsApplication extends Application {
 
-    private static final boolean DEBUG = true;
+    public static final boolean DEBUG = true;
 
     private static final String TAG = "koolew-MarsApplication";
 

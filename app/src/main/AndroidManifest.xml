@@ -337,6 +337,11 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
+        <activity
+            android:name=".MovieStudioActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" >
+        </activity>
 
         <!-- Jpush -->
         <!-- Required -->
@@ -480,6 +485,7 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="${UMENG_CHANNEL_VALUE}" />
+
     </application>
 
 </manifest>

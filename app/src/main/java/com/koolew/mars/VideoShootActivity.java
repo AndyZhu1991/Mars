@@ -449,7 +449,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
                             previewHeight, previewWidth, 0, AppProperty.RECORD_VIDEO_HEIGHT);
                 }
                 long start = System.currentTimeMillis();
-                mRecorder.put(YUV420CropBuffer, System.currentTimeMillis() * 1000);
+                mRecorder.putImage(YUV420CropBuffer, System.currentTimeMillis() * 1000);
                 Log.d("stdzhu", "camera preview: " + (System.currentTimeMillis() - start));
             }
 

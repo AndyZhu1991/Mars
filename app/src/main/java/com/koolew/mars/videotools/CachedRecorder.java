@@ -1,31 +1,32 @@
 package com.koolew.mars.videotools;
 
-import com.koolew.mars.AppProperty;
+import android.util.Log;
 
-import org.bytedeco.javacpp.avcodec;
+import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacv.FrameRecorder;
+
+import static com.koolew.mars.videotools.Params.AUDIO_BIT_RATE;
+import static com.koolew.mars.videotools.Params.AUDIO_CODEC;
+import static com.koolew.mars.videotools.Params.AUDIO_SAMPLE_RATE;
+import static com.koolew.mars.videotools.Params.OUTPUT_FORMAT;
+import static com.koolew.mars.videotools.Params.VIDEO_BIT_RATE;
+import static com.koolew.mars.videotools.Params.VIDEO_CODEC;
+import static com.koolew.mars.videotools.Params.VIDEO_FRAME_RATE;
 
 /**
  * Created by jinchangzhu on 9/10/15.
  */
 public abstract class CachedRecorder {
 
-    public final static int VIDEO_CODEC = avcodec.AV_CODEC_ID_H264;
-    public final static int VIDEO_FRAME_RATE = AppProperty.RECORD_VIDEO_FPS;
-    public final static int VIDEO_QUALITY = 12;
-    public final static int AUDIO_CODEC = avcodec.AV_CODEC_ID_AAC;
-    public final static int AUDIO_CHANNEL = 1;
-    public final static int AUDIO_BIT_RATE = 96000;
-    // public final static int VIDEO_BIT_RATE = 1000000;
-    public final static int VIDEO_BIT_RATE = 500000;
-    public final static int AUDIO_SAMPLE_RATE = 44100;
-    public final static String OUTPUT_FORMAT = "mp4";
 
     protected String filePath;
     protected int width;
     protected int height;
 
     protected MyFFmpegFrameRecorder recorder;
+
+    protected long firstFrameTimeStamp = -1;
+    protected long lastFrameTimeStamp = 0;
 
     protected ImageRecordThread imageRecordThread;
     protected AudioRecordThread audioRecordThread;
@@ -68,6 +69,10 @@ public abstract class CachedRecorder {
         recorder.setVideoOption("preset", "veryfast");
     }
 
+    public String getFilePath() {
+        return filePath;
+    }
+
     protected abstract void initCacheQueues();
 
     public void start() {
@@ -98,7 +103,64 @@ public abstract class CachedRecorder {
         }
     }
 
+    /**
+     *
+     * @param image
+     * @param timestamp
+     * @return If recorder accepted the frame
+     */
+    public boolean putImage(opencv_core.IplImage image, long timestamp) {
+        IplImageFrame imageFrame = imageCache.obtain();
+        opencv_core.cvCopy(image, imageFrame.image);
+        return putInner(imageFrame, timestamp);
+    }
+
+    /**
+     *
+     * @param imageData
+     * @param timeStamp usec
+     * @return If recorder accepted the frame
+     */
+    public boolean putImage(byte[] imageData, long timeStamp) {
+        IplImageFrame imageFrame = imageCache.obtain();
+        imageFrame.image.getByteBuffer().put(imageData);
+        return putInner(imageFrame, timeStamp);
+    }
+
+    private boolean putInner(IplImageFrame imageFrame, long timeStamp) {
+        timeStamp = adjustTimeStamp(timeStamp);
+
+        if (firstFrameTimeStamp < 0) {
+            firstFrameTimeStamp = timeStamp;
+        }
+
+        if (timeStamp == lastFrameTimeStamp) {
+            return false;
+        }
+        else {
+            lastFrameTimeStamp = timeStamp;
+        }
+
+        imageFrame.timeStamp = timeStamp - firstFrameTimeStamp;
+
+        imageCache.put(imageFrame);
+
+        return true;
+    }
+
+    private long adjustTimeStamp(long timeStamp) {
+        long framePerUsec = 1000000 / VIDEO_FRAME_RATE;
+        return timeStamp / framePerUsec * framePerUsec;
+    }
+
+    public static final long FRAME_PER_USEC = 1000000 / VIDEO_FRAME_RATE;
+    private static long adjustTimestamp(long timestamp) {
+        return timestamp / FRAME_PER_USEC * FRAME_PER_USEC;
+    }
+
     class ImageRecordThread extends Thread {
+        private long timestamp = -FRAME_PER_USEC;
+
         @Override
         public void run() {
             while (true) {
@@ -107,14 +169,23 @@ public abstract class CachedRecorder {
                     break;
                 }
                 try {
-                    recorder.setTimestamp(imageFrame.getTimeStamp());
-                    recorder.record(imageFrame.image);
+                    long adjustedTimestamp = adjustTimestamp(imageFrame.getTimeStamp());
+                    while (adjustedTimestamp > timestamp) {
+                        timestamp += FRAME_PER_USEC;
+                        recorder.setTimestamp(timestamp);
+                        Log.d("stdzhu", "record a frame, timestamp: " + timestamp);
+                        recorder.record(processImage(imageFrame.image));
+                    }
                     imageCache.recycle(imageFrame);
                 } catch (FrameRecorder.Exception e) {
                     e.printStackTrace();
                 }
             }
         }
+    }
+
+    protected opencv_core.IplImage processImage(opencv_core.IplImage originImage) {
+        return originImage;
     }
 
     class AudioRecordThread extends Thread {
@@ -132,6 +203,58 @@ public abstract class CachedRecorder {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    public abstract static class ImageRecycleQueue extends BlockingRecycleQueue<IplImageFrame> {
+
+        protected int width;
+        protected int height;
+
+        public ImageRecycleQueue(int maxItemCount, int width, int height) {
+            super(maxItemCount);
+            this.width = width;
+            this.height = height;
+        }
+
+        @Override
+        protected abstract IplImageFrame generateNewFrame();
+
+        @Override
+        public void recycle(IplImageFrame frame) {
+            frame.image.getByteBuffer().clear();
+            super.recycle(frame);
+        }
+
+        @Override
+        protected void releaseOneItem(IplImageFrame item) {
+            item.image.release();
+        }
+    }
+
+    public static class YUV420RecycleQueue extends ImageRecycleQueue {
+
+        public YUV420RecycleQueue(int maxItemCount, int width, int height) {
+            super(maxItemCount, width, height);
+        }
+
+        @Override
+        protected IplImageFrame generateNewFrame() {
+            return new IplImageFrame(opencv_core.IplImage.create(width, height,
+                    opencv_core.IPL_DEPTH_8U, 2), 0l);
+        }
+    }
+
+    public static class RGBARecycleQueue extends ImageRecycleQueue {
+
+        public RGBARecycleQueue(int maxItemCount, int width, int height) {
+            super(maxItemCount, width, height);
+        }
+
+        @Override
+        protected IplImageFrame generateNewFrame() {
+            return new IplImageFrame(opencv_core.IplImage.create(width, height,
+                    opencv_core.IPL_DEPTH_8U, 4), 0l);
         }
     }
 }

@@ -411,6 +411,13 @@
     <string name="new_version" formatted="false">新版本：%s</string>
     <string name="update">更新</string>
 
+    <!-- For MovieStudioActivity -->
+    <string name="already_done">已完成</string>
+    <string name="cutting_video">正在分段视频...</string>
+    <string name="count_down_start">倒计时开始</string>
+    <string name="interrupt">终止</string>
+    <string name="recapture">重拍</string>
+
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>
     <string name="website">http://www.mob.com</string>

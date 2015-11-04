@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#333333"
+    tools:context="com.koolew.mars.MovieStudioActivity">
+
+    <RelativeLayout
+        android:id="@+id/preview_layout"
+        android:layout_width="match_parent"
+        android:layout_height="270dp"
+        android:background="@android:color/black">
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="202.5dp"
+            android:layout_centerVertical="true">
+
+            <fragment
+                android:id="@+id/camera_preview"
+                class="com.koolew.mars.CameraPreviewFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/count_down_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#CC696969"
+            android:visibility="invisible">
+
+            <TextView
+                android:id="@+id/count_down_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textSize="90dp"
+                android:textColor="@android:color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/count_down_text"
+                android:textSize="14sp"
+                android:textColor="@android:color/white"
+                android:text="@string/count_down_start"/>
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="10dp"
+            android:text="@string/close"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"
+            android:drawableLeft="@mipmap/ic_close"
+            android:drawablePadding="4dp"
+            android:onClick="onXClick"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingLeft="10dp"
+            android:paddingTop="4dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="10dp"
+            android:src="@mipmap/ic_change_camera"
+            android:onClick="onSwitchCamera"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_below="@id/preview_layout">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:layout_centerVertical="true"
+            android:clipToPadding="false"/>
+
+        <View
+            android:id="@+id/block_touch_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:onClick="doNothing"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/capture_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="12sp"
+        android:textColor="#90A0AE"
+        android:text="@string/capture_video"/>
+
+    <ImageView
+        android:id="@+id/capture"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_above="@+id/capture_text"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/video_capture"
+        android:onClick="onCaptureClick"/>
+
+    <TextView
+        android:id="@+id/next_step"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="24dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:gravity="center_horizontal"
+        android:drawableTop="@mipmap/video_complete_enable"
+        android:drawablePadding="5dp"
+        android:textColor="#90A0AE"
+        android:textSize="12sp"
+        android:text="@string/next_step"
+        android:visibility="invisible"
+        android:onClick="onNextStep"/>
+
+</RelativeLayout>

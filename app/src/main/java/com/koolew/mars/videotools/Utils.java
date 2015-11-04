@@ -1,10 +1,8 @@
 package com.koolew.mars.videotools;
 
 import android.content.Context;
+import android.util.Log;
 
-import com.koolew.mars.AppProperty;
-
-import org.bytedeco.javacpp.avcodec;
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.FrameGrabber;
@@ -13,6 +11,14 @@ import org.bytedeco.javacv.FrameRecorder;
 import java.io.File;
 
 import wseemann.media.FFmpegMediaMetadataRetriever;
+
+import static com.koolew.mars.videotools.Params.AUDIO_BIT_RATE;
+import static com.koolew.mars.videotools.Params.AUDIO_CODEC;
+import static com.koolew.mars.videotools.Params.AUDIO_SAMPLE_RATE;
+import static com.koolew.mars.videotools.Params.OUTPUT_FORMAT;
+import static com.koolew.mars.videotools.Params.VIDEO_BIT_RATE;
+import static com.koolew.mars.videotools.Params.VIDEO_CODEC;
+import static com.koolew.mars.videotools.Params.VIDEO_FRAME_RATE;
 
 /**
  * Created by jinchangzhu on 9/10/15.
@@ -49,13 +55,13 @@ public class Utils {
         }
         MyFFmpegFrameRecorder recorder = new MyFFmpegFrameRecorder(dstFile,
                 grabber.getImageWidth(), grabber.getImageHeight(), grabber.getAudioChannels());
-        recorder.setFormat("mp4");
-        recorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
-        recorder.setAudioCodec(avcodec.AV_CODEC_ID_AAC);
+        recorder.setFormat(OUTPUT_FORMAT);
+        recorder.setVideoCodec(VIDEO_CODEC);
+        recorder.setAudioCodec(AUDIO_CODEC);
         recorder.setFrameRate(VIDEO_FRAME_RATE);//grabber.getFrameRate());
-        recorder.setSampleRate(44100);//grabber.getSampleRate());
-        recorder.setVideoBitrate(500000);
-        recorder.setAudioBitrate(96000);
+        recorder.setSampleRate(AUDIO_SAMPLE_RATE);//grabber.getSampleRate());
+        recorder.setVideoBitrate(VIDEO_BIT_RATE);
+        recorder.setAudioBitrate(AUDIO_BIT_RATE);
         recorder.setVideoOption("preset", "veryfast");
 
         try {
@@ -72,35 +78,21 @@ public class Utils {
             e.printStackTrace();
         }
 
-        long firstFrameTimestamp = -1;
-        long lastAdjustedTimestamp = -1;
+        int imageFrameCount = 0;
         while (true) {
-            long timeStamp = grabber.getTimestamp();
-            if (timeStamp >= endPosition * 1000) {
+            //Log.d("stdzhu", "real timestamp: " + getRealTimeStamp(grabber));
+            long timestamp = getRealTimeStamp(grabber, imageFrameCount);
+            if (timestamp > endPosition * 1000) {
                 break;
             }
             try {
-                long timestamp = grabber.getTimestamp();
                 org.bytedeco.javacv.Frame frame = grabber.grabFrame();
                 if (frame == null) {
                     break;
                 }
                 if (frame.image != null) {
-                    if (firstFrameTimestamp == -1) {
-                        firstFrameTimestamp = timestamp;
-                    }
-                    long adjustedTimestamp = adjustTimestamp(timestamp - firstFrameTimestamp);
-                    if (adjustedTimestamp > lastAdjustedTimestamp) {
-                        recorder.setTimestamp(adjustedTimestamp);
-                    }
-                    else if (adjustedTimestamp == lastAdjustedTimestamp) {
-                        adjustedTimestamp = adjustTimestamp(timestamp - firstFrameTimestamp, false);
-                        recorder.setTimestamp(adjustedTimestamp);
-                    }
-                    else {
-                        continue;
-                    }
-                    lastAdjustedTimestamp = adjustedTimestamp;
+                    imageFrameCount++;
+                    recorder.setTimestamp(timestamp);
                 }
                 recorder.record(frame);
             } catch (FrameRecorder.Exception e) {
@@ -126,6 +118,11 @@ public class Utils {
         return adjustTimestamp(timeStamp, true);
     }
 
+    private static long getRealTimeStamp(FrameGrabber grabber, int frameCount) {
+        double frameRate = grabber.getFrameRate();
+        return (long) (frameCount * (1000000 / frameRate));
+    }
+
     private static long adjustTimestamp(long timestamp, boolean useBeforeTimestamp) {
         return adjustTimestamp(VIDEO_FRAME_RATE, timestamp, useBeforeTimestamp);
     }
@@ -136,16 +133,81 @@ public class Utils {
                 + (useBeforeTimestamp ? 0 : nanoSecondPerFrame);
     }
 
-    public final static int VIDEO_CODEC = avcodec.AV_CODEC_ID_H264;
-    public final static int VIDEO_FRAME_RATE = AppProperty.RECORD_VIDEO_FPS;
-    public final static int VIDEO_QUALITY = 12;
-    public final static int AUDIO_CODEC = avcodec.AV_CODEC_ID_AAC;
-    public final static int AUDIO_CHANNEL = 1;
-    public final static int AUDIO_BIT_RATE = 96000;
-    // public final static int VIDEO_BIT_RATE = 1000000;
-    public final static int VIDEO_BIT_RATE = 500000;
-    public final static int AUDIO_SAMPLE_RATE = 44100;
-    public final static String OUTPUT_FORMAT = "mp4";
+    public static void splitVideo(String originPath, long[] splitPoint, String[] splitedFiles) {
+        if (splitPoint.length + 1 != splitedFiles.length) {
+            throw new RuntimeException("params error");
+        }
+
+        FrameGrabber grabber = new FFmpegFrameGrabber(originPath);
+        try {
+            grabber.start();
+        } catch (FrameGrabber.Exception e) {
+            e.printStackTrace();
+        }
+        int imageFrameCount = 0;
+        Log.d("stdzhu", "frame rate: " + grabber.getFrameRate() + ", length: " + grabber.getLengthInTime());
+        for (int i = 0; i < splitedFiles.length; i++) {
+            String dstFile = splitedFiles[i];
+            MyFFmpegFrameRecorder recorder = new MyFFmpegFrameRecorder(dstFile,
+                    grabber.getImageWidth(), grabber.getImageHeight(), grabber.getAudioChannels());
+            recorder.setFormat(OUTPUT_FORMAT);
+            recorder.setVideoCodec(VIDEO_CODEC);
+            recorder.setAudioCodec(AUDIO_CODEC);
+            recorder.setFrameRate(VIDEO_FRAME_RATE);//grabber.getFrameRate());
+            recorder.setSampleRate(AUDIO_SAMPLE_RATE);//grabber.getSampleRate());
+            recorder.setVideoBitrate(VIDEO_BIT_RATE);
+            recorder.setAudioBitrate(AUDIO_BIT_RATE);
+            recorder.setVideoOption("preset", "veryfast");
+            try {
+                recorder.start();
+            } catch (FrameRecorder.Exception e) {
+                e.printStackTrace();
+            }
+
+            long endPosition;
+            if (i == splitedFiles.length - 1) {
+                endPosition = Integer.MAX_VALUE;
+            }
+            else {
+                endPosition = splitPoint[i];
+            }
+            while (true) {
+                if (getRealTimeStamp(grabber, imageFrameCount) >= endPosition * 1000) {
+                    break;
+                }
+                try {
+                    org.bytedeco.javacv.Frame frame = grabber.grabFrame();
+                    if (frame == null) {
+                        break;
+                    }
+                    Log.d("stdzhu", "timestamp: " + getRealTimeStamp(grabber, imageFrameCount));
+                    if (frame.image != null) {
+                        Log.d("stdzhu", "image frame timestamp: " + getRealTimeStamp(grabber, imageFrameCount));
+                        recorder.setTimestamp(getRealTimeStamp(grabber, imageFrameCount));
+                        imageFrameCount++;
+                    }
+                    recorder.record(frame);
+                } catch (FrameRecorder.Exception e) {
+                    e.printStackTrace();
+                } catch (FrameGrabber.Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            try {
+                recorder.stop();
+            } catch (FrameRecorder.Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            grabber.stop();
+        } catch (FrameGrabber.Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public static int getVideoDegree(String videoPath) {
         FFmpegMediaMetadataRetriever fmmr = new FFmpegMediaMetadataRetriever();

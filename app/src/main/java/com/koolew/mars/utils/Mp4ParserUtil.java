@@ -30,6 +30,7 @@ public class Mp4ParserUtil {
 
     private static final String VIDEO_TRACK_HANDLER_KEY = "vide";
     private static final String SOUND_TRACK_HANDLER_KEY = "soun";
+    private static final String TEXT_TRACK_HANDLER_KEY = "text";
 
 
     public static void clip(String inMoviePath, double startTime, double endTime,
@@ -182,11 +183,28 @@ public class Mp4ParserUtil {
                 / isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
     }
 
-    public static void setVideoBgm(String videoPath, String bgmPath, String outMoviePath) throws IOException {
-        String clipedBgm = new File(bgmPath).getParent() + "clipedBgm.mp4";
-        double videoLen = getDuration(videoPath);
-        Log.d("stdzhu", "origin: " + videoLen);
-        clip(bgmPath, 0, videoLen, clipedBgm);
+    public static void setVideoBgm(String videoPath, String bgmPath, String outMoviePath)
+            throws IOException {
+        setVideoBgm(videoPath, bgmPath, outMoviePath, true);
+    }
+
+    public static void overrideBgm(String videoPath, String bgmPath, String outMoviePath)
+            throws IOException {
+        setVideoBgm(videoPath, bgmPath, outMoviePath, false);
+    }
+
+    public static void setVideoBgm(String videoPath, String bgmPath, String outMoviePath,
+                                   boolean needClip) throws IOException {
+        String clipedBgm;
+        if (needClip) {
+            clipedBgm = new File(bgmPath).getParent() + "clipedBgm.mp4";
+            double videoLen = getDuration(videoPath);
+            Log.d("stdzhu", "origin: " + videoLen);
+            clip(bgmPath, 0, videoLen, clipedBgm);
+        }
+        else {
+            clipedBgm = bgmPath;
+        }
 
         Movie result = new Movie();
 
@@ -209,5 +227,97 @@ public class Mp4ParserUtil {
         fc.close();
 
         Log.d("stdzhu", "bgmed: " + getDuration(outMoviePath));
+    }
+
+    public static void setSubtitle(String videoPath, String subtitlePath, String outMoviePath)
+            throws IOException {
+        Movie result = new Movie();
+
+        for (Track track: MovieCreator.build(videoPath).getTracks()) {
+            if (!track.getHandler().equals(TEXT_TRACK_HANDLER_KEY)) {
+                result.addTrack(track);
+            }
+        }
+
+        for (Track track: MovieCreator.build(subtitlePath).getTracks()) {
+            if (track.getHandler().equals(TEXT_TRACK_HANDLER_KEY)) {
+                result.addTrack(track);
+            }
+        }
+
+        Container out = new DefaultMp4Builder().build(result);
+
+        FileChannel fc = new RandomAccessFile(String.format(outMoviePath), "rw").getChannel();
+        out.writeContainer(fc);
+        fc.close();
+    }
+
+    public static void splitAudioTrack(String srcPath, List<String> outAudioPath,
+                                       long... clipPoints) throws IOException {
+        Track audioTrack = null;
+        for (Track track: MovieCreator.build(srcPath).getTracks()) {
+            if (track.getHandler().equals(SOUND_TRACK_HANDLER_KEY)) {
+                audioTrack = track;
+            }
+        }
+        long firstPoint = 0;
+        long lastPoint = audioTrack.getDuration();
+        long startPoint;
+        long endPoint;
+        for (int i = 0; i <= clipPoints.length; i++) {
+            if (i == 0) {
+                startPoint = firstPoint;
+                endPoint = clipPoints[i];
+            }
+            else if (i == clipPoints.length) {
+                startPoint = clipPoints[i - 1];
+                endPoint = lastPoint;
+            }
+            else {
+                startPoint = clipPoints[i - 1];
+                endPoint = clipPoints[i];
+            }
+            long[] samples = getClipSamples(audioTrack, startPoint / 1000.0, endPoint / 1000.0);
+            saveTracks(outAudioPath.get(i), new CroppedTrack(audioTrack, samples[0], samples[1]));
+        }
+    }
+
+    private static void saveTracks(String filePath, Track... tracks) throws IOException {
+        Movie movie = new Movie();
+        for (Track track: tracks) {
+            movie.addTrack(track);
+        }
+
+        Container out = new DefaultMp4Builder().build(movie);
+        FileChannel fc = new RandomAccessFile(String.format(filePath), "rw").getChannel();
+        out.writeContainer(fc);
+        fc.close();
+    }
+
+    private static long[] getClipSamples(Track track, double startTime, double endTime) {
+        long currentSample = 0;
+        double currentTime = 0;
+        double lastTime = -1;
+        long startSample1 = -1;
+        long endSample1 = -1;
+
+        for (int i = 0; i < track.getSampleDurations().length; i++) {
+            long delta = track.getSampleDurations()[i];
+
+
+            if (currentTime > lastTime && currentTime <= startTime) {
+                // current sample is still before the new starttime
+                startSample1 = currentSample;
+            }
+            if (currentTime > lastTime && currentTime <= endTime) {
+                // current sample is after the new start time and still before the new endtime
+                endSample1 = currentSample;
+            }
+            lastTime = currentTime;
+            currentTime += (double) delta / (double) track.getTrackMetaData().getTimescale();
+            currentSample++;
+        }
+
+        return new long[] {startSample1, endSample1};
     }
 }

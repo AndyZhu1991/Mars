@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class UrlHelper {
 
-    private static final String TEST_API_URL = "https://test.koolew.cn/";
+    private static final String TEST_API_URL = "http://test.koolew.cn/";
     private static final String REAL_API_URL = "https://api.koolew.com/";
 
     private static final String BASE_URL = REAL_API_URL;

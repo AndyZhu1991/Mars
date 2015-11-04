@@ -1,9 +1,16 @@
 package com.koolew.mars.videotools;
 
-import com.koolew.mars.AppProperty;
-
-import org.bytedeco.javacpp.avcodec;
 import org.bytedeco.javacv.FrameRecorder;
+
+import static com.koolew.mars.videotools.Params.OUTPUT_FORMAT;
+import static com.koolew.mars.videotools.Params.VIDEO_CODEC;
+import static com.koolew.mars.videotools.Params.VIDEO_FRAME_RATE;
+import static com.koolew.mars.videotools.Params.VIDEO_BIT_RATE;
+import static com.koolew.mars.videotools.Params.VIDEO_QUALITY;
+import static com.koolew.mars.videotools.Params.AUDIO_CODEC;
+import static com.koolew.mars.videotools.Params.AUDIO_CHANNEL;
+import static com.koolew.mars.videotools.Params.AUDIO_SAMPLE_RATE;
+import static com.koolew.mars.videotools.Params.AUDIO_BIT_RATE;
 
 /**
  * Created by jinchangzhu on 9/15/15.
@@ -19,16 +26,6 @@ public class FrameRecorderStandardSetter {
     public static final int SET_AUDIO_CHANNEL     = 0x0040;
     public static final int SET_AUDIO_SAMPLE_RATE = 0x0080;
     public static final int SET_AUDIO_BIT_RATE    = 0x0100;
-
-    public final static String OUTPUT_FORMAT = "mp4";
-    public final static int VIDEO_CODEC = avcodec.AV_CODEC_ID_H264;
-    public final static int VIDEO_FRAME_RATE = AppProperty.RECORD_VIDEO_FPS;
-    public final static int VIDEO_BIT_RATE = 500000;
-    public final static int VIDEO_QUALITY = 12;
-    public final static int AUDIO_CODEC = avcodec.AV_CODEC_ID_AAC;
-    public final static int AUDIO_CHANNEL = 1;
-    public final static int AUDIO_SAMPLE_RATE = 44100;
-    public final static int AUDIO_BIT_RATE = 96000;
 
 
     public static void defaultRecorderSet(FrameRecorder recorder, int setBit) {
