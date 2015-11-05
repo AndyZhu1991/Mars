@@ -844,6 +844,11 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.CHECK_VERSION_URL, listener, errorListener);
     }
 
+    public JsonObjectRequest getBanner(Response.Listener<JSONObject> listener,
+                                       Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.BANNER_URL, listener, errorListener);
+    }
+
 
     // Standard request here.
     private JsonObjectRequest standardGetRequest(String url,

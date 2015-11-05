@@ -411,6 +411,10 @@
     <string name="new_version" formatted="false">新版本：%s</string>
     <string name="update">更新</string>
 
+    <!-- For square -->
+    <string name="square_video_desc">最近24小时热门视频</string>
+    <string name="top_fans">粉丝团</string>
+
     <!-- For MovieStudioActivity -->
     <string name="already_done">已完成</string>
     <string name="cutting_video">正在分段视频...</string>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:BannerPagerIndicator="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="174dp">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <com.koolew.mars.view.BannerPagerIndicator
+            android:id="@+id/indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="15dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="10dp"
+            BannerPagerIndicator:indicator_size="15dp"/>
+    </FrameLayout>
+
+    <ImageView
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:layout_margin="5dp"
+        android:src="@mipmap/clock_in_image"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/square_header_triangle"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:textSize="14sp"
+            android:textColor="#4A4A4A"
+            android:text="@string/square_video_desc"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/square_header_triangle"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="5dp"
+        android:background="@mipmap/horizontal_dash_line"/>
+</LinearLayout>

@@ -92,6 +92,7 @@ public class UrlHelper {
     public static final String CASH_OUT_URL = V3_URL + "user/profit/withdraw";
     public static final String CASH_OUT_RECORD_URL = V3_URL + "user/profit/withdrawals";
     private static final String SQUARE_URL = V3_URL + "square";
+    public static final String BANNER_URL = V3_URL + "banner";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
