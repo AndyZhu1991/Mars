@@ -182,12 +182,6 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".TaskActivity"
-            android:exported="false"
-            android:label="@string/title_activity_task"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name=".KoolewWebActivity"
             android:exported="false"
             android:label="@string/title_activity_web"

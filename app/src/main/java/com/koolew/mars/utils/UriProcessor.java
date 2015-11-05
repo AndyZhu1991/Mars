@@ -12,7 +12,6 @@ import com.koolew.mars.FriendInfoActivity;
 import com.koolew.mars.KoolewWebActivity;
 import com.koolew.mars.MessagesActivity;
 import com.koolew.mars.PushWrapperActivity;
-import com.koolew.mars.TaskActivity;
 
 /**
  * Created by jinchangzhu on 7/15/15.
@@ -103,7 +102,9 @@ public class UriProcessor {
             mContext.startActivity(intent);
         }
         else if (tabId.equals(TAB_ASSIGNMENT)) {
-            mContext.startActivity(newIntent(mContext, TaskActivity.class));
+            Intent intent = newIntent(mContext, MessagesActivity.class);
+            intent.putExtra(MessagesActivity.KEY_WHICH_TAB, MessagesActivity.TASK_TAB);
+            mContext.startActivity(intent);
         }
         else if (tabId.equals(TAB_COMMENT)) {
             Intent intent = newIntent(mContext, MessagesActivity.class);

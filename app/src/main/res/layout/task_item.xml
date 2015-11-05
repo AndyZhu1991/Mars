@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="2.5dp"
         android:layout_marginRight="5dp"
         android:padding="10dp"
         android:background="@drawable/task_item_top_bg">
@@ -57,6 +57,7 @@
         android:layout_below="@id/top_layout"
         android:layout_marginLeft="@dimen/task_item_margin"
         android:layout_marginRight="@dimen/task_item_margin"
+        android:layout_marginBottom="2.5dp"
         android:paddingLeft="@dimen/task_item_bottom_left_padding"
         android:paddingTop="5dp"
         android:paddingRight="@dimen/task_item_bottom_right_padding"

@@ -59,7 +59,6 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
         initSubPageColors();
 
         mToolbarInterface.setTopRedPointPath(0, RedPointManager.PATH_MESSAGE);
-        mToolbarInterface.setTopRedPointPath(1, RedPointManager.PATH_TASK);
     }
 
     @Override
@@ -85,9 +84,8 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
 
         mToolbarInterface.setToolbarColor(subPageColors[mViewPager.getCurrentItem()]);
 
-        mToolbarInterface.setTopIconCount(2);
+        mToolbarInterface.setTopIconCount(1);
         mToolbarInterface.setTopIconImageResource(0, R.mipmap.ic_danmaku);
-        mToolbarInterface.setTopIconImageResource(1, R.mipmap.ic_task);
 
         root.findViewById(R.id.btn_add_topic).setOnClickListener(this);
 
@@ -98,9 +96,6 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
     public void onTopIconClick(int position) {
         if (position == 0) {
             startActivity(new Intent(getActivity(), MessagesActivity.class));
-        }
-        else if (position == 1) {
-            startActivity(new Intent(getActivity(), TaskActivity.class));
         }
     }
 

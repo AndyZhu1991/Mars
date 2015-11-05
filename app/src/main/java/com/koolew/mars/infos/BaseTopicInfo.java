@@ -12,12 +12,14 @@ public class BaseTopicInfo implements Serializable {
 
     public static final String KEY_TOPIC_ID = "topic_id";
     public static final String KEY_TITLE = "content";
+    public static final String KEY_DESC = "desc";
     public static final String KEY_VIDEO_COUNT = "video_cnt";
     public static final String KEY_THUMB = "thumb_url";
     public static final String KEY_UPDATE_TIME = "update_time";
 
     protected String topicId;
     protected String title;
+    protected String desc;
     protected int videoCount;
     protected String thumb;
     protected long updateTime;
@@ -29,6 +31,9 @@ public class BaseTopicInfo implements Serializable {
             }
             if (jsonObject.has(KEY_TITLE)) {
                 title = jsonObject.getString(KEY_TITLE);
+            }
+            if (jsonObject.has(KEY_DESC)) {
+                desc = jsonObject.getString(KEY_DESC);
             }
             if (jsonObject.has(KEY_VIDEO_COUNT)) {
                 videoCount = jsonObject.getInt(KEY_VIDEO_COUNT);
@@ -54,6 +59,10 @@ public class BaseTopicInfo implements Serializable {
 
     public String getTopicId() {
         return topicId;
+    }
+
+    public String getDesc() {
+        return desc;
     }
 
     public long getUpdateTime() {

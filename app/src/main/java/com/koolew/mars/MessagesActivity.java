@@ -27,6 +27,11 @@ import java.util.List;
 
 public class MessagesActivity extends BaseV4FragmentActivity {
 
+    public static final String KEY_WHICH_TAB = "which tab";
+    public static final int DANMAKU_TAB = 0;
+    public static final int NOTIFICATION_TAB = 1;
+    public static final int TASK_TAB = 2;
+
     private TitleBarView titleBar;
     private IndicatorViewPager indicatorViewPager;
     private ScrollIndicatorView indicator;
@@ -49,10 +54,12 @@ public class MessagesActivity extends BaseV4FragmentActivity {
         viewPager.setOffscreenPageLimit(2);
         viewPager.addOnPageChangeListener(new PagerScrollListener(
                 getResources().getColor(R.color.koolew_light_blue),
-                getResources().getColor(R.color.koolew_deep_blue)
+                getResources().getColor(R.color.koolew_deep_blue),
+                getResources().getColor(R.color.koolew_light_green)
         ));
         indicatorViewPager = new IndicatorViewPager(indicator, viewPager);
         indicatorViewPager.setAdapter(new MessageFragmentPagerAdapter(getSupportFragmentManager()));
+        indicatorViewPager.setCurrentItem(getIntent().getIntExtra(KEY_WHICH_TAB, 0), false);
     }
 
 
@@ -75,6 +82,10 @@ public class MessagesActivity extends BaseV4FragmentActivity {
             fragmentList.add(new NotificationTabFragment());
             titleList.add(getString(R.string.notification));
             redPointPathList.add(RedPointManager.PATH_NOTIFICATION);
+
+            fragmentList.add(new TaskTabFragment());
+            titleList.add(getString(R.string.task));
+            redPointPathList.add(RedPointManager.PATH_TASK);
         }
 
         @Override

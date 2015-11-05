@@ -247,6 +247,7 @@
     <string name="common_friend_title">共同好友</string>
 
     <!-- For TaskActivity -->
+    <string name="task">任务</string>
     <string name="title_task">我的任务</string>
     <string name="friend_task_todo">待完成好友任务</string>
     <string name="you_have_no_task">你还没有任务呢</string>
