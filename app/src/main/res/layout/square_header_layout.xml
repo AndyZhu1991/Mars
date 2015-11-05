@@ -25,6 +25,7 @@
     </FrameLayout>
 
     <ImageView
+        android:id="@+id/clock_in"
         android:layout_width="350dp"
         android:layout_height="50dp"
         android:layout_margin="5dp"

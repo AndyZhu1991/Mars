@@ -316,7 +316,8 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
                 }
 
                 private SquareItem getItem() {
-                    return mData.get(getAdapterPosition() * 2 + position);
+                    int positionInSquareLine = getAdapterPosition() - 1;
+                    return mData.get(positionInSquareLine * 2 + position);
                 }
 
                 public void bindSquareItem(SquareItem item) {
@@ -382,7 +383,7 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
             }
         }
 
-        class HeaderHolder extends RecyclerView.ViewHolder {
+        class HeaderHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
             private ViewPager mViewPager;
             private BannerPagerIndicator mIndicator;
@@ -411,6 +412,13 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
                     }
                 });
                 mIndicator = (BannerPagerIndicator) itemView.findViewById(R.id.indicator);
+                itemView.findViewById(R.id.clock_in).setOnClickListener(this);
+            }
+
+            @Override
+            public void onClick(View v) {
+                KoolewWebActivity.startThisActivityWithoutTitleBar(
+                        getActivity(), AppProperty.CLOCK_IN_URL);
             }
         }
     }
