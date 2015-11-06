@@ -61,6 +61,12 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
     }
 
     @Override
+    public void onCreateViewLazy(Bundle savedInstanceState) {
+        super.onCreateViewLazy(savedInstanceState);
+        mRecyclerView.setPadding(0, 0, 0, 0);
+    }
+
+    @Override
     protected void onPageEnd() {
         super.onPageEnd();
         if (mBannerAutoChangeTask != null) {
@@ -441,7 +447,7 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
                             bannerChangePassedSecond = 0;
                             mHeaderHolder.mViewPager.setCurrentItem(
                                     (mHeaderHolder.mViewPager.getCurrentItem() + 1)
-                                    % mHeaderHolder.mViewPager.getChildCount(), true);
+                                    % mHeaderHolder.mViewPager.getAdapter().getCount(), true);
                         }
                     }
                 }
