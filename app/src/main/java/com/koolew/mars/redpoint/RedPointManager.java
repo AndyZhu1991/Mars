@@ -18,6 +18,7 @@ public class RedPointManager {
     public static final String PATH_DRAWER_TOGGLE = "/drawer";
     public static final String PATH_FRIENDS = PATH_DRAWER_TOGGLE + "/friends";
     public static final String PATH_MESSAGE = "/message";
+    public static final String PATH_KOO = PATH_MESSAGE + "/koo";
     public static final String PATH_TASK = PATH_MESSAGE + "/task";
     public static final String PATH_DANMAKU = PATH_MESSAGE + "/danmaku";
     public static final String PATH_NOTIFICATION = PATH_MESSAGE + "/notification";

@@ -22,6 +22,7 @@ public class UrlHelper {
     private static final String V1_URL = BASE_URL + "v1/";
     private static final String V2_URL = BASE_URL + "v2/";
     private static final String V3_URL = BASE_URL + "v3/";
+    private static final String V4_URL = BASE_URL + "v4/";
 
     public static final String CHECK_VERSION_URL = BASE_URL + "version";
     // v1 api
@@ -93,6 +94,9 @@ public class UrlHelper {
     public static final String CASH_OUT_RECORD_URL = V3_URL + "user/profit/withdrawals";
     private static final String SQUARE_URL = V3_URL + "square";
     public static final String BANNER_URL = V3_URL + "banner";
+
+    // Notification
+    public static final String NOTIFICATION_KOO_URL = V4_URL + "notification/koo";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
@@ -351,6 +355,13 @@ public class UrlHelper {
                 .buildUpon()
                 .appendQueryParameter("before", String.valueOf(before))
                 .appendQueryParameter("page", String.valueOf(page))
+                .build().toString();
+    }
+
+    public static String getNotificationKooUrl(long before) {
+        return Uri.parse(NOTIFICATION_KOO_URL)
+                .buildUpon()
+                .appendQueryParameter("before", String.valueOf(before))
                 .build().toString();
     }
 

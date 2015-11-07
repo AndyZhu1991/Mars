@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/avatar"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginLeft="5dp"
+        android:layout_centerVertical="true"
+        app:border_color="@color/avatar_gray_border"
+        app:border_width="2dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/avatar"
+        android:layout_marginRight="3dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/koo_tab_item_bg">
+
+        <FrameLayout
+            android:layout_width="60dp"
+            android:layout_height="45dp"
+            android:layout_margin="5dp">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/video_thumb"
+                android:layout_width="60dp"
+                android:layout_height="45dp"
+                app:riv_corner_radius="4dp" />
+            
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="21dp"
+                android:layout_gravity="center"
+                android:src="@mipmap/ic_play"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/who_koo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/topic_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:singleLine="true"
+                android:textSize="14sp"
+                android:textColor="#90A0AE"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/koo_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:textSize="12sp"
+            android:textColor="#FC7B7B"/>
+        
+        <ImageView
+            android:layout_width="14dp"
+            android:layout_height="12dp"
+            android:layout_marginRight="8dp"
+            android:src="@mipmap/ic_count_koo"/>
+
+        <ImageView
+            android:layout_width="7dp"
+            android:layout_height="12dp"
+            android:layout_marginRight="5dp"
+            android:src="@mipmap/into_arrow"/>
+    </LinearLayout>
+</RelativeLayout>

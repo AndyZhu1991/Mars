@@ -54,6 +54,7 @@ public class MessagesActivity extends BaseV4FragmentActivity {
         viewPager.setOffscreenPageLimit(2);
         viewPager.addOnPageChangeListener(new PagerScrollListener(
                 getResources().getColor(R.color.koolew_light_blue),
+                getResources().getColor(R.color.koolew_red),
                 getResources().getColor(R.color.koolew_deep_blue),
                 getResources().getColor(R.color.koolew_light_green)
         ));
@@ -78,6 +79,10 @@ public class MessagesActivity extends BaseV4FragmentActivity {
             fragmentList.add(new DanmakuTabFragment());
             titleList.add(getString(R.string.danmaku));
             redPointPathList.add(RedPointManager.PATH_DANMAKU);
+
+            fragmentList.add(new KooTabFragment());
+            titleList.add(getString(R.string.musang));
+            redPointPathList.add(RedPointManager.PATH_KOO);
 
             fragmentList.add(new NotificationTabFragment());
             titleList.add(getString(R.string.notification));

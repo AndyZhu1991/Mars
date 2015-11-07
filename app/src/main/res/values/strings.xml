@@ -423,6 +423,10 @@
     <string name="interrupt">终止</string>
     <string name="recapture">重拍</string>
 
+    <!-- For KooTabFragment -->
+    <string name="musang">打赏</string>
+    <string name="supported_this_video">打赏了视频：</string>
+
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>
     <string name="website">http://www.mob.com</string>
