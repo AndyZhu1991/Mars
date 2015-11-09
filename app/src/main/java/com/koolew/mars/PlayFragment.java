@@ -666,6 +666,9 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     }
 
     private void onPlay(String url) {
+        if (this.isDetached()) {
+            return;
+        }
         CurrentVideoInfo currentVideoInfo;
         if (url.equals(mCurrentLeftVideoInfo.getVideoUrl())) {
             currentVideoInfo = mCurrentLeftVideoInfo;
