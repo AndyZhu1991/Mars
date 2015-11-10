@@ -367,38 +367,17 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
                 setupAdapter();
                 JSONObject result = response.getJSONObject("result");
 
-                mType = result.getInt("type");
-                initTypeView(mType);
-
-                JSONObject user = result.getJSONObject("user");
-                mUserInfo = new BaseUserInfo(user);
-                ImageLoader.getInstance().displayImage(mUserInfo.getAvatar(), mAvatar);
-                new DisplayBlurImageAndStatusBar(getActivity(), mBlurAvatar, mUserInfo.getAvatar())
-                        .execute();
-                mNameView.setUser(mUserInfo);
-                mFansCountText.setText(getString(R.string.fans_count, mUserInfo.getFansCount()));
-                mFollowsCountText.setText(getString(
-                        R.string.follows_count, mUserInfo.getFollowsCount()));
-
-                if (!mUid.equals(MyAccountInfo.getUid())) {
-                    mKooCount = user.getInt("koo_num");
-                    mKooCountView.setCount(mKooCount);
-
-                    JSONObject common = user.getJSONObject("common");
-                    mCommonTopicCountView.setCount(common.getInt("common_topic"));
-                }
-
-                JSONArray topic;
-                if (result.has("topic")) {
-                    topic = result.getJSONArray("topic");
+                JSONArray topics;
+                if (result.has("topics")) {
+                    topics = result.getJSONArray("topics");
                 }
                 else {
-                    topic = new JSONArray();
+                    topics = new JSONArray();
                 }
-                mAdapter.setCards(topic);
+                mAdapter.setCards(topics);
                 mAdapter.notifyDataSetChanged();
 
-                return topic.length() > 0;
+                return topics.length() > 0;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -410,17 +389,17 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
         protected boolean handleLoadMore(JSONObject response) {
             try {
                 JSONObject result = response.getJSONObject("result");
-                JSONArray topic;
-                if (result.has("topic")) {
-                    topic = result.getJSONArray("topic");
+                JSONArray topics;
+                if (result.has("topics")) {
+                    topics = result.getJSONArray("topics");
                 }
                 else {
-                    topic = new JSONArray();
+                    topics = new JSONArray();
                 }
-                mAdapter.addCards(topic);
+                mAdapter.addCards(topics);
                 mAdapter.notifyDataSetChanged();
 
-                return topic.length() > 0;
+                return topics.length() > 0;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -430,12 +409,56 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
 
         @Override
         protected JsonObjectRequest doRefreshRequest() {
-            return ApiWorker.getInstance().requestFriendProfile(mUid, mRefreshListener, null);
+            refreshUserInfo();
+            return ApiWorker.getInstance().requestUserInvolve(mUid, mRefreshListener, null);
         }
+
+        private JsonObjectRequest mUserInfoRequest;
+        private void refreshUserInfo() {
+            if (mUserInfoRequest == null) {
+                mUserInfoRequest = ApiWorker.getInstance().requestFriendProfile(
+                        mUid, userInfoListener, null);
+            }
+        }
+
+        private Response.Listener<JSONObject> userInfoListener = new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mUserInfoRequest = null;
+                try {
+                    if (response.getInt("code") == 0) {
+                        JSONObject result = response.getJSONObject("result");
+                        mType = result.getInt("type");
+                        initTypeView(mType);
+
+                        JSONObject user = result.getJSONObject("user");
+                        mUserInfo = new BaseUserInfo(user);
+                        ImageLoader.getInstance().displayImage(mUserInfo.getAvatar(), mAvatar);
+                        new DisplayBlurImageAndStatusBar(getActivity(), mBlurAvatar,
+                                mUserInfo.getAvatar()).execute();
+                        mNameView.setUser(mUserInfo);
+                        mFansCountText.setText(getString(R.string.fans_count, mUserInfo.getFansCount()));
+                        mFollowsCountText.setText(getString(
+                                R.string.follows_count, mUserInfo.getFollowsCount()));
+
+                        if (!mUid.equals(MyAccountInfo.getUid())) {
+                            mKooCount = user.getInt("koo_num");
+                            mKooCountView.setCount(mKooCount);
+
+                            JSONObject common = result.getJSONObject("common");
+                            mCommonTopicCountView.setCount(common.getInt("common_topic"));
+                        }
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
 
         @Override
         protected JsonObjectRequest doLoadMoreRequest() {
-            return ApiWorker.getInstance().requestFriendProfile(mUid,
+            return ApiWorker.getInstance().requestUserInvolve(mUid,
                     mAdapter.getOldestCardTime(), mLoadMoreListener, null);
         }
 

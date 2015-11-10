@@ -95,14 +95,14 @@ public class KoolewRecommendFragment extends BaseLazyListFragment
             setupAdapter();
             mRefreshRequest = null;
             JSONObject result = response.getJSONObject("result");
-            JSONArray cards = null;
-            if (result.has("hot_cards")) {
-                cards = response.getJSONObject("result").getJSONArray("hot_cards");
+            JSONArray topics = null;
+            if (result.has("topics")) {
+                topics = result.getJSONArray("topics");
             }
-            mAdapter.setCards(cards);
+            mAdapter.setCards(topics);
             mAdapter.notifyDataSetChanged();
             mScrollPlayer.onListRefresh();
-            return cards.length() > 0;
+            return topics.length() > 0;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -114,8 +114,8 @@ public class KoolewRecommendFragment extends BaseLazyListFragment
     protected boolean handleLoadMore(JSONObject response) {
         try {
             mLoadMoreRequest = null;
-            JSONArray cards = response.getJSONObject("result").getJSONArray("hot_cards");
-            int loadedCount = mAdapter.addCards(cards);
+            JSONArray topics = response.getJSONObject("result").getJSONArray("topics");
+            int loadedCount = mAdapter.addCards(topics);
             mAdapter.notifyDataSetChanged();
 
             return loadedCount > 0;

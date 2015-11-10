@@ -41,16 +41,6 @@
                     android:layout_height="wrap_content">
 
                     <Button
-                        android:id="@+id/btn_remove"
-                        android:layout_width="52dp"
-                        android:layout_height="27dp"
-                        android:background="@drawable/btn_bg_remove"
-                        android:focusable="false"
-                        android:text="@string/remove"
-                        android:textColor="@color/friend_item_common_text_color"
-                        android:textSize="@dimen/friend_item_common_text_size" />
-
-                    <Button
                         android:id="@+id/btn_accept_add"
                         android:layout_width="52dp"
                         android:layout_height="27dp"

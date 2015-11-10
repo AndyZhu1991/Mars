@@ -69,6 +69,17 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.getInvolveUrl(page), listener, errorListener);
     }
 
+    public JsonObjectRequest requestUserInvolve(String uid, Response.Listener<JSONObject> listener,
+                                                Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getUserInvolveUrl(uid), listener, errorListener);
+    }
+
+    public JsonObjectRequest requestUserInvolve(String uid, long before,
+                                                Response.Listener<JSONObject> listener,
+                                                Response.ErrorListener errorListener) {
+        return standardGetRequest(UrlHelper.getUserInvolveUrl(uid, before), listener, errorListener);
+    }
+
     public JsonObjectRequest requestFeedsTopicVideo(String topicId,
                                                     Response.Listener<JSONObject> listener,
                                                     Response.ErrorListener errorListener) {
@@ -126,20 +137,6 @@ public class ApiWorker {
                 buildContactFriendJson(contacts), listener, errorListener);
     }
 
-    public JSONObject requestContactFriendV2Sync(List<ContactUtil.SimpleContactInfo> contacts) {
-        try {
-            return standardPostRequestSync(UrlHelper.CONTACT_FRIEND_RECOMMEND_V2_URL,
-                    buildContactFriendJson(contacts));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     private JSONObject buildContactFriendJson(List<ContactUtil.SimpleContactInfo> contacts) {
         JSONObject contactJson = new JSONObject();
         JSONArray jsonArrayContacts = new JSONArray();
@@ -171,7 +168,7 @@ public class ApiWorker {
                 10000,
                 0,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        return standardGetRequest(UrlHelper.ALL_FRIENDS_URL, listener, errorListener, retryPolicy);
+        return standardGetRequest(UrlHelper.CURRENT_FRIEND_URL, listener, errorListener, retryPolicy);
     }
 
     public JsonObjectRequest requestFeedsTopic(Response.Listener<JSONObject> listener,
@@ -232,7 +229,7 @@ public class ApiWorker {
 
     public JsonObjectRequest requestKooRank(Response.Listener<JSONObject> listener,
                                             Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.KOO_RANK_URL, listener, errorListener);
+        return requestKooRank(MyAccountInfo.getUid(), listener, errorListener);
     }
 
     public JsonObjectRequest requestFriendProfile(String uid,
@@ -252,12 +249,6 @@ public class ApiWorker {
                                                 Response.Listener<JSONObject> listener,
                                                 Response.ErrorListener errorListener) {
         return standardGetRequest(UrlHelper.getCommonTopicUrl(uid), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestCommonFriend(String uid,
-                                                 Response.Listener<JSONObject> listener,
-                                                 Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getCommonFriendUrl(uid), listener, errorListener);
     }
 
     public JsonObjectRequest requestTask(Response.Listener<JSONObject> listener,
@@ -393,93 +384,6 @@ public class ApiWorker {
                                         Response.Listener<JSONObject> listener,
                                         Response.ErrorListener errorListener) {
         return standardGetRequest(UrlHelper.getSearchUserUrl(keyWord), listener, errorListener);
-    }
-
-    public JsonObjectRequest rejectPadding(String fromUid,
-                                           Response.Listener<JSONObject> listener,
-                                           Response.ErrorListener errorListener) {
-        JSONObject requestObject = new JSONObject();
-        try {
-            requestObject.put("from", fromUid);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return standardPostRequest(UrlHelper.REJECT_FRIEND_PADDING_URL,
-                requestObject, listener, errorListener);
-    }
-
-    public JsonObjectRequest ignoreRecommend(String uid,
-                                             Response.Listener<JSONObject> listener,
-                                             Response.ErrorListener errorListener) {
-        JSONObject requestObject = new JSONObject();
-        try {
-            requestObject.put("uid", uid);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return standardPostRequest(UrlHelper.IGNORE_RECOMMEND_URL,
-                requestObject, listener, errorListener);
-    }
-
-    public JsonObjectRequest agreeFriendAdd(String fromUid,
-                                            Response.Listener<JSONObject> listener,
-                                            Response.ErrorListener errorListener) {
-        JSONObject requestObject = new JSONObject();
-        try {
-            requestObject.put("from", fromUid);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return standardPostRequest(UrlHelper.AGREE_FRIEND_ADD_URL,
-                requestObject, listener, errorListener);
-    }
-
-    public JsonObjectRequest addFriends(List<String> uids,
-                                        Response.Listener<JSONObject> listener,
-                                        Response.ErrorListener errorListener) {
-        JSONObject requestObject = new JSONObject();
-        JSONArray to = new JSONArray();
-        for (String uid: uids) {
-            to.put(uid);
-        }
-        try {
-            requestObject.put("to", to);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return standardPostRequest(UrlHelper.ADD_FRIEND_URL, requestObject, listener, errorListener);
-    }
-
-    public JsonObjectRequest addFriend(String uid,
-                                       Response.Listener<JSONObject> listener,
-                                       Response.ErrorListener errorListener) {
-        List<String> uids = new ArrayList<>();
-        uids.add(uid);
-        return addFriends(uids, listener, errorListener);
-    }
-
-    public JsonObjectRequest deleteFriends(List<String> uids,
-                                           Response.Listener<JSONObject> listener,
-                                           Response.ErrorListener errorListener) {
-        JSONObject requestObject = new JSONObject();
-        JSONArray friends = new JSONArray();
-        for (String uid: uids) {
-            friends.put(uid);
-        }
-        try {
-            requestObject.put("friends", friends);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return standardPostRequest(UrlHelper.DELETE_FRIEND_URL, requestObject, listener, errorListener);
-    }
-
-    public JsonObjectRequest deleteFriend(String uid,
-                                          Response.Listener<JSONObject> listener,
-                                          Response.ErrorListener errorListener) {
-        List<String> uids = new ArrayList<>();
-        uids.add(uid);
-        return deleteFriends(uids, listener, errorListener);
     }
 
     public JsonObjectRequest requestSingleVideo(String videoId,

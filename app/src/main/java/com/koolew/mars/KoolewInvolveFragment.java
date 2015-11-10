@@ -10,9 +10,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
+import com.koolew.mars.utils.JsonUtil;
 import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONArray;
@@ -59,17 +61,17 @@ public class KoolewInvolveFragment
 
     @Override
     protected boolean handleRefresh(JSONObject response) {
-        return mAdapter.setItems(getInvolveCards(response)) > 0;
+        return mAdapter.setItems(getInvolveTopics(response)) > 0;
     }
 
     @Override
     protected boolean handleLoadMore(JSONObject response) {
-        return mAdapter.addItems(getInvolveCards(response)) > 0;
+        return mAdapter.addItems(getInvolveTopics(response)) > 0;
     }
 
-    private JSONArray getInvolveCards(JSONObject response) {
+    private JSONArray getInvolveTopics(JSONObject response) {
         try {
-            return response.getJSONObject("result").getJSONArray("cards");
+            return response.getJSONObject("result").getJSONArray("topics");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -77,17 +79,12 @@ public class KoolewInvolveFragment
     }
 
 
-    class InvolveItem {
-        String topicId;
-        String title;
-        int videoCount;
+    class InvolveItem extends BaseTopicInfo {
         boolean isManager;
 
-        InvolveItem(String topicId, String title, int videoCount, boolean isManager) {
-            this.topicId = topicId;
-            this.title = title;
-            this.videoCount = videoCount;
-            this.isManager = isManager;
+        InvolveItem(JSONObject jsonObject) {
+            super(jsonObject);
+            this.isManager = JsonUtil.getIntIfHas(jsonObject, "is_manager") != 0;
         }
     }
 
@@ -122,14 +119,13 @@ public class KoolewInvolveFragment
             try {
                 int count = cards.length();
                 for (int i = 0; i < count; i++) {
-                    JSONObject topic = cards.getJSONObject(i).getJSONObject("topic");
-                    String topicId = topic.getString("topic_id");
+                    JSONObject topic = cards.getJSONObject(i);
+                    InvolveItem item = new InvolveItem(topic);
+                    String topicId = item.getTopicId();
                     if (hasTopic(topicId)) {
                         continue;
                     }
 
-                    InvolveItem item = new InvolveItem(topicId, topic.getString("content"),
-                            topic.getInt("video_cnt"), topic.getInt("is_manager") == 1);
                     mData.add(item);
                     addedCount++;
                 }
@@ -142,7 +138,7 @@ public class KoolewInvolveFragment
 
         private boolean hasTopic(String topicId) {
             for (InvolveItem item: mData) {
-                if (item.topicId.equals(topicId)) {
+                if (item.getTopicId().equals(topicId)) {
                     return true;
                 }
             }
@@ -161,8 +157,8 @@ public class KoolewInvolveFragment
 
             ((GradientDrawable) holder.leftLayout.getBackground())
                     .setColor(LEFT_LAYOUT_COLORS[position % 8]);
-            holder.videoCount.setText("" + mData.get(position).videoCount);
-            holder.title.setText(mData.get(position).title);
+            holder.videoCount.setText("" + mData.get(position).getVideoCount());
+            holder.title.setText(mData.get(position).getTitle());
             holder.manager.setVisibility(mData.get(position).isManager ? View.VISIBLE : View.GONE);
         }
 
@@ -192,7 +188,7 @@ public class KoolewInvolveFragment
             public void onClick(View v) {
                 InvolveItem item = mData.get(getAdapterPosition());
                 Intent intent = new Intent(getActivity(), IJoinedTopicActivity.class);
-                intent.putExtra(IJoinedTopicActivity.KEY_TOPIC_ID, item.topicId);
+                intent.putExtra(IJoinedTopicActivity.KEY_TOPIC_ID, item.getTopicId());
                 intent.putExtra(IJoinedTopicActivity.KEY_UID, MyAccountInfo.getUid());
                 startActivity(intent);
             }

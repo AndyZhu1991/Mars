@@ -17,124 +17,137 @@ public class UrlHelper {
     private static final String TEST_API_URL = "http://test.koolew.cn/";
     private static final String REAL_API_URL = "https://api.koolew.com/";
 
-    private static final String BASE_URL = REAL_API_URL;
+    private static final String BASE_URL = TEST_API_URL;
 
     private static final String V1_URL = BASE_URL + "v1/";
     private static final String V2_URL = BASE_URL + "v2/";
     private static final String V3_URL = BASE_URL + "v3/";
     private static final String V4_URL = BASE_URL + "v4/";
 
+    // Account
+    public static final String SNS_LOGIN_URL = V4_URL + "account/login/sns";
+    public static final String USER_INFO_URL = V4_URL + "account/profile";
+    private static final String REQUEST_PASSWORD_URL = V4_URL + "account/login/validate";
+    public static final String LOGIN_URL = V4_URL + "account/login/mobile";
+    public static final String SNS_SIGNUP_URL = V4_URL + "account/signup/sns";
+    public static final String DEVICE_LOGIN_URL = V4_URL + "account/device/bind";
+    public static final String DEVICE_PUSH_URL = V4_URL + "account/push";
+    public static final String DEVICE_LOGOUT_URL = V4_URL + "account/device/unbind";
+    public static final String BIND_ALIPAY_URL = V4_URL + "account/alipay";
+    public static final String USER_LOCATION_URL = V4_URL + "account/location";
+
+    // Upload
+    public static final String REQUEST_QINIU_AVATAR_TOKEN_URL = V4_URL + "upload/token/qiniu?type=avatar";
+    public static final String REQUEST_QINIU_THUMB_TOKEN_URL = V4_URL + "upload/token/qiniu?type=thumbnail";
+    public static final String REQUEST_QINIU_VIDEO_TOKEN_URL = V4_URL + "upload/token/qiniu?type=video";
+
+    // Search
+    private static final String SEARCH_USER_URL = V4_URL + "search/user";
+    private static final String SEARCH_TOPIC_URL = V4_URL + "search/topic";
+
+    // Users
+    public static final String FRIEND_PROFILE_URL = V4_URL + "users/show";
+    private static final String INVOLVE_URL = V4_URL + "users/timeline";
+
+    // Friendships
+    public static final String CURRENT_FRIEND_URL = V4_URL + "friendships/friends/bilateral";
+    public static final String FRIEND_RECOMMEND_URL = V4_URL + "friendships/friends/recommend";
+    public static final String CONTACT_FRIEND_RECOMMEND_URL = V4_URL + "friendships/contact";
+    public static final String FRIEND_FOLLOW_URL = V4_URL + "friendships/create";
+    public static final String FRIEND_UNFOLLOW_URL = V4_URL + "friendships/destroy";
+    public static final String FRIEND_FOLLOWS_URL = V4_URL + "friendships/friends";
+    public static final String FRIEND_FANS_URL = V4_URL + "friendships/followers";
+    private static final String USER_TOPIC_URL = V4_URL + "friendships/show/topic";
+    public static final String KOO_RANK_URL = V4_URL + "friendships/show/koo_rank";
+    private static final String COMMON_TOPIC_URL = V4_URL + "friendships/show/topic_common";
+
+    // Profit
+    public static final String INCOME_DESC_URL = V4_URL + "profit";
+    private static final String INCOME_ANALYSIS_URL = V4_URL + "profit/video";
+    public static final String CASH_OUT_URL = V4_URL + "profit/withdraw";
+    public static final String CASH_OUT_RECORD_URL = V4_URL + "profit/history";
+
+    // Feeds
+    public static final String FEEDS_TOPIC_URL = V4_URL + "feeds/topics";
+    private static final String TOPIC_VIDEO_FRIEND_URL = V4_URL + "feeds/media";
+    public static final String TASK_URL = V4_URL + "task";
+    private static final String TASK_DETAIL_URL = V4_URL + "task/detail";
+    public static final String SEND_INVITATION_URL = V4_URL + "task";
+    public static final String IGNORE_INVITATION_URL = V4_URL + "task/ignore";
+
+    // Public
+    public static final String REQUEST_WORLD_HOT_URL = V4_URL + "discovery/recommend";
+    public static final String BANNER_URL = V4_URL + "discovery/banner";
+    private static final String SQUARE_URL = V4_URL + "discovery/square";
+    private static final String FEEDS_HOT_URL = V4_URL + "discovery/hot";
+    private static final String GUESS_JUDGE_URL = V4_URL + "discovery/judge";
     public static final String CHECK_VERSION_URL = BASE_URL + "version";
-    // v1 api
-    private static final String TOPIC_VIDEO_FRIEND_URL = V1_URL + "feeds";
-    public static final String SNS_LOGIN_URL = V1_URL + "user/login/sns";
-    public static final String ADD_FRIEND_URL = V1_URL + "friend/apply";
-    public static final String ALL_FRIENDS_URL = V1_URL + "friend";
-    public static final String CONTACT_FRIEND_RECOMMEND_URL = V1_URL + "contact/address";
-    public static final String USER_INFO_URL = V1_URL + "user/info";
-    private static final String REQUEST_PASSWORD_URL = V1_URL + "user/code";
-    public static final String LOGIN_URL = V1_URL + "user/login";
-    public static final String SNS_SIGNUP_URL = V1_URL + "user/signup/sns";
-    public static final String REQUEST_QINIU_AVATAR_TOKEN_URL = V1_URL + "qiniu/uptoken?type=avatar";
-    public static final String KOO_RANK_URL = V1_URL + "koo/rank";
-    private static final String COMMON_TOPIC_URL = V1_URL + "profile/topic/common";
-    private static final String COMMON_FRIEND_URL = V1_URL + "profile/friend/common";
-    public static final String SEND_DANMAKU_URL = V1_URL + "comment";
-    public static final String REQUEST_QINIU_THUMB_TOKEN_URL = V1_URL + "qiniu/uptoken?type=thumbnail";
-    public static final String REQUEST_QINIU_VIDEO_TOKEN_URL = V1_URL + "qiniu/uptoken?type=video";
-    public static final String REQUEST_WORLD_HOT_URL = V1_URL + "world/hot";
-    private static final String SEARCH_TOPIC_URL = V1_URL + "topic/search";
-    public static final String ADD_TOPIC_URL = V1_URL + "topic";
-    public static final String SEND_INVITATION_URL = V1_URL + "call";
-    private static final String SEARCH_USER_URL = V1_URL + "user/search";
-    public static final String REJECT_FRIEND_PADDING_URL = V1_URL + "friend/reject";
-    public static final String AGREE_FRIEND_ADD_URL = V1_URL + "friend/agree";
-    public static final String DELETE_FRIEND_URL = V1_URL + "friend/delete";
-    public static final String KOO_URL = V1_URL + "koo";
-    public static final String IGNORE_INVITATION_URL = V1_URL + "call/ignore";
-    public static final String DEVICE_LOGIN_URL = V1_URL + "device/login";
-    public static final String DEVICE_PUSH_URL = V1_URL + "device/push";
-    public static final String VIDEO_DELETE_URL = V1_URL + "video/delete";
-    public static final String VIDEO_AGAINST_URL = V1_URL + "video/against";
-    public static final String DEVICE_LOGOUT_URL = V1_URL + "device/logout";
-    private static final String VIDEO_KOO_RANK_URL = V1_URL + "video/koo/rank";
-
-    // v2 api
-    public static final String FEEDS_TOPIC_URL = V2_URL + "feeds/topic";
-    public static final String INVOLVE_URL = V2_URL + "feeds/involve";
-    private static final String FRIEND_PROFILE_URL = V2_URL + "profile";
-    public static final String TASK_URL = V2_URL + "task";
-    private static final String TASK_DETAIL_URL = V2_URL + "task/detail";
-    public static final String DANMAKU_TAB_URL = V2_URL + "activity/comment";
-    public static final String TOPIC_VIDEO_WORLD_URL = V2_URL + "world/topic";
-    private static final String USER_TOPIC_URL = V2_URL + "user/topic/info";
-    public static final String IGNORE_RECOMMEND_URL = V2_URL + "friend/recommend/ignore";
-    public static final String KOO_RANK_V2_URL = V2_URL + "koo/rank";
-    public static final String CONTACT_FRIEND_RECOMMEND_V2_URL = V2_URL + "contact/recommend";
-    public static final String NOTIFICATION_BRIEF_URL = V2_URL + "activity/brief";
-    public static final String USER_LOCATION_URL = V2_URL + "user/loc";
-    public static final String EDIT_TOPIC_DESC_URL = V2_URL + "topic/desc";
-
-    // V3 api
-    private static final String SINGLE_VIDEO_URL = V3_URL + "video/desc";
-    public static final String FRIEND_RECOMMEND_URL = V3_URL + "friend/recommend";
-    public static final String FRIEND_FOLLOW_URL = V3_URL + "friend/follow";
-    public static final String FRIEND_UNFOLLOW_URL = V3_URL + "friend/unfollow";
-    public static final String FRIEND_FOLLOWS_URL = V3_URL + "friend/follows";
-    public static final String FRIEND_FANS_URL = V3_URL + "friend/fans";
-    public static final String CURRENT_FRIEND_URL = V3_URL + "friend";
-    private static final String VIDEO_COMMENT_URL = V3_URL + "video/comment";
-    private static final String GUESS_JUDGE_URL = V3_URL + "guess/judge";
-    private static final String FEEDS_HOT_URL = V3_URL + "feeds/hot";
-    public static final String NOTIFICATION_URL = V3_URL + "activity";
-    public static final String INCOME_DESC_URL = V3_URL + "user/profit/desc";
-    private static final String INCOME_ANALYSIS_URL = V3_URL + "user/profit/videos";
-    public static final String BIND_ALIPAY_URL = V3_URL + "user/alipay/bind";
-    public static final String CASH_OUT_URL = V3_URL + "user/profit/withdraw";
-    public static final String CASH_OUT_RECORD_URL = V3_URL + "user/profit/withdrawals";
-    private static final String SQUARE_URL = V3_URL + "square";
-    public static final String BANNER_URL = V3_URL + "banner";
 
     // Notification
+    public static final String NOTIFICATION_BRIEF_URL = V4_URL + "notification/unread";
+    public static final String DANMAKU_TAB_URL = V4_URL + "notification/comment";
+    public static final String NOTIFICATION_URL = V4_URL + "notification/activity";
     public static final String NOTIFICATION_KOO_URL = V4_URL + "notification/koo";
+
+    // Topic
+    public static final String TOPIC_URL = V4_URL + "topic"; // New Api category=movie/video
+    public static final String TOPIC_VIDEO_WORLD_URL = V4_URL + "topic/media";
+    public static final String ADD_TOPIC_URL = V4_URL + "topic/create";
+    public static final String EDIT_TOPIC_DESC_URL = V4_URL + "topic";
+
+    // Video
+    private static final String SINGLE_VIDEO_URL = V4_URL + "video";
+    private static final String VIDEO_COMMENT_URL = V4_URL + "video/comment";
+    public static final String SEND_DANMAKU_URL = V4_URL + "video/comment";
+    private static final String VIDEO_KOO_RANK_URL = V4_URL + "video/koo";
+    public static final String VIDEO_AGAINST_URL = V4_URL + "video/downvote";
+    public static final String KOO_URL = V4_URL + "video/koo";
+    public static final String VIDEO_DELETE_URL = V4_URL + "video/delete";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
 
 
-    // v1 api
+
     public static String getTopicVideoFriendUrl(String topicId) {
-        return new StringBuilder().append(TOPIC_VIDEO_FRIEND_URL)
-                .append("?topic_id=").append(topicId).toString();
+        return Uri.parse(TOPIC_VIDEO_FRIEND_URL)
+                .buildUpon()
+                .appendQueryParameter("topic_id", topicId)
+                .build().toString();
     }
     public static String getTopicVideoFriendUrl(String topicId, long beforeTime) {
-        return new StringBuilder().append(getTopicVideoFriendUrl(topicId))
-                .append("&time=").append(beforeTime).toString();
+        return Uri.parse(getTopicVideoFriendUrl(topicId))
+                .buildUpon()
+                .appendQueryParameter("time", String.valueOf(beforeTime))
+                .build().toString();
     }
 
     public static String getRequestPasswordMessageUrl(String phoneNum) {
-        return new StringBuilder(REQUEST_PASSWORD_URL).append("?phone=").append(phoneNum).toString();
+        return Uri.parse(REQUEST_PASSWORD_URL)
+                .buildUpon()
+                .appendQueryParameter("phone", phoneNum)
+                .build().toString();
     }
 
     public static String getRequestPasswordCallUrl(String phoneNum) {
-        return new StringBuilder(REQUEST_PASSWORD_URL)
-                .append("?phone=").append(phoneNum).append("&type=1").toString();
+        return Uri.parse(REQUEST_PASSWORD_URL)
+                .buildUpon()
+                .appendQueryParameter("type", phoneNum)
+                .build().toString();
     }
 
     public static String getFeedsTopicUrl(long before) {
-        return new StringBuilder(FEEDS_TOPIC_URL).append("?before=").append(before).toString();
+        return Uri.parse(FEEDS_TOPIC_URL)
+                .buildUpon()
+                .appendQueryParameter("before", String.valueOf(before))
+                .build().toString();
     }
 
     public static String getCommonTopicUrl(String uid) {
-        return new GetUrlBuilder(COMMON_TOPIC_URL)
-                .addParameter("uid", uid)
-                .build();
-    }
-
-    public static String getCommonFriendUrl(String uid) {
-        return new GetUrlBuilder(COMMON_FRIEND_URL)
-                .addParameter("uid", uid)
-                .build();
+        return Uri.parse(COMMON_TOPIC_URL)
+                .buildUpon()
+                .appendQueryParameter("uid", uid)
+                .build().toString();
     }
 
     public static String getSearchTopicUrl(String keyWord) {
@@ -159,7 +172,7 @@ public class UrlHelper {
     }
 
     public static String getKooRankUrl(String uid) {
-        return Uri.parse(KOO_RANK_V2_URL)
+        return Uri.parse(KOO_RANK_URL)
                 .buildUpon()
                 .appendQueryParameter("uid", uid)
                 .build().toString();
@@ -172,14 +185,34 @@ public class UrlHelper {
                 .build().toString();
     }
 
-
-    // v2 api
     public static String getInvolveUrl(int page) {
-        return INVOLVE_URL + "?page=" + page;
+        return Uri.parse(INVOLVE_URL)
+                .buildUpon()
+                .appendQueryParameter("page", String.valueOf(page))
+                .appendQueryParameter("sort_by", "count")
+                .build().toString();
+    }
+
+    public static String getUserInvolveUrl(String uid, long before) {
+        return Uri.parse(getUserInvolveUrl(uid))
+                .buildUpon()
+                .appendQueryParameter("before", String.valueOf(before))
+                .build().toString();
+    }
+
+    public static String getUserInvolveUrl(String uid) {
+        return Uri.parse(INVOLVE_URL)
+                .buildUpon()
+                .appendQueryParameter("sort_by", "time")
+                .appendQueryParameter("uid", uid)
+                .build().toString();
     }
 
     public static String getFriendProfileUrl(String uid) {
-        return new StringBuilder(FRIEND_PROFILE_URL).append("?uid=").append(uid).toString();
+        return Uri.parse(FRIEND_PROFILE_URL)
+                .buildUpon()
+                .appendQueryParameter("uid", uid)
+                .build().toString();
     }
 
     public static String getFriendProfileUrl(String uid, long before) {
@@ -191,28 +224,32 @@ public class UrlHelper {
     }
 
     public static String getTaskUrl(long before) {
-        return new GetUrlBuilder(TASK_URL)
-                .addParameter("before", before)
-                .build();
+        return Uri.parse(TASK_URL)
+                .buildUpon()
+                .appendQueryParameter("before", String.valueOf(before))
+                .build().toString();
     }
 
     public static String getTaskDetailUrl(String uid) {
-        return new GetUrlBuilder(TASK_DETAIL_URL)
-                .addParameter("uid", uid)
-                .build();
+        return Uri.parse(TASK_DETAIL_URL)
+                .buildUpon()
+                .appendQueryParameter("uid", uid)
+                .build().toString();
     }
 
     public static String getTaskDetailUrl(String uid, long before) {
-        return new GetUrlBuilder(TASK_DETAIL_URL)
-                .addParameter("uid", uid)
-                .addParameter("before", before)
-                .build();
+        return Uri.parse(TASK_DETAIL_URL)
+                .buildUpon()
+                .appendQueryParameter("uid", uid)
+                .appendQueryParameter("before", String.valueOf(before))
+                .build().toString();
     }
 
     public static String getDanmakuTabUrl(long before) {
-        return new GetUrlBuilder(DANMAKU_TAB_URL)
-                .addParameter("before", before)
-                .build();
+        return Uri.parse(DANMAKU_TAB_URL)
+                .buildUpon()
+                .appendQueryParameter("before", String.valueOf(before))
+                .build().toString();
     }
 
     public static String getWorldTopicVideoUrl(String topicId, int page) {
@@ -300,8 +337,6 @@ public class UrlHelper {
                 .build().toString();
     }
 
-
-    // v3 api
     public static String getDefaultPlayGroupUrl() {
         return GUESS_JUDGE_URL;
     }

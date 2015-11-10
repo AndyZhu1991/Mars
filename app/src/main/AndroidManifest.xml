@@ -176,12 +176,6 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".CommonFriendActivity"
-            android:exported="false"
-            android:label="@string/title_activity_common_friend"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name=".KoolewWebActivity"
             android:exported="false"
             android:label="@string/title_activity_web"
