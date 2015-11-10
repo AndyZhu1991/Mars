@@ -65,7 +65,7 @@ public class KooTabFragment extends RecyclerListFragmentMould<KooTabFragment.Koo
     protected boolean handleRefresh(JSONObject response) {
         try {
             if (response.getInt("code") == 0) {
-                return mAdapter.addData(response.getJSONObject("result")
+                return mAdapter.setData(response.getJSONObject("result")
                         .getJSONArray("notifications"));
             }
         } catch (JSONException e) {
