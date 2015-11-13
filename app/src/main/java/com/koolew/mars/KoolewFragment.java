@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.koolew.mars.redpoint.RedPointManager;
+import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.KoolewViewPagerIndicator;
 
 import java.util.ArrayList;
@@ -34,6 +35,8 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
     private ViewPager mViewPager;
     private KoolewFragmentPagerAdapter mAdapter;
     private KoolewViewPagerIndicator mViewPagerIndicator;
+
+    private View mBtnAddTopic;
 
     /**
      * Use this factory method to create a new instance of
@@ -87,7 +90,8 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
         mToolbarInterface.setTopIconCount(1);
         mToolbarInterface.setTopIconImageResource(0, R.mipmap.ic_danmaku);
 
-        root.findViewById(R.id.btn_add_topic).setOnClickListener(this);
+        mBtnAddTopic = root.findViewById(R.id.btn_add_topic);
+        mBtnAddTopic.setOnClickListener(this);
 
         return root;
     }
@@ -115,7 +119,15 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
         switch (v.getId()) {
             case R.id.btn_add_topic:
                 //startActivity(new Intent(getActivity(), AddTopicActivity.class));
-                startActivity(new Intent(getActivity(), MovieStudioActivity.class));
+                //startActivity(new Intent(getActivity(), MovieStudioActivity.class));
+                SelectCategoryWindow window = new SelectCategoryWindow(getActivity());
+                int windowWidth = window.getWidth();
+                int windowHeight = window.getHeight();
+                int btnWidth = mBtnAddTopic.getWidth();
+                int btnHeight = mBtnAddTopic.getHeight();
+                window.showAsDropDown(mBtnAddTopic,
+                        (int) (btnWidth - windowWidth - Utils.dpToPixels(getActivity(), 10)),
+                        - (btnHeight + windowHeight));
                 break;
         }
     }

@@ -17,7 +17,7 @@ import java.util.List;
 
 public abstract class TopicVideoActivity extends BaseV4FragmentActivity
         implements KoolewViewPagerIndicator.OnBackgroundColorChangedListener,
-        BaseVideoListFragment.TopicInfoInterface {
+        BaseVideoListFragment.TopicInfoInterface, View.OnClickListener {
 
     public static final String KEY_TOPIC_ID = BaseVideoListFragment.KEY_TOPIC_ID;
     public static final String KEY_TOPIC_TITLE = BaseVideoListFragment.KEY_TOPIC_TITLE;
@@ -34,10 +34,12 @@ public abstract class TopicVideoActivity extends BaseV4FragmentActivity
     protected ViewPager mViewPager;
     protected TopicVideoPagerAdapter mAdapter;
 
+    protected int mLayoutResId = R.layout.activity_topic_video;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_topic_video);
+        setContentView(mLayoutResId);
 
         Intent intent = getIntent();
         topicId = intent.getExtras().getString(KEY_TOPIC_ID);
@@ -58,6 +60,9 @@ public abstract class TopicVideoActivity extends BaseV4FragmentActivity
         }
         mViewPagerIndicator.setViewPager(mViewPager, pageColors);
         mViewPagerIndicator.setOnBackgroundColorChangedListener(this);
+
+        findViewById(R.id.capture).setOnClickListener(this);
+        findViewById(R.id.invite).setOnClickListener(this);
     }
 
     protected void initViews() {
@@ -80,18 +85,30 @@ public abstract class TopicVideoActivity extends BaseV4FragmentActivity
         return topicId;
     }
 
-    public void onCapture(View view) {
+    protected void onCapture() {
         Intent intent = new Intent(this, VideoShootActivity.class);
         intent.putExtra(VideoShootActivity.KEY_TOPIC_ID, topicId);
         intent.putExtra(VideoShootActivity.KEY_TOPIC_TITLE, topicTitle);
         startActivity(intent);
     }
 
-    public void onInvite(View view) {
+    protected void onInvite() {
         Intent intent = new Intent(this, InviteActivity.class);
         intent.putExtra(InviteActivity.KEY_TOPIC_ID, topicId);
         intent.putExtra(InviteActivity.KEY_TITLE, topicTitle);
         startActivity(intent);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.capture:
+                onCapture();
+                break;
+            case R.id.invite:
+                onInvite();
+                break;
+        }
     }
 
     static abstract class TopicVideoPagerAdapter extends FragmentPagerAdapter {

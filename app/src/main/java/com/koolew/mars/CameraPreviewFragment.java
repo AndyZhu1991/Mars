@@ -281,7 +281,7 @@ public class CameraPreviewFragment extends Fragment {
         }
 
         @Override
-        public void onSurfaceChanged(GL10 gl, int width, int height) {
+        public void onSurfaceChanged(GL10 gl, final int width, final int height) {
             Log.i("stdzhu", String.format("onSurfaceChanged: %d x %d", width, height));
 
             GLES20.glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
@@ -293,14 +293,19 @@ public class CameraPreviewFragment extends Fragment {
 
             calcViewport();
 
-            mPreviewGLTexture.setPivotX(width / 2);
-            mPreviewGLTexture.setPivotY(height / 2);
-            float scale = 1.0f * mPreviewContainer.getWidth() / width;
-            mPreviewGLTexture.setScaleX(scale);
-            mPreviewGLTexture.setScaleY(scale);
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    mPreviewGLTexture.setPivotX(width / 2);
+                    mPreviewGLTexture.setPivotY(height / 2);
+                    float scale = 1.0f * mPreviewContainer.getWidth() / width;
+                    mPreviewGLTexture.setScaleX(scale);
+                    mPreviewGLTexture.setScaleY(scale);
 
-            setX((mPreviewContainer.getWidth() - width) / 2);
-            setY((mPreviewContainer.getHeight() - height) / 2);
+                    setX((mPreviewContainer.getWidth() - width) / 2);
+                    setY((mPreviewContainer.getHeight() - height) / 2);
+                }
+            });
         }
 
         @Override

@@ -98,4 +98,22 @@ public class JsonUtil {
         }
         return defaultValue;
     }
+
+
+    public static String getStringIfHas(JSONObject jsonObject, String key) {
+        return getStringIfHas(jsonObject, key, null);
+    }
+
+    public static String getStringIfHas(JSONObject jsonObject, String key, String defaultValue) {
+        try {
+            if (jsonObject.has(key)) {
+                return jsonObject.getString(key);
+            }
+        }
+        catch (JSONException jse) {
+            // Here should never arrive
+            throw new RuntimeException("Here should never arrive");
+        }
+        return defaultValue;
+    }
 }

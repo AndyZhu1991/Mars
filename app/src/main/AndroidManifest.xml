@@ -330,6 +330,11 @@
             android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".JoinMovieActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" >
+        </activity>
 
         <!-- Jpush -->
         <!-- Required -->

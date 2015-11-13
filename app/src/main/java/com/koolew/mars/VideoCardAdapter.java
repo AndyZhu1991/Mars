@@ -62,6 +62,8 @@ public class VideoCardAdapter extends BaseAdapter {
     private OnKooClickListener mKooClickListener;
     private OnMoreMenuClickListener mMoreMenuListener;
 
+    protected String category;
+
     public VideoCardAdapter(Context context) {
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
@@ -154,6 +156,10 @@ public class VideoCardAdapter extends BaseAdapter {
                 return getVideoItemView(position, convertView, parent);
         }
         return null;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     protected View getTitleView(View convertView) {
@@ -287,6 +293,9 @@ public class VideoCardAdapter extends BaseAdapter {
         mContext.startActivity(intent);
     }
 
+    protected void onVideoItemStartPlay() {
+    }
+
     interface OnDanmakuSendListener {
         void onDanmakuSend(BaseVideoInfo videoInfo);
     }
@@ -311,6 +320,7 @@ public class VideoCardAdapter extends BaseAdapter {
         public CircleImageView avatar;
         public UserNameView nameView;
         public TextView videoDate;
+        public View btnAct;
         public TextView kooAndCommentCount;
 
         public LinearLayout kooLayout;
@@ -329,7 +339,19 @@ public class VideoCardAdapter extends BaseAdapter {
             avatar = (CircleImageView) convertView.findViewById(R.id.avatar);
             avatar.setOnClickListener(this);
             nameView = (UserNameView) convertView.findViewById(R.id.name_view);
-            videoDate = (TextView) convertView.findViewById(R.id.video_date);
+            TextView videoDate1 = (TextView) convertView.findViewById(R.id.video_date);
+            TextView videoDate2 = (TextView) convertView.findViewById(R.id.video_date2);
+            if ("movie".equals(category)) {
+                videoDate1.setVisibility(View.INVISIBLE);
+                videoDate2.setVisibility(View.VISIBLE);
+                videoDate = videoDate2;
+                btnAct = convertView.findViewById(R.id.btn_act);
+                btnAct.setVisibility(View.VISIBLE);
+                btnAct.setOnClickListener(this);
+            }
+            else {
+                videoDate = videoDate1;
+            }
             kooAndCommentCount = (TextView) convertView.findViewById(R.id.koo_and_comment_count);
             kooAndCommentCount.setOnClickListener(this);
             danmakuSendLayout = (LinearLayout) convertView.findViewById(R.id.danmaku_send_layout);
@@ -420,6 +442,11 @@ public class VideoCardAdapter extends BaseAdapter {
         @Override
         public String getVideoUrl(View itemView) {
             return getVideoInfoByItemView(itemView).getVideoUrl();
+        }
+
+        @Override
+        protected void onStartPlay() {
+            onVideoItemStartPlay();
         }
     }
 }

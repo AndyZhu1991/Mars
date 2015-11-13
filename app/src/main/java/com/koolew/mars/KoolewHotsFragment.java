@@ -381,7 +381,7 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
                             startActivity(intent2);
                             break;
                         case R.id.title:
-                            FeedsTopicActivity.startTopicWorld(getActivity(),
+                            FeedsTopicActivity.startWorldTopic(getActivity(),
                                     item.topicInfo.getTopicId(), item.topicInfo.getTitle());
                             break;
                     }

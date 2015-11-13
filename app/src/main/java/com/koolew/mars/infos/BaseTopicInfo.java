@@ -1,5 +1,7 @@
 package com.koolew.mars.infos;
 
+import com.koolew.mars.utils.JsonUtil;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,6 +15,7 @@ public class BaseTopicInfo implements Serializable {
     public static final String KEY_TOPIC_ID = "topic_id";
     public static final String KEY_TITLE = "content";
     public static final String KEY_DESC = "desc";
+    public static final String KEY_CATEGORY = "category";
     public static final String KEY_VIDEO_COUNT = "video_cnt";
     public static final String KEY_THUMB = "thumb_url";
     public static final String KEY_UPDATE_TIME = "update_time";
@@ -20,6 +23,7 @@ public class BaseTopicInfo implements Serializable {
     protected String topicId;
     protected String title;
     protected String desc;
+    protected String category;
     protected int videoCount;
     protected String thumb;
     protected long updateTime;
@@ -35,6 +39,7 @@ public class BaseTopicInfo implements Serializable {
             if (jsonObject.has(KEY_DESC)) {
                 desc = jsonObject.getString(KEY_DESC);
             }
+            category = JsonUtil.getStringIfHas(jsonObject, KEY_CATEGORY);
             if (jsonObject.has(KEY_VIDEO_COUNT)) {
                 videoCount = jsonObject.getInt(KEY_VIDEO_COUNT);
             }
@@ -63,6 +68,10 @@ public class BaseTopicInfo implements Serializable {
 
     public String getDesc() {
         return desc;
+    }
+
+    public String getCategory() {
+        return category;
     }
 
     public long getUpdateTime() {

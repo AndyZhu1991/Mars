@@ -42,7 +42,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MovieStudioActivity extends AppCompatActivity
-        implements CameraPreviewFragment.FrameListener {
+        implements CameraPreviewFragment.FrameListener, View.OnClickListener {
 
     private static final int MOVIE_CONTENT_WIDTH = 480;
     private static final int MOVIE_CONTENT_HEIGHT = 270;
@@ -128,6 +128,10 @@ public class MovieStudioActivity extends AppCompatActivity
         mCountDownLayout = findViewById(R.id.count_down_layout);
         mCountDownText = (TextView) findViewById(R.id.count_down_text);
 
+        findViewById(R.id.x).setOnClickListener(this);
+        findViewById(R.id.switch_camera).setOnClickListener(this);
+        findViewById(R.id.block_touch_view).setOnClickListener(this);
+
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(
                 this, LinearLayoutManager.HORIZONTAL, false));
@@ -148,15 +152,17 @@ public class MovieStudioActivity extends AppCompatActivity
         mBlockTouchView = findViewById(R.id.block_touch_view);
 
         mCaptureButton = (ImageView) findViewById(R.id.capture);
+        mCaptureButton.setOnClickListener(this);
         mCaptureText = (TextView) findViewById(R.id.capture_text);
 
         mNextStep = (TextView) findViewById(R.id.next_step);
+
     }
 
     @Override
     public void onBackPressed() {
         if (captureButtonStatus == STATUS_CANCLE) {
-            onCaptureClick(mCaptureButton);
+            onCaptureClick();
         }
         else {
             super.onBackPressed();
@@ -181,17 +187,37 @@ public class MovieStudioActivity extends AppCompatActivity
         }
     }
 
-    public void onXClick(View v) {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.x:
+                onXClick();
+                break;
+            case R.id.switch_camera:
+                onSwitchCamera();
+                break;
+            case R.id.block_touch_view:
+                break;
+            case R.id.capture:
+                onCaptureClick();
+                break;
+            case R.id.next_step:
+                onNextStep();
+                break;
+        }
+    }
+
+    public void onXClick() {
         onBackPressed();
     }
 
-    public void onSwitchCamera(View v) {
+    public void onSwitchCamera() {
         mCameraPreviewFragment.switchCamera();
     }
 
     private Timer captureCountDownTimer;
 
-    public void onCaptureClick(View v) {
+    public void onCaptureClick() {
         if (captureButtonStatus == STATUS_CAPTURE || captureButtonStatus == STATUS_RECAPTURE) {
             mBlockTouchView.setVisibility(View.VISIBLE);
             mRecyclerView.scrollToPosition(mAdapter.selectedPosition);
@@ -212,7 +238,7 @@ public class MovieStudioActivity extends AppCompatActivity
         }
     }
 
-    public void onNextStep(View v) {
+    public void onNextStep() {
         new NextStepTask().execute();
     }
 

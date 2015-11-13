@@ -400,6 +400,14 @@ public class UrlHelper {
                 .build().toString();
     }
 
+    public static String getMovieUrl(int page) {
+        return Uri.parse(TOPIC_URL)
+                .buildUpon()
+                .appendQueryParameter("category", "movie")
+                .appendQueryParameter("page", String.valueOf(page))
+                .build().toString();
+    }
+
 
     public static Map<String, String> getStandardPostHeaders() {
         HashMap<String, String> headers = new HashMap<String, String>();

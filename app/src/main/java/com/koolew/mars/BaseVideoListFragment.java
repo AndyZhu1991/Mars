@@ -32,7 +32,7 @@ public abstract class BaseVideoListFragment extends BaseLazyListFragment
     protected String mTopicTitle;
 
     protected VideoCardAdapter mAdapter;
-    private ScrollPlayer mScrollPlayer;
+    protected ScrollPlayer mScrollPlayer;
 
     private SoundPool mSoundPool;
     private int mKooSound;
@@ -69,19 +69,29 @@ public abstract class BaseVideoListFragment extends BaseLazyListFragment
     @Override
     protected void onPageStart() {
         super.onPageStart();
-        mScrollPlayer.onActivityResume();
+        resumeScrollPlayer();
         mSoundPool = new SoundPool(5, AudioManager.STREAM_RING, 0);
         mKooSound = mSoundPool.load(getActivity(), R.raw.koo, 1);
+    }
+
+    protected void pauseScrollPlayer() {
+        if (mScrollPlayer != null) {
+            mScrollPlayer.onActivityPause();
+        }
     }
 
     @Override
     protected void onPageEnd() {
         super.onPageEnd();
-        if (mScrollPlayer != null) {
-            mScrollPlayer.onActivityPause();
-        }
+        pauseScrollPlayer();
         if (mSoundPool != null) {
             mSoundPool.release();
+        }
+    }
+
+    protected void resumeScrollPlayer() {
+        if (mScrollPlayer != null) {
+            mScrollPlayer.onActivityResume();
         }
     }
 

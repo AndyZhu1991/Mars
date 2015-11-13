@@ -58,6 +58,8 @@
     <string name="fans_count" formatted="false">"%d 粉丝"</string>
     <string name="follows_count" formatted="false">"%d 关注"</string>
     <string name="today_income_renminbi" formatted="false">今日收益（人民币）：%.3f元</string>
+    <string name="create_video_topic">新建话题</string>
+    <string name="join_movie_topic">参与电影卡</string>
 
     <!-- For FirstLoginActivity -->
     <string name="app_name_english">KOOLEW</string>
@@ -308,6 +310,9 @@
     <string name="report_this_video">举报此视频</string>
     <string name="delete_this_video">删除此视频</string>
 
+    <!-- For JoinMovieActivity -->
+    <string name="join_movie_title">参与电影卡</string>
+
     <!-- ShareManager -->
     <string name="share_video_description">[9秒小视频]</string>
     <string name="share_topic_description">[小视频合集]</string>
@@ -426,6 +431,12 @@
     <!-- For KooTabFragment -->
     <string name="musang">打赏</string>
     <string name="supported_this_video">打赏了视频：</string>
+
+    <!-- For movie list -->
+    <string name="movie_type_string">对 戏</string>
+
+    <!-- For VideoCardAdapter -->
+    <string name="act_together">一起演</string>
 
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>

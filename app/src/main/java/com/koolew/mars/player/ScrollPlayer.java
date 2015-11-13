@@ -134,7 +134,8 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
             }
 
             int visibleHeight = getSurfaceVisibleHeight(child);
-            if (visibleHeight > maxVisibleHeight) {
+            int surfaceHeight = getSurfaceHeight(child);
+            if (visibleHeight >= surfaceHeight / 2 && visibleHeight > maxVisibleHeight) {
                 maxVisibleHeight = visibleHeight;
                 currentItemView = child;
             }
@@ -149,7 +150,7 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
 
     private int getSurfaceVisibleHeight(View itemView) {
         int surfaceStartY = getSurfaceStartY(itemView);
-        int surfaceHeight = getSurfaceContainer(itemView).getHeight();
+        int surfaceHeight = getSurfaceHeight(itemView);
         int listHeight = mListView.getHeight();
 
         if (surfaceStartY < 0) {
@@ -161,6 +162,10 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
         else {
             return surfaceHeight;
         }
+    }
+
+    private int getSurfaceHeight(View itemView) {
+        return getSurfaceContainer(itemView).getHeight();
     }
 
     private void stopCurrentPlay() {
@@ -179,9 +184,13 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
 
     private void setupCurrentPlay() {
         if (mCurrentItem != null) {
+            onStartPlay();
             getProgressView(mCurrentItem).setVisibility(View.VISIBLE);
             mVideoLoader.loadVideo(null, getVideoUrl(mCurrentItem));
         }
+    }
+
+    protected void onStartPlay() {
     }
 
     @Override

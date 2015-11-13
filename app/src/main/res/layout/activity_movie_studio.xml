@@ -51,6 +51,7 @@
         </RelativeLayout>
 
         <TextView
+            android:id="@+id/x"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="16dp"
@@ -60,10 +61,10 @@
             android:textColor="@android:color/white"
             android:textSize="15sp"
             android:drawableLeft="@mipmap/ic_close"
-            android:drawablePadding="4dp"
-            android:onClick="onXClick"/>
+            android:drawablePadding="4dp"/>
 
         <ImageView
+            android:id="@+id/switch_camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -71,8 +72,7 @@
             android:paddingTop="4dp"
             android:paddingRight="12dp"
             android:paddingBottom="10dp"
-            android:src="@mipmap/ic_change_camera"
-            android:onClick="onSwitchCamera"/>
+            android:src="@mipmap/ic_change_camera"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -91,7 +91,6 @@
             android:id="@+id/block_touch_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:onClick="doNothing"
             android:visibility="invisible"/>
     </RelativeLayout>
 
@@ -112,8 +111,7 @@
         android:layout_height="60dp"
         android:layout_above="@+id/capture_text"
         android:layout_centerHorizontal="true"
-        android:src="@mipmap/video_capture"
-        android:onClick="onCaptureClick"/>
+        android:src="@mipmap/video_capture"/>
 
     <TextView
         android:id="@+id/next_step"
@@ -129,7 +127,6 @@
         android:textColor="#90A0AE"
         android:textSize="12sp"
         android:text="@string/next_step"
-        android:visibility="invisible"
-        android:onClick="onNextStep"/>
+        android:visibility="invisible"/>
 
 </RelativeLayout>

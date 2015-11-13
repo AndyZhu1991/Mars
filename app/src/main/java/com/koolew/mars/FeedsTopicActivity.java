@@ -19,14 +19,14 @@ public class FeedsTopicActivity extends TopicVideoActivity {
         return new FeedsTopicAdapter(getSupportFragmentManager());
     }
 
-    public static void startTopicFollowed(Context context, String topicId, String title) {
+    public static void startFeedsTopic(Context context, String topicId, String title) {
         Intent intent = new Intent(context, FeedsTopicActivity.class);
         intent.putExtra(KEY_TOPIC_ID, topicId);
         intent.putExtra(KEY_TOPIC_TITLE, title);
         context.startActivity(intent);
     }
 
-    public static void startTopicWorld(Context context, String topicId, String title) {
+    public static void startWorldTopic(Context context, String topicId, String title) {
         Intent intent = new Intent(context, FeedsTopicActivity.class);
         intent.putExtra(KEY_TOPIC_ID, topicId);
         intent.putExtra(KEY_TOPIC_TITLE, title);

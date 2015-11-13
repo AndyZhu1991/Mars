@@ -86,7 +86,7 @@ public class ShareVideoWindow extends ShareWindow {
         mVideoOperatedListener = listener;
     }
 
-    interface OnVideoOperatedListener {
+    public interface OnVideoOperatedListener {
         void onVideoDeleted(String videoId);
         void onVideoAgainst(String videoId);
     }
