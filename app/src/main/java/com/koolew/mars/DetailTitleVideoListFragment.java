@@ -1,9 +1,10 @@
 package com.koolew.mars;
 
+import android.app.Activity;
 import android.text.TextUtils;
 
-import com.koolew.mars.infos.KooCountUserInfo;
 import com.koolew.mars.DetailTitleVideoCardAdapter.TopicTitleDetail;
+import com.koolew.mars.infos.KooCountUserInfo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,6 +15,17 @@ import org.json.JSONObject;
  */
 public abstract class DetailTitleVideoListFragment extends BaseVideoListFragment
         implements DetailTitleVideoCardAdapter.OnTitleVideoListener {
+
+    protected OnTopicCategoryListener onTopicCategoryListener;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (!(activity instanceof OnTopicCategoryListener)) {
+            throw new RuntimeException("This activity must implements OnTopicCategoryListener");
+        }
+        onTopicCategoryListener = (OnTopicCategoryListener) activity;
+    }
 
     @Override
     protected void onPauseLazy() {
@@ -43,10 +55,12 @@ public abstract class DetailTitleVideoListFragment extends BaseVideoListFragment
             if (category.equals("video")) {
                 TopicTitleDetail topicTitleDetail = getTopicDetailFromResponse(response);
                 adapter.setTopicTitleDetail(topicTitleDetail);
+                onTopicCategoryListener.onCategoryDetermined(category, topicTitleDetail.getTitle());
             }
             else if (category.equals("movie")) {
-                DetailTitleVideoCardAdapter.MovieInfo movieInfo = getMovieInfo(response);
-                adapter.setMovieInfo(movieInfo);
+                DetailTitleVideoCardAdapter.MovieDetailInfo movieDetailInfo = getMovieInfo(response);
+                adapter.setMovieDetail(movieDetailInfo);
+                onTopicCategoryListener.onCategoryDetermined(category, movieDetailInfo);
             }
         }
 
@@ -80,9 +94,9 @@ public abstract class DetailTitleVideoListFragment extends BaseVideoListFragment
         return null;
     }
 
-    protected DetailTitleVideoCardAdapter.MovieInfo getMovieInfo(JSONObject response) {
+    protected DetailTitleVideoCardAdapter.MovieDetailInfo getMovieInfo(JSONObject response) {
         try {
-            return new DetailTitleVideoCardAdapter.MovieInfo(response.getJSONObject("result"));
+            return new DetailTitleVideoCardAdapter.MovieDetailInfo(response.getJSONObject("result"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -97,5 +111,9 @@ public abstract class DetailTitleVideoListFragment extends BaseVideoListFragment
     @Override
     public void onTitleVideoStop() {
         resumeScrollPlayer();
+    }
+
+    public interface OnTopicCategoryListener {
+        void onCategoryDetermined(String category, Object extra);
     }
 }

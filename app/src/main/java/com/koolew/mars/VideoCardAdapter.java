@@ -23,6 +23,7 @@ import com.koolew.mars.danmaku.DanmakuItemInfo;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.infos.BaseVideoInfo;
+import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.player.ScrollPlayer;
 import com.koolew.mars.utils.Utils;
@@ -57,6 +58,7 @@ public class VideoCardAdapter extends BaseAdapter {
 
     protected TextView mTitleText;
     protected String mTopicTitle;
+    protected MovieTopicInfo mMovieInfo;
 
     private OnDanmakuSendListener mDanmakuSendListener;
     private OnKooClickListener mKooClickListener;
@@ -75,6 +77,10 @@ public class VideoCardAdapter extends BaseAdapter {
         if (mTitleText != null) {
             mTitleText.setText(mTopicTitle);
         }
+    }
+
+    public void setMovieInfo(MovieTopicInfo movieInfo) {
+        mMovieInfo = movieInfo;
     }
 
     public void setData(JSONArray videos) {
@@ -352,6 +358,7 @@ public class VideoCardAdapter extends BaseAdapter {
             else {
                 videoDate = videoDate1;
             }
+            convertView.findViewById(R.id.btn_act).setOnClickListener(this);
             kooAndCommentCount = (TextView) convertView.findViewById(R.id.koo_and_comment_count);
             kooAndCommentCount.setOnClickListener(this);
             danmakuSendLayout = (LinearLayout) convertView.findViewById(R.id.danmaku_send_layout);
@@ -394,6 +401,12 @@ public class VideoCardAdapter extends BaseAdapter {
                 String videoId = getItemData(position).getVideoId();
                 Intent intent = new Intent(mContext, CheckDanmakuActivity.class);
                 intent.putExtra(CheckDanmakuActivity.KEY_VIDEO_ID, videoId);
+                mContext.startActivity(intent);
+            }
+            else if (v.getId() == R.id.btn_act) {
+                Intent intent = new Intent(mContext, MovieStudioActivity.class);
+                intent.putExtra(MovieStudioActivity.KEY_MOVIE_TOPIC_INFO, mMovieInfo);
+                intent.putExtra(MovieStudioActivity.KEY_MOVIE_URL, getItemData(position).getVideoUrl());
                 mContext.startActivity(intent);
             }
         }

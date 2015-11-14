@@ -133,8 +133,8 @@ public class Utils {
                 + (useBeforeTimestamp ? 0 : nanoSecondPerFrame);
     }
 
-    public static void splitVideo(String originPath, long[] splitPoint, String[] splitedFiles) {
-        if (splitPoint.length + 1 != splitedFiles.length) {
+    public static void splitVideoByFrame(String originPath, int[] splitFrame, String[] dstFiles) {
+        if (splitFrame.length != dstFiles.length) {
             throw new RuntimeException("params error");
         }
 
@@ -144,10 +144,10 @@ public class Utils {
         } catch (FrameGrabber.Exception e) {
             e.printStackTrace();
         }
-        int imageFrameCount = 0;
-        Log.d("stdzhu", "frame rate: " + grabber.getFrameRate() + ", length: " + grabber.getLengthInTime());
-        for (int i = 0; i < splitedFiles.length; i++) {
-            String dstFile = splitedFiles[i];
+        int imageFrameIndex = 0;
+        Log.d("stdzhu", "frame rate: " + grabber.getFrameRate() + ", frameCount: " + grabber.getLengthInFrames());
+        for (int i = 0; i < dstFiles.length; i++) {
+            String dstFile = dstFiles[i];
             MyFFmpegFrameRecorder recorder = new MyFFmpegFrameRecorder(dstFile,
                     grabber.getImageWidth(), grabber.getImageHeight(), grabber.getAudioChannels());
             recorder.setFormat(OUTPUT_FORMAT);
@@ -164,15 +164,9 @@ public class Utils {
                 e.printStackTrace();
             }
 
-            long endPosition;
-            if (i == splitedFiles.length - 1) {
-                endPosition = Integer.MAX_VALUE;
-            }
-            else {
-                endPosition = splitPoint[i];
-            }
+            int endFrame = splitFrame[i];
             while (true) {
-                if (getRealTimeStamp(grabber, imageFrameCount) >= endPosition * 1000) {
+                if (imageFrameIndex > endFrame) {
                     break;
                 }
                 try {
@@ -180,16 +174,13 @@ public class Utils {
                     if (frame == null) {
                         break;
                     }
-                    Log.d("stdzhu", "timestamp: " + getRealTimeStamp(grabber, imageFrameCount));
+                    Log.d("stdzhu", "frame: " + imageFrameIndex);
                     if (frame.image != null) {
-                        Log.d("stdzhu", "image frame timestamp: " + getRealTimeStamp(grabber, imageFrameCount));
-                        recorder.setTimestamp(getRealTimeStamp(grabber, imageFrameCount));
-                        imageFrameCount++;
+                        Log.d("stdzhu", "image: " + imageFrameIndex);
+                        imageFrameIndex++;
+                        recorder.record(frame);
                     }
-                    recorder.record(frame);
-                } catch (FrameRecorder.Exception e) {
-                    e.printStackTrace();
-                } catch (FrameGrabber.Exception e) {
+                } catch (FrameRecorder.Exception | FrameGrabber.Exception e) {
                     e.printStackTrace();
                 }
             }

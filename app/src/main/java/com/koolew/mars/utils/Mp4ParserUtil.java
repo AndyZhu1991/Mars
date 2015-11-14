@@ -261,17 +261,12 @@ public class Mp4ParserUtil {
             }
         }
         long firstPoint = 0;
-        long lastPoint = audioTrack.getDuration();
         long startPoint;
         long endPoint;
-        for (int i = 0; i <= clipPoints.length; i++) {
+        for (int i = 0; i < clipPoints.length; i++) {
             if (i == 0) {
                 startPoint = firstPoint;
                 endPoint = clipPoints[i];
-            }
-            else if (i == clipPoints.length) {
-                startPoint = clipPoints[i - 1];
-                endPoint = lastPoint;
             }
             else {
                 startPoint = clipPoints[i - 1];

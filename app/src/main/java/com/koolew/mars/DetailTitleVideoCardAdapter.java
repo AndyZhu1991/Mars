@@ -8,9 +8,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.koolew.mars.imageloader.ImageLoaderHelper;
-import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.infos.KooCountUserInfo;
+import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.utils.JsonUtil;
 import com.koolew.mars.view.KoolewVideoView;
@@ -28,7 +28,7 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
     private TopicTitleDetail topicTitleDetail;
     protected String mTopicId;
 
-    private MovieInfo mMovieInfo;
+    private MovieDetailInfo mMovieDetailInfo;
     private OnTitleVideoListener mTitleVideoListener;
     private KoolewVideoView mVideoView;
     private View mPlayImage;
@@ -147,11 +147,11 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
         mVideoView.setOnClickListener(this);
         mPlayImage = convertView.findViewById(R.id.play_image);
 
-        ((TextView) convertView.findViewById(R.id.title)).setText(mMovieInfo.getTitle());
+        ((TextView) convertView.findViewById(R.id.title)).setText(mMovieDetailInfo.getTitle());
         ((TextView) convertView.findViewById(R.id.video_count)).setText(
-                mContext.getString(R.string.video_count_label, mMovieInfo.getVideoCount()));
+                mContext.getString(R.string.video_count_label, mMovieDetailInfo.getVideoCount()));
         ((TextView) convertView.findViewById(R.id.stars_rank_title)).setText(
-                mContext.getString(R.string.stars_rank, mMovieInfo.topStars.length));
+                mContext.getString(R.string.stars_rank, mMovieDetailInfo.topStars.length));
 
         int starsAvatarRes[] = new int[] {
                 R.id.first_koo,
@@ -162,8 +162,8 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
         };
         for (int i = 0; i < starsAvatarRes.length; i++) {
             ImageView avatar = (ImageView) convertView.findViewById(starsAvatarRes[i]);
-            if (i < mMovieInfo.topStars.length) {
-                ImageLoader.getInstance().displayImage(mMovieInfo.topStars[i].getAvatar(), avatar,
+            if (i < mMovieDetailInfo.topStars.length) {
+                ImageLoader.getInstance().displayImage(mMovieDetailInfo.topStars[i].getAvatar(), avatar,
                         ImageLoaderHelper.avatarLoadOptions);
             }
             else {
@@ -197,14 +197,15 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
         this.topicTitleDetail = topicTitleDetail;
     }
 
-    public void setMovieInfo(MovieInfo movieInfo) {
-        mMovieInfo = movieInfo;
+    public void setMovieDetail(MovieDetailInfo movieDetailInfo) {
+        super.setMovieInfo(movieDetailInfo);
+        mMovieDetailInfo = movieDetailInfo;
         setupVideoView();
     }
 
     private void setupVideoView() {
-        if (mMovieInfo != null && mVideoView != null) {
-            mVideoView.setVideoInfo(mMovieInfo.movieUrl, mMovieInfo.movieThumb);
+        if (mMovieDetailInfo != null && mVideoView != null) {
+            mVideoView.setVideoInfo(mMovieDetailInfo.getVideoUrl(), mMovieDetailInfo.getThumbnail());
         }
     }
 
@@ -290,18 +291,20 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
             this.title = title;
         }
 
+        public String getTitle() {
+            return title;
+        }
+
         public void setVideoCount(int videoCount) {
             this.videoCount = videoCount;
         }
     }
 
-    public static class MovieInfo extends BaseTopicInfo {
+    public static class MovieDetailInfo extends MovieTopicInfo {
 
         private BaseUserInfo[] topStars;
-        private String movieUrl;
-        private String movieThumb;
 
-        public MovieInfo(JSONObject jsonObject) {
+        public MovieDetailInfo(JSONObject jsonObject) {
             super(jsonObject);
 
             JSONArray kooRanks = JsonUtil.getJSONArrayIfHas(jsonObject, "koo_ranks");
@@ -314,11 +317,6 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
                     e.printStackTrace();
                 }
             }
-
-            JSONObject movieAttr = JsonUtil.getJSONObjectIfHas(jsonObject, "attri");
-            JSONObject movie = JsonUtil.getJSONObjectIfHas(movieAttr, "movie");
-            movieUrl = JsonUtil.getStringIfHas(movie, "video_url");
-            movieThumb = JsonUtil.getStringIfHas(movie, "thumbnail");
         }
     }
 

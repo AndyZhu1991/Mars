@@ -38,6 +38,12 @@ import java.util.TimerTask;
  */
 public class Utils {
 
+    private static Context context;
+
+    public static void init(Context context) {
+        Utils.context = context;
+    }
+
     public static float getScreenWidthDp(Context context) {
         return pixelsToDp(context, getScreenWidthPixel(context));
     }
@@ -78,6 +84,10 @@ public class Utils {
 
     public static String getCacheDir(Context context) {
         return context.getExternalCacheDir().getAbsolutePath() + "/";
+    }
+
+    public static String getCacheDir() {
+        return getCacheDir(context);
     }
 
     public static void showSoftKeyInput(final EditText editText, int delay) {

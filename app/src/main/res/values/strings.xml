@@ -435,8 +435,9 @@
     <!-- For movie list -->
     <string name="movie_type_string">对 戏</string>
 
-    <!-- For VideoCardAdapter -->
+    <!-- For Movie -->
     <string name="act_together">一起演</string>
+    <string name="i_will_act">我要演</string>
 
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>

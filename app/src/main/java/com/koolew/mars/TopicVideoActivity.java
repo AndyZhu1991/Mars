@@ -6,8 +6,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.view.KoolewViewPagerIndicator;
 import com.koolew.mars.view.TitleBarView;
@@ -17,7 +21,8 @@ import java.util.List;
 
 public abstract class TopicVideoActivity extends BaseV4FragmentActivity
         implements KoolewViewPagerIndicator.OnBackgroundColorChangedListener,
-        BaseVideoListFragment.TopicInfoInterface, View.OnClickListener {
+        BaseVideoListFragment.TopicInfoInterface, View.OnClickListener,
+        DetailTitleVideoListFragment.OnTopicCategoryListener {
 
     public static final String KEY_TOPIC_ID = BaseVideoListFragment.KEY_TOPIC_ID;
     public static final String KEY_TOPIC_TITLE = BaseVideoListFragment.KEY_TOPIC_TITLE;
@@ -33,6 +38,14 @@ public abstract class TopicVideoActivity extends BaseV4FragmentActivity
     protected KoolewViewPagerIndicator mViewPagerIndicator;
     protected ViewPager mViewPager;
     protected TopicVideoPagerAdapter mAdapter;
+
+    protected String mCategory;
+    protected MovieTopicInfo mMovieInfo;
+
+    protected View mBottomBtnLayout;
+    protected View mCaptureBtn;
+    protected ImageView mCaptureIcon;
+    protected TextView mCaptureText;
 
     protected int mLayoutResId = R.layout.activity_topic_video;
 
@@ -61,7 +74,11 @@ public abstract class TopicVideoActivity extends BaseV4FragmentActivity
         mViewPagerIndicator.setViewPager(mViewPager, pageColors);
         mViewPagerIndicator.setOnBackgroundColorChangedListener(this);
 
-        findViewById(R.id.capture).setOnClickListener(this);
+        mBottomBtnLayout = findViewById(R.id.bottom_button_layout);
+        mCaptureBtn = findViewById(R.id.capture);
+        mCaptureBtn.setOnClickListener(this);
+        mCaptureIcon = (ImageView) findViewById(R.id.capture_icon);
+        mCaptureText = (TextView) findViewById(R.id.capture_text);
         findViewById(R.id.invite).setOnClickListener(this);
     }
 
@@ -85,10 +102,44 @@ public abstract class TopicVideoActivity extends BaseV4FragmentActivity
         return topicId;
     }
 
+    @Override
+    public void onCategoryDetermined(String category, Object extra) {
+        mCategory = category;
+        if ("movie".equals(category)) {
+            mCaptureBtn.setBackgroundResource(R.drawable.btn_act_movie_bg);
+            mCaptureIcon.setImageResource(R.mipmap.ic_act);
+            mCaptureText.setText(R.string.i_will_act);
+            mCaptureText.setShadowLayer(mCaptureText.getShadowRadius(),
+                    mCaptureText.getShadowDx(), mCaptureText.getShadowDy(), 0xFF7351E8);
+            mMovieInfo = (MovieTopicInfo) extra;
+        }
+        else {
+            if (TextUtils.isEmpty(topicTitle)) {
+                topicTitle = (String) extra;
+            }
+        }
+        mBottomBtnLayout.setVisibility(View.VISIBLE);
+    }
+
     protected void onCapture() {
+        if ("movie".equals(mCategory)) {
+            startMovieStudioActivity();
+        }
+        else {
+            startVideoShootActivity();
+        }
+    }
+
+    protected void startVideoShootActivity() {
         Intent intent = new Intent(this, VideoShootActivity.class);
         intent.putExtra(VideoShootActivity.KEY_TOPIC_ID, topicId);
         intent.putExtra(VideoShootActivity.KEY_TOPIC_TITLE, topicTitle);
+        startActivity(intent);
+    }
+
+    protected void startMovieStudioActivity() {
+        Intent intent = new Intent(this, MovieStudioActivity.class);
+        intent.putExtra(MovieStudioActivity.KEY_MOVIE_TOPIC_INFO, mMovieInfo);
         startActivity(intent);
     }
 

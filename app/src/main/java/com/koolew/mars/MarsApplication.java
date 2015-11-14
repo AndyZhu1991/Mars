@@ -9,6 +9,7 @@ import android.util.Log;
 import com.koolew.mars.imageloader.VideoThumbDecoder;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.utils.BgmUtil;
+import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -37,6 +38,7 @@ public class MarsApplication extends Application {
 
         long start = System.currentTimeMillis();
 
+        Utils.init(this);
         ApiWorker.init(getApplicationContext());
         initImageLoader(getApplicationContext());
         MyAccountInfo.init(getApplicationContext());

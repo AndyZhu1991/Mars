@@ -7,7 +7,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -21,7 +20,10 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.koolew.mars.infos.MovieTopicInfo;
+import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
+import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.videotools.BlockingRecycleQueue;
@@ -32,21 +34,23 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_imgproc;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MovieStudioActivity extends AppCompatActivity
+public class MovieStudioActivity extends BaseActivity
         implements CameraPreviewFragment.FrameListener, View.OnClickListener {
+
+    public static final String KEY_MOVIE_TOPIC_INFO = "movie topic info";
+    public static final String KEY_MOVIE_URL = "movie url";
 
     private static final int MOVIE_CONTENT_WIDTH = 480;
     private static final int MOVIE_CONTENT_HEIGHT = 270;
 
+    private String movieUrl;
     private String originVideoPath;
 
     private View mFragmentContainer;
@@ -70,6 +74,7 @@ public class MovieStudioActivity extends AppCompatActivity
 
     private MovieStudioItemAdapter mAdapter;
 
+    private MovieTopicInfo mMovieTopicInfo;
     private String mWorkDir;
 
     @Override
@@ -81,40 +86,14 @@ public class MovieStudioActivity extends AppCompatActivity
 
         initWorkDir();
 
-        originVideoPath = "/sdcard/007.mp4";
+        mMovieTopicInfo = (MovieTopicInfo) getIntent().getSerializableExtra(KEY_MOVIE_TOPIC_INFO);
+        movieUrl = getIntent().getExtras().getString(KEY_MOVIE_URL, mMovieTopicInfo.getVideoUrl());
 
-        List<String> strings = readFileByLines("/sdcard/007.txt");
-        long[] splitPoints = new long[strings.size()];
+        int[] splitPoints = new int[mMovieTopicInfo.getFragments().length];
         for (int i = 0; i < splitPoints.length; i++) {
-            splitPoints[i] = Long.valueOf(strings.get(i));
+            splitPoints[i] = mMovieTopicInfo.getFragments()[i].getEnd();
         }
-        new CutVideoTask(originVideoPath, splitPoints).execute();
-    }
-
-    public static List<String> readFileByLines(String fileName) {
-        List<String> strings = new ArrayList<>();
-        File file = new File(fileName);
-        BufferedReader reader = null;
-        try {
-            System.out.println("以行为单位读取文件内容，一次读一整行：");
-            reader = new BufferedReader(new FileReader(file));
-            String tempString = null;
-            // 一次读入一行，直到读入null为文件结束
-            while ((tempString = reader.readLine()) != null) {
-                strings.add(tempString);
-            }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e1) {
-                }
-            }
-        }
-        return strings;
+        new CutVideoTask(splitPoints).execute();
     }
 
     private void initViews() {
@@ -463,14 +442,12 @@ public class MovieStudioActivity extends AppCompatActivity
     }
 
     class CutVideoTask extends AsyncTask<Void, String, Void> {
-        private String originVideoPath;
         private long originVideoLenMillis;
-        private long[] splitPoints;
+        private int[] splitPoints;
         private String splitedFiles[];
         private Dialog cuttingDialog;
 
-        public CutVideoTask(String originVideoPath, long... cutPositions) {
-            this.originVideoPath = originVideoPath;
+        public CutVideoTask(int... cutPositions) {
             this.splitPoints = cutPositions;
             cuttingDialog = DialogUtil.getGeneralProgressDialog(
                     MovieStudioActivity.this, R.string.cutting_video);
@@ -483,28 +460,33 @@ public class MovieStudioActivity extends AppCompatActivity
 
         @Override
         protected Void doInBackground(Void... params) {
+            originVideoPath = DownloadSynced(movieUrl);
             try {
                 originVideoLenMillis = (long) (Mp4ParserUtil.getDuration(originVideoPath) * 1000);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            String[] tempFiles = new String[splitPoints.length + 1];
+            String[] tempFiles = new String[splitPoints.length];
             for (int i = 0; i < tempFiles.length; i++) {
                 tempFiles[i] = getTempVideoCutPath(i);
             }
-            com.koolew.mars.videotools.Utils.splitVideo(originVideoPath, splitPoints, tempFiles);
+            com.koolew.mars.videotools.Utils.splitVideoByFrame(originVideoPath, splitPoints, tempFiles);
 
             List<String> splitedAudioFiles = new ArrayList<>();
-            for (int i = 0; i < splitPoints.length + 1; i++) {
+            for (int i = 0; i < splitPoints.length; i++) {
                 splitedAudioFiles.add(getAudioCutPath(i));
             }
             try {
-                Mp4ParserUtil.splitAudioTrack(originVideoPath, splitedAudioFiles, splitPoints);
+                long[] splitPointInMs = new long[splitPoints.length];
+                for (int i = 0; i < splitPointInMs.length; i++) {
+                    splitPointInMs[i] = splitPoints[i] * (1000 / 25);
+                }
+                Mp4ParserUtil.splitAudioTrack(originVideoPath, splitedAudioFiles, splitPointInMs);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            splitedFiles = new String[splitPoints.length + 1];
+            splitedFiles = new String[splitPoints.length];
             for (int i = 0; i < splitedFiles.length; i++) {
                 splitedFiles[i] = getVideoCutPath(i);
                 try {
@@ -515,6 +497,13 @@ public class MovieStudioActivity extends AppCompatActivity
             }
 
             return null;
+        }
+
+        private String DownloadSynced(String url) {
+            Downloader downloader = new Downloader();
+            Downloader.DownloadFuture future = new Downloader.DownloadFuture();
+            downloader.download(future, url);
+            return future.download();
         }
 
         private String getTempVideoCutPath(int index) {

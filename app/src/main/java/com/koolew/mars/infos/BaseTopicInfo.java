@@ -19,6 +19,7 @@ public class BaseTopicInfo implements Serializable {
     public static final String KEY_VIDEO_COUNT = "video_cnt";
     public static final String KEY_THUMB = "thumb_url";
     public static final String KEY_UPDATE_TIME = "update_time";
+    public static final String KEY_ATTR = "attri";
 
     protected String topicId;
     protected String title;
