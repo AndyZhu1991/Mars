@@ -314,6 +314,11 @@ public class ApiWorker {
         return standardGetRequestSync(UrlHelper.REQUEST_QINIU_VIDEO_TOKEN_URL);
     }
 
+    public JSONObject requestQiniuMovieTokenSync()
+            throws InterruptedException, ExecutionException, TimeoutException {
+        return standardGetRequestSync(UrlHelper.REQUEST_QINIU_MOVIE_TOKEN_URL);
+    }
+
     public JsonObjectRequest requestWorldHotTopic(Response.Listener<JSONObject> listener,
                                                   Response.ErrorListener errorListener) {
         return standardGetRequest(UrlHelper.REQUEST_WORLD_HOT_URL, listener, errorListener);

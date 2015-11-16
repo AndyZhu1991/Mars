@@ -12,7 +12,8 @@ import com.koolew.mars.view.TitleBarView;
 
 public class UserTopicActivity extends BaseV4FragmentActivity
         implements TitleBarView.OnRightLayoutClickListener,
-        BaseVideoListFragment.TopicInfoInterface {
+        BaseVideoListFragment.TopicInfoInterface,
+        DetailTitleVideoListFragment.OnTopicCategoryListener {
 
     public static final String KEY_TOPIC_ID = BaseVideoListFragment.KEY_TOPIC_ID;
     public static final String KEY_UID = UserVideoListFragment.KEY_UID;
@@ -58,5 +59,9 @@ public class UserTopicActivity extends BaseV4FragmentActivity
     @Override
     public String getTopicId() {
         return topicId;
+    }
+
+    @Override
+    public void onCategoryDetermined(String category, Object extra) {
     }
 }

@@ -106,15 +106,11 @@ public class KoolewNewsFragment extends BaseLazyListFragment
             setupAdapter();
             mRefreshRequest = null;
             JSONObject result = response.getJSONObject("result");
-            JSONArray recommends = null;
             JSONArray cards = null;
-            if (result.has("hot_cards")) {
-                recommends = result.getJSONArray("hot_cards");
-            }
             if (result.has("cards")) {
                 cards = response.getJSONObject("result").getJSONArray("cards");
             }
-            mAdapter.setData(recommends, cards);
+            mAdapter.setData(cards);
             mAdapter.notifyDataSetChanged();
             mScrollPlayer.onListRefresh();
             return cards.length() > 0;

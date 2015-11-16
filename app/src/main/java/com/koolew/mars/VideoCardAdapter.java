@@ -404,9 +404,11 @@ public class VideoCardAdapter extends BaseAdapter {
                 mContext.startActivity(intent);
             }
             else if (v.getId() == R.id.btn_act) {
+                BaseVideoInfo videoInfo = getItemData(position);
                 Intent intent = new Intent(mContext, MovieStudioActivity.class);
                 intent.putExtra(MovieStudioActivity.KEY_MOVIE_TOPIC_INFO, mMovieInfo);
-                intent.putExtra(MovieStudioActivity.KEY_MOVIE_URL, getItemData(position).getVideoUrl());
+                intent.putExtra(MovieStudioActivity.KEY_MOVIE_URL, videoInfo.getVideoUrl());
+                intent.putExtra(MovieStudioActivity.KEY_FROM, videoInfo.getUserInfo().getUid());
                 mContext.startActivity(intent);
             }
         }

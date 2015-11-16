@@ -174,13 +174,15 @@ public class Utils {
                     if (frame == null) {
                         break;
                     }
-                    Log.d("stdzhu", "frame: " + imageFrameIndex);
+                    Log.d("stdzhu", "timestamp: " + getRealTimeStamp(grabber, imageFrameIndex));
                     if (frame.image != null) {
                         Log.d("stdzhu", "image: " + imageFrameIndex);
                         imageFrameIndex++;
                         recorder.record(frame);
                     }
-                } catch (FrameRecorder.Exception | FrameGrabber.Exception e) {
+                } catch (FrameRecorder.Exception e) {
+                    e.printStackTrace();
+                } catch (FrameGrabber.Exception e) {
                     e.printStackTrace();
                 }
             }

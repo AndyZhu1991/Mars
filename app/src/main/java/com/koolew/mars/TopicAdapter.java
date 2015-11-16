@@ -49,10 +49,9 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
         mData = new ArrayList<TopicItem>();
     }
 
-    public void setData(JSONArray recommends, JSONArray cards) {
+    public void setData(JSONArray cards) {
         mData.clear();
-        addData(recommends, true);
-        addData(cards, false);
+        addData(cards);
     }
 
     public void setCards(JSONArray cards) {
@@ -61,10 +60,10 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
     }
 
     public int addCards(JSONArray cards) {
-        return addData(cards, false);
+        return addData(cards);
     }
 
-    private int addData(JSONArray jsonArray, boolean isRecommend) {
+    private int addData(JSONArray jsonArray) {
         if (jsonArray == null) {
             return 0;
         }
@@ -73,7 +72,6 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
         try {
             for (int i = 0; i < length; i++) {
                 TopicItem topicItem = jsonObject2TopicItem(jsonArray.getJSONObject(i));
-                topicItem.isRecommend = isRecommend;
                 mData.add(topicItem);
             }
         } catch (JSONException e) {
@@ -127,7 +125,7 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
             holder.partersLayout = (LinearLayout) convertView.findViewById(R.id.parters_layout);
             holder.partersArrow = (ImageView) convertView.findViewById(R.id.parters_arrow);
             holder.progressBar = (ProgressBar) convertView.findViewById(R.id.progress);
-            holder.recommendLabel = (ImageView) convertView.findViewById(R.id.recommend_label);
+            holder.cornerIcon = (ImageView) convertView.findViewById(R.id.corner_icon);
             holder.parters = new CircleImageView[getMaxShowTopicParterCount()];
             for (int i = 0; i < holder.parters.length; i++) {
                 CircleImageView avatar = new CircleImageView(mContext);
@@ -154,11 +152,11 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
         holder.videoCount.setText(
                 mContext.getString(R.string.video_count_label, topicItem.getVideoCount()));
         holder.progressBar.setVisibility(View.INVISIBLE);
-        if (topicItem.isRecommend) {
-            holder.recommendLabel.setVisibility(View.VISIBLE);
+        if ("movie".equals(topicItem.getCategory())) {
+            holder.cornerIcon.setVisibility(View.VISIBLE);
         }
         else {
-            holder.recommendLabel.setVisibility(View.INVISIBLE);
+            holder.cornerIcon.setVisibility(View.INVISIBLE);
         }
 
         if (holder.parters != null && holder.parters.length != 0 &&
@@ -231,7 +229,6 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
 
         protected String videoUrl;
         protected UserInfo[] parters;
-        protected boolean isRecommend;
 
         public TopicItem(JSONObject jsonObject) {
             super(jsonObject);
@@ -294,7 +291,7 @@ public abstract class TopicAdapter extends BaseAdapter implements View.OnClickLi
         CircleImageView[] parters;
         ImageView partersArrow;
         ProgressBar progressBar;
-        ImageView recommendLabel;
+        ImageView cornerIcon;
     }
 
     public class TopicScrollPlayer extends ScrollPlayer {

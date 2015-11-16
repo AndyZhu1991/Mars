@@ -2,6 +2,7 @@ package com.koolew.mars;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.statistics.BaseActivity;
@@ -35,6 +37,7 @@ import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_imgproc;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,9 +49,12 @@ public class MovieStudioActivity extends BaseActivity
 
     public static final String KEY_MOVIE_TOPIC_INFO = "movie topic info";
     public static final String KEY_MOVIE_URL = "movie url";
+    public static final String KEY_FROM = "from";
 
     private static final int MOVIE_CONTENT_WIDTH = 480;
     private static final int MOVIE_CONTENT_HEIGHT = 270;
+
+    private static final int REQUEST_CODE_UPLOAD_VIDEO = 1;
 
     private String movieUrl;
     private String originVideoPath;
@@ -68,7 +74,10 @@ public class MovieStudioActivity extends BaseActivity
     private static final int STATUS_RECAPTURE = 2;
     private int captureButtonStatus = STATUS_CAPTURE;
 
-    private TextView mNextStep;
+    private View mDeleteView;
+    private ImageView mDeleteImage;
+    private View mNextView;
+    private ImageView mNextImage;
 
     private ImageOnlyRecorder mRecorder;
 
@@ -76,6 +85,7 @@ public class MovieStudioActivity extends BaseActivity
 
     private MovieTopicInfo mMovieTopicInfo;
     private String mWorkDir;
+    private String mFrom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,12 +98,13 @@ public class MovieStudioActivity extends BaseActivity
 
         mMovieTopicInfo = (MovieTopicInfo) getIntent().getSerializableExtra(KEY_MOVIE_TOPIC_INFO);
         movieUrl = getIntent().getExtras().getString(KEY_MOVIE_URL, mMovieTopicInfo.getVideoUrl());
+        mFrom = getIntent().getExtras().getString(KEY_FROM, "");
 
         int[] splitPoints = new int[mMovieTopicInfo.getFragments().length];
         for (int i = 0; i < splitPoints.length; i++) {
             splitPoints[i] = mMovieTopicInfo.getFragments()[i].getEnd();
         }
-        new CutVideoTask(splitPoints).execute();
+        new CutVideoTask().execute();
     }
 
     private void initViews() {
@@ -134,8 +145,12 @@ public class MovieStudioActivity extends BaseActivity
         mCaptureButton.setOnClickListener(this);
         mCaptureText = (TextView) findViewById(R.id.capture_text);
 
-        mNextStep = (TextView) findViewById(R.id.next_step);
-
+        mDeleteView = findViewById(R.id.delete_view);
+        mDeleteView.setOnClickListener(this);
+        mDeleteImage = (ImageView) findViewById(R.id.delete_image);
+        mNextView = findViewById(R.id.next_step);
+        mNextView.setOnClickListener(this);
+        mNextImage = (ImageView) findViewById(R.id.next_image);
     }
 
     @Override
@@ -180,6 +195,9 @@ public class MovieStudioActivity extends BaseActivity
             case R.id.capture:
                 onCaptureClick();
                 break;
+            case R.id.delete_view:
+                onDeleteClick();
+                break;
             case R.id.next_step:
                 onNextStep();
                 break;
@@ -217,8 +235,35 @@ public class MovieStudioActivity extends BaseActivity
         }
     }
 
+    public void onDeleteClick() {
+        if (!TextUtils.isEmpty(mAdapter.getCurrentSelectedItem().capturedVideoPath)) {
+            mAdapter.getCurrentSelectedItem().capturedVideoPath = null;
+            mAdapter.notifyItemChanged(mAdapter.selectedPosition);
+            if (!hasUserCapturedPiece()) {
+                mNextImage.setImageResource(R.mipmap.video_complete_disable);
+            }
+        }
+        else {
+            Toast.makeText(this, R.string.no_movie_piece_hint, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public void onNextStep() {
-        new NextStepTask().execute();
+        if (hasUserCapturedPiece()) {
+            new NextStepTask().execute();
+        }
+        else {
+            // TODO: Show a toast
+        }
+    }
+
+    private boolean hasUserCapturedPiece() {
+        for (MovieStudioItem item: mAdapter.items) {
+            if (!TextUtils.isEmpty(item.capturedVideoPath)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void doStartCapture() {
@@ -274,9 +319,6 @@ public class MovieStudioActivity extends BaseActivity
         }
     }
 
-    public void doNothing(View v) {
-    }
-
     private String getVideoCutPath(int index) {
         return mWorkDir + "origin-" + index + ".mp4";
     }
@@ -301,6 +343,10 @@ public class MovieStudioActivity extends BaseActivity
         return mWorkDir + "final.mp4";
     }
 
+    private String getThumbPath() {
+        return mWorkDir + "thumb.jpg";
+    }
+
     private void changeCheckedItem(int position) {
         if (mAdapter.selectedPosition != position) {
             int originSelectedPos = mAdapter.selectedPosition;
@@ -309,9 +355,11 @@ public class MovieStudioActivity extends BaseActivity
             mAdapter.notifyItemChanged(mAdapter.selectedPosition);
             if (mAdapter.getCurrentSelectedItem().capturedVideoPath == null) {
                 switchCaptureButtonStatus(STATUS_CAPTURE);
+                mDeleteImage.setImageResource(R.mipmap.image_remove_disable);
             }
             else {
                 switchCaptureButtonStatus(STATUS_RECAPTURE);
+                mDeleteImage.setImageResource(R.mipmap.image_remove_enable);
             }
         }
         mRecyclerView.scrollToPosition(position);
@@ -387,7 +435,8 @@ public class MovieStudioActivity extends BaseActivity
             mAdapter.getCurrentSelectedItem().capturedVideoPath = filePath;
             mAdapter.getCurrentSelectedItem().status = STATUS_DONE;
             mAdapter.notifyItemChanged(mAdapter.selectedPosition);
-            mNextStep.setVisibility(View.VISIBLE);
+            mDeleteImage.setImageResource(R.mipmap.image_remove_enable);
+            mNextImage.setImageResource(R.mipmap.video_complete_enable);
             switchCaptureButtonStatus(STATUS_RECAPTURE);
             mBlockTouchView.setVisibility(View.INVISIBLE);
             super.onPostExecute(filePath);
@@ -409,46 +458,101 @@ public class MovieStudioActivity extends BaseActivity
         }
     }
 
-    class NextStepTask extends DialogUtil.AsyncTaskWithDialog<Void, Void, Void> {
+    class NextStepTask extends DialogUtil.AsyncTaskWithDialog<Void, Void, Boolean> {
         public NextStepTask() {
             super(MovieStudioActivity.this);
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
             List<String> videoList = new ArrayList<>();
             for (int i = 0; i < mAdapter.items.size(); i++) {
                 videoList.add(mAdapter.items.get(i).getVideoPath());
             }
             try {
+                if (TextUtils.isEmpty(generateThumb())) {
+                    return false;
+                }
                 Mp4ParserUtil.mp4Cat(videoList, getConcatedVideoPath());
                 Mp4ParserUtil.setVideoBgm(getConcatedVideoPath(), originVideoPath,
-                        getAudioedVideoPath(), false);
-                Mp4ParserUtil.setSubtitle(getAudioedVideoPath(), originVideoPath,
-                        getFinalVideoPath());
+                        getFinalVideoPath(), false);
+//                Mp4ParserUtil.setSubtitle(getAudioedVideoPath(), originVideoPath,
+//                        getFinalVideoPath());
+                return true;
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+            return false;
+        }
+
+        public String generateThumb() {
+            String firstUserCaptureVideo = null;
+            for (MovieStudioItem item: mAdapter.items) {
+                if (!TextUtils.isEmpty(item.capturedVideoPath)) {
+                    firstUserCaptureVideo = item.capturedVideoPath;
+                    break;
+                }
+            }
+            if (TextUtils.isEmpty(firstUserCaptureVideo)) {
+                return null;
+            }
+            String thumbPath = getThumbPath();
+            Bitmap thumbBmp = ImageLoader.getInstance()
+                    .loadImageSync("file://" + firstUserCaptureVideo);
+            File f = new File(thumbPath);
+            if (f.exists()) {
+                f.delete();
+            }
+            try {
+                FileOutputStream out = new FileOutputStream(f);
+                thumbBmp.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                out.flush();
+                out.close();
+                return thumbPath;
+            } catch (Exception e) {
             }
             return null;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            Intent intent = new Intent(MovieStudioActivity.this, VideoEditActivity.class);
-            intent.putExtra(VideoEditActivity.KEY_CONCATED_VIDEO, getFinalVideoPath());
-            startActivity(intent);
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if (result) {
+                Intent intent = new Intent(MovieStudioActivity.this, VideoEditActivity.class);
+                intent.putExtra(VideoEditActivity.KEY_CONCATED_VIDEO, getFinalVideoPath());
+                intent.putExtra(VideoEditActivity.KEY_VIDEO_THUMB, getThumbPath());
+                intent.putExtra(VideoEditActivity.KEY_TOPIC_ID, mMovieTopicInfo.getTopicId());
+                intent.putExtra(VideoEditActivity.KEY_IS_MOVIE, true);
+                intent.putExtra(VideoEditActivity.KEY_FROM, mFrom);
+                startActivityForResult(intent, REQUEST_CODE_UPLOAD_VIDEO);
+            }
+            else {
+                Toast.makeText(MovieStudioActivity.this, R.string.there_is_an_error,
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_UPLOAD_VIDEO:
+                onResultUploadVideo(resultCode);
+                break;
+        }
+    }
+
+    private void onResultUploadVideo(int resultCode) {
+        if (resultCode == VideoEditActivity.RESULT_UPLOADED) {
+            onBackPressed();
         }
     }
 
     class CutVideoTask extends AsyncTask<Void, String, Void> {
-        private long originVideoLenMillis;
-        private int[] splitPoints;
         private String splitedFiles[];
         private Dialog cuttingDialog;
 
-        public CutVideoTask(int... cutPositions) {
-            this.splitPoints = cutPositions;
+        public CutVideoTask() {
             cuttingDialog = DialogUtil.getGeneralProgressDialog(
                     MovieStudioActivity.this, R.string.cutting_video);
         }
@@ -461,32 +565,32 @@ public class MovieStudioActivity extends BaseActivity
         @Override
         protected Void doInBackground(Void... params) {
             originVideoPath = DownloadSynced(movieUrl);
-            try {
-                originVideoLenMillis = (long) (Mp4ParserUtil.getDuration(originVideoPath) * 1000);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            String[] tempFiles = new String[splitPoints.length];
+            String[] tempFiles = new String[mMovieTopicInfo.getFragments().length];
             for (int i = 0; i < tempFiles.length; i++) {
                 tempFiles[i] = getTempVideoCutPath(i);
             }
-            com.koolew.mars.videotools.Utils.splitVideoByFrame(originVideoPath, splitPoints, tempFiles);
+            int[] endFramePoints = new int[mMovieTopicInfo.getFragments().length];
+            for (int i = 0; i < endFramePoints.length; i++) {
+                endFramePoints[i] = mMovieTopicInfo.getFragments()[i].getEnd();
+            }
+            com.koolew.mars.videotools.Utils.
+                    splitVideoByFrame(originVideoPath, endFramePoints, tempFiles);
 
             List<String> splitedAudioFiles = new ArrayList<>();
-            for (int i = 0; i < splitPoints.length; i++) {
+            for (int i = 0; i < endFramePoints.length; i++) {
                 splitedAudioFiles.add(getAudioCutPath(i));
             }
             try {
-                long[] splitPointInMs = new long[splitPoints.length];
+                long[] splitPointInMs = new long[endFramePoints.length];
                 for (int i = 0; i < splitPointInMs.length; i++) {
-                    splitPointInMs[i] = splitPoints[i] * (1000 / 25);
+                    splitPointInMs[i] = endFramePoints[i] * (1000 / AppProperty.RECORD_VIDEO_FPS);
                 }
                 Mp4ParserUtil.splitAudioTrack(originVideoPath, splitedAudioFiles, splitPointInMs);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            splitedFiles = new String[splitPoints.length];
+            splitedFiles = new String[endFramePoints.length];
             for (int i = 0; i < splitedFiles.length; i++) {
                 splitedFiles[i] = getVideoCutPath(i);
                 try {
@@ -513,17 +617,11 @@ public class MovieStudioActivity extends BaseActivity
         @Override
         protected void onPostExecute(Void aVoid) {
             for (int i = 0; i < splitedFiles.length; i++) {
-                long videoLenMillis;
-                if (i == 0) {
-                    videoLenMillis = splitPoints[0];
-                }
-                else if (i == splitedFiles.length - 1) {
-                    videoLenMillis = originVideoLenMillis - splitPoints[i - 1];
-                }
-                else {
-                    videoLenMillis = splitPoints[i] - splitPoints[i - 1];
-                }
-                mAdapter.items.add(new MovieStudioItem(splitedFiles[i], videoLenMillis));
+                MovieTopicInfo.MovieFragment movieFragment = mMovieTopicInfo.getFragments()[i];
+                int videoLenInFrames = movieFragment.getFrameCount();
+                long videoLenMillis = videoLenInFrames * (1000 / AppProperty.RECORD_VIDEO_FPS);
+                mAdapter.items.add(new MovieStudioItem(splitedFiles[i],
+                        movieFragment.getActorName(), videoLenMillis));
             }
             mAdapter.notifyItemRangeInserted(0, splitedFiles.length);
             cuttingDialog.dismiss();
@@ -535,12 +633,14 @@ public class MovieStudioActivity extends BaseActivity
     private static final int STATUS_DONE = 2;
     class MovieStudioItem {
         private String originalVideoPath;
+        private String actor;
         private long videoLen;
         private String capturedVideoPath = null;
         private int status = STATUS_ORIGIN_CUT;
 
-        public MovieStudioItem(String videoPath, long videoLen) {
+        public MovieStudioItem(String videoPath, String actor, long videoLen) {
             originalVideoPath = videoPath;
+            this.actor = actor;
             this.videoLen = videoLen;
         }
 
@@ -574,6 +674,7 @@ public class MovieStudioActivity extends BaseActivity
         public void onBindViewHolder(MovieStudioItemHolder holder, int position) {
             MovieStudioItem item = items.get(position);
 
+            holder.actorName.setText(item.actor);
             ImageLoader.getInstance().displayImage("file://" + item.getVideoPath(), holder.thumb);
 
             if (position == selectedPosition) {
@@ -685,6 +786,7 @@ public class MovieStudioActivity extends BaseActivity
     class MovieStudioItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             MediaPlayer.OnCompletionListener {
 
+        private TextView actorName;
         private TextureView playbackTexture;
         private MediaPlayer mediaPlayer;
         private ImageView thumb;
@@ -697,6 +799,7 @@ public class MovieStudioActivity extends BaseActivity
         public MovieStudioItemHolder(View itemView) {
             super(itemView);
 
+            actorName = (TextView) itemView.findViewById(R.id.actor_name);
             playbackTexture = (TextureView) itemView.findViewById(R.id.playback_texture);
             thumb = (ImageView) itemView.findViewById(R.id.video_thumb);
             borderView = itemView.findViewById(R.id.border_view);

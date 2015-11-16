@@ -59,6 +59,8 @@ public class VideoEditActivity extends BaseActivity
     public static final String KEY_VIDEO_THUMB = "video thumb";
     public static final String KEY_TOPIC_ID = "topic id";
     public static final String KEY_TOPIC_TITLE = "topic title";
+    public static final String KEY_IS_MOVIE = "is movie";
+    public static final String KEY_FROM = "from";
 
     private static final int NO_MUSIC_SELECTED = -1;
 
@@ -66,6 +68,8 @@ public class VideoEditActivity extends BaseActivity
     private String mVideoThumb;
     private String mTopicId;
     private String mTopicTitle;
+    private boolean isMovie;
+    private String mFrom;
     private BaseVideoInfo mUploadedVideo;
 
     private String mSelectedBgmPath;
@@ -99,6 +103,8 @@ public class VideoEditActivity extends BaseActivity
         mVideoThumb = getIntent().getStringExtra(KEY_VIDEO_THUMB);
         mTopicId = getIntent().getStringExtra(KEY_TOPIC_ID);
         mTopicTitle = getIntent().getStringExtra(KEY_TOPIC_TITLE);
+        isMovie = getIntent().getBooleanExtra(KEY_IS_MOVIE, false);
+        mFrom = getIntent().getStringExtra(KEY_FROM);
 
         initMembers();
 
@@ -127,6 +133,10 @@ public class VideoEditActivity extends BaseActivity
         mPrivacyLayout = (RelativeLayout) findViewById(R.id.privacy_layout);
         mPrivacyLayout.setOnClickListener(this);
         mAuthorityText = (TextView) findViewById(R.id.authority_text);
+
+        if (isMovie) {
+            findViewById(R.id.music_layout).setVisibility(View.GONE);
+        }
 
         mBgmSwitch = (ImageView) findViewById(R.id.bgm_switch);
         mBgmSwitch.setOnClickListener(this);
@@ -189,8 +199,14 @@ public class VideoEditActivity extends BaseActivity
 
             @Override
             protected Boolean doInBackground(String... params) {
-                mUploadedVideo = UploadHelper.uploadVideo(params[0], params[1],
-                        params[2], mAuthority);
+                if (isMovie) {
+                    mUploadedVideo = UploadHelper.uploadMovie(params[0], params[1],
+                            params[2], mAuthority, mFrom);
+                }
+                else {
+                    mUploadedVideo = UploadHelper.uploadVideo(params[0], params[1],
+                            params[2], mAuthority);
+                }
                 if (mUploadedVideo != null) {
                     BaseUserInfo userInfo = new BaseUserInfo(new JSONObject());
                     userInfo.setNickname(MyAccountInfo.getNickname());

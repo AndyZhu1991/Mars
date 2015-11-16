@@ -40,6 +40,7 @@ public class UrlHelper {
     public static final String REQUEST_QINIU_AVATAR_TOKEN_URL = V4_URL + "upload/token/qiniu?type=avatar";
     public static final String REQUEST_QINIU_THUMB_TOKEN_URL = V4_URL + "upload/token/qiniu?type=thumbnail";
     public static final String REQUEST_QINIU_VIDEO_TOKEN_URL = V4_URL + "upload/token/qiniu?type=video";
+    public static final String REQUEST_QINIU_MOVIE_TOKEN_URL = V4_URL + "upload/token/qiniu?type=movie";
 
     // Search
     private static final String SEARCH_USER_URL = V4_URL + "search/user";

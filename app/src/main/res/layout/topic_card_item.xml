@@ -96,6 +96,12 @@
                     android:layout_gravity="center"
                     android:indeterminate="true"
                     android:alpha="0.5"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_go_topic"/>
             </FrameLayout>
 
             <LinearLayout
@@ -112,12 +118,12 @@
     </FrameLayout>
 
     <ImageView
-        android:id="@+id/recommend_label"
+        android:id="@+id/corner_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="2dp"
         android:layout_marginTop="3dp"
-        android:src="@mipmap/recommend_topic_label"
+        android:src="@mipmap/ic_corner_act"
         android:visibility="invisible"/>
 
 </RelativeLayout>

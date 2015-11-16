@@ -1,5 +1,7 @@
 package com.koolew.mars.qiniu;
 
+import android.text.TextUtils;
+
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.utils.Mp4ParserUtil;
@@ -24,6 +26,39 @@ public class UploadHelper {
 
     public static BaseVideoInfo uploadVideo(String topicId, String videoPath, String thumbPath,
                                             int privacy) {
+        UploadFuture.UploadResponse uploadResponse =
+                uploadMp4(topicId, videoPath, thumbPath, privacy, false, null);
+        if (uploadResponse == null) {
+            return null;
+        }
+        try {
+            return new BaseVideoInfo(uploadResponse.getResponse()
+                    .getJSONObject("result").getJSONObject("video"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static BaseVideoInfo uploadMovie(String topicId, String videoPath, String thumbPath,
+                                            int privacy, String from) {
+        UploadFuture.UploadResponse uploadResponse =
+                uploadMp4(topicId, videoPath, thumbPath, privacy, true, from);
+        if (uploadResponse == null) {
+            return null;
+        }
+        try {
+            return new BaseVideoInfo(uploadResponse.getResponse()
+                    .getJSONObject("result").getJSONObject("video"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static UploadFuture.UploadResponse uploadMp4(String topicId, String videoPath,
+                                                         String thumbPath, int privacy,
+                                                         boolean isMovie, String from) {
         try {
             JSONObject thumbTokenJson = ApiWorker.getInstance().requestQiniuThumbTokenSync();
             String thumbToken = null;
@@ -39,29 +74,41 @@ public class UploadHelper {
                     new UploadOptions(null, null, false, null, null));
             UploadFuture.UploadResponse thumbResponse =  thumbFuture.upload();
 
-            JSONObject videoTokenJson = ApiWorker.getInstance().requestQiniuVideoTokenSync();
             String videoToken = null;
-            if (videoTokenJson.getInt("code") == 0) {
-                videoToken = videoTokenJson.getJSONObject("result").getString("video");
+            if (!isMovie) {
+                JSONObject videoTokenJson = ApiWorker.getInstance().requestQiniuVideoTokenSync();
+                if (videoTokenJson.getInt("code") == 0) {
+                    videoToken = videoTokenJson.getJSONObject("result").getString("video");
+                }
+            }
+            else {
+                JSONObject videoTokenJson = ApiWorker.getInstance().requestQiniuMovieTokenSync();
+                if (videoTokenJson.getInt("code") == 0) {
+                    videoToken = videoTokenJson.getJSONObject("result").getString("movie");
+                }
             }
 
             String key = Etag.file(videoPath) + ".mp4";
 
             UploadFuture videoFuture = new UploadFuture();
-            Map<String, String> videoOption = new HashMap<String, String>();
+            Map<String, String> videoOption = new HashMap<>();
             videoOption.put("x:thumb", thumbResponse.getResponse().getString("key"));
             videoOption.put("x:uid", MyAccountInfo.getUid());
-            videoOption.put("x:type", "video");
+            if (isMovie) {
+                videoOption.put("x:type", "movie");
+            }
+            else {
+                videoOption.put("x:type", "video");
+            }
             videoOption.put("x:tid", topicId);
             videoOption.put("x:duration", String.valueOf(Mp4ParserUtil.getDuration(videoPath)));
             videoOption.put("x:privacy", String.valueOf(privacy));
+            if (isMovie) {
+                videoOption.put("x:from", TextUtils.isEmpty(from) ? "" : from);
+            }
             uploadManager.put(videoPath, key, videoToken, videoFuture,
                     new UploadOptions(videoOption, null, false, null, null));
-            UploadFuture.UploadResponse response = videoFuture.upload();
-
-            return new BaseVideoInfo(response.getResponse()
-                    .getJSONObject("result").getJSONObject("video"));
-
+            return videoFuture.upload();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {

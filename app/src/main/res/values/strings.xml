@@ -45,6 +45,7 @@
     <string name="request_data_failed">请求数据失败！</string>
     <string name="retry_or_not">是否要重试？</string>
     <string name="retry">重试</string>
+    <string name="there_is_an_error">"出错啦 T_T"</string>
 
     <!-- For MainActivity -->
     <string name="title_koolew">首页</string>
@@ -427,6 +428,7 @@
     <string name="count_down_start">倒计时开始</string>
     <string name="interrupt">终止</string>
     <string name="recapture">重拍</string>
+    <string name="no_movie_piece_hint">至少要拍一段～</string>
 
     <!-- For KooTabFragment -->
     <string name="musang">打赏</string>

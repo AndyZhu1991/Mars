@@ -427,7 +427,7 @@ public class RecordingSessionView extends LinearLayout {
         }
         try {
             FileOutputStream out = new FileOutputStream(f);
-            thumbBmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+            thumbBmp.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
             out.close();
         } catch (Exception e) {

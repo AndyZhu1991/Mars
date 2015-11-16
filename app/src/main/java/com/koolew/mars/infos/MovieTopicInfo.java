@@ -85,5 +85,9 @@ public class MovieTopicInfo extends BaseTopicInfo implements Serializable {
         public int getEnd() {
             return end;
         }
+
+        public int getFrameCount() {
+            return end - start + 1;
+        }
     }
 }
