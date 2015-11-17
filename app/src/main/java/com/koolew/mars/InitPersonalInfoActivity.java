@@ -89,7 +89,8 @@ public class InitPersonalInfoActivity extends BaseActivity {
     }
 
     public void onNextClick(View v) {
-        if (mEtNickname.getText().length() == 0) {
+        String nickname = mEtNickname.getText().toString();
+        if (nickname.trim().length() == 0) {
             Toast.makeText(this, R.string.no_nickname_message, Toast.LENGTH_SHORT).show();
             return;
         }
