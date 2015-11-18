@@ -314,8 +314,12 @@ public class MainActivity extends BaseV4FragmentActivity
 
     @Override
     public void unregisterAllTopRedPoint() {
-        mTopRedPoints[0].unregisterPath();
-        mTopRedPoints[1].unregisterPath();
+        if (mTopRedPoints[0] != null) {
+            mTopRedPoints[0].unregisterPath();
+        }
+        if (mTopRedPoints[1] != null) {
+            mTopRedPoints[1].unregisterPath();
+        }
     }
 
     @Override
@@ -483,6 +487,19 @@ public class MainActivity extends BaseV4FragmentActivity
                         R.color.drawer_list_play_select,
                         PlayFragment.class),
 
+                new DrawerItem(R.mipmap.ic_drawer_list_message,
+                        R.mipmap.ic_drawer_list_message_selected,
+                        R.string.title_message,
+                        R.color.drawer_list_message_select,
+                        null) {
+                    @Override
+                    public MainBaseFragment getFragment() {
+                        Intent intent = new Intent(MainActivity.this, MessagesActivity.class);
+                        startActivity(intent);
+                        return null;
+                    }
+                },
+
                 new DrawerItem(R.mipmap.ic_drawer_list_friend,
                         R.mipmap.ic_drawer_list_friend_selected,
                         R.string.title_friend,
@@ -494,21 +511,6 @@ public class MainActivity extends BaseV4FragmentActivity
                         R.string.title_settings,
                         R.color.drawer_list_settings_select,
                         SettingsFragment.class),
-
-                new DrawerItem(R.mipmap.ic_drawer_list_clock_in,
-                        R.mipmap.ic_drawer_list_clock_in_selected,
-                        R.string.title_clock_in,
-                        R.color.drawer_list_clock_in_select,
-                        null) {
-                    @Override
-                    public MainBaseFragment getFragment() {
-                        Intent intent = new Intent(MainActivity.this, KoolewWebActivity.class);
-                        intent.putExtra(KoolewWebActivity.KEY_NO_TITLE_BAR, true);
-                        intent.putExtra(KoolewWebActivity.KEY_URL, AppProperty.CLOCK_IN_URL);
-                        startActivity(intent);
-                        return null;
-                    }
-                },
         };
 
         @Override
@@ -530,7 +532,10 @@ public class MainActivity extends BaseV4FragmentActivity
                 holder.title.setTextColor(getResources().getColor(UNSELECT_COLOR_RES));
             }
             holder.title.setText(drawerItems[position].titleRes);
-            if (position == 2) { // Friends
+            if (position == 2) { // Message
+                holder.redPoint.registerPath(RedPointManager.PATH_MESSAGE);
+            }
+            if (position == 3) { // Friends
                 holder.redPoint.registerPath(RedPointManager.PATH_FRIENDS);
             }
         }

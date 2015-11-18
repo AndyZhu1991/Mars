@@ -31,6 +31,7 @@
     <color name="drawer_list_koolew_select">@color/koolew_light_orange</color>
     <color name="drawer_list_play_select">#4A4A4A</color>
     <color name="drawer_list_friend_select">@color/koolew_light_blue</color>
+    <color name="drawer_list_message_select">#FC7B7B</color>
     <color name="drawer_list_clock_in_select">#EFE121</color>
     <color name="drawer_list_settings_select">@color/koolew_deep_blue</color>
     <color name="drawer_list_add_select">#51C47D</color>

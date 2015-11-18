@@ -51,7 +51,7 @@ public class MessagesActivity extends BaseV4FragmentActivity {
         indicator.setOnTransitionListener(new TransitionTextListener().setColorId(this,
                 R.color.title_text_color_indicated, R.color.title_text_color_unindicate));
 
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(4);
         viewPager.addOnPageChangeListener(new PagerScrollListener(
                 getResources().getColor(R.color.koolew_light_blue),
                 getResources().getColor(R.color.koolew_red),
