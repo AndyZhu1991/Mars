@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.koolew.mars.imageloader.ImageLoaderHelper;
-import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.infos.KooCountUserInfo;
 import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.infos.MyAccountInfo;
@@ -150,6 +149,9 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
         ((TextView) convertView.findViewById(R.id.title)).setText(mMovieDetailInfo.getTitle());
         ((TextView) convertView.findViewById(R.id.video_count)).setText(
                 mContext.getString(R.string.video_count_label, mMovieDetailInfo.getVideoCount()));
+
+        convertView.findViewById(R.id.koo_top_layout).setOnClickListener(onStarsClickListener);
+
         ((TextView) convertView.findViewById(R.id.stars_rank_title)).setText(
                 mContext.getString(R.string.stars_rank, mMovieDetailInfo.topStars.length));
 
@@ -187,8 +189,8 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(mContext, TopicKooRankActivity.class);
-            intent.putExtra(TopicKooRankActivity.KEY_KOO_COUNT_USER_INFO,
-                    topicTitleDetail.kooRankUsers);
+            intent.putExtra(TopicKooRankActivity.KEY_KOO_COUNT_USER_INFO, "movie".equals(category) ?
+                    mMovieDetailInfo.topStars : topicTitleDetail.kooRankUsers);
             mContext.startActivity(intent);
         }
     };
@@ -302,17 +304,17 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
 
     public static class MovieDetailInfo extends MovieTopicInfo {
 
-        private BaseUserInfo[] topStars;
+        private KooCountUserInfo[] topStars;
 
         public MovieDetailInfo(JSONObject jsonObject) {
             super(jsonObject);
 
             JSONArray kooRanks = JsonUtil.getJSONArrayIfHas(jsonObject, "koo_ranks");
             int length = kooRanks.length();
-            topStars = new BaseUserInfo[length];
+            topStars = new KooCountUserInfo[length];
             for (int i = 0; i < length; i++) {
                 try {
-                    topStars[i] = new BaseUserInfo(kooRanks.getJSONObject(i));
+                    topStars[i] = new KooCountUserInfo(kooRanks.getJSONObject(i));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
