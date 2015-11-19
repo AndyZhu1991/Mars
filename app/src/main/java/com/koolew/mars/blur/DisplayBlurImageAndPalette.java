@@ -15,12 +15,14 @@ public abstract class DisplayBlurImageAndPalette extends DisplayBlurImage {
     @Override
     protected void onPostExecute(Object o) {
         super.onPostExecute(o);
-        Palette.from(mBluredBitmap).generate(new Palette.PaletteAsyncListener() {
-            @Override
-            public void onGenerated(Palette palette) {
-                onPalette(palette);
-            }
-        });
+        if (mBluredBitmap != null) {
+            Palette.from(mBluredBitmap).generate(new Palette.PaletteAsyncListener() {
+                @Override
+                public void onGenerated(Palette palette) {
+                    onPalette(palette);
+                }
+            });
+        }
     }
 
     protected abstract void onPalette(Palette palette);

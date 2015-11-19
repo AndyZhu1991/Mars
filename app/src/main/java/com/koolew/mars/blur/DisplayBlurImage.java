@@ -13,6 +13,8 @@ public class DisplayBlurImage extends LoadBlurImageTask {
 
     @Override
     protected void onPostExecute(Object o) {
-        ((ImageView) mView).setImageBitmap(mBluredBitmap);
+        if (mBluredBitmap != null) {
+            ((ImageView) mView).setImageBitmap(mBluredBitmap);
+        }
     }
 }
