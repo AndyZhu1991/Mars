@@ -136,7 +136,7 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
         return convertView;
     }
 
-    private View getMovieTitle(View convertView) {
+    protected View getMovieTitle(View convertView) {
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.movie_header, null);
         }
@@ -150,26 +150,31 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
         ((TextView) convertView.findViewById(R.id.video_count)).setText(
                 mContext.getString(R.string.video_count_label, mMovieDetailInfo.getVideoCount()));
 
-        convertView.findViewById(R.id.koo_top_layout).setOnClickListener(onStarsClickListener);
+        View kooTopLayout = convertView.findViewById(R.id.koo_top_layout);
+        kooTopLayout.setOnClickListener(onStarsClickListener);
 
-        ((TextView) convertView.findViewById(R.id.stars_rank_title)).setText(
-                mContext.getString(R.string.stars_rank, mMovieDetailInfo.topStars.length));
+        if (mMovieDetailInfo.topStars == null || mMovieDetailInfo.topStars.length == 0) {
+            kooTopLayout.setVisibility(View.GONE);
+        }
+        else {
+            ((TextView) convertView.findViewById(R.id.stars_rank_title)).setText(
+                    mContext.getString(R.string.stars_rank, mMovieDetailInfo.topStars.length));
 
-        int starsAvatarRes[] = new int[] {
-                R.id.first_koo,
-                R.id.second_koo,
-                R.id.third_koo,
-                R.id.forth_koo,
-                R.id.fifth_koo,
-        };
-        for (int i = 0; i < starsAvatarRes.length; i++) {
-            ImageView avatar = (ImageView) convertView.findViewById(starsAvatarRes[i]);
-            if (i < mMovieDetailInfo.topStars.length) {
-                ImageLoader.getInstance().displayImage(mMovieDetailInfo.topStars[i].getAvatar(), avatar,
-                        ImageLoaderHelper.avatarLoadOptions);
-            }
-            else {
-                avatar.setVisibility(View.INVISIBLE);
+            int starsAvatarRes[] = new int[]{
+                    R.id.first_koo,
+                    R.id.second_koo,
+                    R.id.third_koo,
+                    R.id.forth_koo,
+                    R.id.fifth_koo,
+            };
+            for (int i = 0; i < starsAvatarRes.length; i++) {
+                ImageView avatar = (ImageView) convertView.findViewById(starsAvatarRes[i]);
+                if (i < mMovieDetailInfo.topStars.length) {
+                    ImageLoader.getInstance().displayImage(mMovieDetailInfo.topStars[i].getAvatar(),
+                            avatar, ImageLoaderHelper.avatarLoadOptions);
+                } else {
+                    avatar.setVisibility(View.INVISIBLE);
+                }
             }
         }
 
@@ -309,7 +314,8 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
         public MovieDetailInfo(JSONObject jsonObject) {
             super(jsonObject);
 
-            JSONArray kooRanks = JsonUtil.getJSONArrayIfHas(jsonObject, "koo_ranks");
+            JSONArray kooRanks = JsonUtil.getJSONArrayIfHas(jsonObject, "koo_ranks",
+                    new JSONArray());
             int length = kooRanks.length();
             topStars = new KooCountUserInfo[length];
             for (int i = 0; i < length; i++) {
