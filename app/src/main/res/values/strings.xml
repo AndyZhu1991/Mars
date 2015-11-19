@@ -420,7 +420,7 @@
     <string name="update">更新</string>
 
     <!-- For square -->
-    <string name="square_video_desc">最近24小时热门视频</string>
+    <string name="square_video_desc">最近热门视频</string>
     <string name="top_fans">粉丝团</string>
 
     <!-- For MovieStudioActivity -->
