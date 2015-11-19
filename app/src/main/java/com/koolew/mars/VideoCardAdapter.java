@@ -348,7 +348,7 @@ public class VideoCardAdapter extends BaseAdapter {
             TextView videoDate1 = (TextView) convertView.findViewById(R.id.video_date);
             TextView videoDate2 = (TextView) convertView.findViewById(R.id.video_date2);
             if ("movie".equals(category)) {
-                videoDate1.setVisibility(View.INVISIBLE);
+                videoDate1.setVisibility(View.GONE);
                 videoDate2.setVisibility(View.VISIBLE);
                 videoDate = videoDate2;
                 btnAct = convertView.findViewById(R.id.btn_act);
