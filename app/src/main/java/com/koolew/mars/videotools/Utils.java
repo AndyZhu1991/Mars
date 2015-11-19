@@ -165,10 +165,7 @@ public class Utils {
             }
 
             int endFrame = splitFrame[i];
-            while (true) {
-                if (imageFrameIndex > endFrame) {
-                    break;
-                }
+            while (imageFrameIndex < endFrame) {
                 try {
                     org.bytedeco.javacv.Frame frame = grabber.grabFrame();
                     if (frame == null) {
