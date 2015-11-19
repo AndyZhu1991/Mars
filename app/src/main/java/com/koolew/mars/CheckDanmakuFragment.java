@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseCommentInfo;
+import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -70,7 +71,9 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
     @Override
     protected boolean handleRefresh(JSONObject response) {
         mComments.clear();
-        return super.handleRefresh(response);
+        boolean ret = super.handleRefresh(response);
+        mAdapter.setCategory(mAdapter.mData.get(0).getTopicInfo().getCategory());
+        return ret;
     }
 
     @Override
@@ -100,6 +103,8 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
         try {
             if (response.getInt("code") == 0) {
                 JSONObject video = response.getJSONObject("result").getJSONObject("video");
+                MovieTopicInfo movieTopicInfo = new MovieTopicInfo(video.getJSONObject("topic"));
+                mAdapter.setMovieInfo(movieTopicInfo);
                 videos.put(video);
             }
         } catch (JSONException e) {
