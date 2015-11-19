@@ -309,7 +309,9 @@ public class MainActivity extends BaseV4FragmentActivity
 
     @Override
     public void setTopRedPointPath(int position, String path) {
-        mTopRedPoints[position].registerPath(path);
+        if (mTopRedPoints[position] != null) {
+            mTopRedPoints[position].registerPath(path);
+        }
     }
 
     @Override
