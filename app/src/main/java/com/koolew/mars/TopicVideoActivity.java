@@ -133,7 +133,7 @@ public abstract class TopicVideoActivity extends BaseV4FragmentActivity
     protected void startVideoShootActivity() {
         Intent intent = new Intent(this, VideoShootActivity.class);
         intent.putExtra(VideoShootActivity.KEY_TOPIC_ID, topicId);
-        intent.putExtra(VideoShootActivity.KEY_TOPIC_TITLE, topicTitle);
+        intent.putExtra(VideoShootActivity.KEY_TOPIC_TITLE, getTopicTitle());
         startActivity(intent);
     }
 
@@ -146,8 +146,21 @@ public abstract class TopicVideoActivity extends BaseV4FragmentActivity
     protected void onInvite() {
         Intent intent = new Intent(this, InviteActivity.class);
         intent.putExtra(InviteActivity.KEY_TOPIC_ID, topicId);
-        intent.putExtra(InviteActivity.KEY_TITLE, topicTitle);
+        intent.putExtra(InviteActivity.KEY_TITLE, getTopicTitle());
         startActivity(intent);
+    }
+
+    private String getTopicTitle() {
+        if (!TextUtils.isEmpty(topicTitle)) {
+            return topicTitle;
+        }
+        for (int i = 0; i < mAdapter.fragmentList.size(); i++) {
+            String titleFromFragment = mAdapter.fragmentList.get(i).getTopicTitle();
+            if (!TextUtils.isEmpty(titleFromFragment)) {
+                return titleFromFragment;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -164,7 +177,7 @@ public abstract class TopicVideoActivity extends BaseV4FragmentActivity
 
     static abstract class TopicVideoPagerAdapter extends FragmentPagerAdapter {
 
-        protected List<Fragment> fragmentList;
+        protected List<DetailTitleVideoListFragment> fragmentList;
         protected List<String> fragmentTitles;
 
         public TopicVideoPagerAdapter(FragmentManager fm) {
