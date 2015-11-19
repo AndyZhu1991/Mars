@@ -5,7 +5,7 @@ package com.koolew.mars;
  */
 public class AppProperty {
 
-    public static final float RECORD_VIDEO_MAX_LEN = 9.0f; // second
+    private static float RECORD_VIDEO_MAX_LEN = 9.0f; // second
     public static final int RECORD_VIDEO_WIDTH = 480;
     public static final int RECORD_VIDEO_HEIGHT = 360;
     public static final int RECORD_VIDEO_FPS = 25;
@@ -25,5 +25,13 @@ public class AppProperty {
 
     public static int getTopicMaxReturnParterCount() {
         return 10;
+    }
+
+    public static float getRecordVideoMaxLen() {
+        return RECORD_VIDEO_MAX_LEN;
+    }
+
+    public static void setRecordVideoMaxLen(float len) {
+        RECORD_VIDEO_MAX_LEN = len;
     }
 }

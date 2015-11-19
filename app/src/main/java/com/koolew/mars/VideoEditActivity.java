@@ -570,6 +570,7 @@ public class VideoEditActivity extends BaseActivity
                 }
                 mAudioPlayer.reset();
                 mAudioPlayer.setDataSource(mSelectedBgmPath);
+                mAudioPlayer.setLooping(true);
                 mAudioPlayer.prepare();
             }
             else {

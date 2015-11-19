@@ -87,6 +87,8 @@ public class MovieStudioActivity extends BaseActivity
     private String mWorkDir;
     private String mFrom;
 
+    private opencv_core.IplImage koolewMask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -422,7 +424,7 @@ public class MovieStudioActivity extends BaseActivity
             mRecorder = null;
             String audioedFilePath = generateVideoPath();
             try {
-                Mp4ParserUtil.overrideBgm(recordedFilePath,
+                Mp4ParserUtil.overrideAudio(recordedFilePath,
                         mAdapter.getCurrentSelectedItem().originalVideoPath, audioedFilePath);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -474,8 +476,8 @@ public class MovieStudioActivity extends BaseActivity
                     return false;
                 }
                 Mp4ParserUtil.mp4Cat(videoList, getConcatedVideoPath());
-                Mp4ParserUtil.setVideoBgm(getConcatedVideoPath(), originVideoPath,
-                        getFinalVideoPath(), false);
+                Mp4ParserUtil.overrideAudio(getConcatedVideoPath(), originVideoPath,
+                        getFinalVideoPath());
 //                Mp4ParserUtil.setSubtitle(getAudioedVideoPath(), originVideoPath,
 //                        getFinalVideoPath());
                 return true;
@@ -594,7 +596,7 @@ public class MovieStudioActivity extends BaseActivity
             for (int i = 0; i < splitedFiles.length; i++) {
                 splitedFiles[i] = getVideoCutPath(i);
                 try {
-                    Mp4ParserUtil.overrideBgm(tempFiles[i], getAudioCutPath(i), splitedFiles[i]);
+                    Mp4ParserUtil.overrideAudio(tempFiles[i], getAudioCutPath(i), splitedFiles[i]);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

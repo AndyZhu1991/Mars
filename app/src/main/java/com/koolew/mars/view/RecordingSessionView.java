@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -226,6 +227,10 @@ public class RecordingSessionView extends LinearLayout {
         updateNextStepBtnStatus();
     }
 
+    public void invalidateProgressView() {
+        videosProgressView.invalidate();
+    }
+
     private Timer videoProgressUpdateTimer;
     class UpdateVideoProgressTask extends TimerTask {
         @Override
@@ -270,9 +275,9 @@ public class RecordingSessionView extends LinearLayout {
         if (recordedItems.size() == 0) {
             listener.onNextStepEnable(false, getContext().getString(R.string.there_is_no_video));
         }
-        else if (getTotalVideoLen() > AppProperty.RECORD_VIDEO_MAX_LEN * 1000) {
+        else if (getTotalVideoLen() > AppProperty.getRecordVideoMaxLen() * 1000) {
             listener.onNextStepEnable(false, getContext().getString(
-                    R.string.video_too_long, (int) AppProperty.RECORD_VIDEO_MAX_LEN));
+                    R.string.video_too_long, (int) AppProperty.getRecordVideoMaxLen()));
         }
         else {
             listener.onNextStepEnable(true, null);
@@ -397,9 +402,15 @@ public class RecordingSessionView extends LinearLayout {
 
         List<String> videos = new LinkedList<>();
         for (VideoPieceItem videoItem: recordedItems) {
-            String cutted = videoItem.fileName + ".mp4";
-            com.koolew.mars.videotools.Utils.cutVideo(videoItem.fileName, cutted,
-                    videoItem.clipStart, videoItem.clipEnd);
+            String cutted;
+            if (videoItem.clipStart != 0 || videoItem.clipEnd != videoItem.videoLen || isMi3()) {
+                cutted = videoItem.fileName + ".mp4";
+                com.koolew.mars.videotools.Utils.cutVideo(videoItem.fileName, cutted,
+                        videoItem.clipStart, videoItem.clipEnd);
+            }
+            else {
+                cutted = videoItem.fileName;
+            }
             videos.add(cutted);
         }
 
@@ -408,6 +419,16 @@ public class RecordingSessionView extends LinearLayout {
             Mp4ParserUtil.mp4Cat(videos, concatedFilePath);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static boolean isMi3() {
+        String model = Build.MODEL;
+        if (model.startsWith("MI 3")) {
+            return true;
+        }
+        else {
+            return false;
         }
     }
 
@@ -687,8 +708,6 @@ public class RecordingSessionView extends LinearLayout {
 
     class VideosProgressView extends View {
 
-        private static final long TOTAL_LENGTH = (long) (AppProperty.RECORD_VIDEO_MAX_LEN * 1000);
-
         private Paint mProgressPaint;
         private Paint mSelectedPaint;
         private Paint mOverLengthPaint;
@@ -729,7 +748,7 @@ public class RecordingSessionView extends LinearLayout {
             float videoLenWithRecording =
                     (getFrontVideoLen(recordedItems.size()) + currentRecordingLength) / 1000.0f;
 
-            Paint progressBarPaint = videoLenWithRecording <= AppProperty.RECORD_VIDEO_MAX_LEN
+            Paint progressBarPaint = videoLenWithRecording <= AppProperty.getRecordVideoMaxLen()
                     ? mProgressPaint : mOverLengthPaint;
 
             int count = recordedItems.size();
@@ -762,7 +781,7 @@ public class RecordingSessionView extends LinearLayout {
 
             String timeString = getResources().getString(R.string.video_shoot_time_text,
                     (getFrontVideoLen(recordedItems.size()) + currentRecordingLength) / 1000.0f,
-                    AppProperty.RECORD_VIDEO_MAX_LEN);
+                    AppProperty.getRecordVideoMaxLen());
             Rect textRect = new Rect();
             mTextPaint.getTextBounds(timeString, 0, timeString.length(), textRect);
             canvas.drawText(timeString, getWidth() - Utils.spToPixels(getContext(), 10) - textRect.width(),
@@ -770,7 +789,8 @@ public class RecordingSessionView extends LinearLayout {
         }
 
         private int millis2Pixels(long millis) {
-            return (int) (getWidth() * (1.0f * millis / TOTAL_LENGTH));
+            long totalLength = (long) (AppProperty.getRecordVideoMaxLen() * 1000);
+            return (int) (getWidth() * (1.0f * millis / totalLength));
         }
     }
 }

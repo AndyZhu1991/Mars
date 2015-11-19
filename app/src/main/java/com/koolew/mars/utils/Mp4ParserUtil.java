@@ -1,7 +1,5 @@
 package com.koolew.mars.utils;
 
-import android.util.Log;
-
 import com.coremedia.iso.IsoFile;
 import com.coremedia.iso.boxes.Container;
 import com.googlecode.mp4parser.authoring.Movie;
@@ -11,7 +9,6 @@ import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
 import com.googlecode.mp4parser.authoring.tracks.AppendTrack;
 import com.googlecode.mp4parser.authoring.tracks.CroppedTrack;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -185,48 +182,51 @@ public class Mp4ParserUtil {
 
     public static void setVideoBgm(String videoPath, String bgmPath, String outMoviePath)
             throws IOException {
-        setVideoBgm(videoPath, bgmPath, outMoviePath, true);
+        //setVideoBgm(videoPath, bgmPath, outMoviePath, true);
+        Track videoTrack = null;
+        for (Track track: MovieCreator.build(videoPath).getTracks()) {
+            if (track.getHandler().equals(VIDEO_TRACK_HANDLER_KEY)) {
+                videoTrack = track;
+            }
+        }
+
+        Track bgmTrack = null;
+        for (Track track: MovieCreator.build(bgmPath).getTracks()) {
+            if (track.getHandler().equals(SOUND_TRACK_HANDLER_KEY)) {
+                bgmTrack = track;
+            }
+        }
+
+        double videoLen = 1.0 * videoTrack.getDuration() / videoTrack.getTrackMetaData().getTimescale();
+        double bgmLen = 1.0 * bgmTrack.getDuration() / bgmTrack.getTrackMetaData().getTimescale();
+        int audioTrackRepeateCount = (int) (videoLen / bgmLen + 1);
+        Track[] sameAudioTracks = new Track[audioTrackRepeateCount];
+        for (int i = 0; i < sameAudioTracks.length; i++) {
+            sameAudioTracks[i] = bgmTrack;
+        }
+        AppendTrack appendTrack = new AppendTrack(sameAudioTracks);
+        long[] samples = getClipSamples(appendTrack, 0.0, videoLen);
+        CroppedTrack croppedTrack = new CroppedTrack(appendTrack, samples[0], samples[1]);
+        saveTracks(outMoviePath, videoTrack, croppedTrack);
     }
 
-    public static void overrideBgm(String videoPath, String bgmPath, String outMoviePath)
+    public static void overrideAudio(String videoPath, String audioPath, String outMoviePath)
             throws IOException {
-        setVideoBgm(videoPath, bgmPath, outMoviePath, false);
-    }
-
-    public static void setVideoBgm(String videoPath, String bgmPath, String outMoviePath,
-                                   boolean needClip) throws IOException {
-        String clipedBgm;
-        if (needClip) {
-            clipedBgm = new File(bgmPath).getParent() + "clipedBgm.mp4";
-            double videoLen = getDuration(videoPath);
-            Log.d("stdzhu", "origin: " + videoLen);
-            clip(bgmPath, 0, videoLen, clipedBgm);
-        }
-        else {
-            clipedBgm = bgmPath;
-        }
-
-        Movie result = new Movie();
+        Movie movie = new Movie();
 
         for (Track track: MovieCreator.build(videoPath).getTracks()) {
             if (track.getHandler().equals(VIDEO_TRACK_HANDLER_KEY)) {
-                result.addTrack(track);
+                movie.addTrack(track);
             }
         }
 
-        for (Track track: MovieCreator.build(clipedBgm).getTracks()) {
+        for (Track track: MovieCreator.build(audioPath).getTracks()) {
             if (track.getHandler().equals(SOUND_TRACK_HANDLER_KEY)) {
-                result.addTrack(track);
+                movie.addTrack(track);
             }
         }
 
-        Container out = new DefaultMp4Builder().build(result);
-
-        FileChannel fc = new RandomAccessFile(String.format(outMoviePath), "rw").getChannel();
-        out.writeContainer(fc);
-        fc.close();
-
-        Log.d("stdzhu", "bgmed: " + getDuration(outMoviePath));
+        saveMovie(movie, outMoviePath);
     }
 
     public static void setSubtitle(String videoPath, String subtitlePath, String outMoviePath)
@@ -282,7 +282,10 @@ public class Mp4ParserUtil {
         for (Track track: tracks) {
             movie.addTrack(track);
         }
+        saveMovie(movie, filePath);
+    }
 
+    private static void saveMovie(Movie movie, String filePath) throws IOException {
         Container out = new DefaultMp4Builder().build(movie);
         FileChannel fc = new RandomAccessFile(String.format(filePath), "rw").getChannel();
         out.writeContainer(fc);

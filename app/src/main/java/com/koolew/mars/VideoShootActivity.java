@@ -25,8 +25,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.koolew.mars.camerautils.CameraSurfacePreview;
+import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
+import com.koolew.mars.utils.AbsLongVideoSwitch;
 import com.koolew.mars.utils.PictureSelectUtil;
 import com.koolew.mars.utils.RawImageUtil;
 import com.koolew.mars.utils.Utils;
@@ -177,6 +179,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
         // Create our Preview view and set it as the content of our activity.
         mPreview = (CameraSurfacePreview) findViewById(R.id.camera_preview);
+        mPreview.setOnTouchListener(new LongVideoSwitch());
 
         mVideoThumb = (ImageView) findViewById(R.id.video_thumb);
         FrameLayout.LayoutParams vtlp = (FrameLayout.LayoutParams) mVideoThumb.getLayoutParams();
@@ -532,7 +535,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         enableImportBtn(false);
         mRecordMonitorTask = new RecordMonitorTask();
         new Timer().schedule(mRecordMonitorTask,
-                (long) (AppProperty.RECORD_VIDEO_MAX_LEN * 1000 * 2));
+                (long) (AppProperty.getRecordVideoMaxLen() * 1000 * 2));
         mRecorder.start();
         mCaptureText.setText(R.string.capturing);
 
@@ -797,5 +800,21 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
             }
         }
         return "UNKNOWN";
+    }
+
+    class LongVideoSwitch extends AbsLongVideoSwitch {
+        @Override
+        protected void onPasswordHandle(String password) {
+            if (MyAccountInfo.getVip() > -1 ||
+                    MyAccountInfo.getUid().equals("55657de205f7080cd3000021")) {
+                if (password.equals(LONG_VIDEO_18S)) {
+                    AppProperty.setRecordVideoMaxLen(18.0f);
+                }
+                else if (password.equals(LONG_VIDEO_60S)) {
+                    AppProperty.setRecordVideoMaxLen(60.0f);
+                }
+                recordingSessionView.invalidateProgressView();
+            }
+        }
     }
 }
