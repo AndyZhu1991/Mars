@@ -805,7 +805,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     class LongVideoSwitch extends AbsLongVideoSwitch {
         @Override
         protected void onPasswordHandle(String password) {
-            if (MyAccountInfo.getVip() > -1 ||
+            if (MyAccountInfo.getVip() == 1 ||
                     MyAccountInfo.getUid().equals("55657de205f7080cd3000021")) {
                 if (password.equals(LONG_VIDEO_18S)) {
                     AppProperty.setRecordVideoMaxLen(18.0f);
