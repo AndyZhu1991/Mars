@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.utils.Mp4ParserUtil;
+import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 import com.qiniu.android.storage.UploadManager;
 import com.qiniu.android.storage.UploadOptions;
@@ -104,6 +105,8 @@ public class UploadHelper {
             videoOption.put("x:duration", String.valueOf(Mp4ParserUtil.getDuration(videoPath)));
             videoOption.put("x:privacy", String.valueOf(privacy));
             if (isMovie) {
+                videoOption.put("x:platform", "android");
+                videoOption.put("x:version_code", String.valueOf(Utils.getCurrentVersionCode()));
                 videoOption.put("x:from", TextUtils.isEmpty(from) ? "" : from);
             }
             uploadManager.put(videoPath, key, videoToken, videoFuture,

@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.widget.Toast;
 
@@ -86,7 +84,7 @@ public class Updater implements DownloadStatusListener, Response.Listener<JSONOb
     }
 
     private void onVersionInfoUpdate() {
-        if (lastVersionInfo.versionCode > getCurrentVersionCode()
+        if (lastVersionInfo.versionCode > Utils.getCurrentVersionCode()
                 && !Utils.isAppBackground(mContext)) {
             onNewVersionAvailable();
         }
@@ -119,17 +117,6 @@ public class Updater implements DownloadStatusListener, Response.Listener<JSONOb
                     }
                 })
                 .show();
-    }
-
-    private int getCurrentVersionCode() {
-        PackageManager manager = mContext.getPackageManager();
-        PackageInfo info = null;
-        try {
-            info = manager.getPackageInfo(mContext.getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return info.versionCode;
     }
 
     private void startDownload() {
