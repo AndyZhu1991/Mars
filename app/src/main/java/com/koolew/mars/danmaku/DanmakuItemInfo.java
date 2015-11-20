@@ -28,7 +28,7 @@ public class DanmakuItemInfo implements Serializable {
         DanmakuItemInfo info = new DanmakuItemInfo();
 
         try {
-            JSONObject userInfo = jsonObject.getJSONObject("user_info");
+            JSONObject userInfo = jsonObject.getJSONObject("user");
             info.uid = userInfo.getString("uid");
             info.nickname = userInfo.getString("nickname");
             info.avatar = userInfo.getString("avatar");

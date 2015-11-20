@@ -165,7 +165,7 @@ public class DanmakuTabFragment extends
 
         DanmakuNotificationItem(JSONObject jsonObject) {
             try {
-                videoInfo = new BaseVideoInfo(jsonObject.getJSONObject("video_info"));
+                videoInfo = new BaseVideoInfo(jsonObject.getJSONObject("video"));
                 topicInfo = new BaseTopicInfo(jsonObject.getJSONObject("topic"));
                 lastComment = new BaseCommentInfo(jsonObject.getJSONObject("comment"));
                 notifyCount = jsonObject.getInt("notify_cnt");

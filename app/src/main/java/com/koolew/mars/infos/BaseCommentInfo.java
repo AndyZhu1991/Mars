@@ -14,7 +14,7 @@ public class BaseCommentInfo {
     public static final String KEY_POSITION = "position";
     public static final String KEY_SHOW_TIME = "show_time";
     public static final String KEY_CREATE_TIME = "create_time";
-    public static final String KEY_USER_INFO = "user_info";
+    public static final String KEY_USER_INFO = "user";
 
     protected String commentId;
     protected String content;
