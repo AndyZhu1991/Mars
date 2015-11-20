@@ -12,7 +12,6 @@ import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.services.UploadAvatarService;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.PictureSelectUtil;
-import com.koolew.mars.view.PhoneNumberView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -21,14 +20,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ChangeInfoActivity extends BaseActivity implements View.OnClickListener {
 
     public static final int REQUEST_CODE_CHANGE_NICKNAME = 1;
-    public static final int REQUEST_CODE_CHANGE_NUMBER = 2;
     public static final int REQUEST_CODE_SELECT_PICTURE = 3;
 
     private CircleImageView mAvatar;
     private ImageView mBlurAvatar;
 
     private TextView mNickname;
-    private PhoneNumberView mPhoneNumber;
 
     private boolean isAvatarChanged = false;
 
@@ -56,14 +53,11 @@ public class ChangeInfoActivity extends BaseActivity implements View.OnClickList
 
         mNickname = (TextView) findViewById(R.id.nickname);
         mNickname.setOnClickListener(this);
-        mPhoneNumber = (PhoneNumberView) findViewById(R.id.phone_number);
-        mPhoneNumber.setOnClickListener(this);
 
         ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(), mAvatar);
         new DisplayBlurImageAndStatusBar(this, mBlurAvatar, MyAccountInfo.getAvatar()).execute();
 
         mNickname.setText(MyAccountInfo.getNickname());
-        mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
     }
 
     @Override
@@ -71,9 +65,6 @@ public class ChangeInfoActivity extends BaseActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.nickname:
                 onNicknameChange(v);
-                break;
-            case R.id.phone_number:
-                onPhoneNumberChange(v);
                 break;
         }
     }
@@ -90,11 +81,6 @@ public class ChangeInfoActivity extends BaseActivity implements View.OnClickList
                 REQUEST_CODE_CHANGE_NICKNAME);
     }
 
-    public void onPhoneNumberChange(View view) {
-        startActivityForResult(new Intent(this, ChangePhoneNumberActivity.class),
-                REQUEST_CODE_CHANGE_NUMBER);
-    }
-
     @Override
     public void onBackPressed() {
         setResult(mResultCode);
@@ -107,11 +93,6 @@ public class ChangeInfoActivity extends BaseActivity implements View.OnClickList
             case REQUEST_CODE_CHANGE_NICKNAME:
                 if (resultCode == RESULT_OK) {
                     mNickname.setText(MyAccountInfo.getNickname());
-                }
-                break;
-            case REQUEST_CODE_CHANGE_NUMBER:
-                if (resultCode == RESULT_OK) {
-                    mPhoneNumber.setText(MyAccountInfo.getPhoneNumber());
                 }
                 break;
             case REQUEST_CODE_SELECT_PICTURE:
