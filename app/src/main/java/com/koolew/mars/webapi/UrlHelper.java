@@ -49,6 +49,7 @@ public class UrlHelper {
     // Users
     public static final String FRIEND_PROFILE_URL = V4_URL + "users/show";
     private static final String INVOLVE_URL = V4_URL + "users/timeline";
+    private static final String USER_TOPIC_URL = V4_URL + "users/media";
 
     // Friendships
     public static final String CURRENT_FRIEND_URL = V4_URL + "friendships/friends/bilateral";
@@ -58,7 +59,6 @@ public class UrlHelper {
     public static final String FRIEND_UNFOLLOW_URL = V4_URL + "friendships/destroy";
     public static final String FRIEND_FOLLOWS_URL = V4_URL + "friendships/friends";
     public static final String FRIEND_FANS_URL = V4_URL + "friendships/followers";
-    private static final String USER_TOPIC_URL = V4_URL + "friendships/show/topic";
     public static final String KOO_RANK_URL = V4_URL + "friendships/show/koo_rank";
     private static final String COMMON_TOPIC_URL = V4_URL + "friendships/show/topic_common";
 
