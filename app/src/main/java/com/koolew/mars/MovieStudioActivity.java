@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
@@ -31,6 +30,7 @@ import com.koolew.mars.utils.Utils;
 import com.koolew.mars.videotools.BlockingRecycleQueue;
 import com.koolew.mars.videotools.CachedRecorder;
 import com.koolew.mars.videotools.SamplesFrame;
+import com.koolew.mars.view.ProgressView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.bytedeco.javacpp.opencv_core;
@@ -64,7 +64,7 @@ public class MovieStudioActivity extends BaseActivity
     private View mCountDownLayout;
     private TextView mCountDownText;
     private RecyclerView mRecyclerView;
-
+    private ProgressView mProgressView;
     private View mBlockTouchView;
 
     private ImageView mCaptureButton;
@@ -87,8 +87,6 @@ public class MovieStudioActivity extends BaseActivity
     private String mWorkDir;
     private String mFrom;
 
-    private opencv_core.IplImage koolewMask;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +97,12 @@ public class MovieStudioActivity extends BaseActivity
         initWorkDir();
 
         mMovieTopicInfo = (MovieTopicInfo) getIntent().getSerializableExtra(KEY_MOVIE_TOPIC_INFO);
-        movieUrl = getIntent().getExtras().getString(KEY_MOVIE_URL, mMovieTopicInfo.getVideoUrl());
+        movieUrl = getIntent().getExtras().getString(KEY_MOVIE_URL,
+                mMovieTopicInfo == null ? null : mMovieTopicInfo.getVideoUrl());
+        if (TextUtils.isEmpty(movieUrl)) {
+            finish();
+            return;
+        }
         mFrom = getIntent().getExtras().getString(KEY_FROM, "");
 
         int[] splitPoints = new int[mMovieTopicInfo.getFragments().length];
@@ -141,6 +144,7 @@ public class MovieStudioActivity extends BaseActivity
                     }
                 });
 
+        mProgressView = (ProgressView) findViewById(R.id.progress_view);
         mBlockTouchView = findViewById(R.id.block_touch_view);
 
         mCaptureButton = (ImageView) findViewById(R.id.capture);
@@ -218,7 +222,7 @@ public class MovieStudioActivity extends BaseActivity
 
     public void onCaptureClick() {
         if (captureButtonStatus == STATUS_CAPTURE || captureButtonStatus == STATUS_RECAPTURE) {
-            mBlockTouchView.setVisibility(View.VISIBLE);
+            blockOperation(true);
             mRecyclerView.scrollToPosition(mAdapter.selectedPosition);
             captureCountDownTimer = new Timer();
             captureCountDownTimer.schedule(new MovieStartCountDownTask(), 0, 1000);
@@ -226,7 +230,7 @@ public class MovieStudioActivity extends BaseActivity
             switchCaptureButtonStatus(STATUS_CANCLE);
         }
         else if (captureButtonStatus == STATUS_CANCLE) {
-            mBlockTouchView.setVisibility(View.INVISIBLE);
+            blockOperation(false);
             cancleCapture();
             if (TextUtils.isEmpty(mAdapter.getCurrentSelectedItem().capturedVideoPath)) {
                 switchCaptureButtonStatus(STATUS_CAPTURE);
@@ -237,16 +241,21 @@ public class MovieStudioActivity extends BaseActivity
         }
     }
 
+    private void blockOperation(boolean block) {
+        mBlockTouchView.setVisibility(block ? View.VISIBLE : View.INVISIBLE);
+    }
+
     public void onDeleteClick() {
         if (!TextUtils.isEmpty(mAdapter.getCurrentSelectedItem().capturedVideoPath)) {
             mAdapter.getCurrentSelectedItem().capturedVideoPath = null;
             mAdapter.notifyItemChanged(mAdapter.selectedPosition);
+            mProgressView.postProgress(0.0f);
             if (!hasUserCapturedPiece()) {
                 mNextImage.setImageResource(R.mipmap.video_complete_disable);
             }
         }
         else {
-            Toast.makeText(this, R.string.no_movie_piece_hint, Toast.LENGTH_SHORT).show();
+            // TODO: Show a toast
         }
     }
 
@@ -255,7 +264,7 @@ public class MovieStudioActivity extends BaseActivity
             new NextStepTask().execute();
         }
         else {
-            // TODO: Show a toast
+            Toast.makeText(this, R.string.no_movie_piece_hint, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -281,7 +290,6 @@ public class MovieStudioActivity extends BaseActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mAdapter.selectedHolder.recordedPart.setX(0);
                 new CompleteCaptureTask().execute();
             }
         });
@@ -350,19 +358,12 @@ public class MovieStudioActivity extends BaseActivity
     }
 
     private void changeCheckedItem(int position) {
+        mProgressView.invalidateProgress(0.0f);
         if (mAdapter.selectedPosition != position) {
             int originSelectedPos = mAdapter.selectedPosition;
             mAdapter.selectedPosition = position;
             mAdapter.notifyItemChanged(originSelectedPos);
             mAdapter.notifyItemChanged(mAdapter.selectedPosition);
-            if (mAdapter.getCurrentSelectedItem().capturedVideoPath == null) {
-                switchCaptureButtonStatus(STATUS_CAPTURE);
-                mDeleteImage.setImageResource(R.mipmap.image_remove_disable);
-            }
-            else {
-                switchCaptureButtonStatus(STATUS_RECAPTURE);
-                mDeleteImage.setImageResource(R.mipmap.image_remove_enable);
-            }
         }
         mRecyclerView.scrollToPosition(position);
     }
@@ -387,10 +388,6 @@ public class MovieStudioActivity extends BaseActivity
                     timestamp = mRecorder.getFirstFrameTimestamp() + currentCutLen * 1000 - ImageOnlyRecorder.FRAME_PER_USEC / 1000;
                 }
                 if (mRecorder.putImage(image, timestamp)) {
-//                int totalWidth = mAdapter.selectedHolder.borderView.getWidth();
-//                ViewGroup.LayoutParams lp = mAdapter.selectedHolder.recordedPart.getLayoutParams();
-//                lp.width = (int) (totalWidth * (1.0 * mRecorder.getCurrentLen() / currentCutLength));
-//                mAdapter.selectedHolder.recordedPart.setLayoutParams(lp);
                     updateCurrentRecordProgress((1.0f * mRecorder.getCurrentLen() / currentCutLen));
                 }
             }
@@ -402,14 +399,7 @@ public class MovieStudioActivity extends BaseActivity
     }
 
     private void updateCurrentRecordProgress(final float progress) {
-        mAdapter.selectedHolder.recordedPart.post(new Runnable() {
-            @Override
-            public void run() {
-                int totalWidth = mAdapter.selectedHolder.borderView.getWidth();
-                float showWidth = totalWidth * progress;
-                mAdapter.selectedHolder.recordedPart.setX(showWidth - totalWidth);
-            }
-        });
+        mProgressView.postProgress(progress);
     }
 
     class CompleteCaptureTask extends DialogUtil.AsyncTaskWithDialog<Void, Void, String> {
@@ -435,12 +425,10 @@ public class MovieStudioActivity extends BaseActivity
         @Override
         protected void onPostExecute(String filePath) {
             mAdapter.getCurrentSelectedItem().capturedVideoPath = filePath;
-            mAdapter.getCurrentSelectedItem().status = STATUS_DONE;
             mAdapter.notifyItemChanged(mAdapter.selectedPosition);
-            mDeleteImage.setImageResource(R.mipmap.image_remove_enable);
             mNextImage.setImageResource(R.mipmap.video_complete_enable);
             switchCaptureButtonStatus(STATUS_RECAPTURE);
-            mBlockTouchView.setVisibility(View.INVISIBLE);
+            blockOperation(false);
             super.onPostExecute(filePath);
         }
     }
@@ -630,15 +618,11 @@ public class MovieStudioActivity extends BaseActivity
         }
     }
 
-    private static final int STATUS_ORIGIN_CUT = 0;
-    private static final int STATUS_CAPTURING = 1;
-    private static final int STATUS_DONE = 2;
     class MovieStudioItem {
         private String originalVideoPath;
         private String actor;
         private long videoLen;
         private String capturedVideoPath = null;
-        private int status = STATUS_ORIGIN_CUT;
 
         public MovieStudioItem(String videoPath, String actor, long videoLen) {
             originalVideoPath = videoPath;
@@ -680,35 +664,23 @@ public class MovieStudioActivity extends BaseActivity
             ImageLoader.getInstance().displayImage("file://" + item.getVideoPath(), holder.thumb);
 
             if (position == selectedPosition) {
-                if (item.status == STATUS_ORIGIN_CUT) {
-                    holder.recordedPart.setX(-Utils.dpToPixels(MovieStudioActivity.this, 120));
-                }
-                else {
-                    holder.recordedPart.setX(0);
-                }
                 holder.borderView.setBackgroundResource(R.drawable.movie_studio_item_selected_bg);
                 selectedHolder = holder;
             }
             else {
-                holder.recordedPart.setX(-Utils.dpToPixels(MovieStudioActivity.this, 120));
-                if (item.status == STATUS_ORIGIN_CUT) {
+                if (TextUtils.isEmpty(item.capturedVideoPath)) {
                     holder.borderView.setBackgroundColor(Color.TRANSPARENT);
                 }
-                else if (item.status == STATUS_DONE) {
+                else {
                     holder.borderView.setBackgroundResource(R.drawable.movie_studio_item_done_bg);
                 }
             }
 
-            switch (item.status) {
-                case STATUS_ORIGIN_CUT:
-                    holder.descText.setText("");
-                    break;
-                case STATUS_CAPTURING:
-                    holder.descText.setText(R.string.capturing);
-                    break;
-                case STATUS_DONE:
-                    holder.descText.setText(R.string.already_done);
-                    break;
+            if (TextUtils.isEmpty(item.capturedVideoPath)) {
+                holder.descText.setText("");
+            }
+            else {
+                holder.descText.setText(R.string.already_done);
             }
 
             if (position == selectedPosition) {
@@ -716,6 +688,17 @@ public class MovieStudioActivity extends BaseActivity
             }
             else {
                 holder.shaderView.setVisibility(View.VISIBLE);
+            }
+
+            if (position == selectedPosition) {
+                if (TextUtils.isEmpty(item.capturedVideoPath)) {
+                    mDeleteImage.setImageResource(R.mipmap.image_remove_disable);
+                    switchCaptureButtonStatus(STATUS_CAPTURE);
+                }
+                else {
+                    mDeleteImage.setImageResource(R.mipmap.image_remove_enable);
+                    switchCaptureButtonStatus(STATUS_RECAPTURE);
+                }
             }
         }
 
@@ -725,21 +708,8 @@ public class MovieStudioActivity extends BaseActivity
         }
 
         @Override
-        public void onViewRecycled(MovieStudioItemHolder holder) {
-            super.onViewRecycled(holder);
-            Log.d("stdzhu", "recycle " + holder.getAdapterPosition());
-        }
-
-        @Override
-        public void onViewAttachedToWindow(MovieStudioItemHolder holder) {
-            super.onViewAttachedToWindow(holder);
-            Log.d("stdzhu", "attached " + holder.getAdapterPosition());
-        }
-
-        @Override
         public void onViewDetachedFromWindow(MovieStudioItemHolder holder) {
             super.onViewDetachedFromWindow(holder);
-            Log.d("stdzhu", "detached " + holder.getAdapterPosition());
             holder.stopPlay();
         }
     }
@@ -793,7 +763,6 @@ public class MovieStudioActivity extends BaseActivity
         private MediaPlayer mediaPlayer;
         private ImageView thumb;
         private View borderView;
-        private View recordedPart;
         private View playImage;
         private TextView descText;
         private View shaderView;
@@ -805,7 +774,6 @@ public class MovieStudioActivity extends BaseActivity
             playbackTexture = (TextureView) itemView.findViewById(R.id.playback_texture);
             thumb = (ImageView) itemView.findViewById(R.id.video_thumb);
             borderView = itemView.findViewById(R.id.border_view);
-            recordedPart = itemView.findViewById(R.id.recorded_part);
             playImage = itemView.findViewById(R.id.play);
             playImage.setOnClickListener(this);
             descText = (TextView) itemView.findViewById(R.id.description_text);
@@ -840,7 +808,6 @@ public class MovieStudioActivity extends BaseActivity
             mediaPlayer.start();
             thumb.setVisibility(View.INVISIBLE);
             playImage.setVisibility(View.INVISIBLE);
-            recordedPart.setVisibility(View.INVISIBLE);
         }
 
         public void stopPlay() {
@@ -850,7 +817,6 @@ public class MovieStudioActivity extends BaseActivity
                 mediaPlayer = null;
                 thumb.setVisibility(View.VISIBLE);
                 playImage.setVisibility(View.VISIBLE);
-                recordedPart.setVisibility(View.VISIBLE);
             }
         }
 
@@ -892,7 +858,6 @@ public class MovieStudioActivity extends BaseActivity
             if (borderedImage == null) {
                 borderedImage = opencv_core.IplImage.create(
                         width, height, opencv_core.IPL_DEPTH_8U, 4);
-                Log.d("stdzhu", "origin width: " + originImage.width() + ", origin height: " + originImage.height());
             }
 
             opencv_core.CvPoint borderOffset = opencv_core.cvPoint(

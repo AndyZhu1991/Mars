@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/actor_name"
         android:layout_width="120dp"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:layout_marginBottom="2dp"
         android:textColor="#90A0AE"
         android:textSize="12sp"/>
@@ -32,13 +32,6 @@
             android:id="@+id/border_view"
             android:layout_width="120dp"
             android:layout_height="90dp">
-
-            <View
-                android:id="@+id/recorded_part"
-                android:layout_width="120dp"
-                android:layout_height="90dp"
-                android:alpha="0.7"
-                android:background="@color/koolew_light_green" />
 
             <ImageView
                 android:id="@+id/play"

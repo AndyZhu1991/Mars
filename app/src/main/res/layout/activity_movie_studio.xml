@@ -88,11 +88,12 @@
             android:layout_marginTop="6dp"
             android:clipToPadding="false"/>
 
-        <View
-            android:id="@+id/block_touch_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible"/>
+        <com.koolew.mars.view.ProgressView
+            android:id="@+id/progress_view"
+            android:layout_width="120dp"
+            android:layout_height="88dp"
+            android:layout_marginTop="26dp"
+            android:layout_centerHorizontal="true"/>
     </RelativeLayout>
 
     <LinearLayout
@@ -121,25 +122,6 @@
             android:text="@string/delete"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/capture_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:textSize="12sp"
-        android:textColor="#90A0AE"
-        android:text="@string/capture_video"/>
-
-    <ImageView
-        android:id="@+id/capture"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_above="@+id/capture_text"
-        android:layout_centerHorizontal="true"
-        android:src="@mipmap/video_capture"/>
-
     <LinearLayout
         android:id="@+id/next_step"
         android:layout_width="wrap_content"
@@ -165,5 +147,31 @@
             android:textSize="12sp"
             android:text="@string/next_step"/>
     </LinearLayout>
+
+    <View
+        android:id="@+id/block_touch_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/preview_layout"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/capture_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:textSize="12sp"
+        android:textColor="#90A0AE"
+        android:text="@string/capture_video"/>
+
+    <ImageView
+        android:id="@+id/capture"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_above="@+id/capture_text"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/video_capture"/>
 
 </RelativeLayout>
