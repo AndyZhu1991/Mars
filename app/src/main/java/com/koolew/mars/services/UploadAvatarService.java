@@ -54,6 +54,7 @@ public class UploadAvatarService extends IntentService {
     private static final String ACTION_BAZ = "com.koolew.mars.services.action.BAZ";
 
     // TODO: Rename parameters
+    private static final String EXTRA_AVATAR = "com.koolew.mars.services.extra.AVATAR";
     private static final String EXTRA_PARAM1 = "com.koolew.mars.services.extra.PARAM1";
     private static final String EXTRA_PARAM2 = "com.koolew.mars.services.extra.PARAM2";
 
@@ -74,8 +75,13 @@ public class UploadAvatarService extends IntentService {
      * @see IntentService
      */
     public static void startActionUpload(Context context) {
+        startActionUpload(context, MyAccountInfo.getAvatar());
+    }
+
+    public static void startActionUpload(Context context, String avatarUri) {
         Intent intent = new Intent(context, UploadAvatarService.class);
         intent.setAction(ACTION_UPLOAD);
+        intent.putExtra(EXTRA_AVATAR, avatarUri);
         context.startService(intent);
     }
 
@@ -103,7 +109,8 @@ public class UploadAvatarService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_UPLOAD.equals(action)) {
-                handleActionUpload();
+                handleActionUpload(intent.getExtras().
+                        getString(EXTRA_AVATAR, MyAccountInfo.getAvatar()));
             } else if (ACTION_BAZ.equals(action)) {
                 final String param1 = intent.getStringExtra(EXTRA_PARAM1);
                 final String param2 = intent.getStringExtra(EXTRA_PARAM2);
@@ -116,10 +123,10 @@ public class UploadAvatarService extends IntentService {
      * Handle action Foo in the provided background thread with the provided
      * parameters.
      */
-    private void handleActionUpload() {
+    private void handleActionUpload(String avatarUri) {
         // TODO: Handle action Upload
         Bitmap avatarBitmap = BitmapUtil.getScaledSquareBmp(
-                ImageLoader.getInstance().loadImageSync(MyAccountInfo.getAvatar()),
+                ImageLoader.getInstance().loadImageSync(avatarUri),
                 AVATAR_SIZE);
 
         File f = new File(avatarFile);

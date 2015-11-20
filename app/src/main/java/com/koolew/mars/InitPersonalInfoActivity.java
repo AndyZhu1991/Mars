@@ -55,6 +55,8 @@ public class InitPersonalInfoActivity extends BaseActivity {
         mAvatar = (ImageView) findViewById(R.id.avatar);
         ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(), mAvatar);
         mEtNickname = (EditText) findViewById(R.id.et_nickname);
+        mEtNickname.setText(MyAccountInfo.getNickname());
+        Log.d("stdzhu", "My avatar: " + MyAccountInfo.getAvatar() + ", name: " + MyAccountInfo.getNickname());
         mEtNickname.addTextChangedListener(
                 new MaxLengthWatcher(AppProperty.getNicknameMaxLen(), mEtNickname) {
                     @Override
@@ -99,7 +101,7 @@ public class InitPersonalInfoActivity extends BaseActivity {
         String url = UrlHelper.USER_INFO_URL;
         JSONObject requestJson = new JSONObject();
         try {
-            requestJson.put("nickname", mEtNickname.getText().toString());
+            requestJson.put("nickname", mEtNickname.getText().toString().trim());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -113,7 +115,7 @@ public class InitPersonalInfoActivity extends BaseActivity {
                                 // Register/login success
                                 mLoginingDialog.dismiss();
                                 if (!isDefaultAvatar()) {
-                                    UploadAvatarService.startActionUpload(InitPersonalInfoActivity.this);
+                                    UploadAvatarService.startActionUpload(InitPersonalInfoActivity.this, MyAccountInfo.getAvatar());
                                 }
                                 Intent intent = new Intent(InitPersonalInfoActivity.this, MainActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

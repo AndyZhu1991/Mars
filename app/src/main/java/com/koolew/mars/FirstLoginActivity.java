@@ -170,8 +170,6 @@ public class FirstLoginActivity extends BaseActivity implements PlatformActionLi
                     MyAccountInfo.setToken(result.getString("token"));
                     MyAccountInfo.setUid(result.getString("uid"));
                     JSONObject info = result.getJSONObject("info");
-                    MyAccountInfo.setAvatar(info.getString("avatar"));
-                    MyAccountInfo.setNickname(info.getString("nickname"));
                     MyAccountInfo.setPhoneNumber(info.getString("phone"));
                     MyAccountInfo.setKooNum(info.getInt("koo_num"));
                     MyAccountInfo.setCoinNum(info.getInt("coin_num"));
@@ -180,10 +178,15 @@ public class FirstLoginActivity extends BaseActivity implements PlatformActionLi
                     ApiWorker.getInstance().postRegistrationId(MyAccountInfo.getRegistrationId(),
                             ApiWorker.getInstance().emptyResponseListener, null);
 
-                    // Go to the MainActivity
-                    Intent intent = new Intent(FirstLoginActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                    if (result.getInt("fresh") == 1) {
+                        startActivity(new Intent(FirstLoginActivity.this, InitPersonalInfoActivity.class));
+                    }
+                    else {
+                        // Go to the MainActivity
+                        Intent intent = new Intent(FirstLoginActivity.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
                 }
                 else if (response.getInt("code") == 101) { // Not register yet
                     Toast.makeText(FirstLoginActivity.this, R.string.please_bind_mobile,
@@ -203,6 +206,7 @@ public class FirstLoginActivity extends BaseActivity implements PlatformActionLi
     public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
         PlatformDb db = platform.getDb();
         MyAccountInfo.setAvatar(db.getUserIcon());
+        MyAccountInfo.setNickname(db.getUserName());
 
         if (platform.getName().equals(Wechat.NAME)) {
             loginBySns(LOGIN_TYPE.WECHAT, db.get("openid"), db.get("refresh_token"),
