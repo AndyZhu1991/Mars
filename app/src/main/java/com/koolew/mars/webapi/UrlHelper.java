@@ -119,7 +119,7 @@ public class UrlHelper {
     public static String getTopicVideoFriendUrl(String topicId, long beforeTime) {
         return Uri.parse(getTopicVideoFriendUrl(topicId))
                 .buildUpon()
-                .appendQueryParameter("time", String.valueOf(beforeTime))
+                .appendQueryParameter("before", String.valueOf(beforeTime))
                 .build().toString();
     }
 
