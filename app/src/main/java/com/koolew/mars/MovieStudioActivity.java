@@ -476,19 +476,9 @@ public class MovieStudioActivity extends BaseActivity
         }
 
         public String generateThumb() {
-            String firstUserCaptureVideo = null;
-            for (MovieStudioItem item: mAdapter.items) {
-                if (!TextUtils.isEmpty(item.capturedVideoPath)) {
-                    firstUserCaptureVideo = item.capturedVideoPath;
-                    break;
-                }
-            }
-            if (TextUtils.isEmpty(firstUserCaptureVideo)) {
-                return null;
-            }
             String thumbPath = getThumbPath();
             Bitmap thumbBmp = ImageLoader.getInstance()
-                    .loadImageSync("file://" + firstUserCaptureVideo);
+                    .loadImageSync("file://" + mAdapter.items.get(0).getVideoPath());
             File f = new File(thumbPath);
             if (f.exists()) {
                 f.delete();
