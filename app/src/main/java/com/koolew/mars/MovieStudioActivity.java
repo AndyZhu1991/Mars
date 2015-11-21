@@ -1,6 +1,8 @@
 package com.koolew.mars;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -25,6 +27,7 @@ import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Downloader;
+import com.koolew.mars.utils.FileUtil;
 import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.videotools.BlockingRecycleQueue;
@@ -164,9 +167,32 @@ public class MovieStudioActivity extends BaseActivity
         if (captureButtonStatus == STATUS_CANCLE) {
             onCaptureClick();
         }
+        else if (hasUserCapturedPiece()) {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.confirm_give_up_videos)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            MovieStudioActivity.super.onBackPressed();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show();
+        }
         else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        new Thread() {
+            @Override
+            public void run() {
+                FileUtil.deleteFileOrDir(mWorkDir);
+            }
+        }.start();
     }
 
     private void switchCaptureButtonStatus(int status) {
