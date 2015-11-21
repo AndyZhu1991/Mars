@@ -525,10 +525,10 @@ public class ApiWorker {
         return standardPostRequest(UrlHelper.USER_LOCATION_URL, requestObject, listener, errorListener);
     }
 
-    public JsonObjectRequest requestVideoKooRank(String videoId,
+    public JsonObjectRequest requestVideoKooRank(String videoId, int page,
                                                  Response.Listener<JSONObject> listener,
                                                  Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getVideoKooRankUrl(videoId), listener, errorListener);
+        return standardGetRequest(UrlHelper.getVideoKooRankUrl(videoId, page), listener, errorListener);
     }
 
     public JsonObjectRequest postTopicDesc(String topicId, String desc,

@@ -47,9 +47,10 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
             extends RecyclerListFragmentMould<VideoKooRankFragment.VideoKooRankAdapter>{
 
         private String videoId;
+        private int page;
 
         public VideoKooRankFragment() {
-            isNeedLoadMore = false;
+            isNeedLoadMore = true;
         }
 
         @Override
@@ -75,12 +76,14 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
 
         @Override
         protected JsonObjectRequest doRefreshRequest() {
-            return ApiWorker.getInstance().requestVideoKooRank(videoId, mRefreshListener, null);
+            page = 0;
+            return ApiWorker.getInstance().requestVideoKooRank(videoId, page, mRefreshListener, null);
         }
 
         @Override
         protected JsonObjectRequest doLoadMoreRequest() {
-            return null;
+            page++;
+            return ApiWorker.getInstance().requestVideoKooRank(videoId, page, mLoadMoreListener, null);
         }
 
         @Override
@@ -88,8 +91,7 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
             try {
                 if (response.getInt("code") == 0) {
                     JSONArray rank = response.getJSONObject("result").getJSONArray("rank");
-                    mAdapter.setData(rank);
-                    mAdapter.notifyDataSetChanged();
+                    return mAdapter.setData(rank) > 0;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -99,6 +101,14 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
 
         @Override
         protected boolean handleLoadMore(JSONObject response) {
+            try {
+                if (response.getInt("code") == 0) {
+                    JSONArray rank = response.getJSONObject("result").getJSONArray("rank");
+                    return mAdapter.addData(rank) > 0;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             return false;
         }
 
@@ -111,16 +121,32 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
                 userInfos = new ArrayList<>();
             }
 
-            public void setData(JSONArray jsonArray) {
+            public int addData(JSONArray jsonArray) {
+                int originCount = userInfos.size();
+                int addedCount = add(jsonArray);
+                notifyItemRangeInserted(originCount, addedCount);
+                return addedCount;
+            }
+
+            public int setData(JSONArray jsonArray) {
                 userInfos.clear();
+                int addedCount = add(jsonArray);
+                notifyDataSetChanged();
+                return addedCount;
+            }
+
+            private int add(JSONArray jsonArray) {
+                int addedCount = 0;
                 int length = jsonArray.length();
                 for (int i = 0; i < length; i++) {
                     try {
                         userInfos.add(new KooCountUserInfo(jsonArray.getJSONObject(i)));
+                        addedCount++;
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
+                return addedCount;
             }
 
             @Override

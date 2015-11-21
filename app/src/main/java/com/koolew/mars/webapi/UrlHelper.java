@@ -179,10 +179,11 @@ public class UrlHelper {
                 .build().toString();
     }
 
-    public static String getVideoKooRankUrl(String videoId) {
+    public static String getVideoKooRankUrl(String videoId, int page) {
         return Uri.parse(VIDEO_KOO_RANK_URL)
                 .buildUpon()
                 .appendQueryParameter("video_id", videoId)
+                .appendQueryParameter("page", String.valueOf(page))
                 .build().toString();
     }
 
