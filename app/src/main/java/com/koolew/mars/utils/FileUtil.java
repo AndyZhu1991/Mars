@@ -1,9 +1,12 @@
 package com.koolew.mars.utils;
 
+import android.content.Context;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -62,6 +65,25 @@ public class FileUtil {
             System.out.println("复制单个文件操作出错");
             e.printStackTrace();
 
+        }
+    }
+
+    public static void copyFromAssets(Context context, String assetsPath, String dstPath) {
+        File desFile = new File(dstPath);
+        if (!desFile.exists()) {
+            try {
+                InputStream is = context.getAssets().open(assetsPath);
+                int size = is.available();
+                byte[] buffer = new byte[size];
+                is.read(buffer);
+                is.close();
+
+                FileOutputStream fos = new FileOutputStream(desFile);
+                fos.write(buffer);
+                fos.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

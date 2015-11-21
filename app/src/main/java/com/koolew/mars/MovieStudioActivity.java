@@ -37,6 +37,7 @@ import com.koolew.mars.view.ProgressView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.bytedeco.javacpp.opencv_core;
+import org.bytedeco.javacpp.opencv_highgui;
 import org.bytedeco.javacpp.opencv_imgproc;
 
 import java.io.File;
@@ -89,6 +90,9 @@ public class MovieStudioActivity extends BaseActivity
     private MovieTopicInfo mMovieTopicInfo;
     private String mWorkDir;
     private String mFrom;
+
+    private opencv_core.IplImage maskImage;
+    private opencv_core.CvRect maskRect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -550,7 +554,7 @@ public class MovieStudioActivity extends BaseActivity
 
     private void onResultUploadVideo(int resultCode) {
         if (resultCode == VideoEditActivity.RESULT_UPLOADED) {
-            onBackPressed();
+            super.onBackPressed();
         }
     }
 
@@ -605,6 +609,15 @@ public class MovieStudioActivity extends BaseActivity
                     e.printStackTrace();
                 }
             }
+
+            String watermarkPngPath = getCacheDir().getAbsolutePath() + "/watermark.png";
+            FileUtil.copyFromAssets(MovieStudioActivity.this, "watermark.png", watermarkPngPath);
+            opencv_core.IplImage rgbMask = opencv_highgui.cvLoadImage(watermarkPngPath);
+            maskImage = opencv_core.IplImage.create(rgbMask.width(), rgbMask.height(),
+                    rgbMask.depth(), 4);
+            opencv_imgproc.cvCvtColor(rgbMask, maskImage, opencv_imgproc.CV_RGB2RGBA);
+            maskRect = new opencv_core.CvRect();
+            maskRect.x(10).y(10).width(maskImage.width()).height(maskImage.height());
 
             return null;
         }
@@ -881,6 +894,10 @@ public class MovieStudioActivity extends BaseActivity
 
             opencv_imgproc.cvCopyMakeBorder(originImage, borderedImage,
                     borderOffset, opencv_core.IPL_BORDER_CONSTANT);
+
+            opencv_core.cvSetImageROI(borderedImage, maskRect);
+            opencv_core.cvCopy(maskImage, borderedImage);
+            opencv_core.cvResetImageROI(borderedImage);
 
             return borderedImage;
         }

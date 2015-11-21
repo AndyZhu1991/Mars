@@ -5,9 +5,6 @@ import android.content.Context;
 import com.koolew.mars.R;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Random;
 
 /**
@@ -39,22 +36,8 @@ public class BgmUtil {
 
         for (BgmStyleItem bgmStyleItem : ALL_BGMS) {
             for (int i = 0; i < bgmStyleItem.getBgmCount(); i++) {
-                File desFile = new File(bgmStyleItem.getAbsolutePath(i));
-                if (!desFile.exists()) {
-                    try {
-                        InputStream is = context.getAssets().open(bgmStyleItem.getRelativePath(i));
-                        int size = is.available();
-                        byte[] buffer = new byte[size];
-                        is.read(buffer);
-                        is.close();
-
-                        FileOutputStream fos = new FileOutputStream(desFile);
-                        fos.write(buffer);
-                        fos.close();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+                FileUtil.copyFromAssets(context, bgmStyleItem.getRelativePath(i),
+                        bgmStyleItem.getAbsolutePath(i));
             }
         }
     }
