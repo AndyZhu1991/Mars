@@ -103,7 +103,12 @@ public class VideoCardAdapter extends BaseAdapter {
     }
 
     public long getOldestVideoTime() {
-        return mData.get(mData.size() - 1).getCreateTime();
+        if (mData.size() == 0) {
+            return Long.MAX_VALUE;
+        }
+        else {
+            return mData.get(mData.size() - 1).getCreateTime();
+        }
     }
 
     public void removeVideo(String videoId) {
