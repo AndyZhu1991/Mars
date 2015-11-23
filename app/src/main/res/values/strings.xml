@@ -441,6 +441,7 @@
     <!-- For Movie -->
     <string name="act_together">一起演</string>
     <string name="i_will_act">我要演</string>
+    <string name="movie_first_hint">请选择想要表演的片段</string>
 
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>

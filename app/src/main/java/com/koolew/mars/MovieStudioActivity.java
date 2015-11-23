@@ -28,6 +28,7 @@ import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.utils.FileUtil;
+import com.koolew.mars.utils.FirstHintUtil;
 import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.videotools.BlockingRecycleQueue;
@@ -70,6 +71,7 @@ public class MovieStudioActivity extends BaseActivity
     private RecyclerView mRecyclerView;
     private ProgressView mProgressView;
     private View mBlockTouchView;
+    private TextView mFirstHintText;
 
     private ImageView mCaptureButton;
     private TextView mCaptureText;
@@ -153,6 +155,10 @@ public class MovieStudioActivity extends BaseActivity
 
         mProgressView = (ProgressView) findViewById(R.id.progress_view);
         mBlockTouchView = findViewById(R.id.block_touch_view);
+        mFirstHintText = (TextView) findViewById(R.id.first_hint_text);
+        if (FirstHintUtil.isFirstMovie()) {
+            mFirstHintText.setVisibility(View.VISIBLE);
+        }
 
         mCaptureButton = (ImageView) findViewById(R.id.capture);
         mCaptureButton.setOnClickListener(this);
@@ -217,8 +223,15 @@ public class MovieStudioActivity extends BaseActivity
         }
     }
 
+    private void tryToHideFirstHint() {
+        if (mFirstHintText.getVisibility() == View.VISIBLE) {
+            mFirstHintText.setVisibility(View.INVISIBLE);
+        }
+    }
+
     @Override
     public void onClick(View v) {
+        tryToHideFirstHint();
         switch (v.getId()) {
             case R.id.x:
                 onXClick();
@@ -748,6 +761,7 @@ public class MovieStudioActivity extends BaseActivity
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             switch (newState) {
                 case RecyclerView.SCROLL_STATE_IDLE:
+                    tryToHideFirstHint();
                     PositionAndDistance pnd = findNearestRecyclerItem();
                     if (pnd.distance != 0 || pnd.position != mAdapter.selectedPosition) {
                         changeCheckedItem(pnd.position);
@@ -812,6 +826,7 @@ public class MovieStudioActivity extends BaseActivity
 
         @Override
         public void onClick(View v) {
+            tryToHideFirstHint();
             switch (v.getId()) {
                 case R.id.play:
                     startPlay();
