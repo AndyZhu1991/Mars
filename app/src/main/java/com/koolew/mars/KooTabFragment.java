@@ -18,6 +18,7 @@ import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
+import com.koolew.mars.redpoint.RedPointManager;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -63,6 +64,7 @@ public class KooTabFragment extends RecyclerListFragmentMould<KooTabFragment.Koo
 
     @Override
     protected boolean handleRefresh(JSONObject response) {
+        RedPointManager.clearRedPointByPath(RedPointManager.PATH_KOO);
         try {
             if (response.getInt("code") == 0) {
                 return mAdapter.setData(response.getJSONObject("result")
