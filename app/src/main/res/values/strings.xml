@@ -60,8 +60,8 @@
     <string name="fans_count" formatted="false">"%d 粉丝"</string>
     <string name="follows_count" formatted="false">"%d 关注"</string>
     <string name="today_income_renminbi" formatted="false">今日收益（人民币）：%.3f元</string>
-    <string name="create_video_topic">新建话题</string>
-    <string name="join_movie_topic">参与电影卡</string>
+    <string name="create_video_topic">新话题</string>
+    <string name="join_movie_topic">新表演</string>
 
     <!-- For FirstLoginActivity -->
     <string name="app_name_english">KOOLEW</string>
