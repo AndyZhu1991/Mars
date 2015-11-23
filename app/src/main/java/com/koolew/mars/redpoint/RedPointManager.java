@@ -1,11 +1,14 @@
 package com.koolew.mars.redpoint;
 
+import android.text.TextUtils;
+
 import com.android.volley.Response;
 import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -17,12 +20,24 @@ public class RedPointManager {
 
     public static final String PATH_DRAWER_TOGGLE = "/drawer";
     public static final String PATH_FRIENDS = PATH_DRAWER_TOGGLE + "/friends";
-    public static final String PATH_MESSAGE = "/message";
+    public static final String PATH_MESSAGE = PATH_DRAWER_TOGGLE + "/message";
     public static final String PATH_KOO = PATH_MESSAGE + "/koo";
     public static final String PATH_TASK = PATH_MESSAGE + "/task";
     public static final String PATH_DANMAKU = PATH_MESSAGE + "/danmaku";
     public static final String PATH_NOTIFICATION = PATH_MESSAGE + "/notification";
+    public static final String PATH_PROFIT = PATH_DRAWER_TOGGLE + "/profit";
 
+    public static final Map<String, String> PATH_NAME = new HashMap<>();
+    static {
+        PATH_NAME.put(PATH_DRAWER_TOGGLE, "");
+        PATH_NAME.put(PATH_FRIENDS, "suggestion");
+        PATH_NAME.put(PATH_MESSAGE, "");
+        PATH_NAME.put(PATH_KOO, "koo");
+        PATH_NAME.put(PATH_TASK, "assignment");
+        PATH_NAME.put(PATH_DANMAKU, "comment");
+        PATH_NAME.put(PATH_NOTIFICATION, "activity");
+        PATH_NAME.put(PATH_PROFIT, "profit");
+    }
 
     private static RedPointInfo redPointInfo;
     private static Map<String, RedPointView> registed = new HashMap<>();
@@ -37,46 +52,38 @@ public class RedPointManager {
     }
 
     public static void clearRedPointByPath(String path) {
-        refreshByPath(path, 0);
+        for (String key: PATH_NAME.keySet()) {
+            if (path.equals(key)) {
+                setRedPointValueByPath(path, 0);
+            }
+        }
 
-        if (path.equals(PATH_FRIENDS)) {
-            redPointInfo.setSuggestion(0);
-        }
-        else if (path.equals(PATH_TASK)) {
-            redPointInfo.setAssignment(0);
-        }
-        else if (path.equals(PATH_DANMAKU)) {
-            redPointInfo.setComment(0);
-        }
-        else if (path.equals(PATH_NOTIFICATION)) {
-            redPointInfo.setActivity(0);
-        }
+        refreshByPath(path, 0);
     }
 
     public static void refresh(RedPointInfo info) {
         if (!info.equals(redPointInfo)) {
-            if (getSuggestionCount() != info.getSuggestion()) {
-                refreshByPath(PATH_FRIENDS, info.getSuggestion());
-            }
-            if (getAssignmentCount() != info.getAssignment()) {
-                refreshByPath(PATH_TASK, info.getAssignment());
-            }
-            if (getDanmakuCount() != info.getComment()) {
-                refreshByPath(PATH_DANMAKU, info.getComment());
-            }
-            if (getNotificationCount() != info.getActivity()) {
-                refreshByPath(PATH_NOTIFICATION, info.getActivity());
-            }
-
+            RedPointInfo originalInfo = redPointInfo;
             redPointInfo = info;
+
+            for (String path: PATH_NAME.keySet()) {
+                int originalValue = getRedPointValueByPath(originalInfo, path);
+                int newValue = getRedPointValueByPath(redPointInfo, path);
+                if (originalValue != newValue) {
+                    refreshByPath(path, newValue);
+                }
+            }
         }
     }
 
     private static void refreshByPath(String path, int count) {
         Set<String> keys = registed.keySet();
         for (String key: keys) {
-            if (path.startsWith(key)) {
+            if (path.equals(key)) {
                 registed.get(key).setCount(count);
+            }
+            else if (path.startsWith(key)) { // Parent path
+                registed.get(key).setCount(getCountByPath(key));
             }
         }
     }
@@ -84,74 +91,70 @@ public class RedPointManager {
     private static int getCountByPath(String path) {
         int count = 0;
 
-        if (PATH_FRIENDS.startsWith(path)) {
-            count += getSuggestionCount();
-        }
-        if (PATH_TASK.startsWith(path)) {
-            count += getAssignmentCount();
-        }
-        if (PATH_DANMAKU.startsWith(path)) {
-            count += getDanmakuCount();
-        }
-        if (PATH_NOTIFICATION.startsWith(path)) {
-            count += getNotificationCount();
+        for (String eachPath: PATH_NAME.keySet()) {
+            if (eachPath.startsWith(path)) {
+                count += getRedPointValueByPath(eachPath);
+            }
         }
 
         return count;
     }
 
-    private static int getFeedsCount() {
+    private static int getRedPointValueByPath(String path) {
+        return getRedPointValueByPath(redPointInfo, path);
+    }
+
+    private static int getRedPointValueByPath(RedPointInfo redPointInfo, String path) {
         if (redPointInfo == null) {
             return 0;
         }
-        else {
-            return redPointInfo.getFeeds();
+
+        Field field = getRedPointFieldByPath(path);
+        if (field == null) {
+            return 0;
+        }
+
+        try {
+            return field.getInt(redPointInfo);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+    private static void setRedPointValueByPath(String path, int value) {
+        setRedPointValueByPath(redPointInfo, path, value);
+    }
+
+    private static void setRedPointValueByPath(RedPointInfo redPointInfo, String path, int value) {
+        if (redPointInfo == null) {
+            return;
+        }
+
+        Field field = getRedPointFieldByPath(path);
+        if (field == null) {
+            return;
+        }
+
+        try {
+            field.setInt(redPointInfo, value);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
     }
 
-    private static int getAssignmentCount() {
-        if (redPointInfo == null) {
-            return 0;
+    private static Field getRedPointFieldByPath(String path) {
+        Class redPointInfoClass = RedPointInfo.class;
+        try {
+            String name = PATH_NAME.get(path);
+            if (TextUtils.isEmpty(name)) {
+                return null;
+            }
+            return redPointInfoClass.getDeclaredField(name);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
         }
-        else {
-            return redPointInfo.getAssignment();
-        }
-    }
-
-    private static int getSuggestionCount() {
-        if (redPointInfo == null) {
-            return 0;
-        }
-        else {
-            return redPointInfo.getSuggestion();
-        }
-    }
-
-    private static int getDanmakuCount() {
-        if (redPointInfo == null) {
-            return 0;
-        }
-        else {
-            return redPointInfo.getComment();
-        }
-    }
-
-    private static int getMeCount() {
-        if (redPointInfo == null) {
-            return 0;
-        }
-        else {
-            return redPointInfo.getMe();
-        }
-    }
-
-    private static int getNotificationCount() {
-        if (redPointInfo == null) {
-            return 0;
-        }
-        else {
-            return redPointInfo.getActivity();
-        }
+        return null;
     }
 
     public static void refreshRedPoint() {

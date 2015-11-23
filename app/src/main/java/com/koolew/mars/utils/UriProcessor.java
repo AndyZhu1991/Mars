@@ -12,6 +12,7 @@ import com.koolew.mars.FriendInfoActivity;
 import com.koolew.mars.KoolewWebActivity;
 import com.koolew.mars.MessagesActivity;
 import com.koolew.mars.PushWrapperActivity;
+import com.koolew.mars.TodayIncomeActivity;
 
 /**
  * Created by jinchangzhu on 7/15/15.
@@ -33,6 +34,8 @@ public class UriProcessor {
     protected static final String TAB_ASSIGNMENT = "assignment";
     protected static final String TAB_COMMENT = "comment";
     protected static final String TAB_ME = "me";
+    protected static final String TAB_KOO = "koo";
+    protected static final String TAB_PROFIT = "profit";
 
     private Context mContext;
 
@@ -111,6 +114,14 @@ public class UriProcessor {
             mContext.startActivity(intent);
         }
         else if (tabId.equals(TAB_ME)) {
+        }
+        else if (tabId.equals(TAB_KOO)) {
+            Intent intent = newIntent(mContext, MessagesActivity.class);
+            intent.putExtra(MessagesActivity.KEY_WHICH_TAB, MessagesActivity.KOO_TAB);
+            mContext.startActivity(intent);
+        }
+        else if (tabId.equals(TAB_PROFIT)) {
+            mContext.startActivity(newIntent(mContext, TodayIncomeActivity.class));
         }
     }
 

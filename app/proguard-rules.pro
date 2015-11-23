@@ -162,3 +162,6 @@
 
 # bugly
 -keep public class com.tencent.bugly.**{*;}
+
+#实现DoNotConfuse的类不被混淆
+-keepnames class * implements com.koolew.mars.DoNotConfuse

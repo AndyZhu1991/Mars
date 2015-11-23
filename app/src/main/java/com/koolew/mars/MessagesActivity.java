@@ -29,8 +29,9 @@ public class MessagesActivity extends BaseV4FragmentActivity {
 
     public static final String KEY_WHICH_TAB = "which tab";
     public static final int DANMAKU_TAB = 0;
-    public static final int NOTIFICATION_TAB = 1;
-    public static final int TASK_TAB = 2;
+    public static final int KOO_TAB = 1;
+    public static final int NOTIFICATION_TAB = 2;
+    public static final int TASK_TAB = 3;
 
     private TitleBarView titleBar;
     private IndicatorViewPager indicatorViewPager;

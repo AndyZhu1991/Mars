@@ -1,5 +1,6 @@
 package com.koolew.mars.redpoint;
 
+import com.koolew.mars.utils.DoNotConfuse;
 import com.koolew.mars.utils.JsonUtil;
 
 import org.json.JSONObject;
@@ -7,13 +8,15 @@ import org.json.JSONObject;
 /**
  * Created by jinchangzhu on 10/7/15.
  */
-public class RedPointInfo {
-    private int feeds;
-    private int assignment;
-    private int suggestion;
-    private int comment;
-    private int me;
-    private int activity;
+public class RedPointInfo implements DoNotConfuse {
+    int feeds;
+    int assignment;
+    int suggestion;
+    int comment;
+    int me;
+    int activity;
+    int koo;
+    int profit;
 
     public RedPointInfo(JSONObject result) {
         feeds      = JsonUtil.getIntIfHas(result, "feeds");
@@ -22,54 +25,8 @@ public class RedPointInfo {
         comment    = JsonUtil.getIntIfHas(result, "comment");
         me         = JsonUtil.getIntIfHas(result, "me");
         activity   = JsonUtil.getIntIfHas(result, "activity");
-    }
-
-    public int getAssignment() {
-        return assignment;
-    }
-
-    public int getComment() {
-        return comment;
-    }
-
-    public int getFeeds() {
-        return feeds;
-    }
-
-    public int getMe() {
-        return me;
-    }
-
-    public int getSuggestion() {
-        return suggestion;
-    }
-
-    public int getActivity() {
-        return activity;
-    }
-
-    public void setActivity(int activity) {
-        this.activity = activity;
-    }
-
-    public void setAssignment(int assignment) {
-        this.assignment = assignment;
-    }
-
-    public void setComment(int comment) {
-        this.comment = comment;
-    }
-
-    public void setFeeds(int feeds) {
-        this.feeds = feeds;
-    }
-
-    public void setMe(int me) {
-        this.me = me;
-    }
-
-    public void setSuggestion(int suggestion) {
-        this.suggestion = suggestion;
+        koo        = JsonUtil.getIntIfHas(result, "koo");
+        profit     = JsonUtil.getIntIfHas(result, "profit");
     }
 
     @Override
@@ -86,19 +43,25 @@ public class RedPointInfo {
             if (feeds != other.feeds) {
                 return false;
             }
-            if (assignment != other.getAssignment()) {
+            if (assignment != other.assignment) {
                 return false;
             }
-            if (suggestion != other.getSuggestion()) {
+            if (suggestion != other.suggestion) {
                 return false;
             }
-            if (comment != other.getComment()) {
+            if (comment != other.comment) {
                 return false;
             }
-            if (me != other.getMe()) {
+            if (me != other.me) {
                 return false;
             }
-            if (activity != other.getActivity()) {
+            if (activity != other.activity) {
+                return false;
+            }
+            if (koo != other.koo) {
+                return false;
+            }
+            if (profit != other.profit) {
                 return false;
             }
             return true;
