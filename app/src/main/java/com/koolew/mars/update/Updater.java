@@ -89,6 +89,7 @@ public class Updater implements DownloadStatusListener, Response.Listener<JSONOb
             onNewVersionAvailable();
         }
         else {
+            Toast.makeText(mContext, R.string.you_have_last_version, Toast.LENGTH_SHORT).show();
             instance = null;
         }
     }

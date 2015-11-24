@@ -416,6 +416,7 @@
 
     <!-- For Updater -->
     <string name="checking_for_update">正在检查更新...</string>
+    <string name="you_have_last_version">没有新版本</string>
     <string name="downloading_update_package">正在下载安装包...</string>
     <string name="new_version" formatted="false">新版本：%s</string>
     <string name="update">更新</string>
