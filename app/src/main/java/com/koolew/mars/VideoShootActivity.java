@@ -34,6 +34,7 @@ import com.koolew.mars.utils.RawImageUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.videotools.RealTimeYUV420RecorderWithAutoAudio;
 import com.koolew.mars.videotools.VideoTranscoder;
+import com.koolew.mars.view.RecordButton;
 import com.koolew.mars.view.RecordingSessionView;
 
 import java.io.BufferedReader;
@@ -75,6 +76,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     private ImageView mImportVideo;
     private ImageView mRecordComplete;
 
+    private RecordButton mRecordButton;
     private TextView mCaptureText;
 
     private RecordingSessionView recordingSessionView;
@@ -208,7 +210,8 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         mRecordComplete = (ImageView) findViewById(R.id.record_complete);
         mRecordComplete.setOnClickListener(this);
 
-        findViewById(R.id.image_record).setOnClickListener(this);
+        mRecordButton = (RecordButton) findViewById(R.id.image_record);
+        mRecordButton.setOnClickListener(this);
         findViewById(R.id.close_layout).setOnClickListener(this);
         mChangeCamera.setOnClickListener(this);
         mPlayImage.setOnClickListener(this);
@@ -620,6 +623,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
             switchToPreviewMode();
         }
         else {
+            mRecordButton.doAnimation();
             if (!isRecording) {
                 startRecord();
             } else {

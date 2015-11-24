@@ -114,11 +114,10 @@
                 android:layout_gravity="center_vertical"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
-                <ImageView
+                <com.koolew.mars.view.RecordButton
                     android:id="@+id/image_record"
                     android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:src="@mipmap/video_capture"/>
+                    android:layout_height="60dp"/>
                 <TextView
                     android:id="@+id/capture_text"
                     android:layout_width="wrap_content"
