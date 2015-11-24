@@ -66,7 +66,7 @@ public class UrlHelper {
     public static final String INCOME_DESC_URL = V4_URL + "profit";
     private static final String INCOME_ANALYSIS_URL = V4_URL + "profit/video";
     public static final String CASH_OUT_URL = V4_URL + "profit/withdraw";
-    public static final String CASH_OUT_RECORD_URL = V4_URL + "profit/history";
+    public static final String CASH_OUT_RECORD_URL = V4_URL + "profit/withdraw/history";
 
     // Feeds
     public static final String FEEDS_TOPIC_URL = V4_URL + "feeds/topics";

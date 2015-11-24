@@ -27,7 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AddTopicActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
+public class AddTopicActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener,
+        View.OnClickListener {
 
     private static final int REQUEST_CODE_CREATE_TOPIC = 1;
 
@@ -229,6 +230,12 @@ public class AddTopicActivity extends BaseActivity implements SwipeRefreshLayout
             holder.mTitleText.setText(topicItem.getTitle());
             holder.mVideoCountText.setText(getString(
                     R.string.little_video_count, topicItem.getVideoCount()));
+            if (topicItem.getCategory().equals("movie")) {
+                holder.mMovieCategoryLable.setVisibility(View.VISIBLE);
+            }
+            else {
+                holder.mMovieCategoryLable.setVisibility(View.GONE);
+            }
         }
 
         @Override
@@ -241,6 +248,7 @@ public class AddTopicActivity extends BaseActivity implements SwipeRefreshLayout
             private TextView mOrderText;
             private TextView mTitleText;
             private TextView mVideoCountText;
+            private TextView mMovieCategoryLable;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -248,6 +256,7 @@ public class AddTopicActivity extends BaseActivity implements SwipeRefreshLayout
                 mOrderText = (TextView) itemView.findViewById(R.id.order);
                 mTitleText = (TextView) itemView.findViewById(R.id.title);
                 mVideoCountText = (TextView) itemView.findViewById(R.id.video_count);
+                mMovieCategoryLable = (TextView) itemView.findViewById(R.id.category_lable);
 
                 itemView.setOnClickListener(this);
             }

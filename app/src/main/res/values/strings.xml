@@ -273,6 +273,7 @@
     <string name="recommendation">热门推荐</string>
     <string name="little_video_count" formatted="false">%d个小视频</string>
     <string name="no_title_hint">还没有输入标题呢！</string>
+    <string name="movie">电影</string>
 
     <!-- For CreateTopicActivity -->
     <string name="create_topic">创建话题</string>
