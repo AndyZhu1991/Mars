@@ -473,7 +473,8 @@ public class ApiWorker {
     }
 
     public JsonObjectRequest loginBySns(MyAccountInfo.LOGIN_TYPE type, String openId,
-                                        String refreshToken, long expiresIn, String unionId,
+                                        String access_token, String refreshToken, long expiresIn,
+                                        String unionId,
                                         Response.Listener<JSONObject> listener,
                                         Response.ErrorListener errorListener) {
         JSONObject requestJson = new JSONObject();
@@ -481,7 +482,10 @@ public class ApiWorker {
             requestJson.put("device", Build.FINGERPRINT);
             requestJson.put("type", type.ordinal());
             requestJson.put("open_id", openId);
-            requestJson.put("refresh_token", refreshToken);
+            requestJson.put("access_token", access_token);
+            if (refreshToken != null) {
+                requestJson.put("refresh_token", refreshToken);
+            }
             requestJson.put("expires_in", expiresIn);
             requestJson.put("union_id", unionId);
         } catch (JSONException e) {

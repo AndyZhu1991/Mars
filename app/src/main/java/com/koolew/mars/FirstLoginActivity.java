@@ -139,8 +139,8 @@ public class FirstLoginActivity extends BaseActivity implements PlatformActionLi
         }
     }
 
-    private void loginBySns(final LOGIN_TYPE type, final String openId, String refreshToken,
-                            long expiresIn, final String unionId) {
+    private void loginBySns(final LOGIN_TYPE type, final String openId, String accessToken,
+                            String refreshToken, long expiresIn, final String unionId) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -148,8 +148,8 @@ public class FirstLoginActivity extends BaseActivity implements PlatformActionLi
                 mProgressDialog.show();
             }
         });
-        ApiWorker.getInstance().loginBySns(type, openId, refreshToken, expiresIn, unionId,
-                new SnsLoginListener(type), null);
+        ApiWorker.getInstance().loginBySns(type, openId, accessToken, refreshToken, expiresIn,
+                unionId, new SnsLoginListener(type), null);
     }
 
     class SnsLoginListener implements Response.Listener<JSONObject> {
@@ -209,15 +209,15 @@ public class FirstLoginActivity extends BaseActivity implements PlatformActionLi
         MyAccountInfo.setNickname(db.getUserName());
 
         if (platform.getName().equals(Wechat.NAME)) {
-            loginBySns(LOGIN_TYPE.WECHAT, db.get("openid"), db.get("refresh_token"),
+            loginBySns(LOGIN_TYPE.WECHAT, db.get("openid"), db.getToken(), db.get("refresh_token"),
                     db.getExpiresIn(), db.get("unionid"));
         }
         else if (platform.getName().equals(SinaWeibo.NAME)) {
-            loginBySns(LOGIN_TYPE.WEIBO, db.getUserId(), db.getToken(),
+            loginBySns(LOGIN_TYPE.WEIBO, db.getUserId(), db.getToken(), null,
                     db.getExpiresTime(), db.getUserId());
         }
         else if (platform.getName().equals(QQ.NAME)) {
-            loginBySns(LOGIN_TYPE.QQ, db.getUserId(), db.getToken(),
+            loginBySns(LOGIN_TYPE.QQ, db.getUserId(), db.getToken(), null,
                     db.getExpiresIn(), db.getUserId());
         }
     }
