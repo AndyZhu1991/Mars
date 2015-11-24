@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -18,22 +17,16 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.koolew.mars.R;
-import com.koolew.mars.downloadmanager.DownloadRequest;
-import com.koolew.mars.downloadmanager.DownloadStatusListener;
-import com.koolew.mars.downloadmanager.ThinDownloadManager;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseVideoInfo;
-import com.koolew.mars.utils.Utils;
+import com.koolew.mars.utils.Downloader;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by jinchangzhu on 11/4/15.
  */
-public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceTextureListener {
+public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceTextureListener,
+        Downloader.LoadListener {
 
     private static final int VIDEO_WIDTH_RATIO = 4;
     private static final int VIDEO_HEIGHT_RATIO = 3;
@@ -135,10 +128,10 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         setVideoInfo(videoInfo.getVideoUrl(), videoInfo.getVideoThumb());
     }
 
-    public void startPlay(VideoDownloader downloader) {
+    public void startPlay() {
         if (mVideoInfo != null || mVideoUrl != null) {
             mProgressBar.setVisibility(VISIBLE);
-            downloader.download(mVideoUrl, this);
+            Downloader.getInstance().download(this, mVideoUrl);
             mStatus = STATUS_POST_PLAY;
         }
     }
@@ -208,8 +201,21 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
     }
 
+    @Override
+    public void onDownloadComplete(String url, String filePath) {
+        onComplete(url, filePath);
+    }
 
-    public static abstract class ScrollPlayer implements VideoDownloader {
+    @Override
+    public void onDownloadProgress(long totalBytes, long downloadedBytes, int progress) {
+    }
+
+    @Override
+    public void onDownloadFailed(int errorCode, String errorMessage) {
+    }
+
+
+    public static abstract class ScrollPlayer {
 
         private RecyclerView mRecyclerView;
         private RecyclerView.ViewHolder mCurrentPlayHolder;
@@ -231,7 +237,7 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
                             stopPlay(mCurrentPlayHolder);
                         }
                         mCurrentPlayHolder = holder;
-                        startPlay(holder, ScrollPlayer.this);
+                        startPlay(holder);
                     }
                 }
             }
@@ -286,8 +292,8 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
                     videoView.getRight(), videoView.getBottom());
         }
 
-        protected void startPlay(RecyclerView.ViewHolder holder, VideoDownloader downloader) {
-            getVideoView(holder).startPlay(downloader);
+        protected void startPlay(RecyclerView.ViewHolder holder) {
+            getVideoView(holder).startPlay();
         }
 
         protected void stopPlay(RecyclerView.ViewHolder holder) {
@@ -295,115 +301,5 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         }
 
         protected abstract KoolewVideoView getVideoView(RecyclerView.ViewHolder holder);
-
-        @Override
-        public void download(String url, KoolewVideoView videoView) {
-
-        }
-    }
-
-    public static class VideoDownloaderImpl implements VideoDownloader, DownloadStatusListener {
-
-        private static final int MAX_DOWNLOAD_COUNT = 4;
-        private ThinDownloadManager mDownloadManager = new ThinDownloadManager(MAX_DOWNLOAD_COUNT);
-        private List<DownloadEvent> mDownloadEvents = new LinkedList<>();
-        private String mCacheDir;
-        private Handler mHandler;
-
-        public VideoDownloaderImpl(Context context) {
-            mCacheDir = Utils.getCacheDir(context);
-            mHandler = new Handler();
-        }
-
-        @Override
-        public void download(final String url, final KoolewVideoView videoView) {
-            final String localPath = url2LocalPath(url);
-            if (new File(localPath).exists()) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        videoView.onComplete(url, localPath);
-                    }
-                });
-            }
-            else {
-                if (mDownloadEvents.size() >= MAX_DOWNLOAD_COUNT) {
-                    float minProgress = 1.0f;
-                    DownloadEvent minProgressDownload = null;
-                    for (DownloadEvent event : mDownloadEvents) {
-                        if (event.progress < minProgress) {
-                            minProgressDownload = event;
-                        }
-                    }
-                    mDownloadManager.cancel(minProgressDownload.id);
-                    mDownloadEvents.remove(minProgressDownload);
-                }
-
-                startDownload(url, videoView);
-            }
-        }
-
-        private void startDownload(String url, KoolewVideoView videoView) {
-            DownloadEvent event = new DownloadEvent();
-            event.url = url;
-            event.filePath = url2LocalPath(url);
-            event.progress = 0.0f;
-            event.videoView = videoView;
-            DownloadRequest request = new DownloadRequest(Uri.parse(event.url))
-                    .setDestinationURI(Uri.parse(event.filePath))
-                    .setDownloadListener(this);
-            event.id = mDownloadManager.add(request);
-            mDownloadEvents.add(event);
-        }
-
-        private DownloadEvent findEventById(int id) {
-            for (DownloadEvent event: mDownloadEvents) {
-                if (event.id == id) {
-                    return event;
-                }
-            }
-            return null;
-        }
-
-        private String url2LocalPath(String url) {
-            return mCacheDir + url.substring(url.lastIndexOf('/'));
-        }
-
-        @Override
-        public void onDownloadComplete(int id) {
-            DownloadEvent event = findEventById(id);
-            if (event != null) {
-                mDownloadEvents.remove(event);
-                event.videoView.onComplete(event.url, event.filePath);
-            }
-        }
-
-        @Override
-        public void onDownloadFailed(int id, int errorCode, String errorMessage) {
-            DownloadEvent event = findEventById(id);
-            if (event != null) {
-                mDownloadEvents.remove(event);
-            }
-        }
-
-        @Override
-        public void onProgress(int id, long totalBytes, long downloadedBytes, int progress) {
-            DownloadEvent event = findEventById(id);
-            if (event != null) {
-                event.progress = 1.0f * downloadedBytes / totalBytes;
-            }
-        }
-
-        public static class DownloadEvent {
-            private int id;
-            private String url;
-            private String filePath;
-            private float progress;
-            private KoolewVideoView videoView;
-        }
-    }
-
-    public interface VideoDownloader {
-        void download(String url, KoolewVideoView videoView);
     }
 }

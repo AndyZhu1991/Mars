@@ -31,13 +31,11 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
     private OnTitleVideoListener mTitleVideoListener;
     private KoolewVideoView mVideoView;
     private View mPlayImage;
-    private KoolewVideoView.VideoDownloader mDownloader;
 
 
     public DetailTitleVideoCardAdapter(Context context, String topicId) {
         super(context);
         mTopicId = topicId;
-        mDownloader = new KoolewVideoView.VideoDownloaderImpl(context);
     }
 
     @Override
@@ -235,7 +233,7 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
     }
 
     private void startTitleVideo() {
-        mVideoView.startPlay(mDownloader);
+        mVideoView.startPlay();
         mPlayImage.setVisibility(View.INVISIBLE);
         if (mTitleVideoListener != null) {
             mTitleVideoListener.onTitleVideoStart();

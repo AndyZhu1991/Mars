@@ -26,11 +26,9 @@ public class MovieVideoCardAdapter extends VideoCardAdapter implements View.OnCl
     private OnTitleVideoListener mTitleVideoListener;
     private KoolewVideoView mVideoView;
     private View mPlayImage;
-    private KoolewVideoView.VideoDownloader mDownloader;
 
     public MovieVideoCardAdapter(Context context) {
         super(context);
-        mDownloader = new KoolewVideoView.VideoDownloaderImpl(context);
     }
 
     @Override
@@ -101,7 +99,7 @@ public class MovieVideoCardAdapter extends VideoCardAdapter implements View.OnCl
     }
 
     private void startTitleVideo() {
-        mVideoView.startPlay(mDownloader);
+        mVideoView.startPlay();
         mPlayImage.setVisibility(View.INVISIBLE);
         if (mTitleVideoListener != null) {
             mTitleVideoListener.onTitleVideoStart();

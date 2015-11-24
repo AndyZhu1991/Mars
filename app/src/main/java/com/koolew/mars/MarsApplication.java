@@ -9,6 +9,7 @@ import android.util.Log;
 import com.koolew.mars.imageloader.VideoThumbDecoder;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.utils.BgmUtil;
+import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.utils.FirstHintUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
@@ -50,6 +51,7 @@ public class MarsApplication extends Application {
         initUmeng();
         com.koolew.mars.videotools.Utils.preloadRecorder(this);
         FirstHintUtil.init(this);
+        Downloader.init();
 
         Log.d(TAG, "Init in MarsApplication takes: " + (System.currentTimeMillis() - start));
     }

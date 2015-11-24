@@ -21,14 +21,24 @@ import java.util.Map;
  */
 public class Downloader implements DownloadStatusListener {
 
-    protected static final int MAX_DOWNLOAD_COUNT = 3;
+    protected static final int MAX_DOWNLOAD_COUNT = 5;
 
     protected ThinDownloadManager mDownloadManager;
     protected Map<Integer, DownloadEvent> mDownloads;
     protected Handler mHandler;
 
+    public static Downloader sDownloader;
 
-    public Downloader() {
+
+    public static void init() {
+        sDownloader = new Downloader();
+    }
+
+    public static Downloader getInstance() {
+        return sDownloader;
+    }
+
+    private Downloader() {
         mDownloadManager = new ThinDownloadManager(MAX_DOWNLOAD_COUNT);
         mDownloads = new HashMap<>();
         if (Looper.myLooper() != null) {
@@ -50,9 +60,19 @@ public class Downloader implements DownloadStatusListener {
         }
 
         if (!forceRedownload && new File(url2LocalFile(url, filePath)).exists()) {
+            // File already downloaded
             downloadComplete(listener, url, url2LocalFile(url, filePath));
         }
         else {
+            // If this url is downloading, update the listener only
+            for (int key: mDownloads.keySet()) {
+                DownloadEvent downloadEvent = mDownloads.get(key);
+                if (downloadEvent.url.equals(url)) {
+                    downloadEvent.listener = listener;
+                    return;
+                }
+            }
+
             if (mDownloads.size() >= MAX_DOWNLOAD_COUNT) {
                 long minDownloadedBytes = Long.MAX_VALUE;
                 int minDownloadKey = 0;

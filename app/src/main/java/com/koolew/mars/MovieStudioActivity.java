@@ -471,6 +471,7 @@ public class MovieStudioActivity extends BaseActivity
             mNextImage.setImageResource(R.mipmap.video_complete_enable);
             switchCaptureButtonStatus(STATUS_RECAPTURE);
             blockOperation(false);
+            mProgressView.invalidateProgress(0.0f);
             super.onPostExecute(filePath);
         }
     }
@@ -635,9 +636,8 @@ public class MovieStudioActivity extends BaseActivity
         }
 
         private String DownloadSynced(String url) {
-            Downloader downloader = new Downloader();
             Downloader.DownloadFuture future = new Downloader.DownloadFuture();
-            downloader.download(future, url);
+            Downloader.getInstance().download(future, url);
             return future.download();
         }
 
