@@ -9,12 +9,15 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -797,10 +800,15 @@ public class MovieStudioActivity extends BaseActivity
         return new PositionAndDistance(position, minDistance);
     }
 
+    private boolean useTextureView() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    }
+
     class MovieStudioItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             MediaPlayer.OnCompletionListener {
 
         private TextView actorName;
+        private TextureView playbackTexture;
         private SurfaceView playbackSurface;
         private MediaPlayer mediaPlayer;
         private ImageView thumb;
@@ -813,7 +821,12 @@ public class MovieStudioActivity extends BaseActivity
             super(itemView);
 
             actorName = (TextView) itemView.findViewById(R.id.actor_name);
-            playbackSurface = (SurfaceView) itemView.findViewById(R.id.playback_surface);
+            if (useTextureView()) {
+                playbackTexture = (TextureView) itemView.findViewById(R.id.playback_texture);
+            }
+            else {
+                playbackSurface = (SurfaceView) itemView.findViewById(R.id.playback_surface);
+            }
             thumb = (ImageView) itemView.findViewById(R.id.video_thumb);
             borderView = itemView.findViewById(R.id.border_view);
             playImage = itemView.findViewById(R.id.play);
@@ -846,7 +859,12 @@ public class MovieStudioActivity extends BaseActivity
 
         private void startPlay(String path) {
             mediaPlayer = MediaPlayer.create(MovieStudioActivity.this, Uri.parse("file://" + path));
-            mediaPlayer.setDisplay(playbackSurface.getHolder());
+            if (useTextureView()) {
+                mediaPlayer.setSurface(new Surface(playbackTexture.getSurfaceTexture()));
+            }
+            else {
+                mediaPlayer.setDisplay(playbackSurface.getHolder());
+            }
             mediaPlayer.setOnCompletionListener(this);
             mediaPlayer.start();
             thumb.setVisibility(View.INVISIBLE);
