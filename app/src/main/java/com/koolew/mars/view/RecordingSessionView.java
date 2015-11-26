@@ -319,7 +319,11 @@ public class RecordingSessionView extends LinearLayout {
     }
 
     public void play() {
-        VideoPieceItem item = recordedItems.get(getSelectedItemPosition());
+        int selectedItemPosition = getSelectedItemPosition();
+        if (selectedItemPosition < 0) {
+            return;
+        }
+        VideoPieceItem item = recordedItems.get(selectedItemPosition);
         try {
             mediaPlayer.setDataSource(new FileSource(new File(item.fileName)));
         } catch (IOException e) {
