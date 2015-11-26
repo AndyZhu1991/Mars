@@ -57,7 +57,7 @@ public class Updater implements DownloadStatusListener, Response.Listener<JSONOb
     public void checkUpdateAutomatic() {
         if (System.currentTimeMillis() - getLastAutoCheckMillis() > MIN_AUTO_CHECK_MILLIS) {
             setLastAutoCheckMillis(System.currentTimeMillis());
-            doCheckUpdateRequest();
+            doCheckUpdateRequest(true);
         }
         else {
             instance = null;
@@ -76,10 +76,12 @@ public class Updater implements DownloadStatusListener, Response.Listener<JSONOb
 
     public void checkUpdate() {
         Toast.makeText(mContext, R.string.checking_for_update, Toast.LENGTH_SHORT).show();
-        doCheckUpdateRequest();
+        doCheckUpdateRequest(false);
     }
 
-    private void doCheckUpdateRequest() {
+    private boolean isAutoCheck = true;
+    private void doCheckUpdateRequest(boolean isAutoCheck) {
+        this.isAutoCheck = isAutoCheck;
         ApiWorker.getInstance().checkVersion(this, null);
     }
 
@@ -89,7 +91,9 @@ public class Updater implements DownloadStatusListener, Response.Listener<JSONOb
             onNewVersionAvailable();
         }
         else {
-            Toast.makeText(mContext, R.string.you_have_last_version, Toast.LENGTH_SHORT).show();
+            if (!isAutoCheck) {
+                Toast.makeText(mContext, R.string.you_have_last_version, Toast.LENGTH_SHORT).show();
+            }
             instance = null;
         }
     }
