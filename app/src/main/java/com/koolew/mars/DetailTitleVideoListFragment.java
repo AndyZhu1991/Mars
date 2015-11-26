@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.koolew.mars.DetailTitleVideoCardAdapter.TopicTitleDetail;
 import com.koolew.mars.infos.KooCountUserInfo;
+import com.koolew.mars.utils.JsonUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,30 +69,27 @@ public abstract class DetailTitleVideoListFragment extends BaseVideoListFragment
     }
 
     protected TopicTitleDetail getTopicDetailFromResponse(JSONObject response) {
+        TopicTitleDetail topicTitleDetail = new TopicTitleDetail();
         try {
             if (response.getInt("code") == 0) {
-                TopicTitleDetail topicTitleDetail = new TopicTitleDetail();
-
                 JSONObject result = response.getJSONObject("result");
-                topicTitleDetail.setTitle(result.getString("content"));
-                topicTitleDetail.setDescription(result.getString("desc"));
-                topicTitleDetail.setVideoCount(result.getInt("video_cnt"));
+                topicTitleDetail.setTitle(JsonUtil.getStringIfHas(result, "content"));
+                topicTitleDetail.setDescription(JsonUtil.getStringIfHas(result, "desc"));
+                topicTitleDetail.setVideoCount(JsonUtil.getIntIfHas(result, "video_cnt"));
 
-                JSONArray kooRanks = result.getJSONArray("koo_ranks");
+                JSONArray kooRanks = JsonUtil.getJSONArrayIfHas(result, "koo_ranks", new JSONArray());
                 int length = kooRanks.length();
                 KooCountUserInfo[] kooCountUserInfos = new KooCountUserInfo[length];
                 for (int i = 0; i < length; i++) {
                     kooCountUserInfos[i] = new KooCountUserInfo(kooRanks.getJSONObject(i));
                 }
                 topicTitleDetail.setKooRankUsers(kooCountUserInfos);
-
-                return topicTitleDetail;
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        return null;
+        return topicTitleDetail;
     }
 
     protected DetailTitleVideoCardAdapter.MovieDetailInfo getMovieInfo(JSONObject response) {
