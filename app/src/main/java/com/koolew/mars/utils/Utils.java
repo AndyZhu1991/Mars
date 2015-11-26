@@ -23,6 +23,7 @@ import android.widget.EditText;
 
 import com.koolew.mars.R;
 
+import java.io.File;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
@@ -85,7 +86,11 @@ public class Utils {
     }
 
     public static String getCacheDir(Context context) {
-        return context.getExternalCacheDir().getAbsolutePath() + "/";
+        File cacheDir = context.getExternalCacheDir();
+        if (cacheDir == null) {
+            cacheDir = context.getCacheDir();
+        }
+        return cacheDir.getAbsolutePath() + "/";
     }
 
     public static String getCacheDir() {
