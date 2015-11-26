@@ -158,6 +158,7 @@
     <string name="music">音乐</string>
     <string name="uploading">正在上传...</string>
     <string name="upload_failed">上传失败</string>
+    <string name="save_to_local_failed">保存到本地失败</string>
 
     <!-- For friend meet item -->
     <string name="common_topic">共同话题</string>

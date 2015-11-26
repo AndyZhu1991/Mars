@@ -212,7 +212,13 @@ public class VideoEditActivity extends BaseActivity
                     userInfo.setNickname(MyAccountInfo.getNickname());
                     userInfo.setUid(MyAccountInfo.getUid());
                     mUploadedVideo.setUserInfo(userInfo);
-                    saveAndRegisterVideo();
+                    try {
+                        saveAndRegisterVideo();
+                    }
+                    catch (Exception e) {
+                        Toast.makeText(VideoEditActivity.this, R.string.save_to_local_failed,
+                                Toast.LENGTH_SHORT).show();
+                    }
                     shareVideoIfNeed();
                     return true;
                 } else {
