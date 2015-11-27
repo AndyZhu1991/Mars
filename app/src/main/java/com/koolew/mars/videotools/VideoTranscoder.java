@@ -136,7 +136,7 @@ public class VideoTranscoder {
                 if (grabedFrame.image != null) {
                     IplImage currentImage = grabedFrame.image;
                     if (isNeedScale) {
-                        opencv_imgproc.cvResize(currentImage, scaledImage);
+                        opencv_imgproc.cvResize(currentImage, scaledImage);//, opencv_imgproc.CV_INTER_AREA);
                         currentImage = scaledImage;
                     }
                     if (isNeedRotate) {
