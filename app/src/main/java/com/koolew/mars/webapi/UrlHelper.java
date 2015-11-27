@@ -273,7 +273,7 @@ public class UrlHelper {
     public static String getUserTopicUrl(String uid, String topicId, long time) {
         return Uri.parse(getUserTopicUrl(uid, topicId))
                 .buildUpon()
-                .appendQueryParameter("time", String.valueOf(time))
+                .appendQueryParameter("before", String.valueOf(time))
                 .build().toString();
     }
 
