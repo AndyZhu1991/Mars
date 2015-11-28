@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseCommentInfo;
+import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
@@ -35,6 +36,7 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
 
     public static final String KEY_VIDEO_ID = "video id";
 
+    private BaseTopicInfo topicInfo;
     private String mVideoId;
 
     private List<BaseCommentInfo> mComments;
@@ -71,6 +73,12 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
     @Override
     protected boolean handleRefresh(JSONObject response) {
         mComments.clear();
+        try {
+            topicInfo = new BaseTopicInfo(response.getJSONObject("result")
+                    .getJSONObject("video").getJSONObject("topic"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         boolean ret = super.handleRefresh(response);
         mAdapter.setCategory(mAdapter.mData.get(0).getTopicInfo().getCategory());
         return ret;
@@ -136,7 +144,7 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
 
     private final static int TYPE_COMMENT_TITLE = VideoCardAdapter.TYPE_SUB_CLASS_USE_START;
     private final static int TYPE_COMMENT = TYPE_COMMENT_TITLE + 1;
-    class CheckDanmakuAdapter extends VideoCardAdapter {
+    class CheckDanmakuAdapter extends VideoCardAdapter implements View.OnClickListener {
 
         public CheckDanmakuAdapter(Context context) {
             super(context);
@@ -159,6 +167,13 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
             ViewHolder holder = (ViewHolder) v.getTag();
             holder.kooAndCommentCount.setVisibility(View.GONE);
             return v;
+        }
+
+        @Override
+        protected View getTitleView(View convertView) {
+            View titleView = super.getTitleView(convertView);
+            titleView.setOnClickListener(this);
+            return titleView;
         }
 
         private View getCommentTitle(int position, View convertView) {
@@ -246,6 +261,12 @@ public class CheckDanmakuFragment extends BaseVideoListFragment {
         @Override
         public int getViewTypeCount() {
             return super.getViewTypeCount() + 2 /* COMMENT_TITLE, COMMENT */;
+        }
+
+        @Override
+        public void onClick(View v) {
+            FeedsTopicActivity.startWorldTopic(mContext,
+                    topicInfo.getTopicId(), topicInfo.getTitle());
         }
     }
 
