@@ -96,8 +96,8 @@
     <!-- For KoolewFragment -->
     <string name="koolew_news_title">关 注</string> <!-- 新鲜事 -->
     <string name="koolew_involve_title">我 的</string> <!-- 与我相关 -->
-    <string name="koolew_recommend_title">推 荐</string>
-    <string name="koolew_hot_title">热 门</string>
+    <string name="koolew_recommend_title">话 题</string>
+    <string name="koolew_hot_title">排 行</string>
     <string name="koolew_meet_title">遇见</string>
     <string name="koolew_favorite_title">收藏</string>
 
@@ -421,6 +421,7 @@
     <string name="downloading_update_package">正在下载安装包...</string>
     <string name="new_version" formatted="false">新版本：%s</string>
     <string name="update">更新</string>
+    <string name="unknown_category_hint">"这些内容需要新版本才能查看\n赶紧更新吧！"</string>
 
     <!-- For square -->
     <string name="square_video_desc">最近热门视频</string>
