@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -38,7 +37,6 @@ import com.koolew.mars.utils.ViewUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -444,20 +442,8 @@ public class RecordingSessionView extends LinearLayout {
     }
 
     public void generateThumb() {
-        Bitmap thumbBmp = ImageLoader.getInstance()
-                .loadImageSync("file://" + recordedItems.get(0).fileName);
-        File f = new File(getThumbName());
-        if (f.exists()) {
-            f.delete();
-        }
-        try {
-            FileOutputStream out = new FileOutputStream(f);
-            thumbBmp.compress(Bitmap.CompressFormat.PNG, 100, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        com.koolew.mars.videotools.Utils.saveVideoFrame(
+                recordedItems.get(0).fileName, getThumbName());
     }
 
     public String getThumbName() {

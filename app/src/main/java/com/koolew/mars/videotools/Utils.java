@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import org.bytedeco.javacpp.opencv_core;
+import org.bytedeco.javacpp.opencv_highgui;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.FrameRecorder;
@@ -242,5 +243,16 @@ public class Utils {
         }
 
         return opencv_core.cvSize(scaledWidth, scaledHeight);
+    }
+
+    public static void saveVideoFrame(String videoPath, String frameImagePath) {
+        FrameGrabber frameGrabber = new FFmpegFrameGrabber(videoPath);
+        try {
+            frameGrabber.start();
+            opencv_core.IplImage image = frameGrabber.grab();
+            opencv_highgui.cvSaveImage(frameImagePath, image);
+        } catch (FrameGrabber.Exception e) {
+            e.printStackTrace();
+        }
     }
 }

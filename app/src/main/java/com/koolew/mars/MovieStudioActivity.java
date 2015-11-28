@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -44,7 +43,6 @@ import org.bytedeco.javacpp.opencv_highgui;
 import org.bytedeco.javacpp.opencv_imgproc;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -522,22 +520,9 @@ public class MovieStudioActivity extends BaseActivity
         }
 
         public String generateThumb() {
-            String thumbPath = getThumbPath();
-            Bitmap thumbBmp = ImageLoader.getInstance()
-                    .loadImageSync("file://" + mAdapter.items.get(0).getVideoPath());
-            File f = new File(thumbPath);
-            if (f.exists()) {
-                f.delete();
-            }
-            try {
-                FileOutputStream out = new FileOutputStream(f);
-                thumbBmp.compress(Bitmap.CompressFormat.PNG, 100, out);
-                out.flush();
-                out.close();
-                return thumbPath;
-            } catch (Exception e) {
-            }
-            return null;
+            com.koolew.mars.videotools.Utils.saveVideoFrame(
+                    mAdapter.items.get(0).getVideoPath(), getThumbPath());
+            return new File(getThumbPath()).exists() ? getThumbPath() : null;
         }
 
         @Override
