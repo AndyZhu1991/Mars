@@ -18,7 +18,7 @@ public class PreferenceHelper {
     public static final String KEY_INVITED = "invited";
     public static final String KEY_INVITATION_ACCEPTED = "invitation accepted";
 
-    public static final boolean DEFAULT_INTEL_SAVE_DATA     = true;
+    public static final boolean DEFAULT_INTEL_SAVE_DATA     = false;
     public static final boolean DEFAULT_NEW_FRIEND_APPLY    = true;
     public static final boolean DEFAULT_NEW_VIDEO_BY_FRIEND = false;
     public static final boolean DEFAULT_DANMAKUED_BY_FRIEND = true;
