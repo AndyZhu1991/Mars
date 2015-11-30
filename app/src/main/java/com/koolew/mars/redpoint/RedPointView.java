@@ -102,7 +102,7 @@ public class RedPointView extends TextView {
 
     public void setNeedNum(boolean isNeedNum) {
         this.isNeedNum = isNeedNum;
-        if (isNeedNum) {
+        if (isNeedNum && mCount > 0) {
             setText(String.valueOf(mCount));
         }
         else {
