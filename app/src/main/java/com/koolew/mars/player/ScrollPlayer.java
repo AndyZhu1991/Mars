@@ -2,10 +2,11 @@ package com.koolew.mars.player;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.SurfaceTexture;
 import android.os.AsyncTask;
 import android.text.TextUtils;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.Surface;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -31,7 +32,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
  * Created by jinchangzhu on 7/23/15.
  */
 public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
-        VideoLoader.LoadListener, SurfaceHolder.Callback {
+        VideoLoader.LoadListener, TextureView.SurfaceTextureListener {
 
     private static final int STATE_NORMAL = 1;
     private static final int STATE_PAUSED = 2;
@@ -44,7 +45,7 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
 
     private VideoLoader mVideoLoader;
 
-    private SurfaceView mPlaySurface;
+    private TextureView mPlaySurface;
     private IjkRecyclerPlayer mRecyclerPlayer;
 
     private DanmakuThread mDanmakuThread;
@@ -64,8 +65,8 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
         mVideoLoader = new RepeatVideoLoader(mContext);
         mVideoLoader.setLoadListener(this);
 
-        mPlaySurface = new SurfaceView(mContext);
-        mPlaySurface.getHolder().addCallback(this);
+        mPlaySurface = new TextureView(mContext);
+        mPlaySurface.setSurfaceTextureListener(this);
         mPlaySurface.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mRecyclerPlayer = new IjkRecyclerPlayer();
@@ -275,16 +276,23 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+        mRecyclerPlayer.setSurface(new Surface(surface));
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        mRecyclerPlayer.setDisplay(holder);
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        return false;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
     }
 
     public abstract boolean isItemView(View childView);
@@ -431,9 +439,9 @@ public abstract class ScrollPlayer implements AbsListView.OnScrollListener,
             }
         }
 
-        public void setDisplay(SurfaceHolder sh) {
+        public void setSurface(Surface surface) {
             if (mCurrentPlayer != null) {
-                mCurrentPlayer.setDisplay(sh);
+                mCurrentPlayer.setSurface(surface);
             }
         }
 
