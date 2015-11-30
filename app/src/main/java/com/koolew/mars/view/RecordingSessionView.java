@@ -342,22 +342,30 @@ public class RecordingSessionView extends LinearLayout {
         public void onSeekComplete(MediaPlayer mediaPlayer) {
             mediaPlayer.setOnSeekCompleteListener(new SeekControlListener());
             mediaPlayer.start();
-            new StopPlayListener(mediaPlayer, stopPosition).start();
+            mStopPlayListener = new StopPlayListener(mediaPlayer, stopPosition);
+            mStopPlayListener.start();
         }
     }
+
+    private StopPlayListener mStopPlayListener;
 
     class StopPlayListener extends Thread {
         private MediaPlayer mediaPlayer;
         private int stopPosition;
+        private boolean isCanceled = false;
 
         public StopPlayListener(MediaPlayer mediaPlayer, int stopPosition) {
             this.mediaPlayer = mediaPlayer;
             this.stopPosition = stopPosition;
         }
 
+        public void cancel() {
+            isCanceled = true;
+        }
+
         @Override
         public void run() {
-            while (mediaPlayer.isPlaying()) {
+            while (!isCanceled && mediaPlayer.isPlaying()) {
                 if (mediaPlayer.getCurrentPosition() >= stopPosition) {
                     mediaPlayer.pause();
                     listener.onPlayComplete();
@@ -370,6 +378,10 @@ public class RecordingSessionView extends LinearLayout {
                         e.printStackTrace();
                     }
                 }
+            }
+
+            if (this == mStopPlayListener) {
+                mStopPlayListener = null;
             }
         }
     }
@@ -480,6 +492,12 @@ public class RecordingSessionView extends LinearLayout {
             VideoPieceItem item = recordedItems.get(position);
             if (item.isSelected) {
                 return;
+            }
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+                mediaPlayer.reset();
+                mStopPlayListener.cancel();
+                listener.onPlayComplete();
             }
             mediaPlayer.setDataSource(new FileSource(new File(item.fileName)));
             mediaPlayer.seekTo((int) item.clipStart);
