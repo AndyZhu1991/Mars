@@ -166,11 +166,11 @@ public class KoolewViewPagerIndicator extends LinearLayout
     @Override
     public void onPageSelected(int position) {
         ((TextView) getChildAt(position)).setTextColor(textColorIndicated);
-        if (position - 1 >= 0) {
-            ((TextView) getChildAt(position - 1)).setTextColor(textColorUnindicate);
-        }
-        if (position + 1 <= getChildCount() - 1) {
-            ((TextView) getChildAt(position + 1)).setTextColor(textColorUnindicate);
+
+        for (int i = 0; i < getChildCount(); i++) {
+            if (i != position) {
+                ((TextView) getChildAt(i)).setTextColor(textColorUnindicate);
+            }
         }
     }
 
