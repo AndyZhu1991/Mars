@@ -5,7 +5,9 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -93,6 +95,9 @@ public class MovieStudioActivity extends BaseActivity
     private String mWorkDir;
     private String mFrom;
 
+    private SoundPool mSoundPool;
+    private int mDingSound;
+
     private opencv_core.IplImage maskImage;
     private opencv_core.CvRect maskRect;
 
@@ -113,6 +118,10 @@ public class MovieStudioActivity extends BaseActivity
             return;
         }
         mFrom = getIntent().getExtras().getString(KEY_FROM, "");
+
+        // Init ding sound
+        mSoundPool = new SoundPool(5, AudioManager.STREAM_RING, 0);
+        mDingSound = mSoundPool.load(this, R.raw.ding, 1);
 
         int[] splitPoints = new int[mMovieTopicInfo.getFragments().length];
         for (int i = 0; i < splitPoints.length; i++) {
@@ -197,6 +206,12 @@ public class MovieStudioActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        // release sound
+        if (mSoundPool != null) {
+            mSoundPool.release();
+        }
+
         new Thread() {
             @Override
             public void run() {
@@ -357,6 +372,7 @@ public class MovieStudioActivity extends BaseActivity
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    mSoundPool.play(mDingSound, 1, 1, 0, 0, 1);
                     if (second == 0) {
                         captureCountDownTimer.cancel();
                         captureCountDownTimer = null;
