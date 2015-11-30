@@ -96,6 +96,7 @@ public class RedPointView extends TextView {
         }
         else {
             mRedPointVisiable = false;
+            setText("");
         }
         invalidate();
     }
