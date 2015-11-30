@@ -1,6 +1,7 @@
 package com.koolew.mars.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
@@ -44,6 +45,7 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     private int mStatus = STATUS_IDLE;
 
     private MediaPlayer mMediaPlayer;
+    private boolean looping;
 
     private BaseVideoInfo mVideoInfo;
     private String mVideoUrl;
@@ -62,6 +64,9 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         mVideoThumb = (ImageView) content.findViewById(R.id.video_thumb);
         mProgressBar = (ProgressBar) content.findViewById(R.id.progress);
         addView(content);
+
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.KoolewVideoView, 0, 0);
+        looping = a.getBoolean(R.styleable.KoolewVideoView_looping, true);
     }
 
     @Override
@@ -140,7 +145,7 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         if (url.equals(mVideoUrl) && mStatus == STATUS_POST_PLAY) {
             mMediaPlayer = MediaPlayer.create(getContext(), Uri.parse("file://" + filePath));
             if (mMediaPlayer != null) {
-                mMediaPlayer.setLooping(true);
+                mMediaPlayer.setLooping(looping);
                 mProgressBar.setVisibility(INVISIBLE);
                 if (mPlaybackTexture.getSurfaceTexture() != null) {
                     mMediaPlayer.setSurface(new Surface(mPlaybackTexture.getSurfaceTexture()));

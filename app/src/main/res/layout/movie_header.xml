@@ -32,7 +32,8 @@
         <com.koolew.mars.view.KoolewVideoView
             android:id="@+id/video_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:looping="false"/>
         
         <ImageView
             android:id="@+id/play_image"

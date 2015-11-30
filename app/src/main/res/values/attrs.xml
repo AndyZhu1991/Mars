@@ -56,4 +56,8 @@
     <declare-styleable name="RedPointView">
         <attr name="needCountNum" format="boolean"/>
     </declare-styleable>
+
+    <declare-styleable name="KoolewVideoView">
+        <attr name="looping" format="boolean"/>
+    </declare-styleable>
 </resources>
