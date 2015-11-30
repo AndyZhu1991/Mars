@@ -8,6 +8,8 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.PopupWindow;
 
 import com.koolew.mars.redpoint.RedPointManager;
 import com.koolew.mars.utils.Utils;
@@ -119,8 +121,20 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
                 window.showAsDropDown(mBtnAddTopic,
                         (int) (btnWidth - windowWidth - Utils.dpToPixels(getActivity(), 10)),
                         - (btnHeight + windowHeight));
+                window.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        backgroundAlpha(1.0f);
+                    }
+                });
+                backgroundAlpha(0.5f);
                 break;
         }
+    }
+    public void backgroundAlpha(float bgAlpha) {
+        WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
+        lp.alpha = bgAlpha; //0.0-1.0
+        getActivity().getWindow().setAttributes(lp);
     }
 
     class KoolewFragmentPagerAdapter extends FragmentPagerAdapter {
