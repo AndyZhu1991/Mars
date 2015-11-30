@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.koolew.mars.redpoint.RedPointManager;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.view.TitleBarView;
@@ -104,6 +105,7 @@ public class TodayIncomeActivity extends BaseActivity
 
     @Override
     public void onResponse(JSONObject response) {
+        RedPointManager.clearRedPointByPath(RedPointManager.PATH_PROFIT);
         mConnectingDialog.dismiss();
         try {
             if (response.getInt("code") == 0) {

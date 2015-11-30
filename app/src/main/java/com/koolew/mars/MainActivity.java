@@ -75,6 +75,7 @@ public class MainActivity extends BaseV4FragmentActivity
     private TextView mCountKoo;
     private TextView mCountCoin;
     private TextView mIncomeNum;
+    private RedPointView mProfitRedpoint;
 
     private MainBaseFragment mCurFragment;
 
@@ -116,6 +117,8 @@ public class MainActivity extends BaseV4FragmentActivity
         mCountKoo = (TextView) findViewById(R.id.count_koo);
         mCountCoin = (TextView) findViewById(R.id.count_coin);
         mIncomeNum = (TextView) findViewById(R.id.income_text);
+        mProfitRedpoint = (RedPointView) findViewById(R.id.profit_redpoint);
+        mProfitRedpoint.registerPath(RedPointManager.PATH_PROFIT);
         findViewById(R.id.coin_layout).setOnClickListener(this);
         findViewById(R.id.koo_layout).setOnClickListener(this);
         findViewById(R.id.income_layout).setOnClickListener(this);

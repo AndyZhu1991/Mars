@@ -289,6 +289,13 @@
                         android:drawablePadding="4dp"
                         android:textColor="@android:color/white"
                         android:textSize="12sp" />
+
+                    <com.koolew.mars.redpoint.RedPointView
+                        android:id="@+id/profit_redpoint"
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_gravity="center_vertical|right"/>
                 </FrameLayout>
 
             </LinearLayout>
