@@ -433,6 +433,7 @@
     <string name="interrupt">终止</string>
     <string name="recapture">重拍</string>
     <string name="no_movie_piece_hint">至少要拍一段～</string>
+    <string name="delete_movie_piece_confirm">确认删除此段视频吗？</string>
 
     <!-- For KooTabFragment -->
     <string name="musang">打赏</string>

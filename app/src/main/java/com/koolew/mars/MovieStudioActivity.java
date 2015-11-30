@@ -305,12 +305,21 @@ public class MovieStudioActivity extends BaseActivity
 
     public void onDeleteClick() {
         if (!TextUtils.isEmpty(mAdapter.getCurrentSelectedItem().capturedVideoPath)) {
-            mAdapter.getCurrentSelectedItem().capturedVideoPath = null;
-            mAdapter.notifyItemChanged(mAdapter.selectedPosition);
-            mProgressView.postProgress(0.0f);
-            if (!hasUserCapturedPiece()) {
-                mNextImage.setImageResource(R.mipmap.video_complete_disable);
-            }
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.delete_movie_piece_confirm)
+                    .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mAdapter.getCurrentSelectedItem().capturedVideoPath = null;
+                            mAdapter.notifyItemChanged(mAdapter.selectedPosition);
+                            mProgressView.postProgress(0.0f);
+                            if (!hasUserCapturedPiece()) {
+                                mNextImage.setImageResource(R.mipmap.video_complete_disable);
+                            }
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, null)
+                    .show();
         }
         else {
             // TODO: Show a toast
