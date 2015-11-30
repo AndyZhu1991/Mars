@@ -299,7 +299,7 @@
     <string name="mms">短信</string>
 
     <!-- For VideoCardAdapter -->
-    <string name="be_first_in_this_topic">成为此话题卡第一人</string>
+    <string name="be_first_in_this_topic">成为此话题第一人</string>
     <string name="receive">收到</string>
     <string name="koo_count" formatted="false">%d次打赏</string>
     <string name="comment_count" formatted="false">%d次评论</string>
