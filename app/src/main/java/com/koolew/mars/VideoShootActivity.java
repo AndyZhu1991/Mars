@@ -147,6 +147,15 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (AppProperty.getRecordVideoMaxLen() == AppProperty.VIDEO_MAX_LEN_18s) {
+            AppProperty.setRecordVideoMaxLen(AppProperty.DEFAULT_VIDEO_MAX_LEN);
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         if (recordingSessionView.getVideoCount() == 0) {
             cancelRecord();
@@ -812,13 +821,22 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
             if (MyAccountInfo.getVip() == 1 ||
                     MyAccountInfo.getUid().equals("55657de205f7080cd3000021")) {
                 if (password.equals(LONG_VIDEO_18S)) {
-                    AppProperty.setRecordVideoMaxLen(18.0f);
+                    AppProperty.setRecordVideoMaxLen(AppProperty.VIDEO_MAX_LEN_18s);
+                    notifyUser((int) AppProperty.VIDEO_MAX_LEN_18s);
                 }
                 else if (password.equals(LONG_VIDEO_60S)) {
-                    AppProperty.setRecordVideoMaxLen(60.0f);
+                    AppProperty.setRecordVideoMaxLen(AppProperty.VIDEO_MAX_LEN_60s);
+                    notifyUser((int) AppProperty.VIDEO_MAX_LEN_60s);
                 }
                 recordingSessionView.invalidateProgressView();
             }
+        }
+
+        private void notifyUser(int newVideoLen) {
+            new AlertDialog.Builder(VideoShootActivity.this)
+                    .setMessage(getString(R.string.long_video_enabled, newVideoLen))
+                    .setPositiveButton(R.string.ok, null)
+                    .show();
         }
     }
 }
