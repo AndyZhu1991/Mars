@@ -426,10 +426,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:textColor="@android:color/white"
-                android:textSize="30sp"
-                android:text="@string/guess_false_message"
-                android:drawablePadding="8dp"
-                android:drawableRight="@mipmap/ic_coin_big"/>
+                android:textSize="30sp"/>
             
             <TextView
                 android:id="@+id/next_group"

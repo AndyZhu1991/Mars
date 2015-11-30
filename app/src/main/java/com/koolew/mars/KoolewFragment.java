@@ -114,8 +114,9 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
                 //startActivity(new Intent(getActivity(), AddTopicActivity.class));
                 //startActivity(new Intent(getActivity(), MovieStudioActivity.class));
                 SelectCategoryWindow window = new SelectCategoryWindow(getActivity());
-                int windowWidth = window.getWidth();
-                int windowHeight = window.getHeight();
+                window.getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+                int windowWidth = window.getContentView().getMeasuredWidth();
+                int windowHeight = window.getContentView().getMeasuredHeight();
                 int btnWidth = mBtnAddTopic.getWidth();
                 int btnHeight = mBtnAddTopic.getHeight();
                 window.showAsDropDown(mBtnAddTopic,

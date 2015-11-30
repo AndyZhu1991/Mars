@@ -61,8 +61,8 @@
     <string name="fans_count" formatted="false">"%d 粉丝"</string>
     <string name="follows_count" formatted="false">"%d 关注"</string>
     <string name="today_income_renminbi" formatted="false">今日收益（人民币）：%.3f元</string>
-    <string name="create_video_topic">新话题</string>
-    <string name="join_movie_topic">新表演</string>
+    <string name="choice_video_topic">搜索你想拍摄的话题</string>
+    <string name="choice_movie_topic">选择你想表演的视频</string>
 
     <!-- For FirstLoginActivity -->
     <string name="app_name_english">KOOLEW</string>
@@ -366,7 +366,8 @@
     <string name="right_user_desc">擂主</string>
     <string name="win">WIN</string>
     <string name="lose">LOSE</string>
-    <string name="guess_false_message">很遗憾，没有获得</string>
+    <string name="guess_true_message">恭喜！你赢得了金币！</string>
+    <string name="guess_false_message">很遗憾，没有获得金币…</string>
     <string name="next_group_immediately">马上进入下一组</string>
     <string name="kooed">被打赏</string>
     <string name="support_ta">支持TA</string>
@@ -430,7 +431,7 @@
 
     <!-- For MovieStudioActivity -->
     <string name="already_done">已完成</string>
-    <string name="cutting_video">正在分段视频...</string>
+    <string name="cutting_video">正在加载视频，请稍等…</string>
     <string name="count_down_start">倒计时开始</string>
     <string name="interrupt">终止</string>
     <string name="recapture">重拍</string>

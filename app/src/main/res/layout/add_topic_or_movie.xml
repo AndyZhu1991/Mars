@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="130dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/select_category">
 
     <TextView
         android:id="@+id/create_topic"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:gravity="center_vertical"
         android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:textColor="#9EADB7"
         android:textSize="16sp"
-        android:text="@string/create_video_topic"
+        android:text="@string/choice_video_topic"
         android:drawablePadding="10dp"
         android:drawableLeft="@mipmap/ic_create_video_topic"/>
 
@@ -24,13 +25,14 @@
 
     <TextView
         android:id="@+id/join_movie"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:gravity="center_vertical"
         android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:textColor="#9EADB7"
         android:textSize="16sp"
-        android:text="@string/join_movie_topic"
+        android:text="@string/choice_movie_topic"
         android:drawablePadding="10dp"
         android:drawableLeft="@mipmap/ic_join_movie_topic"/>
 </LinearLayout>

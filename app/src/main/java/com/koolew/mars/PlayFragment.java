@@ -731,7 +731,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
             mResultText.setText(R.string.guess_false_message);
         }
         else if (judgeStatus == JUDGE_STATUS_TRUE) {
-            mResultText.setText("+5");
+            mResultText.setText(R.string.guess_true_message);
         }
 
         mToolbarInterface.setToolbarMiddleTitle("");
