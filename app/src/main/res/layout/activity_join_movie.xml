@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/koolew_light_orange"
-        app:title_text="@string/join_movie_title"/>
+        app:title_text="@string/choice_movie_topic"/>
 
     <FrameLayout
         android:id="@+id/fragment_container"
