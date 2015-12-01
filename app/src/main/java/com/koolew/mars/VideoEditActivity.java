@@ -471,12 +471,27 @@ public class VideoEditActivity extends BaseActivity
             mBgmPlayer.resumePlay();
             mPlayImage.setVisibility(View.INVISIBLE);
             if (mThumb.getVisibility() == View.VISIBLE) {
-                mThumb.postDelayed(new Runnable() {
+                new Thread() {
                     @Override
                     public void run() {
-                        mThumb.setVisibility(View.INVISIBLE);
+                        while (true) {
+                            try {
+                                Thread.sleep(40);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            if (mBgmPlayer.mVideoPlayer.getCurrentPosition() > 80) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mThumb.setVisibility(View.INVISIBLE);
+                                    }
+                                });
+                                break;
+                            }
+                        }
                     }
-                }, 80); // 80ms = 2 frame
+                }.start();
             }
         }
     }
