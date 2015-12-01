@@ -14,7 +14,7 @@
         android:paddingRight="10dp"
         android:textColor="#9EADB7"
         android:textSize="16sp"
-        android:text="@string/i_want_record"
+        android:text="@string/new_video_topic"
         android:drawablePadding="10dp"
         android:drawableLeft="@mipmap/ic_create_video_topic"/>
 
@@ -32,7 +32,7 @@
         android:paddingRight="10dp"
         android:textColor="#9EADB7"
         android:textSize="16sp"
-        android:text="@string/i_want_act"
+        android:text="@string/new_movie"
         android:drawablePadding="10dp"
         android:drawableLeft="@mipmap/ic_join_movie_topic"/>
 </LinearLayout>

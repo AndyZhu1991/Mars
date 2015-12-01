@@ -61,8 +61,8 @@
     <string name="fans_count" formatted="false">"%d 粉丝"</string>
     <string name="follows_count" formatted="false">"%d 关注"</string>
     <string name="today_income_renminbi" formatted="false">今日收益（人民币）：%.3f元</string>
-    <string name="i_want_record">我要拍</string>
-    <string name="i_want_act">我要演</string>
+    <string name="new_video_topic">新话题</string>
+    <string name="new_movie">新表演</string>
     <string name="choice_video_topic">搜索你想拍摄的话题</string>
     <string name="choice_movie_topic">选择你想表演的视频</string>
 
