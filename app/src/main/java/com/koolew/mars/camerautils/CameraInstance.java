@@ -19,7 +19,7 @@ public class CameraInstance {
 
     private boolean mIsPreviewing = false;
 
-    private int mCameraID = Camera.CameraInfo.CAMERA_FACING_BACK;
+    private int mCameraID = Camera.CameraInfo.CAMERA_FACING_FRONT;
     private int mDefaultCameraID = -1;
 
     private static CameraInstance mThisInstance;
