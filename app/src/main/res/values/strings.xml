@@ -450,7 +450,7 @@
     <!-- For Movie -->
     <string name="act_together">一起演</string>
     <string name="i_will_act">我要演</string>
-    <string name="movie_first_hint">请选择想要表演的片段</string>
+    <string name="movie_first_hint">拍摄你想扮演的角色</string>
 
     <!-- For first koo explain -->
     <string name="first_koo_explain_title_head">向视频主</string>
