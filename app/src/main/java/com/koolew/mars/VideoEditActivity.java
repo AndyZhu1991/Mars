@@ -35,6 +35,8 @@ import com.koolew.mars.utils.FileUtil;
 import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.TitleBarView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONObject;
 
@@ -79,6 +81,7 @@ public class VideoEditActivity extends BaseActivity
     private TitleBarView mTitleBar;
     private FrameLayout mVideoFrame;
     private SurfaceView mPlaySurface;
+    private ImageView mThumb;
     private ImageView mPlayImage;
     private RelativeLayout mPrivacyLayout;
     private TextView mAuthorityText;
@@ -109,6 +112,12 @@ public class VideoEditActivity extends BaseActivity
         initMembers();
 
         initViews();
+
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(false)
+                .cacheOnDisk(false)
+                .build();
+        ImageLoader.getInstance().displayImage("file://" + mVideoThumb, mThumb, options);
     }
 
     private void initMembers() {
@@ -128,6 +137,8 @@ public class VideoEditActivity extends BaseActivity
 
         mPlaySurface = (SurfaceView) findViewById(R.id.play_surface);
         mPlaySurface.getHolder().addCallback(mSurfaceCallback);
+
+        mThumb = (ImageView) findViewById(R.id.thumb);
 
         mPlayImage = (ImageView) findViewById(R.id.play_image);
         mPrivacyLayout = (RelativeLayout) findViewById(R.id.privacy_layout);
@@ -459,6 +470,14 @@ public class VideoEditActivity extends BaseActivity
         else {
             mBgmPlayer.resumePlay();
             mPlayImage.setVisibility(View.INVISIBLE);
+            if (mThumb.getVisibility() == View.VISIBLE) {
+                mThumb.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mThumb.setVisibility(View.INVISIBLE);
+                    }
+                }, 80); // 80ms = 2 frame
+            }
         }
     }
 
@@ -611,25 +630,6 @@ public class VideoEditActivity extends BaseActivity
 
         @Override
         public void onPrepared(MediaPlayer mp) {
-            if (mp == mVideoPlayer) {
-                mp.start();
-                new Thread() { // This thread will show the 1st frame.
-                    @Override
-                    public void run() {
-                        try {
-                            for (int i = 0; i < 25; i++) {
-                                if (mVideoPlayer.getCurrentPosition() > 0) {
-                                    mVideoPlayer.pause();
-                                    break;
-                                }
-                                sleep(40);
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }.start();
-            }
         }
 
         @Override
