@@ -52,4 +52,11 @@ public class WorldVideoListFragment extends DetailTitleVideoListFragment {
 
         return topicTitleDetail;
     }
+
+    @Override
+    protected DetailTitleVideoCardAdapter.MovieDetailInfo getMovieInfo(JSONObject response) {
+        DetailTitleVideoCardAdapter.MovieDetailInfo movieDetailInfo = super.getMovieInfo(response);
+        movieDetailInfo.setType(DetailTitleVideoCardAdapter.TYPE_WORLD);
+        return movieDetailInfo;
+    }
 }

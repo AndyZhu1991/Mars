@@ -123,11 +123,11 @@
                 app:border_color="#D8D8D8"
                 app:border_width="2dp" />
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="10dp"
-            android:background="@mipmap/horizontal_dash_line" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="@mipmap/horizontal_dash_line" />
 </LinearLayout>

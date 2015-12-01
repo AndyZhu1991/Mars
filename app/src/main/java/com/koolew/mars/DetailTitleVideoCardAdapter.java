@@ -83,7 +83,7 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
                 mContext.getString(R.string.video_count_label, topicTitleDetail.videoCount));
 
         KooCountUserInfo[] users = topicTitleDetail.kooRankUsers;
-        if (users == null || users.length == 0) {
+        if (users == null || users.length == 0 || topicTitleDetail.type != TYPE_WORLD) {
             convertView.findViewById(R.id.stars).setVisibility(View.GONE);
         }
         else {
@@ -151,7 +151,8 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
         View kooTopLayout = convertView.findViewById(R.id.koo_top_layout);
         kooTopLayout.setOnClickListener(onStarsClickListener);
 
-        if (mMovieDetailInfo.topStars == null || mMovieDetailInfo.topStars.length == 0) {
+        if (mMovieDetailInfo.topStars == null || mMovieDetailInfo.topStars.length == 0
+                || mMovieDetailInfo.type != TYPE_WORLD) {
             kooTopLayout.setVisibility(View.GONE);
         }
         else {
@@ -309,6 +310,8 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
 
         private KooCountUserInfo[] topStars;
 
+        private int type;
+
         public MovieDetailInfo(JSONObject jsonObject) {
             super(jsonObject);
 
@@ -323,6 +326,10 @@ public class DetailTitleVideoCardAdapter extends VideoCardAdapter implements Vie
                     e.printStackTrace();
                 }
             }
+        }
+
+        public void setType(int type) {
+            this.type = type;
         }
     }
 

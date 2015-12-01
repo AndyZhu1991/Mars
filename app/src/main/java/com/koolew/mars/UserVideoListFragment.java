@@ -69,6 +69,13 @@ public class UserVideoListFragment extends DetailTitleVideoListFragment {
         return topicTitleDetail;
     }
 
+    @Override
+    protected DetailTitleVideoCardAdapter.MovieDetailInfo getMovieInfo(JSONObject response) {
+        DetailTitleVideoCardAdapter.MovieDetailInfo movieDetailInfo = super.getMovieInfo(response);
+        movieDetailInfo.setType(DetailTitleVideoCardAdapter.TYPE_USER);
+        return movieDetailInfo;
+    }
+
     class UserTopicAdapter extends DetailTitleVideoCardAdapter {
 
         public UserTopicAdapter(Context context) {

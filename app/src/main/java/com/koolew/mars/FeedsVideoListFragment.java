@@ -30,4 +30,11 @@ public class FeedsVideoListFragment extends DetailTitleVideoListFragment {
 
         return topicTitleDetail;
     }
+
+    @Override
+    protected DetailTitleVideoCardAdapter.MovieDetailInfo getMovieInfo(JSONObject response) {
+        DetailTitleVideoCardAdapter.MovieDetailInfo movieDetailInfo = super.getMovieInfo(response);
+        movieDetailInfo.setType(DetailTitleVideoCardAdapter.TYPE_FEEDS);
+        return movieDetailInfo;
+    }
 }

@@ -36,4 +36,11 @@ public class TaskVideoListFragment extends FeedsVideoListFragment {
 
         return topicTitleDetail;
     }
+
+    @Override
+    protected DetailTitleVideoCardAdapter.MovieDetailInfo getMovieInfo(JSONObject response) {
+        DetailTitleVideoCardAdapter.MovieDetailInfo movieDetailInfo = super.getMovieInfo(response);
+        movieDetailInfo.setType(DetailTitleVideoCardAdapter.TYPE_TASK);
+        return movieDetailInfo;
+    }
 }
