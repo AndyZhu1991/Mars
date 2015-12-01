@@ -55,7 +55,7 @@ public class MessagesActivity extends BaseV4FragmentActivity {
         viewPager.setOffscreenPageLimit(4);
         viewPager.addOnPageChangeListener(new PagerScrollListener(
                 getResources().getColor(R.color.koolew_light_blue),
-                getResources().getColor(R.color.koolew_red),
+                getResources().getColor(R.color.koolew_light_red),
                 getResources().getColor(R.color.koolew_deep_blue),
                 getResources().getColor(R.color.koolew_light_green)
         ));
