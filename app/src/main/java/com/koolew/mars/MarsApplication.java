@@ -30,7 +30,7 @@ import cn.sharesdk.framework.ShareSDK;
  */
 public class MarsApplication extends Application {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = BuildConfig.DEBUG;
 
     private static final String TAG = "koolew-MarsApplication";
 
@@ -53,6 +53,7 @@ public class MarsApplication extends Application {
         FirstHintUtil.init(this);
         Downloader.init();
 
+        Log.d(TAG, "Is debug: " + DEBUG);
         Log.d(TAG, "Init in MarsApplication takes: " + (System.currentTimeMillis() - start));
     }
 
