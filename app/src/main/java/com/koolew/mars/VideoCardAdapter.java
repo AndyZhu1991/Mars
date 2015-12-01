@@ -2,6 +2,7 @@ package com.koolew.mars;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -13,6 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,6 +28,7 @@ import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.player.ScrollPlayer;
+import com.koolew.mars.utils.FirstHintUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.KooAnimationView;
 import com.koolew.mars.view.UserNameView;
@@ -396,6 +399,8 @@ public class VideoCardAdapter extends BaseAdapter {
                         .start();
 
                 kooAnimationView.startAnimation();
+
+                showFirstKooWindowIfdNeed();
             }
             else if (v == danmakuSendLayout) {
                 if (mDanmakuSendListener != null) {
@@ -416,6 +421,24 @@ public class VideoCardAdapter extends BaseAdapter {
                 intent.putExtra(MovieStudioActivity.KEY_FROM, videoInfo.getUserInfo().getUid());
                 mContext.startActivity(intent);
             }
+        }
+
+        private void showFirstKooWindowIfdNeed() {
+            if (!FirstHintUtil.isFirstKoo()) {
+                return;
+            }
+
+            FirstKooExplainWindow window = new FirstKooExplainWindow(mContext);
+            window.getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            int windowHeight = window.getContentView().getMeasuredHeight();
+            window.showAsDropDown(kooIcon, 0, - windowHeight);
+            window.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+                    Utils.setWindowAlpha((Activity) mContext, 1.0f);
+                }
+            });
+            Utils.setWindowAlpha((Activity) mContext, 0.3f);
         }
     }
 

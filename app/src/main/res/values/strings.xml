@@ -450,6 +450,15 @@
     <string name="i_will_act">我要演</string>
     <string name="movie_first_hint">请选择想要表演的片段</string>
 
+    <!-- For first koo explain -->
+    <string name="first_koo_explain_title_head">向视频主</string>
+    <string name="first_koo_explain_title_tail">，证明你们的关系与众不同！</string>
+    <string name="koo_action">打赏</string>
+    <string name="coin_to_koo_explain">友情提示：1 个打赏 消耗 1 金币</string>
+    <string name="green_danmaku_explain">1 个打赏 = 绿色弹幕</string>
+    <string name="purple_danmaku_explain">5 个打赏 = 紫色弹幕</string>
+    <string name="master_danmaku_explain">25 个打赏 = 橙色弹幕</string>
+
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>
     <string name="website">http://www.mob.com</string>

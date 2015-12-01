@@ -370,4 +370,10 @@ public class Utils {
         }
         return info.versionCode;
     }
+
+    public static void setWindowAlpha(Activity activity, float alpha) {
+        WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
+        lp.alpha = alpha; //0.0-1.0
+        activity.getWindow().setAttributes(lp);
+    }
 }

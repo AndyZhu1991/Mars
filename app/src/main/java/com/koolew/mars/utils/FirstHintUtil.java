@@ -11,6 +11,7 @@ public class FirstHintUtil {
     private static final String KEY_FIRST_HINT = "first_hint";
 
     private static final String KEY_FIRST_MOVIE = "first_movie";
+    private static final String KEY_FIRST_KOO = "first_koo";
 
     private static SharedPreferences sharedPreferences;
 
@@ -20,6 +21,10 @@ public class FirstHintUtil {
 
     public static boolean isFirstMovie() {
         return isFirst(KEY_FIRST_MOVIE);
+    }
+
+    public static boolean isFirstKoo() {
+        return isFirst(KEY_FIRST_KOO);
     }
 
     private static boolean isFirst(String key) {
