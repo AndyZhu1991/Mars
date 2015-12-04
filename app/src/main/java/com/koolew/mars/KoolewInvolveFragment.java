@@ -1,21 +1,22 @@
 package com.koolew.mars;
 
 import android.content.Intent;
-import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.utils.JsonUtil;
 import com.koolew.mars.webapi.ApiWorker;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -79,7 +80,7 @@ public class KoolewInvolveFragment
     }
 
 
-    class InvolveItem extends BaseTopicInfo {
+    static class InvolveItem extends BaseTopicInfo {
         boolean isManager;
 
         InvolveItem(JSONObject jsonObject) {
@@ -88,14 +89,53 @@ public class KoolewInvolveFragment
         }
     }
 
-    private static final int[] LEFT_LAYOUT_COLORS = {
-            0xFFFF5656, 0xFFFC7B7B, 0xFFFFAE82, 0xFFFFC282,
-            0xFFF4D288, 0xFFFFC282, 0xFFFFAE82, 0xFFFC7B7B,
-    };
+    static class InvolveLine {
+        private InvolveItem leftItem;
+        private InvolveItem rightItem;
+
+        private InvolveLine(InvolveItem leftItem, InvolveItem rightItem) {
+            this.leftItem = leftItem;
+            this.rightItem = rightItem;
+        }
+    }
+
+
+    static class InvolveData {
+        List<InvolveItem> involveItems = new ArrayList<>();
+
+        private void clear() {
+            involveItems.clear();
+        }
+
+        private int size() {
+            return (involveItems.size() + 1) / 2;
+        }
+
+        private void add(InvolveItem involveItem) {
+            involveItems.add(involveItem);
+        }
+
+        private InvolveLine get(int position) {
+            InvolveItem leftItem = involveItems.get(position * 2);
+            int rightPosition = position * 2 + 1;
+            InvolveItem rightItem = rightPosition < involveItems.size()
+                    ? involveItems.get(rightPosition) : null;
+            return new InvolveLine(leftItem, rightItem);
+        }
+
+        private boolean hasTopic(String topicId) {
+            for (InvolveItem item: involveItems) {
+                if (item.getTopicId().equals(topicId)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 
     class InvolveAdapter extends LoadMoreAdapter {
 
-        List<InvolveItem> mData = new ArrayList<>();
+        InvolveData mData = new InvolveData();
 
 
         public int setItems(JSONArray cards) {
@@ -122,7 +162,7 @@ public class KoolewInvolveFragment
                     JSONObject topic = cards.getJSONObject(i);
                     InvolveItem item = new InvolveItem(topic);
                     String topicId = item.getTopicId();
-                    if (hasTopic(topicId)) {
+                    if (mData.hasTopic(topicId)) {
                         continue;
                     }
 
@@ -136,30 +176,15 @@ public class KoolewInvolveFragment
             return addedCount;
         }
 
-        private boolean hasTopic(String topicId) {
-            for (InvolveItem item: mData) {
-                if (item.getTopicId().equals(topicId)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         @Override
         public RecyclerView.ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
-            return new InvolveHolder(LayoutInflater.from(getActivity())
-                    .inflate(R.layout.koolew_involve_item, parent, false));
+            return new InvolveLineHolder(LayoutInflater.from(getActivity())
+                    .inflate(R.layout.involve_line, parent, false));
         }
 
         @Override
         public void onBindCustomViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-            InvolveHolder holder = (InvolveHolder) viewHolder;
-
-            ((GradientDrawable) holder.leftLayout.getBackground())
-                    .setColor(LEFT_LAYOUT_COLORS[position % 8]);
-            holder.videoCount.setText("" + mData.get(position).getVideoCount());
-            holder.title.setText(mData.get(position).getTitle());
-            holder.manager.setVisibility(mData.get(position).isManager ? View.VISIBLE : View.GONE);
+            ((InvolveLineHolder) viewHolder).bindInvolveLine(position);
         }
 
         @Override
@@ -168,29 +193,70 @@ public class KoolewInvolveFragment
         }
 
 
-        class InvolveHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-            LinearLayout leftLayout;
-            TextView videoCount;
-            TextView title;
-            TextView manager;
+        class InvolveLineHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+            private InvolveItemHolder leftHolder;
+            private InvolveItemHolder rightHolder;
 
-            public InvolveHolder(View itemView) {
+            public InvolveLineHolder(View itemView) {
                 super(itemView);
-                itemView.setOnClickListener(this);
 
-                leftLayout = (LinearLayout) itemView.findViewById(R.id.left_layout);
-                videoCount = (TextView) itemView.findViewById(R.id.video_count);
-                title = (TextView) itemView.findViewById(R.id.title);
-                manager = (TextView) itemView.findViewById(R.id.is_manager);
+                leftHolder = new InvolveItemHolder(itemView.findViewById(R.id.left_item));
+                leftHolder.itemView.setOnClickListener(this);
+                rightHolder = new InvolveItemHolder(itemView.findViewById(R.id.right_item));
+                rightHolder.itemView.setOnClickListener(this);
+            }
+
+            private void bindInvolveLine(int position) {
+                InvolveLine involveLine = mData.get(getAdapterPosition());
+                leftHolder.bindInvolveItem(involveLine.leftItem);
+                rightHolder.bindInvolveItem(involveLine.rightItem);
             }
 
             @Override
             public void onClick(View v) {
-                InvolveItem item = mData.get(getAdapterPosition());
+                InvolveLine line = mData.get(getAdapterPosition());
+                InvolveItem item;
+                if (v == leftHolder.itemView) {
+                    item = line.leftItem;
+                }
+                else {
+                    item = line.rightItem;
+                }
                 Intent intent = new Intent(getActivity(), IJoinedTopicActivity.class);
                 intent.putExtra(IJoinedTopicActivity.KEY_TOPIC_ID, item.getTopicId());
                 intent.putExtra(IJoinedTopicActivity.KEY_UID, MyAccountInfo.getUid());
                 startActivity(intent);
+            }
+        }
+
+        class InvolveItemHolder {
+            View itemView;
+            ImageView thumb;
+            TextView videoCount;
+            TextView title;
+            //TextView manager;
+
+            public InvolveItemHolder(View itemView) {
+                this.itemView = itemView;
+                thumb = (ImageView) itemView.findViewById(R.id.thumb);
+                videoCount = (TextView) itemView.findViewById(R.id.video_count);
+                title = (TextView) itemView.findViewById(R.id.title);
+                //manager = (TextView) itemView.findViewById(R.id.is_manager);
+            }
+
+            private void bindInvolveItem(InvolveItem involveItem) {
+                if (involveItem == null) {
+                    itemView.setVisibility(View.INVISIBLE);
+                }
+                else {
+                    if (itemView.getVisibility() == View.INVISIBLE) {
+                        itemView.setVisibility(View.VISIBLE);
+                    }
+                    ImageLoader.getInstance().displayImage(involveItem.getThumb(), thumb,
+                            ImageLoaderHelper.topicThumbLoadOptions);
+                    videoCount.setText(String.valueOf(involveItem.getVideoCount()));
+                    title.setText(involveItem.getTitle());
+                }
             }
         }
     }
