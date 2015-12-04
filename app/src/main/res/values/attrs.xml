@@ -60,4 +60,14 @@
     <declare-styleable name="KoolewVideoView">
         <attr name="looping" format="boolean"/>
     </declare-styleable>
+    
+    <declare-styleable name="RatioLayout">
+        <attr name="widthRatio" format="float"/>
+        <attr name="heightRatio" format="float"/>
+        <attr name="measureStrategy">
+            <enum name="exact_auto" value="1"/>
+            <enum name="exact_byWidth" value="2"/>
+            <enum name="exact_byHeight" value="3"/>
+        </attr>
+    </declare-styleable>
 </resources>
