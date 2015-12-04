@@ -27,7 +27,7 @@ public class CommentTitleItem extends MediaItem {
 
     private BaseVideoInfo videoInfo;
 
-    CommentTitleItem(BaseVideoInfo videoInfo) {
+    public CommentTitleItem(BaseVideoInfo videoInfo) {
         this.videoInfo = videoInfo;
     }
 

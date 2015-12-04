@@ -3,7 +3,7 @@ package com.koolew.mars.topicmedia;
 /**
  * Created by jinchangzhu on 11/26/15.
  */
-abstract class MediaItem {
+public abstract class MediaItem {
 
     protected abstract int getType();
 

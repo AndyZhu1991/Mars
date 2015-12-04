@@ -9,7 +9,7 @@ import com.koolew.mars.infos.BaseTopicInfo;
 /**
  * Created by jinchangzhu on 11/26/15.
  */
-class BasicTitleItem extends MediaItem {
+public class BasicTitleItem extends MediaItem {
 
     private static final int TYPE = UniversalMediaAdapter.registerGenerator(
             new UniversalMediaAdapter.ItemViewHolderGenerator() {
@@ -27,7 +27,7 @@ class BasicTitleItem extends MediaItem {
 
     private String mTitle;
 
-    BasicTitleItem(BaseTopicInfo topicInfo) {
+    public BasicTitleItem(BaseTopicInfo topicInfo) {
         mTitle = topicInfo.getTitle();
     }
 

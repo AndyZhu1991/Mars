@@ -1,14 +1,22 @@
 package com.koolew.mars.topicmedia;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.koolew.mars.R;
+import com.koolew.mars.SendDanmakuActivity;
+import com.koolew.mars.ShareVideoWindow;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.utils.Utils;
+import com.koolew.mars.view.KooAnimationView;
 import com.koolew.mars.view.KoolewVideoView;
 import com.koolew.mars.view.UserNameView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -35,7 +43,8 @@ public class VideoItem extends MediaItem {
 
     protected BaseVideoInfo videoInfo;
 
-    VideoItem(BaseVideoInfo videoInfo) {
+
+    public VideoItem(BaseVideoInfo videoInfo) {
         this.videoInfo = videoInfo;
     }
 
@@ -45,7 +54,8 @@ public class VideoItem extends MediaItem {
     }
 
 
-    static class ItemViewHolder extends MediaHolder<VideoItem> implements View.OnClickListener {
+    static class ItemViewHolder extends MediaHolder<VideoItem> implements View.OnClickListener,
+            ShareVideoWindow.OnVideoOperatedListener {
         protected ImageView avatar;
         protected UserNameView userName;
         protected TextView videoDate;
@@ -57,7 +67,7 @@ public class VideoItem extends MediaItem {
         protected View danmakuSend;
         protected View moreView;
 
-        protected OnKooClickListener kooClickListener;
+        protected KooAnimationView kooAnimationView;
 
         public ItemViewHolder(UniversalMediaAdapter adapter, View itemView) {
             super(adapter, itemView);
@@ -75,6 +85,8 @@ public class VideoItem extends MediaItem {
             danmakuSend.setOnClickListener(this);
             moreView = itemView.findViewById(R.id.more_view);
             moreView.setOnClickListener(this);
+
+            kooAnimationView = (KooAnimationView) itemView.findViewById(R.id.koo_animation_view);
         }
 
         @Override
@@ -118,27 +130,56 @@ public class VideoItem extends MediaItem {
         }
 
         protected void onKooClick() {
-            if (kooClickListener != null) {
-                kooClickListener.onKooClick();
-            }
+            // Koo icon animation
+            PropertyValuesHolder pvhX = PropertyValuesHolder.ofFloat("alpha", 1f, 0.5f, 1f);
+            PropertyValuesHolder pvhY = PropertyValuesHolder.ofFloat("scaleX", 1f, 3f, 1f);
+            PropertyValuesHolder pvhZ = PropertyValuesHolder.ofFloat("scaleY", 1f, 3f, 1f);
+            ObjectAnimator.ofPropertyValuesHolder(kooIcon, pvhX, pvhY, pvhZ)
+                    .setDuration(400)
+                    .start();
+
+            // Koo boom animation
+            kooAnimationView.startAnimation();
+
+            // Play koo sound
+            mAdapter.mSoundPool.play(mAdapter.mKooSound, 1, 1, 0, 0, 1);
         }
 
         protected void onDanmakuSendClick() {
+            Intent intent = new Intent(mContext, SendDanmakuActivity.class);
+            intent.putExtra(SendDanmakuActivity.KEY_VIDEO_INFO, mItem.videoInfo);
+            mContext.startActivity(intent);
         }
 
         protected void onMoreClick() {
-        }
-
-        public void setKooClickListener(OnKooClickListener listener) {
-            kooClickListener = listener;
+            ShareVideoWindow shareVideoWindow = new ShareVideoWindow((Activity) mContext,
+                    mItem.videoInfo, mItem.videoInfo.getTopicInfo().getTitle());
+            shareVideoWindow.setOnVideoOperatedListener(this);
+            shareVideoWindow.showAtLocation(itemView, Gravity.TOP, 0, 0);
         }
 
         public void hideKooAndComment() {
             kooAndComment.setVisibility(View.GONE);
         }
-    }
 
-    public interface OnKooClickListener {
-        void onKooClick();
+        @Override
+        public void onVideoDeleted(String videoId) {
+            deleteThisFromAdapter();
+        }
+
+        @Override
+        public void onVideoAgainst(String videoId) {
+            deleteThisFromAdapter();
+        }
+
+        private void deleteThisFromAdapter() {
+            for (int i = 0; i < mAdapter.mData.size(); i++) {
+                if (mAdapter.mData.get(i) == mItem) {
+                    mAdapter.mData.remove(i);
+                    mAdapter.notifyItemRemoved(i);
+                    break;
+                }
+            }
+        }
     }
 }

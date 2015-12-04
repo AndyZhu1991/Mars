@@ -1,8 +1,10 @@
 package com.koolew.mars.topicmedia;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.koolew.mars.MovieStudioActivity;
 import com.koolew.mars.R;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MovieTopicInfo;
@@ -26,7 +28,7 @@ public class MovieItem extends VideoItem {
             }
     );
 
-    MovieItem(BaseVideoInfo videoInfo) {
+    public MovieItem(BaseVideoInfo videoInfo) {
         super(videoInfo);
     }
 
@@ -70,6 +72,12 @@ public class MovieItem extends VideoItem {
         }
 
         protected void onAct() {
+            BaseVideoInfo videoInfo = mItem.videoInfo;
+            Intent intent = new Intent(mContext, MovieStudioActivity.class);
+            intent.putExtra(MovieStudioActivity.KEY_MOVIE_TOPIC_INFO, movieInfo);
+            intent.putExtra(MovieStudioActivity.KEY_MOVIE_URL, videoInfo.getVideoUrl());
+            intent.putExtra(MovieStudioActivity.KEY_FROM, videoInfo.getUserInfo().getUid());
+            mContext.startActivity(intent);
         }
     }
 }

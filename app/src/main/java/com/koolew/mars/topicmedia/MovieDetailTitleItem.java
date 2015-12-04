@@ -29,7 +29,7 @@ public class MovieDetailTitleItem extends MediaItem {
 
     private MovieTopicInfo mTopicInfo;
 
-    MovieDetailTitleItem(MovieTopicInfo topicInfo) {
+    public MovieDetailTitleItem(MovieTopicInfo topicInfo) {
         mTopicInfo = topicInfo;
     }
 

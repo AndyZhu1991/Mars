@@ -31,7 +31,7 @@ public class TopStarsItem extends MediaItem {
     private KooCountUserInfo[] allStars;
     private boolean showCrowns = false;
 
-    TopStarsItem(KooCountUserInfo[] allStars) {
+    public TopStarsItem(KooCountUserInfo[] allStars) {
         this.allStars = allStars;
     }
 

@@ -7,7 +7,7 @@ import android.view.View;
 /**
  * Created by jinchangzhu on 11/28/15.
  */
-abstract class MediaHolder<I extends MediaItem> extends RecyclerView.ViewHolder {
+public abstract class MediaHolder<I extends MediaItem> extends RecyclerView.ViewHolder {
     UniversalMediaAdapter mAdapter;
     Context mContext;
     I mItem;

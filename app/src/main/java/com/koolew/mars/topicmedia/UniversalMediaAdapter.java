@@ -1,12 +1,15 @@
 package com.koolew.mars.topicmedia;
 
 import android.content.Context;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.koolew.mars.MarsApplication;
+import com.koolew.mars.R;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
@@ -39,6 +42,9 @@ public abstract class UniversalMediaAdapter extends LoadMoreAdapter {
     protected BaseTopicInfo mTopicInfo;
     protected List<MediaItem> mData = new ArrayList<>();
 
+    protected SoundPool mSoundPool;
+    protected int mKooSound;
+
     public UniversalMediaAdapter(Context context) {
         this.mContext = context;
     }
@@ -65,6 +71,23 @@ public abstract class UniversalMediaAdapter extends LoadMoreAdapter {
             throw new RuntimeException("Did you forget call registerGenerator or not return TYPE?");
         }
         return type;
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        mSoundPool = new SoundPool(5, AudioManager.STREAM_RING, 0);
+        mKooSound = mSoundPool.load(mContext, R.raw.koo, 1);
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        if (mSoundPool != null) {
+            mSoundPool.release();
+        }
+    }
+
+    public BaseTopicInfo getTopicInfo() {
+        return mTopicInfo;
     }
 
     protected void setData(List<MediaItem> data) {
@@ -120,9 +143,7 @@ public abstract class UniversalMediaAdapter extends LoadMoreAdapter {
         }
     }
 
-    protected JSONObject findTopicJson(JSONObject result) {
-        return result;
-    }
+    protected abstract JSONObject findTopicJson(JSONObject result);
 
     protected MediaItem generatorTitleItem(BaseTopicInfo topicInfo) {
         if (topicInfo.getCategory().equals("video")) {
@@ -149,14 +170,15 @@ public abstract class UniversalMediaAdapter extends LoadMoreAdapter {
 
         String category = mTopicInfo.getCategory();
         if (!category.equals("movie") || category.equals("video")) {
-            // TODO Unknown category
+            data.add(new UnknownCategoryItem());
+            setData(data);
             return false;
         }
 
         JSONArray refreshArray = getRefreshArray(result);
         int length = refreshArray.length();
         if (length == 0) {
-            // TODO No data
+            data.add(new NoDataItem());
             setData(data);
             return false;
         }
@@ -211,9 +233,13 @@ public abstract class UniversalMediaAdapter extends LoadMoreAdapter {
     protected void onLoadMoreResult(JSONObject result, List<MediaItem> data) {
     }
 
-    protected abstract JSONArray getLoadMoreArray(JSONObject result);
+    protected JSONArray getLoadMoreArray(JSONObject result) {
+        return getRefreshArray(result);
+    }
 
-    protected abstract MediaItem fromEveryLoadMoreObject(JSONObject itemObject);
+    protected MediaItem fromEveryLoadMoreObject(JSONObject itemObject) {
+        return fromEveryRefreshObject(itemObject);
+    }
 
 
     static abstract class ItemViewHolderGenerator {

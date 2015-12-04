@@ -1,9 +1,11 @@
 package com.koolew.mars.topicmedia;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.koolew.mars.EditTopicDescActivity;
 import com.koolew.mars.R;
 import com.koolew.mars.infos.BaseTopicInfo;
 
@@ -35,7 +37,7 @@ public class VideoDetailTitleItem extends MediaItem {
     private String inviter; // Only for TitleType.TASK
     private boolean isManager = false;
 
-    VideoDetailTitleItem(BaseTopicInfo topicInfo) {
+    public VideoDetailTitleItem(BaseTopicInfo topicInfo) {
         mTopicInfo = topicInfo;
     }
 
@@ -109,7 +111,9 @@ public class VideoDetailTitleItem extends MediaItem {
 
         @Override
         public void onClick(View v) {
-
+            Intent intent = new Intent(mContext, EditTopicDescActivity.class);
+            intent.putExtra(EditTopicDescActivity.KEY_TOPIC_ID, mItem.mTopicInfo.getTopicId());
+            mContext.startActivity(intent);
         }
     }
 }
