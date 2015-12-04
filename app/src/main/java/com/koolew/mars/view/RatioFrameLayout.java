@@ -36,14 +36,8 @@ public class RatioFrameLayout extends FrameLayout {
 
 
     static class Measure {
-        private static final int NO_STRATEGY = 0;
-        private static final int EXACT_AUTO = 1;
-        private static final int EXACT_BY_WIDTH = 2;
-        private static final int EXACT_BY_HEIGHT = 3;
-
         private float mWidthRatio;
         private float mHeightRatio;
-        private int mMeasureStrategy;
 
         private int resultWidthMeasureSpec;
         private int resultHeightMeasureSpec;
@@ -51,42 +45,24 @@ public class RatioFrameLayout extends FrameLayout {
         public Measure(TypedArray array) {
             mWidthRatio = array.getFloat(R.styleable.RatioLayout_widthRatio, 0.0f);
             mHeightRatio = array.getFloat(R.styleable.RatioLayout_heightRatio, 0.0f);
-            mMeasureStrategy = array.getInt(R.styleable.RatioLayout_measureStrategy, NO_STRATEGY);
             array.recycle();
         }
 
         public void measure(int widthMeasureSpec, int heightMeasureSpec) {
-            if (mWidthRatio <= 0.0f || mHeightRatio <= 0.0f || mMeasureStrategy == NO_STRATEGY ||
-                    !checkMeasureSpec(widthMeasureSpec, heightMeasureSpec)) {
+            if (mWidthRatio <= 0.0f || mHeightRatio <= 0.0f) {
                 cannotMeasure(widthMeasureSpec, heightMeasureSpec);
                 return;
             }
 
-            switch (mMeasureStrategy) {
-                case EXACT_AUTO:
-                    if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY) {
-                        measureByWidth(widthMeasureSpec, heightMeasureSpec);
-                    }
-                    else {
-                        measureByHeight(widthMeasureSpec, heightMeasureSpec);
-                    }
-                    break;
-                case EXACT_BY_WIDTH:
-                    if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY) {
-                        measureByWidth(widthMeasureSpec, heightMeasureSpec);
-                    }
-                    else {
-                        cannotMeasure(widthMeasureSpec, heightMeasureSpec);
-                    }
-                    break;
-                case EXACT_BY_HEIGHT:
-                    if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY) {
-                        measureByHeight(widthMeasureSpec, heightMeasureSpec);
-                    }
-                    else {
-                        cannotMeasure(widthMeasureSpec, heightMeasureSpec);
-                    }
-                    break;
+            if (!onlyOneExactly(widthMeasureSpec, heightMeasureSpec)) {
+                cannotMeasure(widthMeasureSpec, heightMeasureSpec);
+                return;
+            }
+
+            if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY) {
+                measureByWidth(widthMeasureSpec, heightMeasureSpec);
+            } else {
+                measureByHeight(widthMeasureSpec, heightMeasureSpec);
             }
         }
 
@@ -106,7 +82,7 @@ public class RatioFrameLayout extends FrameLayout {
             return MeasureSpec.makeMeasureSpec(size2, MeasureSpec.EXACTLY);
         }
 
-        private boolean checkMeasureSpec(int widthMeasureSpec, int heightMeasureSpec) {
+        private boolean onlyOneExactly(int widthMeasureSpec, int heightMeasureSpec) {
             int exactlyCount = 0;
             exactlyCount += MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY ? 1 : 0;
             exactlyCount += MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY ? 1 : 0;

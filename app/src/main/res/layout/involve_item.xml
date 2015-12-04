@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:widthRatio="4.0"
-    app:heightRatio="3.0"
-    app:measureStrategy="exact_auto">
+    app:heightRatio="3.0">
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/thumb"
