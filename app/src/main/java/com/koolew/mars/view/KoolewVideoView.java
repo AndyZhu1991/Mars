@@ -79,13 +79,11 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         }
         else if (widthSpecMode == MeasureSpec.EXACTLY) {
             finalWidth = widthSpecSize;
-            int wantedHeight = finalWidth * VIDEO_HEIGHT_RATIO / VIDEO_WIDTH_RATIO;
-            finalHeight = getBestSize(heightSpecMode, heightSpecSize, wantedHeight);
+            finalHeight = finalWidth * VIDEO_HEIGHT_RATIO / VIDEO_WIDTH_RATIO;
         }
         else if (heightSpecMode == MeasureSpec.EXACTLY) {
             finalHeight = heightSpecSize;
-            int wantedWidth = finalHeight * VIDEO_WIDTH_RATIO / VIDEO_HEIGHT_RATIO;
-            finalWidth = getBestSize(widthSpecMode, widthSpecSize, wantedWidth);
+            finalWidth = finalHeight * VIDEO_WIDTH_RATIO / VIDEO_HEIGHT_RATIO;
         }
         else {
             throw new RuntimeException("KoolewVideoView layout param error!");
@@ -93,13 +91,6 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
         super.onMeasure(MeasureSpec.makeMeasureSpec(finalWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(finalHeight, MeasureSpec.EXACTLY));
-    }
-
-    private static int getBestSize(int specMode, int specSize, int wantedSize) {
-        if (specMode == MeasureSpec.EXACTLY || specSize < wantedSize) {
-            return specSize;
-        }
-        return wantedSize;
     }
 
     @Override

@@ -1,10 +1,12 @@
 package com.koolew.mars.topicmedia;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.koolew.mars.R;
+import com.koolew.mars.TopicKooRankActivity;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.KooCountUserInfo;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -29,7 +31,6 @@ public class TopStarsItem extends MediaItem {
     );
 
     private KooCountUserInfo[] allStars;
-    private boolean showCrowns = false;
 
     public TopStarsItem(KooCountUserInfo[] allStars) {
         this.allStars = allStars;
@@ -40,11 +41,7 @@ public class TopStarsItem extends MediaItem {
         return TYPE;
     }
 
-    public void setShowCrowns(boolean showCrowns) {
-        this.showCrowns = showCrowns;
-    }
-
-    static class ItemViewHolder extends MediaHolder<TopStarsItem> {
+    static class ItemViewHolder extends MediaHolder<TopStarsItem> implements View.OnClickListener {
 
         private static final int[] STARS_AVATAR_RES_ID = {
                 R.id.first_koo,
@@ -63,10 +60,10 @@ public class TopStarsItem extends MediaItem {
         private TextView starsRankTitle;
         private ImageView[] starsAvatar = new ImageView[STARS_AVATAR_RES_ID.length];
         private ImageView[] starsCrown = new ImageView[STARS_CROWN_RES_ID.length];
-        private View topicManager;
 
         public ItemViewHolder(UniversalMediaAdapter adapter, View itemView) {
             super(adapter, itemView);
+            itemView.setOnClickListener(this);
 
             starsRankTitle = (TextView) itemView.findViewById(R.id.stars_rank_title);
             for (int i = 0; i < starsAvatar.length; i++) {
@@ -75,7 +72,6 @@ public class TopStarsItem extends MediaItem {
             for (int i = 0; i < starsCrown.length; i++) {
                 starsCrown[i] = (ImageView) itemView.findViewById(STARS_CROWN_RES_ID[i]);
             }
-            topicManager = itemView.findViewById(R.id.topic_manager);
         }
 
         @Override
@@ -88,12 +84,16 @@ public class TopStarsItem extends MediaItem {
             }
 
             for (int i = 0; i < starsCrown.length; i++) {
-                int visibility = (mItem.showCrowns && i < mItem.allStars.length)
-                        ? View.VISIBLE : View.INVISIBLE;
+                int visibility = i < mItem.allStars.length ? View.VISIBLE : View.INVISIBLE;
                 starsCrown[i].setVisibility(visibility);
             }
+        }
 
-            topicManager.setVisibility(mItem.showCrowns ? View.VISIBLE : View.INVISIBLE);
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(mContext, TopicKooRankActivity.class);
+            intent.putExtra(TopicKooRankActivity.KEY_KOO_COUNT_USER_INFO, mItem.allStars);
+            mContext.startActivity(intent);
         }
     }
 }

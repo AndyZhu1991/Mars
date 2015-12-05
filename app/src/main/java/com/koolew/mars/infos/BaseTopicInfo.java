@@ -21,6 +21,9 @@ public class BaseTopicInfo implements Serializable {
     public static final String KEY_UPDATE_TIME = "update_time";
     public static final String KEY_ATTR = "attri";
 
+    public static final String CATEGORY_VIDEO = "video";
+    public static final String CATEGORY_MOVIE = "movie";
+
     protected String topicId;
     protected String title;
     protected String desc;

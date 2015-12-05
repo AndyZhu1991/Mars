@@ -23,7 +23,7 @@ public abstract class DetailTitleVideoListFragment extends BaseVideoListFragment
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (!(activity instanceof OnTopicCategoryListener)) {
-            throw new RuntimeException("This activity must implements OnTopicCategoryListener");
+            throw new RuntimeException("This activity must implements OnTopicInfoUpdateListener");
         }
         onTopicCategoryListener = (OnTopicCategoryListener) activity;
     }
