@@ -1,5 +1,6 @@
 package com.koolew.mars.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
@@ -16,7 +17,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.koolew.mars.MarsApplication;
 import com.koolew.mars.R;
+import com.koolew.mars.danmaku.DanmakuShowManager;
+import com.koolew.mars.danmaku.DanmakuThread;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.utils.Downloader;
@@ -47,6 +51,9 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
     private BaseVideoInfo mVideoInfo;
     private String mVideoUrl;
+
+    private DanmakuShowManager mDanmakuManager;
+    private DanmakuThread mDanmakuThread;
 
     public KoolewVideoView(Context context) {
         this(context, null);
@@ -111,12 +118,15 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         mVideoUrl = videoUrl;
         ImageLoader.getInstance().displayImage(thumb, mVideoThumb,
                 ImageLoaderHelper.topicThumbLoadOptions);
+        mDanmakuManager = null;
     }
 
     public void setVideoInfo(BaseVideoInfo videoInfo) {
-        mVideoUrl = null;
-        mVideoInfo = videoInfo;
         setVideoInfo(videoInfo.getVideoUrl(), videoInfo.getVideoThumb());
+
+        mVideoInfo = videoInfo;
+        mDanmakuManager = new DanmakuShowManager(getContext(), mDanmakuContainer,
+                videoInfo.getDanmakus());
     }
 
     public void startPlay() {
@@ -136,11 +146,51 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
                 if (mPlaybackTexture.getSurfaceTexture() != null) {
                     mMediaPlayer.setSurface(new Surface(mPlaybackTexture.getSurfaceTexture()));
                     mMediaPlayer.start();
-                    mVideoThumb.setVisibility(INVISIBLE);
+                    mDanmakuThread = new DanmakuThread((Activity) getContext(), mDanmakuManager,
+                            new DanmakuThread.PlayerWrapper() {
+                                @Override
+                                public long getCurrentPosition() {
+                                    return mMediaPlayer.getCurrentPosition();
+                                }
+
+                                @Override
+                                public boolean isPlaying() {
+                                    return mMediaPlayer.isPlaying();
+                                }
+                            });
+                    mDanmakuThread.start();
+                    new InvisibleThumbThread().start();
                     mStatus = STATUS_PLAYING;
                 }
                 else {
                     mStatus = STATUS_PAUSED;
+                }
+            }
+        }
+    }
+
+    class InvisibleThumbThread extends Thread {
+        @Override
+        public void run() {
+            try {
+                while (mMediaPlayer.isPlaying()) {
+                    if (mMediaPlayer.getCurrentPosition() > 80) {
+                        post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mVideoThumb.setVisibility(INVISIBLE);
+                            }
+                        });
+                        break;
+                    }
+                    sleep(40);
+                }
+            } catch (Exception e) {
+                if (MarsApplication.DEBUG) {
+                    throw new RuntimeException(e);
+                }
+                else {
+                    // Do nothing
                 }
             }
         }
@@ -155,7 +205,6 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
     private void resume() {
         if (mStatus == STATUS_PAUSED && mMediaPlayer != null) {
-            mMediaPlayer.setSurface(new Surface(mPlaybackTexture.getSurfaceTexture()));
             mMediaPlayer.start();
             mStatus = STATUS_PLAYING;
         }
@@ -164,6 +213,9 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     public void stop() {
         mStatus = STATUS_IDLE;
         if (mMediaPlayer != null) {
+            mDanmakuThread.stopDanmaku();
+            mDanmakuThread = null;
+
             if (mMediaPlayer.isPlaying()) {
                 mMediaPlayer.stop();
             }
@@ -175,7 +227,9 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-        resume();
+        if (mMediaPlayer != null) {
+            mMediaPlayer.setSurface(new Surface(surface));
+        }
     }
 
     @Override
@@ -184,7 +238,6 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-        pause();
         return true;
     }
 
@@ -216,23 +269,49 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
             recyclerView.addOnScrollListener(mScrollListener);
         }
 
-        private RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
+        public void onResume() {
+            if (mCurrentPlayHolder != null) {
+                getVideoView(mCurrentPlayHolder).resume();
+            }
+        }
 
+        public void onPause() {
+            if (mCurrentPlayHolder != null) {
+                getVideoView(mCurrentPlayHolder).pause();
+            }
+        }
+
+        public void onRefresh() {
+            mCurrentPlayHolder = null;
+            mRecyclerView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    calcNewPlayHolder();
+                }
+            }, 500);
+        }
+
+        private RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    RecyclerView.ViewHolder holder = getCurrentItemHolder();
-                    if (holder != mCurrentPlayHolder) {
-                        if (mCurrentPlayHolder != null) {
-                            stopPlay(mCurrentPlayHolder);
-                        }
-                        mCurrentPlayHolder = holder;
-                        startPlay(holder);
-                    }
+                    calcNewPlayHolder();
                 }
             }
         };
+
+        private void calcNewPlayHolder() {
+            RecyclerView.ViewHolder holder = getCurrentItemHolder();
+            if (holder != mCurrentPlayHolder) {
+                if (mCurrentPlayHolder != null) {
+                    stopPlay(mCurrentPlayHolder);
+                }
+                mCurrentPlayHolder = holder;
+                if (mCurrentPlayHolder != null) {
+                    startPlay(mCurrentPlayHolder);
+                }
+            }
+        }
 
         private RecyclerView.ViewHolder getCurrentItemHolder() {
             RecyclerView.ViewHolder currentHolder = null;
@@ -257,30 +336,17 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         }
 
         private int getVideoViewVisibleHeight(RecyclerView.ViewHolder holder) {
-            Rect videoViewRect = getVideoViewRect(holder);
-            int videoViewStartY = videoViewRect.top;
-            int videoViewHeight = videoViewRect.height();
-            int recyclerHeight = mRecyclerView.getHeight();
-
-            if (videoViewStartY < 0) {
-                return videoViewHeight + videoViewStartY;
+            Rect localVisibleRect = new Rect();
+            KoolewVideoView videoView = getVideoView(holder);
+            videoView.getLocalVisibleRect(localVisibleRect);
+            if (localVisibleRect.bottom < 0 || localVisibleRect.top > mRecyclerView.getHeight()) {
+                return 0;
             }
-            else if (videoViewStartY + videoViewHeight > recyclerHeight) {
-                return recyclerHeight - videoViewStartY;
-            }
-            else {
-                return videoViewHeight;
-            }
+            return localVisibleRect.height();
         }
 
         protected boolean isPlayable(RecyclerView.ViewHolder holder) {
             return getVideoView(holder) != null;
-        }
-
-        protected Rect getVideoViewRect(RecyclerView.ViewHolder holder) {
-            KoolewVideoView videoView = getVideoView(holder);
-            return new Rect(videoView.getLeft(), videoView.getTop(),
-                    videoView.getRight(), videoView.getBottom());
         }
 
         protected void startPlay(RecyclerView.ViewHolder holder) {

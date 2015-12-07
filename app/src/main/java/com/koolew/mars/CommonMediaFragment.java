@@ -2,11 +2,13 @@ package com.koolew.mars;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.topicmedia.MediaItem;
+import com.koolew.mars.topicmedia.ScrollPlayer;
 import com.koolew.mars.topicmedia.UniversalMediaAdapter;
 import com.koolew.mars.topicmedia.VideoItem;
 import com.koolew.mars.utils.JsonUtil;
@@ -23,11 +25,33 @@ public abstract class CommonMediaFragment<CMA extends CommonMediaFragment.Common
 
     protected String mTopicId;
     protected OnTopicInfoUpdateListener onTopicInfoUpdateListener;
+    protected ScrollPlayer mScrollPlayer;
 
     public CommonMediaFragment(String topicId) {
         mTopicId = topicId;
         isLazyLoad = true;
         isNeedLoadMore = true;
+    }
+
+    @Override
+    protected void onPageEnd() {
+        super.onPageEnd();
+
+        mScrollPlayer.onPause();
+    }
+
+    @Override
+    protected void onPageStart() {
+        super.onPageStart();
+
+        mScrollPlayer.onResume();
+    }
+
+    @Override
+    public void onCreateViewLazy(Bundle savedInstanceState) {
+        super.onCreateViewLazy(savedInstanceState);
+
+        mScrollPlayer = new ScrollPlayer(mRecyclerView);
     }
 
     @Override
@@ -55,6 +79,7 @@ public abstract class CommonMediaFragment<CMA extends CommonMediaFragment.Common
         else {
             boolean ret = mAdapter.handleRefreshResult(result);
             onTopicInfoUpdateListener.onCategoryDetermined(mAdapter.getTopicInfo());
+            mScrollPlayer.onRefresh();
             return ret;
         }
     }
