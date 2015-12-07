@@ -263,12 +263,19 @@ public class CameraPreviewFragment extends Fragment {
 
         public void startPreview() {
             cameraInstance().startPreview(mSurfaceTexture);
+            final int rotationX;
             if (cameraInstance().getCameraID() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                setRotationX(180);
+                rotationX = 180;
             }
             else {
-                setRotationX(0);
+                rotationX = 0;
             }
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    setRotationX(rotationX);
+                }
+            });
         }
 
         private void calcViewport() {

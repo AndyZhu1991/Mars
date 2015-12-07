@@ -1,5 +1,6 @@
 package com.koolew.mars;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -43,7 +44,7 @@ public class JoinMovieActivity extends BaseV4FragmentActivity {
         fragmentTransaction.commit();
     }
 
-    class JoinMovieFragment extends RecyclerListFragmentMould<JoinMovieAdapter> {
+    public static class JoinMovieFragment extends RecyclerListFragmentMould<JoinMovieAdapter> {
 
         private int page = 0;
 
@@ -55,7 +56,7 @@ public class JoinMovieActivity extends BaseV4FragmentActivity {
 
         @Override
         protected JoinMovieAdapter useThisAdapter() {
-            return new JoinMovieAdapter();
+            return new JoinMovieAdapter(getActivity());
         }
 
         @Override
@@ -96,9 +97,14 @@ public class JoinMovieActivity extends BaseV4FragmentActivity {
         }
     }
 
-    class JoinMovieAdapter extends LoadMoreAdapter {
+    public static class JoinMovieAdapter extends LoadMoreAdapter {
 
+        private Context mContext;
         private List<MovieInfo> mMovieInfoList = new ArrayList<>();
+
+        public JoinMovieAdapter(Context context) {
+            mContext = context;
+        }
 
         private boolean add(JSONObject result) {
             int originCount = mMovieInfoList.size();
@@ -156,7 +162,8 @@ public class JoinMovieActivity extends BaseV4FragmentActivity {
             ImageLoader.getInstance().displayImage(item.getThumb(), holder.thumb,
                     ImageLoaderHelper.topicThumbLoadOptions);
             holder.title.setText(item.getTitle());
-            holder.videoCount.setText(getString(R.string.video_count_label, item.getVideoCount()));
+            holder.videoCount.setText(mContext.getString(R.string.video_count_label,
+                    item.getVideoCount()));
         }
 
         @Override
@@ -183,8 +190,7 @@ public class JoinMovieActivity extends BaseV4FragmentActivity {
             @Override
             public void onClick(View v) {
                 MovieInfo item = mMovieInfoList.get(getAdapterPosition());
-                FeedsTopicActivity.startWorldTopic(JoinMovieActivity.this,
-                        item.getTopicId(), item.getTitle());
+                FeedsTopicActivity.startWorldTopic(mContext, item.getTopicId(), item.getTitle());
             }
         }
     }
