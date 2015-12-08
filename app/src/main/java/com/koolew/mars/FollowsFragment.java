@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -28,19 +27,8 @@ public class FollowsFragment extends TitleFragmentActivity.BaseTitleFragment<Fri
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mUid = getActivity().getIntent().getStringExtra(KEY_UID);
-    }
 
-    @Override
-    public int getTitleBarColor(Context context) {
-        if (context == null) {
-            context = getActivity();
-        }
-        return context.getResources().getColor(R.color.koolew_light_blue);
-    }
-
-    @Override
-    public String getTitle(Context context) {
-        return null;
+        mActivity.getTitleBar().setBackgroundColor(getThemeColor());
     }
 
     @Override
@@ -50,7 +38,7 @@ public class FollowsFragment extends TitleFragmentActivity.BaseTitleFragment<Fri
 
     @Override
     protected int getThemeColor() {
-        return getTitleBarColor(null);
+        return getResources().getColor(R.color.koolew_light_blue);
     }
 
     @Override

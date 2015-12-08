@@ -1,5 +1,6 @@
 package com.koolew.mars;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -39,18 +40,24 @@ public class TitleFragmentActivity extends BaseV4FragmentActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.fragment_container, mFragment);
         fragmentTransaction.commit();
+    }
 
-        mTitleBar.setBackgroundColor(mFragment.getTitleBarColor(this));
-        mTitleBar.setTitle(mFragment.getTitle(this));
+    public TitleBarView getTitleBar() {
+        return mTitleBar;
     }
 
 
     public abstract static class BaseTitleFragment<A extends LoadMoreAdapter>
             extends RecyclerListFragmentMould<A> {
 
-        public abstract int getTitleBarColor(Context context);
+        protected TitleFragmentActivity mActivity;
 
-        public abstract String getTitle(Context context);
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+
+            mActivity = (TitleFragmentActivity) activity;
+        }
     }
 
     public static void launchFragment(Context context, Class fragmentClass) {
@@ -59,8 +66,7 @@ public class TitleFragmentActivity extends BaseV4FragmentActivity {
         context.startActivity(intent);
     }
 
-    public static void launchFragment(Context context, Class fragmentClass,
-                                      Bundle extras) {
+    public static void launchFragment(Context context, Class fragmentClass, Bundle extras) {
         Intent intent = new Intent(context, TitleFragmentActivity.class);
         intent.putExtra(KEY_FRAGMENT_CLASS, fragmentClass);
         intent.putExtras(extras);
