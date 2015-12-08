@@ -11,11 +11,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
-import com.koolew.mars.CheckDanmakuActivity;
 import com.koolew.mars.FriendInfoActivity;
 import com.koolew.mars.R;
 import com.koolew.mars.SendDanmakuActivity;
 import com.koolew.mars.ShareVideoWindow;
+import com.koolew.mars.SingleMediaFragment;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MyAccountInfo;
@@ -81,7 +81,7 @@ public class VideoItem extends MediaItem {
         }
     }
 
-    static class ItemViewHolder extends MediaHolder<VideoItem> implements View.OnClickListener,
+    public static class ItemViewHolder extends MediaHolder<VideoItem> implements View.OnClickListener,
             ShareVideoWindow.OnVideoOperatedListener {
         protected ImageView avatar;
         protected UserNameView userName;
@@ -215,10 +215,7 @@ public class VideoItem extends MediaItem {
         }
 
         protected void onKooAndDanmakuClick() {
-            String videoId = mItem.videoInfo.getVideoId();
-            Intent intent = new Intent(mContext, CheckDanmakuActivity.class);
-            intent.putExtra(CheckDanmakuActivity.KEY_VIDEO_ID, videoId);
-            mContext.startActivity(intent);
+            SingleMediaFragment.startThisFragment(mContext, mItem.videoInfo.getVideoId());
         }
 
         public void hideKooAndComment() {

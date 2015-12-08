@@ -320,7 +320,7 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
         private void calcNewPlayHolder() {
             RecyclerView.ViewHolder holder = getCurrentItemHolder();
-            if (holder.getAdapterPosition() != mCurrentHolderWrapper.position) {
+            if (holder == null || holder.getAdapterPosition() != mCurrentHolderWrapper.position) {
                 if (currentPlayHolder() != null) {
                     stopPlay(currentPlayHolder());
                 }

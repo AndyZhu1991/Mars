@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.koolew.mars.FriendInfoActivity;
 import com.koolew.mars.R;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseCommentInfo;
@@ -44,8 +45,12 @@ public class CommentItem extends MediaItem {
         return TYPE;
     }
 
+    @Override
+    protected long getUpdateTime() {
+        return commentInfo.getCreateTime();
+    }
 
-    static class ItemViewHolder extends MediaHolder<CommentItem> {
+    static class ItemViewHolder extends MediaHolder<CommentItem> implements View.OnClickListener {
         private ImageView avatar;
         private TextView nicknameSay;
         private TextView content;
@@ -53,6 +58,7 @@ public class CommentItem extends MediaItem {
 
         public ItemViewHolder(UniversalMediaAdapter adapter, View itemView) {
             super(adapter, itemView);
+            itemView.setOnClickListener(this);
 
             avatar = (ImageView) itemView.findViewById(R.id.avatar);
             nicknameSay = (TextView) itemView.findViewById(R.id.nickname_say);
@@ -80,6 +86,11 @@ public class CommentItem extends MediaItem {
             nicknameSay.setText(ssBuilder);
 
             content.setText(mItem.commentInfo.getContent());
+        }
+
+        @Override
+        public void onClick(View v) {
+            FriendInfoActivity.startThisActivity(mContext, mItem.commentInfo.getUserInfo().getUid());
         }
     }
 }

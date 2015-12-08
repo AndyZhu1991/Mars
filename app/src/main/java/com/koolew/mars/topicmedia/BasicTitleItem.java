@@ -37,7 +37,7 @@ public class BasicTitleItem extends MediaItem {
     }
 
 
-    static class ItemViewHolder extends MediaHolder<BasicTitleItem> {
+    public static class ItemViewHolder extends MediaHolder<BasicTitleItem> {
         private TextView title;
 
         public ItemViewHolder(UniversalMediaAdapter adapter, View itemView) {

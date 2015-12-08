@@ -3,6 +3,7 @@ package com.koolew.mars;
 import android.os.Bundle;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONArray;
@@ -12,7 +13,7 @@ import org.json.JSONObject;
 /**
  * Created by jinchangzhu on 9/25/15.
  */
-public class FansFragment extends TitleFragmentActivity.BaseTitleFragment<FriendSimpleAdapter> {
+public class FansFragment extends RecyclerListFragmentMould<FriendSimpleAdapter> {
 
     public static final String KEY_UID = "uid";
 
@@ -28,7 +29,7 @@ public class FansFragment extends TitleFragmentActivity.BaseTitleFragment<Friend
         super.onCreate(savedInstanceState);
         mUid = getActivity().getIntent().getStringExtra(KEY_UID);
 
-        mActivity.getTitleBar().setBackgroundColor(getThemeColor());
+        ((TitleFragmentActivity) getActivity()).getTitleBar().setBackgroundColor(getThemeColor());
     }
 
     @Override
