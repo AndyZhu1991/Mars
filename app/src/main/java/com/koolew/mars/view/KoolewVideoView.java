@@ -333,7 +333,7 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
         private RecyclerView.ViewHolder getCurrentItemHolder() {
             RecyclerView.ViewHolder currentHolder = null;
-            int maxVisibleHeight = 0;
+            float maxVisibleHeightPercentage = 0.5f;
 
             int count = mRecyclerView.getChildCount();
             for (int i = 0; i < count; i++) {
@@ -343,9 +343,9 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
                     continue;
                 }
 
-                int visibleHeight = getVideoViewVisibleHeight(holder);
-                if (visibleHeight > maxVisibleHeight) {
-                    maxVisibleHeight = visibleHeight;
+                float visibleHeightPercentage = getVideoViewVisibleHeightPercentage(holder);
+                if (visibleHeightPercentage > maxVisibleHeightPercentage) {
+                    maxVisibleHeightPercentage = visibleHeightPercentage;
                     currentHolder = holder;
                 }
             }
@@ -353,7 +353,7 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
             return currentHolder;
         }
 
-        private int getVideoViewVisibleHeight(RecyclerView.ViewHolder holder) {
+        private float getVideoViewVisibleHeightPercentage(RecyclerView.ViewHolder holder) {
             KoolewVideoView videoView = getVideoView(holder);
 
             int[] videoViewLocation = new int[2];
@@ -366,7 +366,10 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
             int recyclerViewStart = recyclerViewLocation[1];
             int recyclerViewEnd = recyclerViewStart + mRecyclerView.getHeight();
 
-            return getUnionLen(videoViewStart, videoViewEnd, recyclerViewStart, recyclerViewEnd);
+            int videoViewVisibleHeight = getUnionLen(
+                    videoViewStart, videoViewEnd, recyclerViewStart, recyclerViewEnd);
+
+            return 1.0f * videoViewVisibleHeight / videoView.getHeight();
         }
 
         private int getUnionLen(int start1, int end1, int start2, int end2) {
