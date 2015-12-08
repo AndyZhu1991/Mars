@@ -19,9 +19,23 @@ public class KooSoundUtil {
         mKooSound = mSoundPool.load(context, R.raw.koo, 1);
     }
 
+    public static void release() {
+        mSoundPool.release();
+        mSoundPool = null;
+    }
+
     public static void playKooSound() {
         if (mSoundPool != null) {
             mSoundPool.play(mKooSound, 1, 1, 0, 0, 1);
         }
+    }
+
+    public static void playKooSoundBackground() {
+        new Thread() {
+            @Override
+            public void run() {
+                playKooSound();
+            }
+        }.start();
     }
 }

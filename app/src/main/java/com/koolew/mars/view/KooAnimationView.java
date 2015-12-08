@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -61,6 +62,11 @@ public class KooAnimationView extends View {
             return;
         }
 
+        if (mAnimationProgress > 1.0f) {
+            canvas.drawColor(Color.TRANSPARENT);
+            return;
+        }
+
         Rect canvasRect = canvas.getClipBounds();
         int centerX = canvasRect.centerX();
         int centerY = canvasRect.centerY();
@@ -78,7 +84,7 @@ public class KooAnimationView extends View {
 
     public void startAnimation() {
         ObjectAnimator animator = ObjectAnimator
-                .ofFloat(this, "progress", 0.0f, 1.0f)
+                .ofFloat(this, "progress", 0.0f, 1.01f)
                 .setDuration(500);
         animator.addListener(new Animator.AnimatorListener() {
             @Override

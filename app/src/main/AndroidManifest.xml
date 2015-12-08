@@ -340,6 +340,11 @@
             android:exported="false"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".UserMediaActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" >
+        </activity>
 
         <!-- Jpush -->
         <!-- Required -->

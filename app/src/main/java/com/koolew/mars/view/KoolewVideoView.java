@@ -2,7 +2,6 @@ package com.koolew.mars.view;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -109,11 +108,11 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        stop();
+        stopAsync();
     }
 
     public void setVideoInfo(String videoUrl, String thumb) {
-        stop();
+        stopAsync();
         mVideoInfo = null;
         mVideoUrl = videoUrl;
         ImageLoader.getInstance().displayImage(thumb, mVideoThumb,
@@ -173,7 +172,7 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         @Override
         public void run() {
             try {
-                while (mMediaPlayer.isPlaying()) {
+                while (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
                     if (mMediaPlayer.getCurrentPosition() > 80) {
                         post(new Runnable() {
                             @Override
@@ -211,18 +210,33 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     }
 
     public void stop() {
+        doStopMediaPlayer();
+        mVideoThumb.setVisibility(VISIBLE);
+    }
+
+    public void stopAsync() {
+        new Thread() {
+            @Override
+            public void run() {
+                doStopMediaPlayer();
+            }
+        }.start();
+        mVideoThumb.setVisibility(VISIBLE);
+    }
+
+    private synchronized void doStopMediaPlayer() {
         mStatus = STATUS_IDLE;
         if (mMediaPlayer != null) {
             mDanmakuThread.stopDanmaku();
             mDanmakuThread = null;
 
-            if (mMediaPlayer.isPlaying()) {
-                mMediaPlayer.stop();
-            }
-            mMediaPlayer.release();
+            MediaPlayer mediaPlayer = mMediaPlayer;
             mMediaPlayer = null;
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
+            mediaPlayer.release();
         }
-        mVideoThumb.setVisibility(VISIBLE);
     }
 
     @Override
@@ -262,27 +276,31 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     public static abstract class ScrollPlayer {
 
         private RecyclerView mRecyclerView;
-        private RecyclerView.ViewHolder mCurrentPlayHolder;
+        private HolderWrapper mCurrentHolderWrapper = new HolderWrapper();
 
         public ScrollPlayer(RecyclerView recyclerView) {
             mRecyclerView = recyclerView;
             recyclerView.addOnScrollListener(mScrollListener);
         }
 
+        private RecyclerView.ViewHolder currentPlayHolder() {
+            return mCurrentHolderWrapper.holder;
+        }
+
         public void onResume() {
-            if (mCurrentPlayHolder != null) {
-                getVideoView(mCurrentPlayHolder).resume();
+            if (currentPlayHolder() != null) {
+                getVideoView(currentPlayHolder()).resume();
             }
         }
 
         public void onPause() {
-            if (mCurrentPlayHolder != null) {
-                getVideoView(mCurrentPlayHolder).pause();
+            if (currentPlayHolder() != null) {
+                getVideoView(currentPlayHolder()).pause();
             }
         }
 
         public void onRefresh() {
-            mCurrentPlayHolder = null;
+            mCurrentHolderWrapper.setHolder(null);
             mRecyclerView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -302,13 +320,13 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
         private void calcNewPlayHolder() {
             RecyclerView.ViewHolder holder = getCurrentItemHolder();
-            if (holder != mCurrentPlayHolder) {
-                if (mCurrentPlayHolder != null) {
-                    stopPlay(mCurrentPlayHolder);
+            if (holder.getAdapterPosition() != mCurrentHolderWrapper.position) {
+                if (currentPlayHolder() != null) {
+                    stopPlay(currentPlayHolder());
                 }
-                mCurrentPlayHolder = holder;
-                if (mCurrentPlayHolder != null) {
-                    startPlay(mCurrentPlayHolder);
+                mCurrentHolderWrapper.setHolder(holder);
+                if (currentPlayHolder() != null) {
+                    startPlay(currentPlayHolder());
                 }
             }
         }
@@ -336,13 +354,26 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         }
 
         private int getVideoViewVisibleHeight(RecyclerView.ViewHolder holder) {
-            Rect localVisibleRect = new Rect();
             KoolewVideoView videoView = getVideoView(holder);
-            videoView.getLocalVisibleRect(localVisibleRect);
-            if (localVisibleRect.bottom < 0 || localVisibleRect.top > mRecyclerView.getHeight()) {
-                return 0;
-            }
-            return localVisibleRect.height();
+
+            int[] videoViewLocation = new int[2];
+            videoView.getLocationInWindow(videoViewLocation);
+            int videoViewStart = videoViewLocation[1];
+            int videoViewEnd = videoViewStart + videoView.getHeight();
+
+            int[] recyclerViewLocation = new int[2];
+            mRecyclerView.getLocationInWindow(recyclerViewLocation);
+            int recyclerViewStart = recyclerViewLocation[1];
+            int recyclerViewEnd = recyclerViewStart + mRecyclerView.getHeight();
+
+            return getUnionLen(videoViewStart, videoViewEnd, recyclerViewStart, recyclerViewEnd);
+        }
+
+        private int getUnionLen(int start1, int end1, int start2, int end2) {
+            int superLineStart = Math.min(start1, start2);
+            int superLineEnd = Math.max(end1, end2);
+
+            return (end1 - start1) + (end2 - start2) - (superLineEnd - superLineStart);
         }
 
         protected boolean isPlayable(RecyclerView.ViewHolder holder) {
@@ -358,5 +389,29 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         }
 
         protected abstract KoolewVideoView getVideoView(RecyclerView.ViewHolder holder);
+
+
+        private static class HolderWrapper {
+            private RecyclerView.ViewHolder holder;
+            private int position;
+
+            private HolderWrapper() {
+                reset();
+            }
+
+            private void reset() {
+                holder = null;
+                position = -1;
+            }
+
+            private void setHolder(RecyclerView.ViewHolder holder) {
+                if (holder == null) {
+                    reset();
+                    return;
+                }
+                this.holder = holder;
+                this.position = holder.getAdapterPosition();
+            }
+        }
     }
 }

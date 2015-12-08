@@ -186,7 +186,7 @@ public class VideoItem extends MediaItem {
             kooAnimationView.startAnimation();
 
             // Play koo sound
-            KooSoundUtil.playKooSound();
+            KooSoundUtil.playKooSoundBackground();
 
             // Pre-add koo count
             mItem.videoInfo.setKooTotal(mItem.videoInfo.getKooTotal() + 1);
@@ -255,7 +255,7 @@ public class VideoItem extends MediaItem {
 
             @Override
             public void onResponse(JSONObject response) {
-                if (this != lastKooListener || videoId.equals(mItem.videoInfo.getVideoId())) {
+                if (this != lastKooListener || !videoId.equals(mItem.videoInfo.getVideoId())) {
                     // Only response last listener and same video id.
                     return;
                 }
