@@ -126,7 +126,7 @@ public class SingleMediaFragment extends BaseTopicMediaFragment<SingleMediaFragm
         @Override
         protected MediaItem fromEveryRefreshObject(JSONObject itemObject) {
             mVideoInfo = new VideoInfo(itemObject);
-            return new VideoItem(mVideoInfo);
+            return getRealMediaItem(itemObject);
         }
 
         @Override

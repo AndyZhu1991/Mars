@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.koolew.mars.infos.BaseTopicInfo;
-import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.topicmedia.BaseTopicMediaFragment;
 import com.koolew.mars.topicmedia.MediaItem;
 import com.koolew.mars.topicmedia.UniversalMediaAdapter;
-import com.koolew.mars.topicmedia.VideoItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,7 +65,7 @@ public abstract class CommonMediaFragment<CMA extends CommonMediaFragment.Common
 
         @Override
         protected MediaItem fromEveryRefreshObject(JSONObject itemObject) {
-            return new VideoItem(new BaseVideoInfo(itemObject));
+            return getRealMediaItem(itemObject);
         }
     }
 

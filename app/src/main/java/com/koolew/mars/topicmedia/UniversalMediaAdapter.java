@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.koolew.mars.MarsApplication;
 import com.koolew.mars.infos.BaseTopicInfo;
+import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 
@@ -115,7 +116,6 @@ public abstract class UniversalMediaAdapter extends LoadMoreAdapter {
 
 
     protected BaseTopicInfo generateTopicInfo(JSONObject topicJson) {
-        String category;
         if (!topicJson.has(BaseTopicInfo.KEY_CATEGORY)) {
             if (MarsApplication.DEBUG) {
                 throw new RuntimeException("There is no category in topic");
@@ -131,23 +131,8 @@ public abstract class UniversalMediaAdapter extends LoadMoreAdapter {
                 return new BaseTopicInfo(fakeTopic);
             }
         }
-        else {
-            try {
-                category = topicJson.getString(BaseTopicInfo.KEY_CATEGORY);
-            } catch (JSONException e) {
-                throw new RuntimeException("Never here!!!");
-            }
-        }
 
-        if (category.equals("video")) {
-            return new BaseTopicInfo(topicJson);
-        }
-        else if (category.equals("movie")) {
-            return new MovieTopicInfo(topicJson);
-        }
-        else {
-            return new BaseTopicInfo(topicJson);
-        }
+        return BaseTopicInfo.dynamicTopicInfo(topicJson);
     }
 
     protected abstract JSONObject findTopicJson(JSONObject result);
@@ -246,6 +231,23 @@ public abstract class UniversalMediaAdapter extends LoadMoreAdapter {
 
     protected MediaItem fromEveryLoadMoreObject(JSONObject itemObject) {
         return fromEveryRefreshObject(itemObject);
+    }
+
+    // 动态返回 VideoItem 或 MovieItem
+    protected MediaItem getRealMediaItem(JSONObject itemObject) {
+        BaseVideoInfo videoInfo = new BaseVideoInfo(itemObject);
+        if (videoInfo.getTopicInfo() == null) {
+            videoInfo.setTopicInfo(mTopicInfo);
+        }
+        if (mTopicInfo.getCategory().equals(BaseTopicInfo.CATEGORY_VIDEO)) {
+            return new VideoItem(videoInfo);
+        }
+        else if (mTopicInfo.getCategory().equals(BaseTopicInfo.CATEGORY_MOVIE)) {
+            return new MovieItem(videoInfo);
+        }
+        else {
+            throw new RuntimeException("Unknown category");
+        }
     }
 
 
