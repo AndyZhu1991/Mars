@@ -1,5 +1,7 @@
 package com.koolew.mars.infos;
 
+import android.text.TextUtils;
+
 import com.koolew.mars.utils.JsonUtil;
 
 import org.json.JSONException;
@@ -84,5 +86,21 @@ public class BaseTopicInfo implements Serializable {
 
     public int getVideoCount() {
         return videoCount;
+    }
+
+
+    public static BaseTopicInfo dynamicTopicInfo(JSONObject jsonObject) {
+        String category = JsonUtil.getStringIfHas(jsonObject, KEY_CATEGORY);
+
+        if (!TextUtils.isEmpty(category)) {
+            if (category.equals(CATEGORY_VIDEO)) {
+                return new BaseTopicInfo(jsonObject);
+            }
+            else if (category.equals(CATEGORY_MOVIE)) {
+                return new MovieTopicInfo(jsonObject);
+            }
+        }
+
+        return null;
     }
 }
