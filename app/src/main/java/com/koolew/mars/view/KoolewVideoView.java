@@ -6,8 +6,8 @@ import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
@@ -34,25 +34,24 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     private static final int VIDEO_WIDTH_RATIO = 4;
     private static final int VIDEO_HEIGHT_RATIO = 3;
 
-    private static final int STATUS_IDLE = 0;
-    private static final int STATUS_POST_PLAY = 1;
-    private static final int STATUS_PLAYING = 2;
-    private static final int STATUS_PAUSED = 3;
-
     private TextureView mPlaybackTexture;
     private FrameLayout mDanmakuContainer;
     private ImageView mVideoThumb;
     private ProgressBar mProgressBar;
 
-    private int mStatus = STATUS_IDLE;
-
     private MediaPlayer mMediaPlayer;
+
+    private boolean isPaused = false;
+    private boolean postPlaying = false;
 
     private BaseVideoInfo mVideoInfo;
     private String mVideoUrl;
+    private String mVideoPath;
 
     private DanmakuShowManager mDanmakuManager;
     private DanmakuThread mDanmakuThread;
+
+    private Surface mSurface;
 
     public KoolewVideoView(Context context) {
         this(context, null);
@@ -102,22 +101,23 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        Log.d("stdzhu", "onAttachedToWindow");
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        stopAsync();
+        mVideoPath = null;
+        stop();
     }
 
     public void setVideoInfo(String videoUrl, String thumb) {
-        stopAsync();
+        stop();
         mVideoInfo = null;
         mVideoUrl = videoUrl;
         ImageLoader.getInstance().displayImage(thumb, mVideoThumb,
                 ImageLoaderHelper.topicThumbLoadOptions);
         mDanmakuManager = null;
+        mVideoPath = null;
     }
 
     public void setVideoInfo(BaseVideoInfo videoInfo) {
@@ -131,39 +131,17 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     public void startPlay() {
         if (mVideoInfo != null || mVideoUrl != null) {
             mProgressBar.setVisibility(VISIBLE);
+            postPlaying = true;
             Downloader.getInstance().download(this, mVideoUrl);
-            mStatus = STATUS_POST_PLAY;
         }
     }
 
     public void onComplete(String url, String filePath) {
-        if (url.equals(mVideoUrl) && mStatus == STATUS_POST_PLAY) {
-            mMediaPlayer = MediaPlayer.create(getContext(), Uri.parse("file://" + filePath));
-            if (mMediaPlayer != null) {
-                mMediaPlayer.setLooping(true);
-                mProgressBar.setVisibility(INVISIBLE);
-                if (mPlaybackTexture.getSurfaceTexture() != null) {
-                    mMediaPlayer.setSurface(new Surface(mPlaybackTexture.getSurfaceTexture()));
-                    mMediaPlayer.start();
-                    mDanmakuThread = new DanmakuThread((Activity) getContext(), mDanmakuManager,
-                            new DanmakuThread.PlayerWrapper() {
-                                @Override
-                                public long getCurrentPosition() {
-                                    return mMediaPlayer.getCurrentPosition();
-                                }
-
-                                @Override
-                                public boolean isPlaying() {
-                                    return mMediaPlayer.isPlaying();
-                                }
-                            });
-                    mDanmakuThread.start();
-                    new InvisibleThumbThread().start();
-                    mStatus = STATUS_PLAYING;
-                }
-                else {
-                    mStatus = STATUS_PAUSED;
-                }
+        mProgressBar.setVisibility(INVISIBLE);
+        if (url.equals(mVideoUrl)) {
+            mVideoPath = filePath;
+            if (postPlaying) {
+                start();
             }
         }
     }
@@ -195,43 +173,72 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         }
     }
 
-    private void pause() {
-        if (mStatus == STATUS_PLAYING && mMediaPlayer != null) {
-            mMediaPlayer.pause();
-            mStatus = STATUS_PAUSED;
+    private void start() {
+        if (mMediaPlayer != null || TextUtils.isEmpty(mVideoPath) || isPaused || mSurface == null) {
+            return;
         }
+
+        mMediaPlayer = MediaPlayer.create(getContext(), Uri.parse("file://" + mVideoPath));
+        if (mMediaPlayer != null) {
+            mMediaPlayer.setLooping(true);
+            mProgressBar.setVisibility(INVISIBLE);
+            mMediaPlayer.setSurface(mSurface);
+            mMediaPlayer.start();
+            mDanmakuThread = new DanmakuThread((Activity) getContext(), mDanmakuManager,
+                    new DanmakuThread.PlayerWrapper() {
+                        @Override
+                        public long getCurrentPosition() {
+                            if (mMediaPlayer == null) {
+                                return 0;
+                            }
+                            return mMediaPlayer.getCurrentPosition();
+                        }
+
+                        @Override
+                        public boolean isPlaying() {
+                            if (mMediaPlayer == null) {
+                                return false;
+                            }
+                            return mMediaPlayer.isPlaying();
+                        }
+                    });
+            mDanmakuThread.start();
+            new InvisibleThumbThread().start();
+        }
+    }
+
+    private void pause() {
+        isPaused = true;
+        stop();
     }
 
     private void resume() {
-        if (mStatus == STATUS_PAUSED && mMediaPlayer != null) {
-            mMediaPlayer.start();
-            mStatus = STATUS_PLAYING;
-        }
+        isPaused = false;
+        start();
     }
 
     public void stop() {
-        doStopMediaPlayer();
+        final MediaPlayer mediaPlayer = mMediaPlayer;
+        mMediaPlayer = null;
+        postPlaying = false;
+        if (mediaPlayer != null) {
+            new Thread() {
+                @Override
+                public void run() {
+                    doStopMediaPlayer(mediaPlayer);
+                }
+            }.start();
+        }
         mVideoThumb.setVisibility(VISIBLE);
     }
 
-    public void stopAsync() {
-        new Thread() {
-            @Override
-            public void run() {
-                doStopMediaPlayer();
+    private synchronized void doStopMediaPlayer(MediaPlayer mediaPlayer) {
+        if (mediaPlayer != null) {
+            if (mDanmakuThread != null) {
+                mDanmakuThread.stopDanmaku();
+                mDanmakuThread = null;
             }
-        }.start();
-        mVideoThumb.setVisibility(VISIBLE);
-    }
 
-    private synchronized void doStopMediaPlayer() {
-        mStatus = STATUS_IDLE;
-        if (mMediaPlayer != null) {
-            mDanmakuThread.stopDanmaku();
-            mDanmakuThread = null;
-
-            MediaPlayer mediaPlayer = mMediaPlayer;
-            mMediaPlayer = null;
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.stop();
             }
@@ -241,9 +248,8 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-        if (mMediaPlayer != null) {
-            mMediaPlayer.setSurface(new Surface(surface));
-        }
+        mSurface = new Surface(surface);
+        start();
     }
 
     @Override
@@ -252,6 +258,8 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        mSurface = null;
+        stop();
         return true;
     }
 
@@ -314,6 +322,16 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     calcNewPlayHolder();
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (currentPlayHolder() != null) {
+                    float currentVisiblePercentage = getVideoViewVisibleHeightPercentage(currentPlayHolder());
+                    if (currentVisiblePercentage < 0.3) {
+                        getVideoView(currentPlayHolder()).stop();
+                    }
                 }
             }
         };
