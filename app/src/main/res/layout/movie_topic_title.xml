@@ -23,23 +23,11 @@
         android:textColor="@color/koolew_dark_gray"
         android:textSize="18sp"/>
 
-    <FrameLayout
+    <com.koolew.mars.view.MovieTitleVideoView
+        android:id="@+id/video_view"
         android:layout_width="192dp"
-        android:layout_height="144dp"
-        android:layout_marginTop="12dp">
-
-        <com.koolew.mars.view.KoolewVideoView
-            android:id="@+id/video_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <ImageView
-            android:id="@+id/play_image"
-            android:layout_width="21dp"
-            android:layout_height="28dp"
-            android:layout_gravity="center"
-            android:src="@mipmap/ic_play"/>
-    </FrameLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"/>
 
     <TextView
         android:id="@+id/video_count"

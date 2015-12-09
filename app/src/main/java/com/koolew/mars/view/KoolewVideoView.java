@@ -25,6 +25,8 @@ import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.utils.Downloader;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.List;
+
 /**
  * Created by jinchangzhu on 11/4/15.
  */
@@ -40,6 +42,7 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     private ProgressBar mProgressBar;
 
     private MediaPlayer mMediaPlayer;
+    protected boolean isNeedLooping;
 
     private boolean isPaused = false;
     private boolean postPlaying = false;
@@ -59,6 +62,8 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
     public KoolewVideoView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        isNeedLooping = true;
 
         View content = LayoutInflater.from(getContext()).inflate(R.layout.koolew_video_view, null);
         mPlaybackTexture = (TextureView) content.findViewById(R.id.playback_texture);
@@ -124,8 +129,14 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         setVideoInfo(videoInfo.getVideoUrl(), videoInfo.getVideoThumb());
 
         mVideoInfo = videoInfo;
-        mDanmakuManager = new DanmakuShowManager(getContext(), mDanmakuContainer,
-                videoInfo.getDanmakus());
+        List danmakus = videoInfo.getDanmakus();
+        if (danmakus == null || danmakus.size() == 0) {
+            mDanmakuManager = null;
+        }
+        else {
+            mDanmakuManager = new DanmakuShowManager(getContext(), mDanmakuContainer,
+                    videoInfo.getDanmakus());
+        }
     }
 
     public void startPlay() {
@@ -173,36 +184,42 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         }
     }
 
-    private void start() {
+    protected MediaPlayer generateMediaPlayer() {
+        return MediaPlayer.create(getContext(), Uri.parse("file://" + mVideoPath));
+    }
+
+    protected void start() {
         if (mMediaPlayer != null || TextUtils.isEmpty(mVideoPath) || isPaused || mSurface == null) {
             return;
         }
 
-        mMediaPlayer = MediaPlayer.create(getContext(), Uri.parse("file://" + mVideoPath));
+        mMediaPlayer = generateMediaPlayer();
         if (mMediaPlayer != null) {
-            mMediaPlayer.setLooping(true);
+            mMediaPlayer.setLooping(isNeedLooping);
             mProgressBar.setVisibility(INVISIBLE);
             mMediaPlayer.setSurface(mSurface);
             mMediaPlayer.start();
-            mDanmakuThread = new DanmakuThread((Activity) getContext(), mDanmakuManager,
-                    new DanmakuThread.PlayerWrapper() {
-                        @Override
-                        public long getCurrentPosition() {
-                            if (mMediaPlayer == null) {
-                                return 0;
+            if (mDanmakuManager != null) {
+                mDanmakuThread = new DanmakuThread((Activity) getContext(), mDanmakuManager,
+                        new DanmakuThread.PlayerWrapper() {
+                            @Override
+                            public long getCurrentPosition() {
+                                if (mMediaPlayer == null) {
+                                    return 0;
+                                }
+                                return mMediaPlayer.getCurrentPosition();
                             }
-                            return mMediaPlayer.getCurrentPosition();
-                        }
 
-                        @Override
-                        public boolean isPlaying() {
-                            if (mMediaPlayer == null) {
-                                return false;
+                            @Override
+                            public boolean isPlaying() {
+                                if (mMediaPlayer == null) {
+                                    return false;
+                                }
+                                return mMediaPlayer.isPlaying();
                             }
-                            return mMediaPlayer.isPlaying();
-                        }
-                    });
-            mDanmakuThread.start();
+                        });
+                mDanmakuThread.start();
+            }
             new InvisibleThumbThread().start();
         }
     }

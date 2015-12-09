@@ -1,7 +1,6 @@
 package com.koolew.mars.topicmedia;
 
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.koolew.mars.R;
@@ -39,20 +38,16 @@ public class MovieDetailTitleItem extends MediaItem {
     }
 
 
-    static class ItemViewHolder extends MediaHolder<MovieDetailTitleItem>
-            implements View.OnClickListener {
-        private TextView title;
-        private KoolewVideoView videoView;
-        private ImageView playImage;
-        private TextView videoCount;
+    static class ItemViewHolder extends MediaHolder<MovieDetailTitleItem> {
+        TextView title;
+        KoolewVideoView videoView;
+        TextView videoCount;
 
         public ItemViewHolder(UniversalMediaAdapter adapter, View itemView) {
             super(adapter, itemView);
 
             title = (TextView) itemView.findViewById(R.id.title);
             videoView = (KoolewVideoView) itemView.findViewById(R.id.video_view);
-            videoView.setOnClickListener(this);
-            playImage = (ImageView) itemView.findViewById(R.id.play_image);
             videoCount = (TextView) itemView.findViewById(R.id.video_count);
         }
 
@@ -63,18 +58,6 @@ public class MovieDetailTitleItem extends MediaItem {
             title.setText(mItem.mTopicInfo.getTitle());
             videoCount.setText(mAdapter.mContext.
                     getString(R.string.video_count_label, mItem.mTopicInfo.getVideoCount()));
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (playImage.getVisibility() == View.VISIBLE) {
-                videoView.startPlay();
-                playImage.setVisibility(View.INVISIBLE);
-            }
-            else {
-                videoView.stop();
-                playImage.setVisibility(View.VISIBLE);
-            }
         }
     }
 }

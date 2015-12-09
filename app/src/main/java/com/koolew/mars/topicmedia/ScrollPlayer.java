@@ -18,6 +18,9 @@ public class ScrollPlayer extends KoolewVideoView.ScrollPlayer {
         if (holder instanceof VideoItem.ItemViewHolder) {
             return ((VideoItem.ItemViewHolder) holder).videoView;
         }
+        else if (holder instanceof MovieDetailTitleItem.ItemViewHolder) {
+            return ((MovieDetailTitleItem.ItemViewHolder) holder).videoView;
+        }
 
         return null;
     }
