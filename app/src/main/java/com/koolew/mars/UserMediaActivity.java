@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.BaseUserInfo;
+import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiWorker;
@@ -42,9 +43,15 @@ public class UserMediaActivity extends BaseV4FragmentActivity
         Intent intent = getIntent();
         mTopicId = intent.getStringExtra(KEY_TOPIC_ID);
         mUid = intent.getStringExtra(KEY_UID);
-        String nickname = intent.getStringExtra(KEY_NICKNAME);
-        if (!TextUtils.isEmpty(nickname)) {
-            mTitleBar.setTitle("@" + nickname);
+        if (mUid.equals(MyAccountInfo.getUid())) {
+            mTitleBar.setTitle(R.string.koolew_involve_title);
+            mTitleBar.setBackgroundColor(getResources().getColor(R.color.koolew_deep_orange));
+        }
+        else {
+            String nickname = intent.getStringExtra(KEY_NICKNAME);
+            if (!TextUtils.isEmpty(nickname)) {
+                mTitleBar.setTitle("@" + nickname);
+            }
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -69,6 +76,10 @@ public class UserMediaActivity extends BaseV4FragmentActivity
         intent.putExtra(KEY_UID, uid);
         intent.putExtra(KEY_NICKNAME, nickname);
         context.startActivity(intent);
+    }
+
+    public static void startMyMediaActivity(Context context, String topicId) {
+        startThisActivity(context, topicId, MyAccountInfo.getUid(), "");
     }
 
 

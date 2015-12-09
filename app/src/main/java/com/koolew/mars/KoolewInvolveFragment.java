@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseTopicInfo;
-import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.utils.JsonUtil;
@@ -187,10 +185,7 @@ public class KoolewInvolveFragment
             @Override
             public void onClick(View v) {
                 InvolveItem item = mData.get(getAdapterPosition());
-                Intent intent = new Intent(getActivity(), IJoinedTopicActivity.class);
-                intent.putExtra(IJoinedTopicActivity.KEY_TOPIC_ID, item.getTopicId());
-                intent.putExtra(IJoinedTopicActivity.KEY_UID, MyAccountInfo.getUid());
-                startActivity(intent);
+                UserMediaActivity.startMyMediaActivity(getActivity(), item.getTopicId());
             }
         }
     }
