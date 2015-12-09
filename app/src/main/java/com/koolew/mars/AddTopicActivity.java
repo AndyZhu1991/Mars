@@ -263,14 +263,9 @@ public class AddTopicActivity extends BaseActivity implements SwipeRefreshLayout
 
             @Override
             public void onClick(View v) {
-                int position = getLayoutPosition();
-                BaseTopicInfo topicInfo = mData.get(position);
-                Intent intent = new Intent(AddTopicActivity.this, FeedsTopicActivity.class);
-                intent.putExtra(FeedsTopicActivity.KEY_TOPIC_ID, topicInfo.getTopicId());
-                intent.putExtra(FeedsTopicActivity.KEY_TOPIC_TITLE, topicInfo.getTitle());
-                intent.putExtra(FeedsTopicActivity.KEY_DEFAULT_SHOW_POSITION,
-                        FeedsTopicActivity.POSITION_WORLD);
-                startActivity(intent);
+                BaseTopicInfo topicInfo = mData.get(getAdapterPosition());
+                TopicMediaActivity.startThisActivity(AddTopicActivity.this, topicInfo.getTopicId(),
+                        TopicMediaActivity.TYPE_WORLD);
                 finish();
             }
         }

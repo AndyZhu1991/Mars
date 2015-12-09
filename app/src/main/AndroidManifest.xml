@@ -122,12 +122,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FeedsTopicActivity"
-            android:exported="false"
-            android:label="@string/title_activity_topic"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name=".PushSettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_push_settings"
@@ -230,33 +224,9 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".TaskTopicActivity"
-            android:exported="false"
-            android:label="@string/title_activity_task_topic"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name=".UserTopicActivity"
-            android:exported="false"
-            android:label="@string/title_activity_user_topic"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name=".CheckDanmakuActivity"
-            android:exported="false"
-            android:label="@string/title_activity_check_danmaku"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name=".PrivacyPolicyActivity"
             android:exported="false"
             android:label="@string/title_activity_privacy_policy"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name=".IJoinedTopicActivity"
-            android:exported="false"
-            android:label="@string/title_activity_i_joined"
             android:screenOrientation="portrait" >
         </activity>
         <activity

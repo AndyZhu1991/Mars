@@ -297,12 +297,8 @@ public class TaskTabFragment extends RecyclerListFragmentMould<TaskTabFragment.T
             int topicIndex = (int) v.getTag();
             BaseTopicInfo currentTopic = item.topics[topicIndex];
 
-            Intent intent = new Intent(getActivity(), TaskTopicActivity.class);
-            intent.putExtra(TaskTopicActivity.KEY_TOPIC_ID, currentTopic.getTopicId());
-            intent.putExtra(TaskTopicActivity.KEY_TOPIC_TITLE, currentTopic.getTitle());
-            intent.putExtra(TaskTopicActivity.KEY_INVITER, item.user.getNickname());
-
-            startActivity(intent);
+            TopicMediaActivity.startThisActivity(getActivity(), currentTopic.getTopicId(),
+                    TopicMediaActivity.TYPE_TASK);
         }
     }
 

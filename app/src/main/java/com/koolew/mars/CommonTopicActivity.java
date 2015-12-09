@@ -1,7 +1,6 @@
 package com.koolew.mars;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,11 +64,7 @@ public class CommonTopicActivity extends BaseActivity implements AdapterView.OnI
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         String topicId = ((TopicAdapter.TopicItem) mAdapter.getItem(position)).getTopicId();
-        Intent intent = new Intent(this, UserTopicActivity.class);
-        intent.putExtra(UserTopicActivity.KEY_UID, mUid);
-        intent.putExtra(UserTopicActivity.KEY_TOPIC_ID, topicId);
-        intent.putExtra(UserTopicActivity.KEY_NICKNAME, mNickname);
-        startActivity(intent);
+        UserMediaActivity.startThisActivity(this, topicId, mUid, mNickname);
     }
 
     private class CommonTopicAdapter extends TopicAdapter {

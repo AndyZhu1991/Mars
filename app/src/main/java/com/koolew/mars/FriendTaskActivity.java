@@ -40,7 +40,6 @@ public class FriendTaskActivity extends BaseActivity
     public static final String KEY_NICKNAME = "nickname";
 
     private static final int REQUEST_CAPTURE = 1;
-    private static final int REQUEST_CHECK_TASK = 2;
 
     private String mUid;
     private String mNickname;
@@ -122,20 +121,11 @@ public class FriendTaskActivity extends BaseActivity
             case REQUEST_CAPTURE:
                 onCaptureRequestResult(resultCode);
                 break;
-            case REQUEST_CHECK_TASK:
-                onCheckTaskResult(resultCode);
-                break;
         }
     }
 
     private void onCaptureRequestResult(int result) {
         if (result == RESULT_OK) {
-            removeTopic(mOperatingTopicId);
-        }
-    }
-
-    private void onCheckTaskResult(int result) {
-        if (result == RESULT_OK || result == TaskTopicActivity.RESULT_IGNORE) {
             removeTopic(mOperatingTopicId);
         }
     }
@@ -197,10 +187,8 @@ public class FriendTaskActivity extends BaseActivity
             BaseTopicInfo topicInfo = (BaseTopicInfo) mAdapter.getItem(position);
             String topicId = topicInfo.getTopicId();
             mOperatingTopicId = topicId;
-            Intent intent = new Intent(FriendTaskActivity.this, TaskTopicActivity.class);
-            intent.putExtra(TaskTopicActivity.KEY_TOPIC_ID, topicId);
-            intent.putExtra(TaskTopicActivity.KEY_INVITER, mNickname);
-            startActivityForResult(intent, REQUEST_CHECK_TASK);
+            TopicMediaActivity.startThisActivity(FriendTaskActivity.this, topicId,
+                    TopicMediaActivity.TYPE_TASK);
         }
     };
 
