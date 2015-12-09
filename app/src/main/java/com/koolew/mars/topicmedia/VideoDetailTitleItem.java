@@ -34,7 +34,6 @@ public class VideoDetailTitleItem extends MediaItem {
 
     private BaseTopicInfo mTopicInfo;
     private TitleType titleType = TitleType.FEEDS;
-    private String inviter; // Only for TitleType.TASK
     private boolean isManager = false;
 
     public VideoDetailTitleItem(BaseTopicInfo topicInfo) {
@@ -44,10 +43,6 @@ public class VideoDetailTitleItem extends MediaItem {
     @Override
     protected int getType() {
         return TYPE;
-    }
-
-    public void setInviter(String inviter) {
-        this.inviter = inviter;
     }
 
     public void setTitleType(TitleType titleType) {
@@ -81,7 +76,7 @@ public class VideoDetailTitleItem extends MediaItem {
         protected void onBindItem() {
             if (mItem.titleType == TitleType.TASK) {
                 summary.setTextColor(mContext.getResources().getColor(R.color.koolew_light_green));
-                summary.setText(mContext.getString(R.string.invited_label, mItem.inviter));
+                summary.setText(mContext.getString(R.string.invited_label));
             }
             else {
                 summary.setVisibility(View.GONE);
