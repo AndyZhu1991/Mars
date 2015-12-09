@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="20dp"
+        android:paddingTop="5dp"
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
@@ -63,7 +62,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:background="@mipmap/horizontal_dash_line"/>
     </LinearLayout>
 
@@ -73,8 +72,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="7dp"
-        android:padding="15dp"
+        android:layout_marginRight="5dp"
+        android:padding="10dp"
         android:src="@mipmap/ic_edit_topic_desc"
         android:visibility="invisible"/>
 
