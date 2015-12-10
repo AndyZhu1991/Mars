@@ -186,13 +186,17 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
             movieCategoryImage = (ImageView) itemView.findViewById(R.id.corner_icon);
 
             thumbImages[0] = (ImageView) itemView.findViewById(R.id.first_thumb);
+            thumbImages[0].setOnClickListener(this);
             thumbImages[1] = (ImageView) itemView.findViewById(R.id.second_thumb);
+            thumbImages[1].setOnClickListener(this);
             thumbImages[2] = (ImageView) itemView.findViewById(R.id.third_thumb);
+            thumbImages[2].setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            BaseTopicInfo topicInfo = mAdapter.mData.get(getAdapterPosition()).topicInfo;
+            FeedsItem feedsItem = mAdapter.mData.get(getAdapterPosition());
+            BaseTopicInfo topicInfo = feedsItem.topicInfo;
             switch (v.getId()) {
                 case R.id.btn_capture:
                     if (topicInfo.getCategory().equals(BaseTopicInfo.CATEGORY_VIDEO)) {
@@ -205,10 +209,26 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
                     else {
                     }
                     break;
-                default:
+                case R.id.first_thumb:
                     TopicMediaActivity.startThisActivity(getActivity(), topicInfo.getTopicId(),
-                            TopicMediaActivity.TYPE_FEEDS);
+                            TopicMediaActivity.TYPE_FEEDS, feedsItem.videoInfos[0].getVideoId());
+                    break;
+                case R.id.second_thumb:
+                    if (feedsItem.videoInfos[1] != null) {
+                        TopicMediaActivity.startThisActivity(getActivity(), topicInfo.getTopicId(),
+                                TopicMediaActivity.TYPE_FEEDS, feedsItem.videoInfos[1].getVideoId());
+                    }
+                    else {
+                        startFeedsMediaActivity(topicInfo.getTopicId());
+                    }
+                    break;
+                default:
+                    startFeedsMediaActivity(topicInfo.getTopicId());
             }
+        }
+
+        private void startFeedsMediaActivity(String topicId) {
+            TopicMediaActivity.startThisActivity(getActivity(), topicId, TopicMediaActivity.TYPE_FEEDS);
         }
     }
 

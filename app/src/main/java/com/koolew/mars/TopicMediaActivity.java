@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.koolew.mars.infos.BaseTopicInfo;
+import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.utils.PagerScrollSmoothColorListener;
@@ -33,6 +34,7 @@ public class TopicMediaActivity extends BaseV4FragmentActivity implements View.O
 
     public static final String KEY_TOPIC_ID = BaseTopicInfo.KEY_TOPIC_ID;
     public static final String KEY_TYPE = "type";
+    public static final String KEY_TARGET_VIDEO_ID = BaseVideoInfo.KEY_VIDEO_ID;
 
     public static final int TYPE_FEEDS = 0;
     public static final int TYPE_WORLD = 1;
@@ -41,6 +43,7 @@ public class TopicMediaActivity extends BaseV4FragmentActivity implements View.O
     private String mTopicId;
     private BaseTopicInfo mTopicInfo;
     private int mType;
+    private String mTargetVideoId;
 
     private TitleBarView mTitleBar;
     private IndicatorViewPager mIndicatorViewPager;
@@ -63,6 +66,7 @@ public class TopicMediaActivity extends BaseV4FragmentActivity implements View.O
         if (TextUtils.isEmpty(mTopicId)) {
             throw new RuntimeException("No topic id ?!");
         }
+        mTargetVideoId = getIntent().getStringExtra(KEY_TARGET_VIDEO_ID);
 
         initViews();
     }
@@ -171,9 +175,16 @@ public class TopicMediaActivity extends BaseV4FragmentActivity implements View.O
     }
 
     public static void startThisActivity(Context context, String topicId, int type) {
+        startThisActivity(context, topicId, type, null);
+    }
+
+    public static void startThisActivity(Context context, String topicId, int type, String targetVideoId) {
         Intent intent = new Intent(context, TopicMediaActivity.class);
         intent.putExtra(KEY_TOPIC_ID, topicId);
         intent.putExtra(KEY_TYPE, type);
+        if (!TextUtils.isEmpty(targetVideoId)) {
+            intent.putExtra(KEY_TARGET_VIDEO_ID, targetVideoId);
+        }
         context.startActivity(intent);
     }
 
@@ -192,7 +203,12 @@ public class TopicMediaActivity extends BaseV4FragmentActivity implements View.O
                 fragments[0] = new TaskMediaFragment(mTopicId);
             }
             else {
-                fragments[0] = new FeedsMediaFragment(mTopicId);
+                if (mTargetVideoId == null) {
+                    fragments[0] = new FeedsMediaFragment(mTopicId);
+                }
+                else {
+                    fragments[0] = new FeedsMediaFragment(mTopicId, mTargetVideoId);
+                }
             }
             titles[0] = getString(R.string.feeds_title_friend);
 

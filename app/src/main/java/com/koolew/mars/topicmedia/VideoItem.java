@@ -68,6 +68,10 @@ public class VideoItem extends MediaItem {
         return videoInfo.getCreateTime();
     }
 
+    public BaseVideoInfo getVideoInfo() {
+        return videoInfo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) {
