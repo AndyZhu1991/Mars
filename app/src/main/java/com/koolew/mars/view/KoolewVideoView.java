@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
@@ -127,6 +126,7 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
                 ImageLoaderHelper.topicThumbLoadOptions);
         mDanmakuManager = null;
         mVideoPath = null;
+        mProgressBar.setVisibility(INVISIBLE);
     }
 
     public void setVideoInfo(BaseVideoInfo videoInfo) {
@@ -170,7 +170,6 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
                         post(new Runnable() {
                             @Override
                             public void run() {
-                                Log.d("76410", "post animation: " + System.currentTimeMillis());
                                 ObjectAnimator.ofFloat(mVideoThumb, "alpha", 1.0f, 1.0f, 0.0f)
                                         .setDuration(THUMB_HIDE_DURATION)
                                         .start();
@@ -195,16 +194,17 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         return MediaPlayer.create(getContext(), Uri.parse("file://" + mVideoPath));
     }
 
-    protected void start() {
-        if (mMediaPlayer != null || TextUtils.isEmpty(mVideoPath) || isPaused || mSurface == null) {
+    protected synchronized void start() {
+        if (mMediaPlayer != null || TextUtils.isEmpty(mVideoPath) || isPaused) {
             return;
         }
 
         mMediaPlayer = generateMediaPlayer();
         if (mMediaPlayer != null) {
             mMediaPlayer.setLooping(isNeedLooping);
-            mProgressBar.setVisibility(INVISIBLE);
-            mMediaPlayer.setSurface(mSurface);
+            if (mSurface != null) {
+                mMediaPlayer.setSurface(mSurface);
+            }
             mMediaPlayer.start();
             if (mDanmakuManager != null) {
                 mDanmakuThread = new DanmakuThread((Activity) getContext(), mDanmakuManager,
@@ -227,9 +227,17 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
                         });
                 mDanmakuThread.start();
             }
-            Log.d("76410", "InvisibleThumbThread().start: " + System.currentTimeMillis());
             new InvisibleThumbThread().start();
         }
+    }
+
+    private void startAsync() {
+        new Thread() {
+            @Override
+            public void run() {
+                KoolewVideoView.this.start();
+            }
+        }.start();
     }
 
     private void pause() {
@@ -239,7 +247,7 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
     private void resume() {
         isPaused = false;
-        start();
+        startAsync();
     }
 
     public void stop() {
@@ -275,7 +283,9 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         mSurface = new Surface(surface);
-        start();
+        if (mMediaPlayer != null) {
+            mMediaPlayer.setSurface(mSurface);
+        }
     }
 
     @Override
