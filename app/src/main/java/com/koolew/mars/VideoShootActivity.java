@@ -783,6 +783,13 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         switchCamera();
     }
 
+    public static void startThisActivity(Context context, String topicId, String topicTitle) {
+        Intent intent = new Intent(context, VideoShootActivity.class);
+        intent.putExtra(VideoShootActivity.KEY_TOPIC_ID, topicId);
+        intent.putExtra(VideoShootActivity.KEY_TOPIC_TITLE, topicTitle);
+        context.startActivity(intent);
+    }
+
     // 已知红米1和红米NOTE1在升级MIUI V6之后，打开自动对焦会在预览界面卡住
     private boolean shouldAutoFocus() {
         String model = Build.MODEL;

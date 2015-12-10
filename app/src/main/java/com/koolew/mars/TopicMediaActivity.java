@@ -113,17 +113,12 @@ public class TopicMediaActivity extends BaseV4FragmentActivity implements View.O
     }
 
     protected void startVideoShootActivity() {
-        Intent intent = new Intent(this, VideoShootActivity.class);
-        intent.putExtra(VideoShootActivity.KEY_TOPIC_ID, mTopicId);
-        intent.putExtra(VideoShootActivity.KEY_TOPIC_TITLE, mTopicInfo.getTitle());
-        startActivity(intent);
+        VideoShootActivity.startThisActivity(this, mTopicId, mTopicInfo.getTitle());
     }
 
     protected void startMovieStudioActivity() {
         if (mTopicInfo instanceof MovieTopicInfo) {
-            Intent intent = new Intent(this, MovieStudioActivity.class);
-            intent.putExtra(MovieStudioActivity.KEY_MOVIE_TOPIC_INFO, mTopicInfo);
-            startActivity(intent);
+            MovieStudioActivity.startThisActivity(this, (MovieTopicInfo) mTopicInfo);
         }
         else {
             if (MarsApplication.DEBUG) {

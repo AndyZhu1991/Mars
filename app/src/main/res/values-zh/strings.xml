@@ -104,6 +104,9 @@
     <string name="koolew_meet_title">遇见</string>
     <string name="koolew_favorite_title">收藏</string>
 
+    <!-- For KoolewFeedsFragment -->
+    <string name="see_more">查看更多</string>
+
     <!-- For KoolewInvolveFragment -->
     <string name="joined_video">参与视频</string>
 

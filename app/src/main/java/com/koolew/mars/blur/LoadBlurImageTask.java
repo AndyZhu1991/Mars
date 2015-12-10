@@ -11,16 +11,21 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 public class LoadBlurImageTask extends AsyncTask {
 
-    private static final int SCALE_BEFORE_BLUR = 8;
+    private static final int SCALE_BEFORE_BLUR = 5;
 
     protected View mView;
     protected String mUri;
 
     protected Bitmap mBluredBitmap;
+    protected int mScaleBeforeBlurRatio = SCALE_BEFORE_BLUR;
 
     public LoadBlurImageTask(View view, String uri) {
         mView = view;
         mUri = uri;
+    }
+
+    public void setScaleBeforeBlur(int ratio) {
+        mScaleBeforeBlurRatio = ratio;
     }
 
     @Override
@@ -31,7 +36,7 @@ public class LoadBlurImageTask extends AsyncTask {
         }
 
         if (bmp != null) {
-            mBluredBitmap = ImageBlurTool.doBlur(bmp, SCALE_BEFORE_BLUR * 3, SCALE_BEFORE_BLUR);
+            mBluredBitmap = ImageBlurTool.doBlur(bmp, mScaleBeforeBlurRatio * 3, mScaleBeforeBlurRatio);
         }
 
         return null;

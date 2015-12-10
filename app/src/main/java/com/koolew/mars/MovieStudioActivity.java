@@ -2,6 +2,7 @@ package com.koolew.mars;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -812,6 +813,21 @@ public class MovieStudioActivity extends BaseActivity
 
     private boolean useTextureView() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    public static void startThisActivity(Context context, MovieTopicInfo movieTopicInfo) {
+        Intent intent = new Intent(context, MovieStudioActivity.class);
+        intent.putExtra(MovieStudioActivity.KEY_MOVIE_TOPIC_INFO, movieTopicInfo);
+        context.startActivity(intent);
+    }
+
+    public static void startThisActivity(Context context, MovieTopicInfo movieTopicInfo,
+                                         String movieUrl, String fromUid) {
+        Intent intent = new Intent(context, MovieStudioActivity.class);
+        intent.putExtra(MovieStudioActivity.KEY_MOVIE_TOPIC_INFO, movieTopicInfo);
+        intent.putExtra(MovieStudioActivity.KEY_MOVIE_URL, movieUrl);
+        intent.putExtra(MovieStudioActivity.KEY_FROM, fromUid);
+        context.startActivity(intent);
     }
 
     class MovieStudioItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener,

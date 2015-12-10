@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="2.5dp"
+    android:paddingRight="2.5dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2.5dp"
+        android:orientation="vertical"
+        android:background="@drawable/feeds_card_item_bg">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/btn_capture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="10dp"
+                android:src="@mipmap/ic_btn_capture_video"/>
+
+            <TextView
+                android:id="@+id/topic_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/btn_capture"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:singleLine="true"
+                android:textSize="18sp"
+                android:textColor="#4A4A4A"/>
+
+            <TextView
+                android:id="@+id/video_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/topic_title"
+                android:layout_toLeftOf="@id/btn_capture"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
+                android:singleLine="true"
+                android:textSize="10sp"
+                android:textColor="#9B9B9B"
+                android:drawableLeft="@mipmap/ic_video_gray"
+                android:drawablePadding="2dp"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@mipmap/horizontal_dash_line"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2.5dp"
+            android:orientation="horizontal">
+
+            <com.koolew.mars.view.RatioFrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:layout_margin="2.5dp"
+                app:widthRatio="4.0"
+                app:heightRatio="3.0">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/first_thumb"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:riv_corner_radius="4dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/feeds_thumb_shader"/>
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_play"/>
+            </com.koolew.mars.view.RatioFrameLayout>
+
+            <com.koolew.mars.view.RatioFrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:layout_margin="2.5dp"
+                app:widthRatio="4.0"
+                app:heightRatio="3.0">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/second_thumb"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:riv_corner_radius="4dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/feeds_thumb_shader"/>
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_play"/>
+            </com.koolew.mars.view.RatioFrameLayout>
+
+            <com.koolew.mars.view.RatioFrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="2.5dp"
+                app:widthRatio="2.0"
+                app:heightRatio="3.0">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/third_thumb"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    app:riv_corner_radius="4dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/feeds_thumb_shader"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/see_more"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:drawableTop="@mipmap/ic_feeds_item_go"/>
+            </com.koolew.mars.view.RatioFrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/corner_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_corner_act"
+        android:visibility="invisible"/>
+</FrameLayout>

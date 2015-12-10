@@ -23,7 +23,7 @@ public class PushWrapperActivity extends BaseV4FragmentActivity {
         int themeColor;
         String title;
         if (tabType.equals("feeds")) {
-            fragment = KoolewNewsFragment.newInstance();
+            fragment = new KoolewFeedsFragment();
             themeColor = getResources().getColor(R.color.koolew_light_orange);
             title = getString(R.string.koolew_news_title);
         }

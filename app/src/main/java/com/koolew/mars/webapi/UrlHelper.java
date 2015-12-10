@@ -17,12 +17,13 @@ public class UrlHelper {
     private static final String TEST_API_URL = "http://test.koolew.cn/";
     private static final String REAL_API_URL = "https://api.koolew.com/";
 
-    private static final String BASE_URL = REAL_API_URL;
+    private static final String BASE_URL = TEST_API_URL;
 
     private static final String V1_URL = BASE_URL + "v1/";
     private static final String V2_URL = BASE_URL + "v2/";
     private static final String V3_URL = BASE_URL + "v3/";
     private static final String V4_URL = BASE_URL + "v4/";
+    private static final String V5_URL = BASE_URL + "v5/";
 
     // Account
     public static final String SNS_LOGIN_URL = V4_URL + "account/login/sns";
@@ -69,7 +70,7 @@ public class UrlHelper {
     public static final String CASH_OUT_RECORD_URL = V4_URL + "profit/withdraw/history";
 
     // Feeds
-    public static final String FEEDS_TOPIC_URL = V4_URL + "feeds/topics";
+    public static final String FEEDS_TOPIC_URL = V5_URL + "feeds/topics";
     private static final String TOPIC_VIDEO_FRIEND_URL = V4_URL + "feeds/media";
     public static final String TASK_URL = V4_URL + "task";
     private static final String TASK_DETAIL_URL = V4_URL + "task/detail";

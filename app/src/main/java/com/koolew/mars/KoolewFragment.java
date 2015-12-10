@@ -143,7 +143,7 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
             fragmentList = new ArrayList<Fragment>();
             fragmentTitles = new ArrayList<String>();
 
-            fragmentList.add(KoolewNewsFragment.newInstance());
+            fragmentList.add(new KoolewFeedsFragment());
             fragmentTitles.add(getString(R.string.koolew_news_title));
 
             fragmentList.add(new KoolewHotsFragment());
