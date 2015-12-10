@@ -1,5 +1,6 @@
 package com.koolew.mars.view;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
@@ -8,6 +9,7 @@ import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
@@ -35,6 +37,8 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
     private static final int VIDEO_WIDTH_RATIO = 4;
     private static final int VIDEO_HEIGHT_RATIO = 3;
+
+    private static final int THUMB_HIDE_DURATION = 200; // ms
 
     private TextureView mPlaybackTexture;
     private FrameLayout mDanmakuContainer;
@@ -162,11 +166,14 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         public void run() {
             try {
                 while (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-                    if (mMediaPlayer.getCurrentPosition() > 80) {
+                    if (mMediaPlayer.getCurrentPosition() > 40) {
                         post(new Runnable() {
                             @Override
                             public void run() {
-                                mVideoThumb.setVisibility(INVISIBLE);
+                                Log.d("76410", "post animation: " + System.currentTimeMillis());
+                                ObjectAnimator.ofFloat(mVideoThumb, "alpha", 1.0f, 1.0f, 0.0f)
+                                        .setDuration(THUMB_HIDE_DURATION)
+                                        .start();
                             }
                         });
                         break;
@@ -220,6 +227,7 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
                         });
                 mDanmakuThread.start();
             }
+            Log.d("76410", "InvisibleThumbThread().start: " + System.currentTimeMillis());
             new InvisibleThumbThread().start();
         }
     }
@@ -246,7 +254,8 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
                 }
             }.start();
         }
-        mVideoThumb.setVisibility(VISIBLE);
+        //mVideoThumb.setVisibility(VISIBLE);
+        mVideoThumb.setAlpha(1.0f);
     }
 
     private synchronized void doStopMediaPlayer(MediaPlayer mediaPlayer) {
