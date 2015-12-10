@@ -174,6 +174,8 @@ public class KoolewNewsFragment extends BaseLazyListFragment
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         TopicAdapter.TopicItem item = (TopicAdapter.TopicItem) mAdapter.getItem(position);
-        FeedsTopicActivity.startFeedsTopic(getActivity(), item.getTopicId(), item.getTitle());
+        //FeedsTopicActivity.startFeedsTopic(getActivity(), item.getTopicId(), item.getTitle());
+        TopicMediaActivity.startThisActivity(getActivity(), item.getTopicId(),
+                TopicMediaActivity.TYPE_FEEDS);
     }
 }

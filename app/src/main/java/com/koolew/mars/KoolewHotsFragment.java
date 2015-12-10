@@ -368,10 +368,8 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
                                     item.userInfo.getUid());
                             break;
                         case R.id.video_thumb:
-                            Intent intent = new Intent(getActivity(), CheckDanmakuActivity.class);
-                            intent.putExtra(CheckDanmakuActivity.KEY_VIDEO_ID,
+                            SingleMediaFragment.startThisFragment(getActivity(),
                                     item.videoInfo.getVideoId());
-                            startActivity(intent);
                             break;
                         case R.id.koo_total:
                         case R.id.fans_layout:
@@ -381,8 +379,8 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
                             startActivity(intent2);
                             break;
                         case R.id.title:
-                            FeedsTopicActivity.startWorldTopic(getActivity(),
-                                    item.topicInfo.getTopicId(), item.topicInfo.getTitle());
+                            TopicMediaActivity.startThisActivity(getActivity(),
+                                    item.topicInfo.getTopicId(), TopicMediaActivity.TYPE_WORLD);
                             break;
                     }
                 }

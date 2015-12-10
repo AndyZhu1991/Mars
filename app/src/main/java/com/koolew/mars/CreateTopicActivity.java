@@ -71,10 +71,8 @@ public class CreateTopicActivity extends BaseActivity implements Response.Listen
                 MobclickAgent.onEvent(CreateTopicActivity.this, StatisticsEvent.EVENT_ADD_TOPIC);
 
                 String tid = response.getJSONObject("result").getString("uid");
-                Intent intent = new Intent(CreateTopicActivity.this, FeedsTopicActivity.class);
-                intent.putExtra(FeedsTopicActivity.KEY_TOPIC_TITLE, mTitleEdit.getText().toString());
-                intent.putExtra(FeedsTopicActivity.KEY_TOPIC_ID, tid);
-                startActivity(intent);
+                TopicMediaActivity.startThisActivity(CreateTopicActivity.this, tid,
+                        TopicMediaActivity.TYPE_FEEDS);
 
                 setResult(RESULT_OK);
                 finish();

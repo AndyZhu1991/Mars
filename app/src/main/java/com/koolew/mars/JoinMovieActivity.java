@@ -190,7 +190,8 @@ public class JoinMovieActivity extends BaseV4FragmentActivity {
             @Override
             public void onClick(View v) {
                 MovieInfo item = mMovieInfoList.get(getAdapterPosition());
-                FeedsTopicActivity.startWorldTopic(mContext, item.getTopicId(), item.getTitle());
+                TopicMediaActivity.startThisActivity(JoinMovieActivity.this, item.getTopicId(),
+                        TopicMediaActivity.TYPE_WORLD);
             }
         }
     }

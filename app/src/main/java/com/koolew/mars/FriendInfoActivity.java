@@ -354,11 +354,8 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
             if (position < 0) {
                 return;
             }
-            Intent intent = new Intent(getActivity(), UserTopicActivity.class);
-            intent.putExtra(UserTopicActivity.KEY_TOPIC_ID, mAdapter.getTopicId(position));
-            intent.putExtra(UserTopicActivity.KEY_UID, mUid);
-            intent.putExtra(UserTopicActivity.KEY_NICKNAME, mNameView.getNickname());
-            startActivity(intent);
+            UserMediaActivity.startThisActivity(getActivity(), mAdapter.getTopicId(position), mUid,
+                    mNameView.getNickname());
         }
 
         @Override

@@ -83,7 +83,7 @@ public class BaseVideoInfo implements Serializable {
             }
             JSONObject topic = JsonUtil.getJSONObjectIfHas(jsonObject, KEY_TOPIC);
             if (topic != null) {
-                mTopicInfo = new BaseTopicInfo(topic);
+                mTopicInfo = BaseTopicInfo.dynamicTopicInfo(topic);
             }
             if (jsonObject.has(KEY_DANMAKU)) {
                 mDanmakus = instanceDanmakus(jsonObject.getJSONArray(KEY_DANMAKU));

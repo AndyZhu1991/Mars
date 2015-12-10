@@ -11,6 +11,7 @@ import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.utils.BgmUtil;
 import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.utils.FirstHintUtil;
+import com.koolew.mars.utils.KooSoundUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -52,6 +53,7 @@ public class MarsApplication extends Application {
         com.koolew.mars.videotools.Utils.preloadRecorder(this);
         FirstHintUtil.init(this);
         Downloader.init();
+        KooSoundUtil.init(this);
 
         Log.d(TAG, "Is debug: " + DEBUG);
         Log.d(TAG, "Init in MarsApplication takes: " + (System.currentTimeMillis() - start));

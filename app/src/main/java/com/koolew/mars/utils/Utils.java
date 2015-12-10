@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.graphics.Palette;
 import android.util.DisplayMetrics;
@@ -20,6 +21,7 @@ import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.koolew.mars.R;
 
@@ -375,5 +377,12 @@ public class Utils {
         WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
         lp.alpha = alpha; //0.0-1.0
         activity.getWindow().setAttributes(lp);
+    }
+
+    public static void setTextViewDrawableLeft(TextView textView, int resId) {
+        Drawable drawable = context.getResources().getDrawable(resId);
+        // 这一步必须要做,否则不会显示.
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        textView.setCompoundDrawables(drawable, null, null, null);
     }
 }

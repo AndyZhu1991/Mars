@@ -1,7 +1,6 @@
 package com.koolew.mars;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -175,10 +174,7 @@ public class IncomeAnalysisActivity extends BaseV4FragmentActivity {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, CheckDanmakuActivity.class);
-                intent.putExtra(CheckDanmakuActivity.KEY_VIDEO_ID,
-                        mData.get(getAdapterPosition()).getVideoId());
-                mContext.startActivity(intent);
+                SingleMediaFragment.startThisFragment(mContext, mData.get(getAdapterPosition()).getVideoId());
             }
         }
     }

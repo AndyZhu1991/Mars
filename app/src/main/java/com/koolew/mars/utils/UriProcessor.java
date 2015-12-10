@@ -6,13 +6,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.koolew.mars.CheckDanmakuActivity;
-import com.koolew.mars.FeedsTopicActivity;
 import com.koolew.mars.FriendInfoActivity;
 import com.koolew.mars.KoolewWebActivity;
 import com.koolew.mars.MessagesActivity;
 import com.koolew.mars.PushWrapperActivity;
+import com.koolew.mars.SingleMediaFragment;
+import com.koolew.mars.TitleFragmentActivity;
 import com.koolew.mars.TodayIncomeActivity;
+import com.koolew.mars.TopicMediaActivity;
 
 /**
  * Created by jinchangzhu on 7/15/15.
@@ -71,10 +72,9 @@ public class UriProcessor {
             startSingleVideoActivity(videoId);
         }
         else if (authority.equals(AUTH_TOPIC)) {
-            Intent intent = newIntent(mContext, FeedsTopicActivity.class);
-            intent.putExtra(FeedsTopicActivity.KEY_TOPIC_ID, uri.getQueryParameter(KEY_TOPIC_ID));
-            intent.putExtra(FeedsTopicActivity.KEY_DEFAULT_SHOW_POSITION,
-                    FeedsTopicActivity.POSITION_WORLD);
+            Intent intent = newIntent(mContext, TopicMediaActivity.class);
+            intent.putExtra(TopicMediaActivity.KEY_TOPIC_ID, uri.getQueryParameter(KEY_TOPIC_ID));
+            intent.putExtra(TopicMediaActivity.KEY_TYPE, TopicMediaActivity.TYPE_WORLD);
             mContext.startActivity(intent);
         }
         else if (authority.equals(AUTH_USER)) {
@@ -126,8 +126,9 @@ public class UriProcessor {
     }
 
     private void startSingleVideoActivity(String videoId) {
-        Intent intent = newIntent(mContext, CheckDanmakuActivity.class);
-        intent.putExtra(CheckDanmakuActivity.KEY_VIDEO_ID, videoId);
+        Intent intent = newIntent(mContext, TitleFragmentActivity.class);
+        intent.putExtra(TitleFragmentActivity.KEY_FRAGMENT_CLASS, SingleMediaFragment.class);
+        intent.putExtra(SingleMediaFragment.KEY_VIDEO_ID, videoId);
         mContext.startActivity(intent);
     }
 

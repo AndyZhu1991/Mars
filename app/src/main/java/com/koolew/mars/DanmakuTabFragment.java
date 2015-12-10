@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -197,10 +196,8 @@ public class DanmakuTabFragment extends
         public void onClick(View v) {
             int position = getAdapterPosition();
             DanmakuNotificationItem item = mAdapter.getItem(position);
-            Intent intent = new Intent(getActivity(), CheckDanmakuActivity.class);
             String videoId = item.videoInfo.getVideoId();
-            intent.putExtra(CheckDanmakuActivity.KEY_VIDEO_ID, videoId);
-            startActivity(intent);
+            SingleMediaFragment.startThisFragment(getActivity(), videoId);
 
             if (item.notifyCount > 0) {
                 item.notifyCount = 0;

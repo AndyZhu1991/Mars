@@ -1,9 +1,9 @@
 package com.koolew.mars;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONArray;
@@ -13,7 +13,7 @@ import org.json.JSONObject;
 /**
  * Created by jinchangzhu on 9/28/15.
  */
-public class FollowsFragment extends TitleFragmentActivity.BaseTitleFragment<FriendSimpleAdapter> {
+public class FollowsFragment extends RecyclerListFragmentMould<FriendSimpleAdapter> {
 
     public static final String KEY_UID = "uid";
 
@@ -28,19 +28,8 @@ public class FollowsFragment extends TitleFragmentActivity.BaseTitleFragment<Fri
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mUid = getActivity().getIntent().getStringExtra(KEY_UID);
-    }
 
-    @Override
-    public int getTitleBarColor(Context context) {
-        if (context == null) {
-            context = getActivity();
-        }
-        return context.getResources().getColor(R.color.koolew_light_blue);
-    }
-
-    @Override
-    public String getTitle(Context context) {
-        return null;
+        ((TitleFragmentActivity) getActivity()).getTitleBar().setBackgroundColor(getThemeColor());
     }
 
     @Override
@@ -50,7 +39,7 @@ public class FollowsFragment extends TitleFragmentActivity.BaseTitleFragment<Fri
 
     @Override
     protected int getThemeColor() {
-        return getTitleBarColor(null);
+        return getResources().getColor(R.color.koolew_light_blue);
     }
 
     @Override

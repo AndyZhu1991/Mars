@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -201,10 +200,7 @@ public class KooTabFragment extends RecyclerListFragmentMould<KooTabFragment.Koo
         @Override
         public void onClick(View v) {
             if (v == itemView) {
-                Intent intent = new Intent(getActivity(), CheckDanmakuActivity.class);
-                intent.putExtra(CheckDanmakuActivity.KEY_VIDEO_ID,
-                        getKooItem().videoInfo.getVideoId());
-                startActivity(intent);
+                SingleMediaFragment.startThisFragment(getActivity(), getKooItem().videoInfo.getVideoId());
             }
             else if (v == avatar) {
                 FriendInfoActivity.startThisActivity(getActivity(), getKooItem().userInfo.getUid());
