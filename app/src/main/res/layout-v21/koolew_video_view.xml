@@ -6,9 +6,7 @@
     <TextureView
         android:id="@+id/playback_texture"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleX="1.0001"
-        android:scaleY="1.0001"/>
+        android:layout_height="match_parent" />
 
     <FrameLayout
         android:id="@+id/danmaku_container"
