@@ -212,7 +212,14 @@ public class KoolewInvolveFragment
 
             @Override
             public void onClick(View v) {
-                InvolveItem item = mData.get(getAdapterPosition());
+                InvolveLine line = mData.get(getAdapterPosition());
+                InvolveItem item;
+                if (v == leftHolder.itemView) {
+                    item = line.leftItem;
+                }
+                else {
+                    item = line.rightItem;
+                }
                 UserMediaActivity.startMyMediaActivity(getActivity(), item.getTopicId());
             }
         }
