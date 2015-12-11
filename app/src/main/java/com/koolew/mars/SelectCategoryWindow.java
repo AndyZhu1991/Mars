@@ -25,7 +25,7 @@ public class SelectCategoryWindow extends PopupWindow implements View.OnClickLis
         contentView.findViewById(R.id.create_topic).setOnClickListener(this);
         contentView.findViewById(R.id.join_movie).setOnClickListener(this);
 
-        setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setFocusable(true);
         setBackgroundDrawable(new ColorDrawable(0x00000000));

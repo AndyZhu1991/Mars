@@ -1,38 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/select_category">
+    android:padding="10dp">
 
-    <TextView
+    <com.koolew.mars.view.RatioFrameLayout
         android:id="@+id/create_topic"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:gravity="center_vertical"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:textColor="#9EADB7"
-        android:textSize="16sp"
-        android:text="@string/new_video_topic"
-        android:drawablePadding="10dp"
-        android:drawableLeft="@mipmap/ic_create_video_topic"/>
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginRight="5dp"
+        app:widthRatio="1"
+        app:heightRatio="1"
+        android:background="@drawable/new_video_topic_bg">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#DEE2E6"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/new_video_topic"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:drawableTop="@mipmap/ic_new_video_topic"
+            android:drawablePadding="8dp"/>
+    </com.koolew.mars.view.RatioFrameLayout>
 
-    <TextView
+    <com.koolew.mars.view.RatioFrameLayout
         android:id="@+id/join_movie"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:gravity="center_vertical"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:textColor="#9EADB7"
-        android:textSize="16sp"
-        android:text="@string/new_movie"
-        android:drawablePadding="10dp"
-        android:drawableLeft="@mipmap/ic_join_movie_topic"/>
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        app:widthRatio="1"
+        app:heightRatio="1"
+        android:background="@drawable/new_movie_bg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/new_movie"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:drawableTop="@mipmap/ic_new_movie"
+            android:drawablePadding="8dp"/>
+    </com.koolew.mars.view.RatioFrameLayout>
 </LinearLayout>
