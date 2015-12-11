@@ -138,7 +138,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/feeds_thumb_shader"/>
+                    android:background="@drawable/feeds_last_thumb_shader"/>
 
                 <TextView
                     android:layout_width="wrap_content"
