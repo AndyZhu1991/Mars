@@ -7,15 +7,15 @@
     android:paddingRight="4dp">
 
     <include
-        android:id="@+id/left_item"
-        layout="@layout/involve_item"
+        android:id="@+id/capture_layout"
+        layout="@layout/involve_first_grid_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_margin="4dp"/>
 
     <include
-        android:id="@+id/right_item"
+        android:id="@+id/item_layout"
         layout="@layout/involve_item"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

@@ -49,7 +49,7 @@ public class UrlHelper {
 
     // Users
     public static final String FRIEND_PROFILE_URL = V4_URL + "users/show";
-    private static final String INVOLVE_URL = V4_URL + "users/timeline";
+    private static final String TIMELINE_URL = V4_URL + "users/timeline";
     private static final String USER_TOPIC_URL = V4_URL + "users/media";
 
     // Friendships
@@ -189,22 +189,22 @@ public class UrlHelper {
     }
 
     public static String getInvolveUrl(int page) {
-        return Uri.parse(INVOLVE_URL)
+        return Uri.parse(TIMELINE_URL)
                 .buildUpon()
                 .appendQueryParameter("page", String.valueOf(page))
                 .appendQueryParameter("sort_by", "count")
                 .build().toString();
     }
 
-    public static String getUserInvolveUrl(String uid, long before) {
-        return Uri.parse(getUserInvolveUrl(uid))
+    public static String getUserTimelineUrl(String uid, long before) {
+        return Uri.parse(getUserTimelineUrl(uid))
                 .buildUpon()
                 .appendQueryParameter("before", String.valueOf(before))
                 .build().toString();
     }
 
-    public static String getUserInvolveUrl(String uid) {
-        return Uri.parse(INVOLVE_URL)
+    public static String getUserTimelineUrl(String uid) {
+        return Uri.parse(TIMELINE_URL)
                 .buildUpon()
                 .appendQueryParameter("sort_by", "time")
                 .appendQueryParameter("uid", uid)

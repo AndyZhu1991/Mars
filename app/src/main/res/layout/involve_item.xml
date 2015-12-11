@@ -35,4 +35,15 @@
         android:textColor="@android:color/white"
         android:drawableRight="@mipmap/ic_involve_go"/>
 
+    <TextView
+        android:id="@+id/is_manager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:padding="5dp"
+        android:text="@string/topic_manager"
+        android:textSize="10sp"
+        android:textColor="#E2E6E9"
+        android:background="@drawable/timeline_item_manager_bg"/>
+
 </com.koolew.mars.view.RatioFrameLayout>

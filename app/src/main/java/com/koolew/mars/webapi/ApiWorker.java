@@ -71,13 +71,13 @@ public class ApiWorker {
 
     public JsonObjectRequest requestUserInvolve(String uid, Response.Listener<JSONObject> listener,
                                                 Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getUserInvolveUrl(uid), listener, errorListener);
+        return standardGetRequest(UrlHelper.getUserTimelineUrl(uid), listener, errorListener);
     }
 
     public JsonObjectRequest requestUserInvolve(String uid, long before,
                                                 Response.Listener<JSONObject> listener,
                                                 Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getUserInvolveUrl(uid, before), listener, errorListener);
+        return standardGetRequest(UrlHelper.getUserTimelineUrl(uid, before), listener, errorListener);
     }
 
     public JsonObjectRequest requestFeedsTopicVideo(String topicId,

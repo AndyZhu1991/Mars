@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.koolew.mars.view.RatioLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:widthRatio="4"
+    app:heightRatio="3">
+
+    <FrameLayout
+        android:id="@+id/capture_topic_video"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/involve_capture_bg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/new_video_topic"
+            android:textSize="14sp"
+            android:textColor="@android:color/white"
+            android:drawableLeft="@mipmap/ic_involve_new_topic"
+            android:drawablePadding="5dp"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/capture_movie"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/involve_capture_bg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/new_movie"
+            android:textSize="14sp"
+            android:textColor="@android:color/white"
+            android:drawableLeft="@mipmap/ic_involve_new_movie"
+            android:drawablePadding="5dp"/>
+    </FrameLayout>
+</com.koolew.mars.view.RatioLinearLayout>
