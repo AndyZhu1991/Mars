@@ -34,6 +34,11 @@ public class RatioFrameLayout extends FrameLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
+    public void setRatio(float widthRatio, float heightRatio) {
+        measure.mWidthRatio = widthRatio;
+        measure.mHeightRatio = heightRatio;
+    }
+
 
     static class Measure {
         private float mWidthRatio;

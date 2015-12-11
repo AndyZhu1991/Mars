@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -16,6 +17,7 @@ import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.utils.JsonUtil;
+import com.koolew.mars.view.RatioFrameLayout;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -83,8 +85,11 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
         int addedCount = 0;
         for (int i = 0; i < count; i++) {
             try {
-                mAdapter.mData.add(new FeedsItem(cards.getJSONObject(i)));
-                addedCount++;
+                FeedsItem feedsItem = new FeedsItem(cards.getJSONObject(i));
+                if (feedsItem.videoInfos[0] != null) {
+                    mAdapter.mData.add(feedsItem);
+                    addedCount++;
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -103,14 +108,32 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
                 mAdapter.getOldestCardTime(), mLoadMoreListener, null);
     }
 
+
+    private static final int HOLDER_TYPE_2ITEMS = 2;
+    private static final int HOLDER_TYPE_3ITEMS = 3;
+
     class FeedsTopicAdapter extends LoadMoreAdapter {
 
         private List<FeedsItem> mData = new ArrayList<>();
 
         @Override
         public RecyclerView.ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
-            return new FeedsItemViewHolder(LayoutInflater.from(getActivity())
+            FeedsItemViewHolder holder = new FeedsItemViewHolder(LayoutInflater.from(getActivity())
                     .inflate(R.layout.feeds_card_item, parent, false));
+
+            if (viewType == HOLDER_TYPE_2ITEMS) {
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) holder.thumbFrame0.getLayoutParams();
+                lp.weight = 4;
+                holder.thumbFrame0.setRatio(8, 3);
+                holder.thumbFrame1.setVisibility(View.GONE);
+            }
+
+            return holder;
+        }
+
+        @Override
+        public int getCustomItemViewType(int position) {
+            return mData.get(position).videoInfos[1] == null ? HOLDER_TYPE_2ITEMS : HOLDER_TYPE_3ITEMS;
         }
 
         @Override
@@ -138,18 +161,18 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
                 ImageLoader.getInstance().displayImage(item.videoInfos[1].getVideoThumb(),
                         holder.thumbImages[1], ImageLoaderHelper.topicThumbLoadOptions);
             }
-            else {
-                holder.thumbImages[1].setImageDrawable(null);
-            }
+
+            String thumbImage2;
             if (item.videoInfos[2] != null) {
-                DisplayBlurImage displayBlurImageTask = new DisplayBlurImage(
-                        holder.thumbImages[2], item.videoInfos[2].getVideoThumb());
-                displayBlurImageTask.setScaleBeforeBlur(15);
-                displayBlurImageTask.execute();
+                thumbImage2 = item.videoInfos[2].getVideoThumb();
             }
             else {
-                holder.thumbImages[2].setImageDrawable(null);
+                thumbImage2 = item.videoInfos[0].getVideoThumb();
             }
+            DisplayBlurImage displayBlurImageTask = new DisplayBlurImage(
+                    holder.thumbImages[2], thumbImage2);
+            displayBlurImageTask.setScaleBeforeBlur(15);
+            displayBlurImageTask.execute();
         }
 
         @Override
@@ -174,6 +197,8 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
         private ImageView movieCategoryImage;
 
         private ImageView[] thumbImages = new ImageView[MAX_VIDEO_COUNT_PER_TOPIC];
+        private RatioFrameLayout thumbFrame0;
+        private RatioFrameLayout thumbFrame1;
 
         public FeedsItemViewHolder(View itemView) {
             super(itemView);
@@ -191,6 +216,9 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
             thumbImages[1].setOnClickListener(this);
             thumbImages[2] = (ImageView) itemView.findViewById(R.id.third_thumb);
             thumbImages[2].setOnClickListener(this);
+
+            thumbFrame0 = (RatioFrameLayout) itemView.findViewById(R.id.thumb_frame0);
+            thumbFrame1 = (RatioFrameLayout) itemView.findViewById(R.id.thumb_frame1);
         }
 
         @Override

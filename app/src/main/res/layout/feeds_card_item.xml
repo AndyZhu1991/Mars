@@ -61,14 +61,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="2.5dp"
+            android:padding="5dp"
             android:orientation="horizontal">
 
             <com.koolew.mars.view.RatioFrameLayout
+                android:id="@+id/thumb_frame0"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:layout_margin="2.5dp"
+                android:layout_marginRight="2.5dp"
                 app:widthRatio="4.0"
                 app:heightRatio="3.0">
 
@@ -76,6 +77,7 @@
                     android:id="@+id/first_thumb"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
                     app:riv_corner_radius="4dp"/>
 
                 <View
@@ -91,10 +93,12 @@
             </com.koolew.mars.view.RatioFrameLayout>
 
             <com.koolew.mars.view.RatioFrameLayout
+                android:id="@+id/thumb_frame1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:layout_margin="2.5dp"
+                android:layout_marginLeft="2.5dp"
+                android:layout_marginRight="2.5dp"
                 app:widthRatio="4.0"
                 app:heightRatio="3.0">
 
@@ -120,7 +124,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_margin="2.5dp"
+                android:layout_marginLeft="2.5dp"
                 app:widthRatio="2.0"
                 app:heightRatio="3.0">
 
