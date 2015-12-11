@@ -1,6 +1,7 @@
 package com.koolew.mars;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
+import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.share.ShareManager;
 import com.koolew.mars.statistics.BaseActivity;
@@ -43,9 +45,13 @@ public class InviteActivity extends BaseActivity implements SwipeRefreshLayout.O
 
     public static final String KEY_TOPIC_ID = "topic_id";
     public static final String KEY_TITLE = "title";
+    public static final String KEY_CATEGORY = BaseTopicInfo.KEY_CATEGORY;
+    public static final String KEY_DESC = BaseTopicInfo.KEY_DESC;
 
     private String mTopicId;
     private String mTitle;
+    private String mCategory;
+    private String mDesc;
 
     private TextView mTitleView;
     private SwipeRefreshLayout mRefreshLayout;
@@ -64,6 +70,8 @@ public class InviteActivity extends BaseActivity implements SwipeRefreshLayout.O
         Intent intent = getIntent();
         mTopicId = intent.getStringExtra(KEY_TOPIC_ID);
         mTitle = intent.getStringExtra(KEY_TITLE);
+        mCategory = intent.getStringExtra(KEY_CATEGORY);
+        mDesc = intent.getStringExtra(KEY_DESC);
 
         mShareManager = new ShareManager(this, new ShareListener());
 
@@ -83,6 +91,16 @@ public class InviteActivity extends BaseActivity implements SwipeRefreshLayout.O
 
         mTitleView = (TextView) findViewById(R.id.title);
         mTitleView.setText(mTitle);
+
+        TextView categoryText = (TextView) findViewById(R.id.category_lable);
+        if (mCategory.equals(BaseTopicInfo.CATEGORY_VIDEO)) {
+            categoryText.setText(R.string.topic);
+        }
+        else if (mCategory.equals(BaseTopicInfo.CATEGORY_MOVIE)) {
+            categoryText.setText(R.string.movie);
+        }
+
+        ((TextView) findViewById(R.id.description)).setText(mDesc);
 
         mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         mRefreshLayout.setOnRefreshListener(this);
@@ -177,6 +195,15 @@ public class InviteActivity extends BaseActivity implements SwipeRefreshLayout.O
 
     public void onInviteByQzone(View v) {
         mShareManager.inviteBy(ShareManager.ShareChanel.QZONE, mTopicId, mTitle);
+    }
+
+    public static void startThisActivity(Context context, BaseTopicInfo topicInfo) {
+        Intent intent = new Intent(context, InviteActivity.class);
+        intent.putExtra(KEY_TOPIC_ID, topicInfo.getTopicId());
+        intent.putExtra(KEY_TITLE, topicInfo.getTitle());
+        intent.putExtra(KEY_CATEGORY, topicInfo.getCategory());
+        intent.putExtra(KEY_DESC, topicInfo.getDesc());
+        context.startActivity(intent);
     }
 
 

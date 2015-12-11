@@ -4,7 +4,7 @@
     xmlns:TitleBarView="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4D288"
+    android:background="#4A4A4A"
     android:orientation="vertical"
     tools:context="com.koolew.mars.InviteActivity">
 
@@ -17,22 +17,43 @@
         TitleBarView:right_text="@string/done"/>
 
     <TextView
+        android:id="@+id/category_lable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_gravity="center_horizontal"
+        android:textSize="14sp"
+        android:textColor="#F4D288"/>
+
+    <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="37dp"
-        android:textSize="16sp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:gravity="center_horizontal"
+        android:textSize="18sp"
         android:textColor="@android:color/white"
-        android:maxLines="3"/>
+        android:singleLine="true"/>
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="15dp"
+        android:gravity="center_horizontal"
+        android:textSize="12sp"
+        android:textColor="@android:color/white"
+        android:maxLines="10"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@android:color/white">
+        android:background="@drawable/invite_bottom_layout_bg">
 
         <TextView
             android:layout_width="wrap_content"

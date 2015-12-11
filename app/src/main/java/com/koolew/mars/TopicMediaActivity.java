@@ -135,10 +135,7 @@ public class TopicMediaActivity extends BaseV4FragmentActivity implements View.O
     }
 
     protected void onInvite() {
-        Intent intent = new Intent(this, InviteActivity.class);
-        intent.putExtra(InviteActivity.KEY_TOPIC_ID, mTopicId);
-        intent.putExtra(InviteActivity.KEY_TITLE, mTopicInfo.getTitle());
-        startActivity(intent);
+        InviteActivity.startThisActivity(this, mTopicInfo);
     }
 
     @Override
