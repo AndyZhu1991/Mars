@@ -64,10 +64,16 @@ public class TimelineAdapter extends LoadMoreAdapter {
 
     public int addItems(JSONArray cards) {
         int originCount = mData.size();
+        boolean lastLineFull = mData.isLastLineFull();
         int addedCount = addData(cards);
         if (addedCount > 0) {
-            notifyItemChanged(originCount - 1);
-            notifyItemRangeInserted(originCount, mData.size() - originCount);
+            if (!lastLineFull) {
+                notifyItemChanged(originCount - 1);
+            }
+            int addedLine = mData.size() - originCount;
+            if (addedLine > 0) {
+                notifyItemRangeInserted(originCount, addedLine);
+            }
         }
 
         return addedCount;
@@ -214,6 +220,15 @@ public class TimelineAdapter extends LoadMoreAdapter {
             }
             else {
                 return timelineItems.get(timelineItems.size() - 1).getUpdateTime();
+            }
+        }
+
+        private boolean isLastLineFull() {
+            if (isSelf) {
+                return timelineItems.size() % 2 == 1;
+            }
+            else {
+                return timelineItems.size() % 2 == 0;
             }
         }
     }

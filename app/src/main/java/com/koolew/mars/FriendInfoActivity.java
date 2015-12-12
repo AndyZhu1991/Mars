@@ -66,7 +66,7 @@ public class FriendInfoActivity extends BaseV4FragmentActivity implements View.O
     private AppBarLayout mAppBar;
     private View mTitleNameLayout;
 
-    private int mThemeColor = Color.GREEN;
+    private int mThemeColor = Color.BLACK;
 
     private int titleBarCenterX;
     private int titleBarCenterY;
