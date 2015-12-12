@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseTopicInfo;
+import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.utils.JsonUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -34,6 +35,7 @@ public class TimelineAdapter extends LoadMoreAdapter {
     protected InvolveData mData;
 
     protected boolean isSelf = false;
+    protected BaseUserInfo mUserInfo;
 
 
     public TimelineAdapter(Context context) {
@@ -43,6 +45,14 @@ public class TimelineAdapter extends LoadMoreAdapter {
 
     public void setIsSelf() {
         isSelf = true;
+    }
+
+    public void setUserInfo(BaseUserInfo userInfo) {
+        mUserInfo = userInfo;
+    }
+
+    public long getLastUpdateTime() {
+        return mData.getLastUpdateTime();
     }
 
     public int setItems(JSONArray cards) {
@@ -57,7 +67,7 @@ public class TimelineAdapter extends LoadMoreAdapter {
         int addedCount = addData(cards);
         if (addedCount > 0) {
             notifyItemChanged(originCount - 1);
-            notifyItemRangeInserted(originCount, addedCount);
+            notifyItemRangeInserted(originCount, mData.size() - originCount);
         }
 
         return addedCount;
@@ -197,9 +207,18 @@ public class TimelineAdapter extends LoadMoreAdapter {
             }
             return false;
         }
+
+        private long getLastUpdateTime() {
+            if (timelineItems.size() == 0) {
+                return Long.MAX_VALUE;
+            }
+            else {
+                return timelineItems.get(timelineItems.size() - 1).getUpdateTime();
+            }
+        }
     }
 
-    static class InvolveFirstLineHolder extends RecyclerView.ViewHolder {
+    class InvolveFirstLineHolder extends RecyclerView.ViewHolder {
         private InvolveCaptureHolder captureHolder;
         private InvolveItemHolder itemHolder;
 
@@ -215,7 +234,7 @@ public class TimelineAdapter extends LoadMoreAdapter {
         }
     }
 
-    static class InvolveLineHolder extends RecyclerView.ViewHolder {
+    class InvolveLineHolder extends RecyclerView.ViewHolder {
         private InvolveItemHolder leftHolder;
         private InvolveItemHolder rightHolder;
 
@@ -232,7 +251,7 @@ public class TimelineAdapter extends LoadMoreAdapter {
         }
     }
 
-    static class InvolveItemHolder implements View.OnClickListener {
+    class InvolveItemHolder implements View.OnClickListener {
         TimelineItem timelineItem;
 
         View itemView;
@@ -274,7 +293,13 @@ public class TimelineAdapter extends LoadMoreAdapter {
 
         @Override
         public void onClick(View v) {
-            UserMediaActivity.startMyMediaActivity(v.getContext(), timelineItem.getTopicId());
+            if (isSelf) {
+                UserMediaActivity.startMyMediaActivity(v.getContext(), timelineItem.getTopicId());
+            }
+            else {
+                UserMediaActivity.startThisActivity(mContext, timelineItem.getTopicId(),
+                        mUserInfo.getUid(), mUserInfo.getNickname());
+            }
         }
     }
 

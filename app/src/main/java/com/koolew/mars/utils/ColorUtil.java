@@ -8,7 +8,11 @@ import android.graphics.Color;
 public class ColorUtil {
 
     public static int burnColorForStatusBar(int color) {
-        return burnColor(color, 0.12f);
+        return burnColor(color, 0.12f, true);
+    }
+
+    public static int burnColorForStatusBarWithAlpha(int color) {
+        return burnColor(color, 0.12f, false);
     }
 
     /**
@@ -17,7 +21,7 @@ public class ColorUtil {
      * @param degree 加深程度，0.0f~1.0f，0.0f返回原色，1.0f返回黑色
      * @return
      */
-    public static int burnColor(int color, float degree) {
+    public static int burnColor(int color, float degree, boolean ignoreAlpha) {
         int alpha = color >> 24;
         int red = color >> 16 & 0xFF;
         int green = color >> 8 & 0xFF;
@@ -25,7 +29,12 @@ public class ColorUtil {
         red = (int) Math.floor(red * (1 - degree));
         green = (int) Math.floor(green * (1 - degree));
         blue = (int) Math.floor(blue * (1 - degree));
-        return Color.rgb(red, green, blue);
+        if (ignoreAlpha) {
+            return Color.rgb(red, green, blue);
+        }
+        else {
+            return Color.argb(alpha, red, green, blue);
+        }
     }
 
     public static int getTransitionColor(int startColor, int endColor, float offset) {

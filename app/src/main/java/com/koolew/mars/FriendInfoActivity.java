@@ -1,34 +1,36 @@
 package com.koolew.mars;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.LayoutInflater;
+import android.support.v7.graphics.Palette;
+import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.koolew.mars.blur.DisplayBlurImageAndStatusBar;
-import com.koolew.mars.imageloader.ImageLoaderHelper;
+import com.koolew.mars.blur.DisplayBlurImageAndPalette;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.infos.TypedUserInfo;
-import com.koolew.mars.player.ScrollPlayer;
+import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
-import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.view.BigCountView;
-import com.koolew.mars.view.LoadMoreFooter;
+import com.koolew.mars.utils.Utils;
+import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -37,371 +39,326 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+/**
+ * Created by jinchangzhu on 12/12/15.
+ */
+public class FriendInfoActivity extends BaseV4FragmentActivity implements View.OnClickListener,
+        AppBarLayout.OnOffsetChangedListener, ViewTreeObserver.OnGlobalLayoutListener {
 
+    public static final String KEY_UID = BaseUserInfo.KEY_UID;
 
-public class FriendInfoActivity extends BaseV4FragmentActivity {
+    private String mUid;
+    private BaseUserInfo mUserInfo;
+    private int mType;
 
-    public static final String KEY_UID = "uid";
-    public static final String KEY_AVATAR = "avatar";
-    public static final String KEY_NICKNAME = "nickname";
+    private UserInvolveFragment mFragment;
 
+    private TitleBarView mTitleBar;
+    private ImageView mBlurAvatar;
+    private ImageView mAvatar;
+    private UserNameView mUserName;
+    private TextView mOperationView;
+
+    private TextView mSupportCount;
+    private TextView mFansCount;
+    private TextView mFollowingCount;
+
+    private AppBarLayout mAppBar;
+    private View mTitleNameLayout;
+
+    private int mThemeColor = Color.GREEN;
+
+    private int titleBarCenterX;
+    private int titleBarCenterY;
+    private int nameViewLeft;
+    private int nameViewTop;
+
+    private int collapsbleHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_friend_info);
+        setContentView(R.layout.activity_user_info);
+
+        mUid = getIntent().getStringExtra(KEY_UID);
+
+        ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setStatusBarScrimColor(0);
+
+        mAppBar = (AppBarLayout) findViewById(R.id.appbar);
+        mAppBar.addOnOffsetChangedListener(this);
+        mAppBar.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        mTitleNameLayout = findViewById(R.id.title_name_layout);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int statusBarHeight = Utils.getStatusBarHeight();
+            mAppBar.getLayoutParams().height += statusBarHeight;
+            findViewById(R.id.user_info_layout).setPadding(0, statusBarHeight, 0, 0);
+            mTitleNameLayout.setPadding(0, statusBarHeight, 0, 0);
+        }
+
+        mTitleBar = (TitleBarView) findViewById(R.id.title_bar);
+        mBlurAvatar = (ImageView) findViewById(R.id.blur_avatar);
+        mAvatar = (ImageView) findViewById(R.id.avatar);
+        mAvatar.setOnClickListener(this);
+        mUserName = (UserNameView) findViewById(R.id.user_name);
+        mOperationView = (TextView) findViewById(R.id.operation_btn);
+        mOperationView.setOnClickListener(this);
+        mSupportCount = (TextView) findViewById(R.id.support_count);
+        mSupportCount.setOnClickListener(this);
+        mFansCount = (TextView) findViewById(R.id.fans_count);
+        mFansCount.setOnClickListener(this);
+        mFollowingCount = (TextView) findViewById(R.id.following_count);
+        mFollowingCount.setOnClickListener(this);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container, new FriendInfoFragment());
+        mFragment = new UserInvolveFragment();
+        fragmentTransaction.add(R.id.fragment_container, mFragment);
         fragmentTransaction.commit();
     }
 
-
-    static class FriendProfileTopicAdapter extends TopicAdapter {
-
-        FriendProfileTopicAdapter(Context context) {
-            super(context);
-        }
-
-        @Override
-        public TopicItem jsonObject2TopicItem(JSONObject jsonObject) {
-            return new TopicItem(jsonObject);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View root = super.getView(position, convertView, parent);
-
-            root.setBackgroundColor(0xFFF5F5F5);
-
-            ((ViewHolder) root.getTag()).videoCount.setText(
-                    mContext.getString(R.string.part_video_count,
-                    ((TopicItem) getItem(position)).getVideoCount()));
-
-            return root;
-        }
-
-        public String getTopicId(int position) {
-            return mData.get(position).getTopicId();
+    private JsonObjectRequest mUserInfoRequest;
+    private void refreshUserInfo() {
+        if (mUserInfoRequest == null) {
+            mAppBar.getViewTreeObserver().addOnGlobalLayoutListener(this);
+            mUserInfoRequest = ApiWorker.getInstance().requestFriendProfile(
+                    mUid, userInfoListener, null);
         }
     }
 
-    public static class FriendInfoFragment extends BaseListFragment
-            implements AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener,
-            LoadMoreFooter.OnLoadListener, View.OnClickListener {
-
-        private ScrollPlayer mScrollPlayer;
-        private FriendProfileTopicAdapter mAdapter;
-
-        private BaseUserInfo mUserInfo;
-        private String mUid;
-        private int mType;
-        private int mKooCount;
-
-        private Dialog mProgressDialog;
-
-        private CircleImageView mAvatar;
-        private ImageView mBlurAvatar;
-        private UserNameView mNameView;
-        private TextView mSummary;
-        private ImageView mOperationImage;
-        private TextView mOperationText;
-        private TextView mFansCountText;
-        private TextView mFollowsCountText;
-
-        private View mBottomLayout;
-        private BigCountView mKooCountView;
-        private BigCountView mCommonTopicCountView;
-
-
-        public FriendInfoFragment() {
-            isNeedLoadMore = true;
-            mLayoutResId = R.layout.no_shader_refresh_list;
-        }
-
+    private Response.Listener<JSONObject> userInfoListener = new Response.Listener<JSONObject>() {
         @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-        }
+        public void onResponse(JSONObject response) {
+            mUserInfoRequest = null;
+            try {
+                if (response.getInt("code") == 0) {
+                    JSONObject result = response.getJSONObject("result");
+                    mType = result.getInt("type");
+                    initTypeView(mType);
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            // Inflate the layout for this fragment
-            View root =  super.onCreateView(inflater, container, savedInstanceState);
+                    JSONObject user = result.getJSONObject("user");
+                    mUserInfo = new BaseUserInfo(user);
+                    mFragment.setupUserInfo();
 
-            mAdapter = new FriendProfileTopicAdapter(getActivity());
-            mScrollPlayer = mAdapter.new TopicScrollPlayer(mListView);
-            mScrollPlayer.setNeedDanmaku(false);
-            mScrollPlayer.setNeedSound(false);
-            if (isNeedLoadMore) {
-                mListFooter.setup(mListView, mScrollPlayer);
-            }
-
-            Intent intent = getActivity().getIntent();
-            mUid = intent.getStringExtra(KEY_UID);
-
-            initViews();
-
-            mProgressDialog = DialogUtil.getConnectingServerDialog(getActivity());
-            String avatar = intent.getStringExtra(KEY_AVATAR);
-            if (avatar != null && !avatar.equals("")) {
-                ImageLoader.getInstance().displayImage(avatar, mAvatar,
-                        ImageLoaderHelper.avatarLoadOptions);
-                new DisplayBlurImageAndStatusBar(getActivity(), mBlurAvatar, avatar).execute();
-            }
-            mNameView.setUserInfo(intent.getStringExtra(KEY_NICKNAME), BaseUserInfo.VIP_TYPE_NO_VIP);
-
-            return root;
-        }
-
-        private void initViews() {
-            View header = getActivity().getLayoutInflater().
-                    inflate(R.layout.friend_info_list_header, null);
-
-            mAvatar = (CircleImageView) header.findViewById(R.id.avatar);
-            mBlurAvatar = (ImageView) header.findViewById(R.id.blur_avatar);
-            mNameView = (UserNameView) header.findViewById(R.id.name_view);
-            mSummary = (TextView) header.findViewById(R.id.summary);
-            mOperationImage = (ImageView) header.findViewById(R.id.operation_image);
-            mOperationImage.setOnClickListener(this);
-            mOperationText = (TextView) header.findViewById(R.id.operation_text);
-            mFansCountText = (TextView) header.findViewById(R.id.fans_count_text);
-            mFansCountText.setOnClickListener(this);
-            mFollowsCountText = (TextView) header.findViewById(R.id.follows_count_text);
-            mFollowsCountText.setOnClickListener(this);
-            mBottomLayout = header.findViewById(R.id.koo_common_topic_layout);
-            if (mUid.equals(MyAccountInfo.getUid())) {
-                mBottomLayout.setVisibility(View.GONE);
-            }
-
-            mListView.setOnItemClickListener(this);
-
-            mListView.addHeaderView(header, null, false);
-            mKooCountView = (BigCountView) header.findViewById(R.id.count_koo);
-            mKooCountView.setOnClickListener(this);
-            mCommonTopicCountView = (BigCountView) header.findViewById(R.id.count_common_topic);
-            mCommonTopicCountView.setOnClickListener(this);
-        }
-
-        @Override
-        protected void onPageEnd() {
-            super.onPageEnd();
-            mScrollPlayer.onActivityPause();
-        }
-
-        @Override
-        protected void onPageStart() {
-            super.onPageStart();
-            mScrollPlayer.onActivityResume();
-        }
-
-        @Override
-        public void onDestroy() {
-            super.onDestroy();
-            mScrollPlayer.onActivityDestroy();
-        }
-
-        @Override
-        public String getTitle() {
-            return null;
-        }
-
-        @Override
-        public int getThemeColor() {
-            return getActivity().getResources().getColor(R.color.koolew_light_orange);
-        }
-
-        private void setupAdapter() {
-            if (mListView.getAdapter() == null) {
-                mListView.setAdapter(mAdapter);
-            }
-        }
-
-        private void onOperationLayoutClick(int type) {
-            switch (type) {
-                case TypedUserInfo.TYPE_STRANGER:
-                case TypedUserInfo.TYPE_FAN:
-                    mProgressDialog.show();
-                    ApiWorker.getInstance().followUser(mUid, mFriendOpListener, null);
-                    break;
-                case TypedUserInfo.TYPE_FOLLOWED:
-                case TypedUserInfo.TYPE_FRIEND:
-                    unfollowWithConfirm(mUid);
-                    break;
-                default:
-            }
-        }
-
-        private void unfollowWithConfirm(final String uid) {
-            new AlertDialog.Builder(getActivity())
-                    .setMessage(R.string.unfollow_confirm)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    ImageLoader.getInstance().displayImage(mUserInfo.getAvatar(), mAvatar);
+                    new DisplayBlurImageAndPalette(mBlurAvatar, mUserInfo.getAvatar()) {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ApiWorker.getInstance().unfollowUser(uid, mFriendOpListener, null);
+                        protected void onPalette(Palette palette) {
+                            mThemeColor = palette.getMutedColor(Color.BLACK);
+                            mFragment.setupThemeColor();
                         }
-                    })
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .show();
-        }
-
-        private void initTypeView(int type) {
-            switch (type) {
-                case TypedUserInfo.TYPE_STRANGER:
-                case TypedUserInfo.TYPE_FAN:
-                    mOperationImage.setImageResource(R.mipmap.friend_info_follow);
-                    mOperationText.setText(R.string.follow);
-                    break;
-                case TypedUserInfo.TYPE_FOLLOWED:
-                    mOperationImage.setImageResource(R.mipmap.friend_info_followed);
-                    mOperationText.setText(R.string.followed);
-                    break;
-                case TypedUserInfo.TYPE_FRIEND:
-                    mOperationImage.setImageResource(R.mipmap.friend_info_followed_each_other);
-                    mOperationText.setText(R.string.followed_each_other);
-                    break;
-                default:
-                    mOperationImage.setVisibility(View.INVISIBLE);
-                    mOperationText.setVisibility(View.INVISIBLE);
-            }
-        }
-
-        private Response.Listener<JSONObject> mFriendOpListener = new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                mProgressDialog.dismiss();
-                try {
-                    if (response.getInt("code") == 0) {
-                        switch (mType) {
-                            case TypedUserInfo.TYPE_STRANGER:
-                                mType = TypedUserInfo.TYPE_FOLLOWED;
-                                break;
-                            case TypedUserInfo.TYPE_FAN:
-                                mType = TypedUserInfo.TYPE_FRIEND;
-                                break;
-                            case TypedUserInfo.TYPE_FOLLOWED:
-                                mType = TypedUserInfo.TYPE_STRANGER;
-                                break;
-                            case TypedUserInfo.TYPE_FRIEND:
-                                mType = TypedUserInfo.TYPE_FAN;
-                                break;
-                        }
-                        initTypeView(mType);
-                    }
-                    else {
-                        Toast.makeText(getActivity(), R.string.connect_server_failed,
-                                Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    }.execute();
+                    mUserName.setUser(mUserInfo);
+                    mSupportCount.setText(getString(R.string.support_count, mUserInfo.getKooCount()));
+                    mFansCount.setText(getString(R.string.fans_count, mUserInfo.getFansCount()));
+                    mFollowingCount.setText(getString(
+                            R.string.follows_count, mUserInfo.getFollowsCount()));
                 }
-            }
-        };
-
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.count_koo:
-                    onCountKooClick();
-                    break;
-                case R.id.count_common_topic:
-                    onCommonTopicClick();
-                    break;
-                case R.id.operation_image:
-                    onOperationLayoutClick(mType);
-                    break;
-                case R.id.fans_count_text:
-                    onFansCountTextClick();
-                    break;
-                case R.id.follows_count_text:
-                    onFollowsCountTextClick();
-                    break;
-            }
-        }
-
-        private void onCountKooClick() {
-            Intent intent = new Intent(getActivity(), KooRankActivity.class);
-            intent.putExtra(KooRankActivity.KEY_UID, mUid);
-            intent.putExtra(KooRankActivity.KEY_KOO_COUNT, mKooCount);
-            startActivity(intent);
-        }
-
-        private void onCommonTopicClick() {
-            Intent intent = new Intent(getActivity(), CommonTopicActivity.class);
-            intent.putExtra(CommonTopicActivity.KEY_UID, mUid);
-            intent.putExtra(CommonTopicActivity.KEY_NICKNAME, mNameView.getNickname());
-            startActivity(intent);
-        }
-
-        private void onFansCountTextClick() {
-            Bundle extras = new Bundle();
-            extras.putString(FansFragment.KEY_UID, mUid);
-            TitleFragmentActivity.launchFragment(getActivity(), FansFragment.class, extras);
-        }
-
-        private void onFollowsCountTextClick() {
-            Bundle extras = new Bundle();
-            extras.putString(FollowsFragment.KEY_UID, mUid);
-            TitleFragmentActivity.launchFragment(getActivity(), FollowsFragment.class, extras);
-        }
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            position--; // Header
-            if (position < 0) {
-                return;
-            }
-            UserMediaActivity.startThisActivity(getActivity(), mAdapter.getTopicId(position), mUid,
-                    mNameView.getNickname());
-        }
-
-        @Override
-        protected boolean handleRefresh(JSONObject response) {
-            try {
-                setupAdapter();
-                JSONObject result = response.getJSONObject("result");
-
-                JSONArray topics;
-                if (result.has("topics")) {
-                    topics = result.getJSONArray("topics");
-                }
-                else {
-                    topics = new JSONArray();
-                }
-                mAdapter.setCards(topics);
-                mAdapter.notifyDataSetChanged();
-
-                return topics.length() > 0;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    };
 
-            return false;
+    private void initTypeView(int type) {
+        switch (type) {
+            case TypedUserInfo.TYPE_STRANGER:
+            case TypedUserInfo.TYPE_FAN:
+                Utils.setTextViewDrawableTop(mOperationView, R.mipmap.friend_info_follow);
+                mOperationView.setText(R.string.follow);
+                break;
+            case TypedUserInfo.TYPE_FOLLOWED:
+                Utils.setTextViewDrawableTop(mOperationView, R.mipmap.friend_info_followed);
+                mOperationView.setText(R.string.followed);
+                break;
+            case TypedUserInfo.TYPE_FRIEND:
+                Utils.setTextViewDrawableTop(mOperationView, R.mipmap.friend_info_followed_each_other);
+                mOperationView.setText(R.string.followed_each_other);
+                break;
+            default:
+                mOperationView.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+        float progress = 1.0f * -i / collapsbleHeight;
+        mTitleBar.setBackgroundColor(Color.argb((int) (255 * progress), Color.red(mThemeColor),
+                Color.green(mThemeColor), Color.blue(mThemeColor)));
+
+        float diffX = titleBarCenterX - (nameViewLeft + mUserName.getWidth() / 2);
+        float diffY = titleBarCenterY - (nameViewTop + mUserName.getHeight() / 2);
+        mUserName.setX(nameViewLeft + diffX * progress);
+        mUserName.setY(nameViewTop + diffY * progress);
+    }
+
+    @Override
+    public void onGlobalLayout() {
+        mAppBar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+        titleBarCenterX = (mTitleBar.getLeft() + mTitleBar.getRight()) / 2;
+        titleBarCenterY = (mTitleBar.getTop() + mTitleBar.getBottom()) / 2;
+        nameViewLeft = mUserName.getLeft();
+        nameViewTop = mUserName.getTop();
+        collapsbleHeight = mTitleNameLayout.getHeight() - mTitleBar.getBottom();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (mUserName == null) {
+            return;
         }
 
+        switch (v.getId()) {
+            case R.id.operation_btn:
+                onOperationLayoutClick(mType);
+                break;
+            case R.id.support_count:
+                onCountKooClick();
+                break;
+            case R.id.fans_count:
+                onFansCountTextClick();
+                break;
+            case R.id.following_count:
+                onFollowsCountTextClick();
+                break;
+        }
+    }
+
+    private void onCountKooClick() {
+        Intent intent = new Intent(this, KooRankActivity.class);
+        intent.putExtra(KooRankActivity.KEY_UID, mUid);
+        intent.putExtra(KooRankActivity.KEY_KOO_COUNT, mUserInfo.getKooCount());
+        startActivity(intent);
+    }
+
+    private void onFansCountTextClick() {
+        Bundle extras = new Bundle();
+        extras.putString(FansFragment.KEY_UID, mUid);
+        TitleFragmentActivity.launchFragment(this, FansFragment.class, extras);
+    }
+
+    private void onFollowsCountTextClick() {
+        Bundle extras = new Bundle();
+        extras.putString(FollowsFragment.KEY_UID, mUid);
+        TitleFragmentActivity.launchFragment(this, FollowsFragment.class, extras);
+    }
+
+    private void onOperationLayoutClick(int type) {
+        switch (type) {
+            case TypedUserInfo.TYPE_STRANGER:
+            case TypedUserInfo.TYPE_FAN:
+                ApiWorker.getInstance().followUser(mUid, mFriendOpListener, null);
+                break;
+            case TypedUserInfo.TYPE_FOLLOWED:
+            case TypedUserInfo.TYPE_FRIEND:
+                unfollowWithConfirm(mUid);
+                break;
+            default:
+        }
+    }
+
+    private void unfollowWithConfirm(final String uid) {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.unfollow_confirm)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ApiWorker.getInstance().unfollowUser(uid, mFriendOpListener, null);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private Response.Listener<JSONObject> mFriendOpListener = new FriendOpListener();
+
+    class FriendOpListener implements Response.Listener<JSONObject>, Response.ErrorListener {
         @Override
-        protected boolean handleLoadMore(JSONObject response) {
+        public void onResponse(JSONObject response) {
             try {
-                JSONObject result = response.getJSONObject("result");
-                JSONArray topics;
-                if (result.has("topics")) {
-                    topics = result.getJSONArray("topics");
+                if (response.getInt("code") == 0) {
+                    switch (mType) {
+                        case TypedUserInfo.TYPE_STRANGER:
+                            mType = TypedUserInfo.TYPE_FOLLOWED;
+                            break;
+                        case TypedUserInfo.TYPE_FAN:
+                            mType = TypedUserInfo.TYPE_FRIEND;
+                            break;
+                        case TypedUserInfo.TYPE_FOLLOWED:
+                            mType = TypedUserInfo.TYPE_STRANGER;
+                            break;
+                        case TypedUserInfo.TYPE_FRIEND:
+                            mType = TypedUserInfo.TYPE_FAN;
+                            break;
+                    }
+                    initTypeView(mType);
                 }
                 else {
-                    topics = new JSONArray();
+                    Toast.makeText(FriendInfoActivity.this, R.string.failed, Toast.LENGTH_SHORT).show();
                 }
-                mAdapter.addCards(topics);
-                mAdapter.notifyDataSetChanged();
-
-                return topics.length() > 0;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
 
-            return false;
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Toast.makeText(FriendInfoActivity.this, R.string.connect_server_failed,
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static void startThisActivity(Context context, String uid) {
+        Intent intent = new Intent(context, FriendInfoActivity.class);
+        intent.putExtra(KEY_UID, uid);
+        context.startActivity(intent);
+    }
+
+
+    public static class UserTitleBar extends TitleBarView {
+        public UserTitleBar(Context context) {
+            super(context);
+        }
+
+        public UserTitleBar(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        @Override
+        protected void setStatusBarColor(int color) {
+            if (getContext() instanceof Activity) {
+                Utils.setStatusBarColorBurnWithAlpha((Activity) getContext(), color);
+            }
+        }
+    }
+
+    public class UserInvolveFragment extends RecyclerListFragmentMould<TimelineAdapter> {
+
+        public UserInvolveFragment() {
+            super();
+            isNeedLoadMore = true;
+        }
+
+        @Override
+        protected TimelineAdapter useThisAdapter() {
+            TimelineAdapter adapter = new TimelineAdapter(getActivity());
+            if (MyAccountInfo.getUid().equals(mUid)) {
+                adapter.setIsSelf();
+            }
+            return adapter;
+        }
+
+        public void setupUserInfo() {
+            mAdapter.setUserInfo(mUserInfo);
+        }
+
+        @Override
+        protected int getThemeColor() {
+            return mThemeColor;
+        }
+
+        public void setupThemeColor() {
+            mRefreshLayout.setColorSchemeColors(mThemeColor);
         }
 
         @Override
@@ -410,60 +367,29 @@ public class FriendInfoActivity extends BaseV4FragmentActivity {
             return ApiWorker.getInstance().requestUserInvolve(mUid, mRefreshListener, null);
         }
 
-        private JsonObjectRequest mUserInfoRequest;
-        private void refreshUserInfo() {
-            if (mUserInfoRequest == null) {
-                mUserInfoRequest = ApiWorker.getInstance().requestFriendProfile(
-                        mUid, userInfoListener, null);
-            }
-        }
-
-        private Response.Listener<JSONObject> userInfoListener = new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                mUserInfoRequest = null;
-                try {
-                    if (response.getInt("code") == 0) {
-                        JSONObject result = response.getJSONObject("result");
-                        mType = result.getInt("type");
-                        initTypeView(mType);
-
-                        JSONObject user = result.getJSONObject("user");
-                        mUserInfo = new BaseUserInfo(user);
-                        ImageLoader.getInstance().displayImage(mUserInfo.getAvatar(), mAvatar);
-                        new DisplayBlurImageAndStatusBar(getActivity(), mBlurAvatar,
-                                mUserInfo.getAvatar()).execute();
-                        mNameView.setUser(mUserInfo);
-                        mFansCountText.setText(getString(R.string.fans_count, mUserInfo.getFansCount()));
-                        mFollowsCountText.setText(getString(
-                                R.string.follows_count, mUserInfo.getFollowsCount()));
-
-                        if (!mUid.equals(MyAccountInfo.getUid())) {
-                            mKooCount = user.getInt("koo_num");
-                            mKooCountView.setCount(mKooCount);
-
-                            JSONObject common = result.getJSONObject("common");
-                            mCommonTopicCountView.setCount(common.getInt("common_topic"));
-                        }
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
         @Override
         protected JsonObjectRequest doLoadMoreRequest() {
-            return ApiWorker.getInstance().requestUserInvolve(mUid,
-                    mAdapter.getOldestCardTime(), mLoadMoreListener, null);
+            return ApiWorker.getInstance().requestUserInvolve(mUid, mAdapter.getLastUpdateTime(),
+                    mLoadMoreListener, null);
         }
 
-    }
+        @Override
+        protected boolean handleRefresh(JSONObject response) {
+            return mAdapter.setItems(getInvolveTopics(response)) > 0;
+        }
 
-    public static void startThisActivity(Context context, String uid) {
-        Intent intent = new Intent(context, FriendInfoActivity.class);
-        intent.putExtra(KEY_UID, uid);
-        context.startActivity(intent);
+        @Override
+        protected boolean handleLoadMore(JSONObject response) {
+            return mAdapter.addItems(getInvolveTopics(response)) > 0;
+        }
+
+        private JSONArray getInvolveTopics(JSONObject response) {
+            try {
+                return response.getJSONObject("result").getJSONArray("topics");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return new JSONArray();
+        }
     }
 }

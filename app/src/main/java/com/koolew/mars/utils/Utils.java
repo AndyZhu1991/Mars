@@ -252,6 +252,10 @@ public class Utils {
         setStatusBarColor(activity, ColorUtil.burnColorForStatusBar(color));
     }
 
+    public static void setStatusBarColorBurnWithAlpha(Activity activity, int color) {
+        setStatusBarColor(activity, ColorUtil.burnColorForStatusBarWithAlpha(color));
+    }
+
     public static void setStatusBarColor(Activity activity, int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activity.getWindow().setStatusBarColor(color);
@@ -384,5 +388,21 @@ public class Utils {
         // 这一步必须要做,否则不会显示.
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         textView.setCompoundDrawables(drawable, null, null, null);
+    }
+
+    public static void setTextViewDrawableTop(TextView textView, int resId) {
+        Drawable drawable = context.getResources().getDrawable(resId);
+        // 这一步必须要做,否则不会显示.
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        textView.setCompoundDrawables(null, drawable, null, null);
+    }
+
+    public static int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }

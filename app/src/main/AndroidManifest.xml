@@ -160,7 +160,6 @@
         <activity
             android:name=".FriendInfoActivity"
             android:exported="false"
-            android:label="@string/title_activity_friend_info"
             android:screenOrientation="portrait" >
         </activity>
         <activity

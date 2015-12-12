@@ -1,5 +1,7 @@
 package com.koolew.mars.infos;
 
+import com.koolew.mars.utils.JsonUtil;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,6 +25,7 @@ public class BaseUserInfo implements Serializable {
     public static final String KEY_VIP = "vip";
     public static final String KEY_FOLLOWS_COUNT = "follows";
     public static final String KEY_FANS_COUNT = "fans";
+    public static final String KEY_KOO_COUNT = "koo_num";
 
     private String uid;
     private String nickname;
@@ -30,6 +33,7 @@ public class BaseUserInfo implements Serializable {
     private int vip;
     private int followsCount;
     private int fansCount;
+    private int kooCount;
 
     public BaseUserInfo(JSONObject jsonObject) {
         try {
@@ -51,6 +55,7 @@ public class BaseUserInfo implements Serializable {
             if (jsonObject.has(KEY_FANS_COUNT)) {
                 fansCount = jsonObject.getInt(KEY_FANS_COUNT);
             }
+            kooCount = JsonUtil.getIntIfHas(jsonObject, KEY_KOO_COUNT);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -92,6 +97,10 @@ public class BaseUserInfo implements Serializable {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public int getKooCount() {
+        return kooCount;
     }
 
     public static List<BaseUserInfo> fromJSONArray(JSONArray jsonArray) {

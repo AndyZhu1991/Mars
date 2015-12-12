@@ -107,7 +107,7 @@
     <!-- For KoolewFeedsFragment -->
     <string name="see_more">查看更多</string>
 
-    <!-- For KoolewInvolveFragment -->
+    <!-- For UserInvolveFragment -->
     <string name="joined_video">参与视频</string>
 
     <!-- For FriendFragment -->
@@ -254,6 +254,7 @@
     <string name="part_video_count" formatted="false">参与视频数：%d个</string>
     <string name="add_friend">加好友</string>
     <string name="requested_friend">已申请好友</string>
+    <string name="support_count" formatted="false">"%d 个支持"</string>
 
     <!-- CommonFriendActivity -->
     <string name="common_friend_title">共同好友</string>

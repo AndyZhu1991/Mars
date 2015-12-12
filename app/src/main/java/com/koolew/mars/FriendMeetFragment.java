@@ -2,7 +2,6 @@ package com.koolew.mars;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -306,11 +305,7 @@ public class FriendMeetFragment
             public void onClick(View v) {
                 if (v == itemView) {
                     BaseUserInfo info = getItem(getAdapterPosition());
-                    Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
-                    intent.putExtra(FriendInfoActivity.KEY_UID, info.getUid());
-                    intent.putExtra(FriendInfoActivity.KEY_AVATAR, info.getAvatar());
-                    intent.putExtra(FriendInfoActivity.KEY_NICKNAME, info.getNickname());
-                    startActivity(intent);
+                    FriendInfoActivity.startThisActivity(getActivity(), info.getUid());
                 }
                 else if (v == acceptAddButton) {
                     progressDialog.show();

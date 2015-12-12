@@ -79,7 +79,7 @@ public class TitleBarView extends FrameLayout implements View.OnClickListener {
         setStatusBarColor(color);
     }
 
-    private void setStatusBarColor(int color) {
+    protected void setStatusBarColor(int color) {
         if (getContext() instanceof Activity) {
             Utils.setStatusBarColorBurn((Activity) getContext(), color);
         }
