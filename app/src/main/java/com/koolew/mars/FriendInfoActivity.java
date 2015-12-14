@@ -383,6 +383,11 @@ public class FriendInfoActivity extends BaseV4FragmentActivity implements View.O
             return mAdapter.addItems(getInvolveTopics(response)) > 0;
         }
 
+        @Override
+        protected int getNoDataViewResId() {
+            return R.layout.timeline_no_data;
+        }
+
         private JSONArray getInvolveTopics(JSONObject response) {
             try {
                 return response.getJSONObject("result").getJSONArray("topics");

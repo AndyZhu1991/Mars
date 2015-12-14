@@ -5,6 +5,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -29,6 +30,8 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
 
     protected SwipeRefreshLayout mRefreshLayout;
     protected RecyclerView mRecyclerView;
+    protected FrameLayout mSpecialContainer;
+    protected View mNoDataView;
 
     protected JsonObjectRequest mRefreshRequest;
     protected JsonObjectRequest mLoadMoreRequest;
@@ -56,6 +59,7 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
         mRefreshLayout.setColorSchemeColors(getThemeColor());
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mSpecialContainer = (FrameLayout) findViewById(R.id.special_container);
 
         setupAdapter();
 
@@ -119,7 +123,18 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
             mRefreshLayout.setRefreshing(false);
             mRefreshRequest = null;
 
-            mAdapter.afterRefresh(handleRefresh(jsonObject));
+            boolean hasData = handleRefresh(jsonObject);
+            if (mSpecialContainer != null) {
+                mSpecialContainer.removeAllViews();
+                mNoDataView = null;
+                if (!hasData) {
+                    mNoDataView = createNoDataView();
+                    if (mNoDataView != null) {
+                        mSpecialContainer.addView(mNoDataView);
+                    }
+                }
+            }
+            mAdapter.afterRefresh(hasData);
             mAdapter.notifyRecyclerScrolled(mRecyclerView);
         }
     };
@@ -132,6 +147,20 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
             mAdapter.afterLoad(handleLoadMore(jsonObject));
         }
     };
+
+    protected View createNoDataView() {
+        int noDataViewResId = getNoDataViewResId();
+        if (noDataViewResId != 0) {
+            return inflater.inflate(noDataViewResId, null);
+        }
+        else {
+            return null;
+        }
+    }
+
+    protected int getNoDataViewResId() {
+        return 0;
+    }
 
 
     protected abstract int getThemeColor();

@@ -111,6 +111,8 @@
 
     <!-- For UserInvolveFragment -->
     <string name="joined_video">参与视频</string>
+    <string name="i_no_video">你还没有拍过视频，\n快来参加有趣的话题吧！</string>
+    <string name="he_or_she_no_video">Ta 还没发布内容或内容仅好友可见</string>
 
     <!-- For FriendFragment -->
     <string name="friend_meet_title">附近的人</string>

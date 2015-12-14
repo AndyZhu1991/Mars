@@ -54,6 +54,11 @@ public class KoolewInvolveFragment extends RecyclerListFragmentMould<TimelineAda
         return mAdapter.addItems(getInvolveTopics(response)) > 0;
     }
 
+    @Override
+    protected int getNoDataViewResId() {
+        return R.layout.involve_no_data;
+    }
+
     private JSONArray getInvolveTopics(JSONObject response) {
         try {
             return response.getJSONObject("result").getJSONArray("topics");
