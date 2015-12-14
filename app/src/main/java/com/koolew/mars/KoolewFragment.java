@@ -5,13 +5,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupWindow;
 
 import com.koolew.mars.redpoint.RedPointManager;
-import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.KoolewViewPagerIndicator;
 
 import java.util.ArrayList;
@@ -110,21 +109,7 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
         switch (v.getId()) {
             case R.id.btn_add_topic:
                 SelectCategoryWindow window = new SelectCategoryWindow(getActivity());
-                window.getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-                int windowWidth = window.getContentView().getMeasuredWidth();
-                int windowHeight = window.getContentView().getMeasuredHeight();
-                int btnWidth = mBtnAddTopic.getWidth();
-                int btnHeight = mBtnAddTopic.getHeight();
-                window.showAsDropDown(mBtnAddTopic,
-                        (int) (btnWidth - windowWidth - Utils.dpToPixels(getActivity(), 10)),
-                        - (btnHeight + windowHeight));
-                window.setOnDismissListener(new PopupWindow.OnDismissListener() {
-                    @Override
-                    public void onDismiss() {
-                        Utils.setWindowAlpha(getActivity(), 1.0f);
-                    }
-                });
-                Utils.setWindowAlpha(getActivity(), 0.5f);
+                window.showAtLocation(getView(), Gravity.TOP, 0, 0);
                 break;
         }
     }

@@ -24,6 +24,7 @@ public class SelectCategoryWindow extends PopupWindow implements View.OnClickLis
 
         contentView.findViewById(R.id.create_topic).setOnClickListener(this);
         contentView.findViewById(R.id.join_movie).setOnClickListener(this);
+        contentView.findViewById(R.id.out_view).setOnClickListener(this);
 
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -40,6 +41,9 @@ public class SelectCategoryWindow extends PopupWindow implements View.OnClickLis
                 break;
             case R.id.join_movie:
                 mContext.startActivity(new Intent(mContext, JoinMovieActivity.class));
+                break;
+            case R.id.out_view:
+                dismiss();
                 break;
         }
     }
