@@ -2,17 +2,13 @@ package com.koolew.mars;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseTopicInfo;
@@ -21,9 +17,7 @@ import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.utils.JsonUtil;
-import com.koolew.mars.utils.UriProcessor;
 import com.koolew.mars.utils.Utils;
-import com.koolew.mars.view.BannerPagerIndicator;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -33,55 +27,31 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by jinchangzhu on 10/14/15.
  */
-public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
-        RecyclerListFragmentMould<KoolewHotsFragment.SquareAdapter> {
+public class TagSquareFragment extends RecyclerListFragmentMould<TagSquareFragment.SquareAdapter>
+        implements View.OnClickListener {
 
-    private int before = 0;
-    private int page = 0;
+    private ImageView mLeftThumb;
+    private ImageView mRightThumb;
+    private View mJudgeLayout;
 
-    private UriProcessor mUriProcessor;
-    private SquareAdapter.HeaderHolder mHeaderHolder;
 
-    public KoolewHotsFragment() {
+    public TagSquareFragment() {
         super();
+        mLayoutResId = R.layout.fragment_tag_square;
         isNeedLoadMore = true;
-        isLazyLoad = true;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mUriProcessor = new UriProcessor(getActivity());
     }
 
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
         super.onCreateViewLazy(savedInstanceState);
-        mRecyclerView.setPadding(0, 0, 0, 0);
-    }
-
-    @Override
-    protected void onPageEnd() {
-        super.onPageEnd();
-        if (mBannerAutoChangeTask != null) {
-            mBannerAutoChangeTask.cancel();
-            mBannerAutoChangeTask = null;
-        }
-    }
-
-    @Override
-    protected void onPageStart() {
-        super.onPageStart();
-        if (mBannerAutoChangeTask == null) {
-            mBannerAutoChangeTask = new Timer();
-            mBannerAutoChangeTask.schedule(new BannerAutoChangeTask(), 1000, 1000);
-        }
+        mLeftThumb = (ImageView) findViewById(R.id.left_thumb);
+        mRightThumb = (ImageView) findViewById(R.id.right_thumb);
+        mJudgeLayout = findViewById(R.id.judge_layout);
+        mJudgeLayout.setOnClickListener(this);
     }
 
     @Override
@@ -96,17 +66,7 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
 
     @Override
     protected JsonObjectRequest doRefreshRequest() {
-        before = 0;
-        page = 0;
-        requestBanner();
         return ApiWorker.getInstance().requestSquare(mRefreshListener, null);
-    }
-
-    private JsonObjectRequest mBannerRequest;
-    private void requestBanner() {
-        if (mBannerRequest == null) {
-            mBannerRequest = ApiWorker.getInstance().getBanner(mBannerListener, null);
-        }
     }
 
     @Override
@@ -137,9 +97,6 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
             int code = response.getInt("code");
             if (code == 0) {
                 JSONObject result = response.getJSONObject("result");
-                JSONObject next = result.getJSONObject("next");
-                page = next.getInt("page");
-                before = next.getInt("before");
                 return result.getJSONArray("cards");
             }
         } catch (JSONException e) {
@@ -148,29 +105,17 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
         return new JSONArray();
     }
 
-    private Response.Listener<JSONObject> mBannerListener = new Response.Listener<JSONObject>() {
-        @Override
-        public void onResponse(JSONObject response) {
-            mBannerRequest = null;
-            try {
-                if (response.getInt("code") == 0) {
-                    JSONObject result = response.getJSONObject("result");
-
-                    JSONArray banners = result.getJSONArray("banners");
-                    BannerAdapter adapter = new BannerAdapter();
-                    adapter.setData(banners);
-                    mHeaderHolder.mViewPager.setAdapter(adapter);
-                    mHeaderHolder.mIndicator.setViewPager(mHeaderHolder.mViewPager);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.judge_layout:
+                goToJudge();
+                break;
         }
-    };
+    }
 
-
-    private static final int TYPE_HEADER = 0;
-    private static final int TYPE_LINE_ITEM = 1;
+    private void goToJudge() {
+    }
 
     class SquareAdapter extends LoadMoreAdapter {
 
@@ -186,18 +131,12 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
             int originCount = mData.size();
             int addedCount = addData(jsonArray);
             if (originCount % 2 == 0) {
-                notifyItemRangeInserted(linePositionToAdapter(originCount / 2),
-                        subItemToLine(addedCount));
+                notifyItemRangeInserted(originCount / 2, subItemToLine(addedCount));
             }
             else {
-                notifyItemChanged(linePositionToAdapter(subItemToLine(originCount) - 1)); // Last line
-                notifyItemRangeInserted(linePositionToAdapter(subItemToLine(originCount)),
-                        subItemToLine(addedCount - 1));
+                notifyItemChanged(subItemToLine(originCount) - 1); // Last line
+                notifyItemRangeInserted(subItemToLine(originCount), subItemToLine(addedCount - 1));
             }
-        }
-
-        private int linePositionToAdapter(int linePosition) {
-            return linePosition + 1;
         }
 
         private int addData(JSONArray jsonArray) {
@@ -216,51 +155,27 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
 
         @Override
         public RecyclerView.ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
-            switch (viewType) {
-                case TYPE_HEADER:
-                    return new HeaderHolder(LayoutInflater.from(getActivity())
-                            .inflate(R.layout.square_header_layout, parent, false));
-                case TYPE_LINE_ITEM:
-                    return new SquareItemHolder(LayoutInflater.from(getActivity())
-                            .inflate(R.layout.square_line_item, parent, false));
-            }
-            return null;
+            return new SquareItemHolder(LayoutInflater.from(getActivity())
+                    .inflate(R.layout.square_line_item, parent, false));
         }
 
         @Override
         public void onBindCustomViewHolder(RecyclerView.ViewHolder holder, int position) {
-            switch (getCustomItemViewType(position)) {
-                case TYPE_HEADER:
-                    break;
-                case TYPE_LINE_ITEM:
-                    position--;
-                    SquareItem leftItem = mData.get(position * 2);
-                    SquareItem rightItem = null;
-                    if (position * 2 + 1 < mData.size()) {
-                        rightItem = mData.get(position * 2 + 1);
-                    }
-                    ((SquareItemHolder) holder).bindSquareLine(leftItem, rightItem);
-                    break;
+            SquareItem leftItem = mData.get(position * 2);
+            SquareItem rightItem = null;
+            if (position * 2 + 1 < mData.size()) {
+                rightItem = mData.get(position * 2 + 1);
             }
+            ((SquareItemHolder) holder).bindSquareLine(leftItem, rightItem);
         }
 
         @Override
         public int getCustomItemCount() {
-            return 1 + subItemToLine(mData.size());
+            return subItemToLine(mData.size());
         }
 
         private int subItemToLine(int subItemCount) {
             return (subItemCount + 1) / 2;
-        }
-
-        @Override
-        public int getCustomItemViewType(int position) {
-            if (position == 0) {
-                return TYPE_HEADER;
-            }
-            else {
-                return TYPE_LINE_ITEM;
-            }
         }
 
         class SquareItemHolder extends RecyclerView.ViewHolder {
@@ -386,71 +301,6 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
                 }
             }
         }
-
-        class HeaderHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-            private ViewPager mViewPager;
-            private BannerPagerIndicator mIndicator;
-
-            public HeaderHolder(View itemView) {
-                super(itemView);
-                mHeaderHolder = this;
-
-                mViewPager = (ViewPager) itemView.findViewById(R.id.view_pager);
-                mViewPager.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        switch (event.getAction()) {
-                            case MotionEvent.ACTION_MOVE:
-                                bannerPressed = true;
-                                mRefreshLayout.setEnabled(false);
-                                break;
-                            case MotionEvent.ACTION_UP:
-                            case MotionEvent.ACTION_CANCEL:
-                                bannerPressed = false;
-                                bannerChangePassedSecond = 0;
-                                mRefreshLayout.setEnabled(true);
-                                break;
-                        }
-                        return false;
-                    }
-                });
-                mIndicator = (BannerPagerIndicator) itemView.findViewById(R.id.indicator);
-                itemView.findViewById(R.id.clock_in).setOnClickListener(this);
-            }
-
-            @Override
-            public void onClick(View v) {
-                KoolewWebActivity.startThisActivityWithoutTitleBar(
-                        getActivity(), AppProperty.CLOCK_IN_URL);
-            }
-        }
-    }
-
-    private Timer mBannerAutoChangeTask;
-    private boolean bannerPressed = false;
-    private static final int BANNER_AUTO_CHANGE_SECONDS = 3;
-    private int bannerChangePassedSecond = 0;
-
-    class BannerAutoChangeTask extends TimerTask {
-        @Override
-        public void run() {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (!bannerPressed && mHeaderHolder.mViewPager.getAdapter() != null
-                            && mHeaderHolder.mViewPager.getAdapter().getCount() != 0) {
-                        bannerChangePassedSecond++;
-                        if (bannerChangePassedSecond == BANNER_AUTO_CHANGE_SECONDS) {
-                            bannerChangePassedSecond = 0;
-                            mHeaderHolder.mViewPager.setCurrentItem(
-                                    (mHeaderHolder.mViewPager.getCurrentItem() + 1)
-                                    % mHeaderHolder.mViewPager.getAdapter().getCount(), true);
-                        }
-                    }
-                }
-            });
-        }
     }
 
     static class SquareItem {
@@ -498,60 +348,6 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
             super(jsonObject);
 
             kooTotal = JsonUtil.getIntIfHas(jsonObject, "koo_total");
-        }
-    }
-
-    private View.OnClickListener mOnBannerClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            mUriProcessor.process(v.getTag().toString());
-        }
-    };
-
-    class BannerAdapter extends PagerAdapter {
-
-        private ImageView[] mImageViews;
-
-        public void setData(JSONArray jsonArray) {
-            int count = jsonArray.length();
-            mImageViews = new ImageView[count];
-            for (int i = 0; i < count; i++) {
-                mImageViews[i] = new ImageView(getActivity());
-                mImageViews[i].setOnClickListener(mOnBannerClickListener);
-                mImageViews[i].setScaleType(ImageView.ScaleType.CENTER_CROP);
-                ViewPager.LayoutParams lp = new ViewPager.LayoutParams();
-                mImageViews[i].setLayoutParams(lp);
-
-                try {
-                    JSONObject banner = jsonArray.getJSONObject(i);
-                    ImageLoader.getInstance().displayImage(banner.getString("image_url"),
-                            mImageViews[i]);
-                    mImageViews[i].setTag(banner.getString("content_url"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return mImageViews.length;
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object o) {
-            return view == o;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView(mImageViews[position]);
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            container.addView(mImageViews[position]);
-            return mImageViews[position];
         }
     }
 }

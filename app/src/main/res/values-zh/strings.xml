@@ -435,6 +435,10 @@
     <string name="square_video_desc">最近热门视频</string>
     <string name="top_fans">粉丝团</string>
 
+    <!-- For tag square -->
+    <string name="i_decide_the_top">我来决定谁当榜首！</string>
+    <string name="go_to_judge">"我去当裁判 >"</string>
+
     <!-- For MovieStudioActivity -->
     <string name="already_done">已完成</string>
     <string name="cutting_video">正在加载视频，请稍等…</string>
