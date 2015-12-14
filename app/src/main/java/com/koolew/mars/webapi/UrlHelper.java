@@ -80,7 +80,7 @@ public class UrlHelper {
     // Public
     public static final String REQUEST_WORLD_HOT_URL = V4_URL + "discovery/recommend";
     public static final String BANNER_URL = V4_URL + "discovery/banner";
-    private static final String SQUARE_URL = V4_URL + "discovery/square";
+    public static final String SQUARE_URL = V5_URL + "discovery/square";
     private static final String FEEDS_HOT_URL = V4_URL + "discovery/hot";
     private static final String GUESS_JUDGE_URL = V4_URL + "discovery/judge";
     public static final String CHECK_VERSION_URL = BASE_URL + "version";
@@ -385,14 +385,6 @@ public class UrlHelper {
         return Uri.parse(CASH_OUT_RECORD_URL)
                 .buildUpon()
                 .appendQueryParameter("before", String.valueOf(before))
-                .build().toString();
-    }
-
-    public static String getSquareUrl(int before, int page) {
-        return Uri.parse(SQUARE_URL)
-                .buildUpon()
-                .appendQueryParameter("before", String.valueOf(before))
-                .appendQueryParameter("page", String.valueOf(page))
                 .build().toString();
     }
 

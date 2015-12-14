@@ -99,7 +99,7 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
         before = 0;
         page = 0;
         requestBanner();
-        return ApiWorker.getInstance().requestSquare(before, page, mRefreshListener, null);
+        return ApiWorker.getInstance().requestSquare(mRefreshListener, null);
     }
 
     private JsonObjectRequest mBannerRequest;
@@ -111,7 +111,7 @@ public class KoolewHotsFragment/*KoolewSquareFragment*/ extends
 
     @Override
     protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().requestSquare(before, page, mLoadMoreListener, null);
+        return ApiWorker.getInstance().requestSquare(mLoadMoreListener, null);
     }
 
     @Override

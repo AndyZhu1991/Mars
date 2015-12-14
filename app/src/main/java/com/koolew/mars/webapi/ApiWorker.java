@@ -746,10 +746,9 @@ public class ApiWorker {
         return standardGetRequest(UrlHelper.getCashOutRecordUrl(before), listener, errorListener);
     }
 
-    public JsonObjectRequest requestSquare(int before, int page,
-                                           Response.Listener<JSONObject> listener,
+    public JsonObjectRequest requestSquare(Response.Listener<JSONObject> listener,
                                            Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getSquareUrl(before, page), listener, errorListener);
+        return standardGetRequest(UrlHelper.SQUARE_URL, listener, errorListener);
     }
 
     public JsonObjectRequest checkVersion(Response.Listener<JSONObject> listener,
