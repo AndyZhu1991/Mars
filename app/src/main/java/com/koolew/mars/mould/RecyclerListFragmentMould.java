@@ -1,6 +1,8 @@
 package com.koolew.mars.mould;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -63,7 +65,7 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
 
         setupAdapter();
 
-        mRefreshLayout.post(new Runnable() {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 mRefreshLayout.setRefreshing(true);
