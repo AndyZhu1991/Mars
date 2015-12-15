@@ -45,7 +45,7 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     private ImageView mVideoThumb;
     private ProgressBar mProgressBar;
 
-    private MediaPlayer mMediaPlayer;
+    protected MediaPlayer mMediaPlayer;
 
     protected boolean isNeedLooping;
 

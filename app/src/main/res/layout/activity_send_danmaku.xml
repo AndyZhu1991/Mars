@@ -2,29 +2,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/send_danmaku_bg"
     tools:context="com.koolew.mars.SendDanmakuActivity">
 
-    <FrameLayout
+    <com.koolew.mars.view.RatioFrameLayout
         android:id="@+id/play_layout"
         android:layout_width="match_parent"
-        android:layout_height="270dp">
+        android:layout_height="wrap_content"
+        app:widthRatio="4"
+        app:heightRatio="3">
 
-        <SurfaceView
-            android:id="@+id/play_surface"
+        <view
+            class="com.koolew.mars.SendDanmakuActivity$SendDanmakuVideoView"
+            android:id="@+id/video_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <ImageView
-            android:id="@+id/thumb"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"/>
-
-        <RelativeLayout
-            android:id="@+id/danmaku_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"/>
 
         <RelativeLayout
             android:id="@+id/sending_danmaku_layout"
@@ -62,7 +55,7 @@
                     android:onClick="onDanmakuConfirm"/>
             </LinearLayout>
         </RelativeLayout>
-    </FrameLayout>
+    </com.koolew.mars.view.RatioFrameLayout>
 
     <RelativeLayout
         android:id="@+id/bottom_layout"
