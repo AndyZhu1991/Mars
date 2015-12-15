@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'bugly'   //添加Bugly符号表插件
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
     sourceSets.main.jni.srcDirs = []
 
     defaultConfig {
         applicationId "com.koolew.mars"
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 14
         versionName "2.2.1"
         ndk {
@@ -133,12 +133,12 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:22+'
+    compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
-    compile 'com.android.support:cardview-v7:22+'
-    compile 'com.android.support:palette-v7:22+'
-    compile 'com.android.support:support-v13:22+'
-    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:cardview-v7:23.1.1'
+    compile 'com.android.support:palette-v7:23.1.1'
+    compile 'com.android.support:support-v13:23.1.1'
+    compile 'com.android.support:multidex:1.0.1'
     compile files('libs/universal-image-loader-1.9.3.jar')
     compile files('libs/ijkplayer.jar')
     compile files('libs/ijkmediawidget.jar')
@@ -183,5 +183,5 @@ bugly {
     appKey = "Pd8PQjX2x1LUDaLV"
 }
 dependencies {
-    compile 'com.android.support:design:22.2.0'
+    compile 'com.android.support:design:23.1.1'
 }
