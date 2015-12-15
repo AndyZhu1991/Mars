@@ -3,17 +3,15 @@ package com.koolew.mars;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +22,7 @@ import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.TypedUserInfo;
 import com.koolew.mars.utils.Utils;
-import com.koolew.mars.utils.VideoLoader;
+import com.koolew.mars.view.KoolewVideoView;
 import com.koolew.mars.webapi.ApiErrorCode;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -33,21 +31,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import tv.danmaku.ijk.media.player.IMediaPlayer;
-import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 /**
  * Created by jinchangzhu on 9/22/15.
  */
 public class PlayFragment extends MainBaseFragment implements View.OnClickListener,
-        VideoLoader.LoadListener, SurfaceHolder.Callback, IMediaPlayer.OnPreparedListener,
-        IMediaPlayer.OnCompletionListener {
+        MediaPlayer.OnCompletionListener{
 
     private static final int MODE_WATCH = 1;
     private static final int MODE_RESULT = 2;
@@ -63,10 +56,8 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     private TextView mTitle;
 
     private FrameLayout mDisplayArea;
-    private SurfaceView mPlaySurface;
-    private ImageView mVideoThumb;
+    private KoolewVideoView mVideoView;
     private ImageView mFinishedImage;
-    private ProgressBar mLoadingProgress;
 
     private View mTopResultFrame;
 
@@ -118,25 +109,16 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     private String mLastLeftUserId;
     private String mLastRightUserId;
 
-    private IjkMediaPlayer mMediaPlayer;
-    private PlayerRecycler mPlayerRecycler;
     private int mCurrentPlayPosition;
-
-    private VideoLoader mVideoLoader;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mToolbarInterface.setToolbarTitle(getString(R.string.title_play));
-        mToolbarInterface.setToolbarColor(0xFF1F1F1F);
+        mToolbarInterface.setToolbarColor(getResources().getColor(R.color.koolew_black));
 
         mCurrentPlayPosition = POSITION_LEFT;
-
-        mPlayerRecycler = new PlayerRecycler();
-
-        mVideoLoader = new VideoLoader(getActivity());
-        mVideoLoader.setLoadListener(this);
     }
 
     @Override
@@ -155,11 +137,9 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
                 + displayAreaPadding * 2;
         mDisplayArea = (FrameLayout) root.findViewById(R.id.display_area);
         mDisplayArea.getLayoutParams().height = displayAreaHeight;
-        mPlaySurface = (SurfaceView) root.findViewById(R.id.play_surface);
-        mPlaySurface.getHolder().addCallback(this);
-        mVideoThumb = (ImageView) root.findViewById(R.id.video_thumb);
+        mVideoView = (KoolewVideoView) root.findViewById(R.id.video_view);
+        mVideoView.setCompletionListener(this);
         mFinishedImage = (ImageView) root.findViewById(R.id.finished_image);
-        mLoadingProgress = (ProgressBar) root.findViewById(R.id.loading_progress);
 
         mTopResultFrame = root.findViewById(R.id.top_result_frame);
 
@@ -211,26 +191,9 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-            mMediaPlayer.pause();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mMediaPlayer != null) {
-            mMediaPlayer.start();
-        }
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         destoryNextRoundCountDownTimer();
-        mPlayerRecycler.destory();
     }
 
     @Override
@@ -296,10 +259,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     }
 
     private void onBottomLeftLayoutClick() {
-        if (mCurrentPlayPosition == POSITION_RIGHT &&
-                mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-            mMediaPlayer.stop();
-            mLoadingProgress.setVisibility(View.VISIBLE);
+        if (mCurrentPlayPosition == POSITION_RIGHT) {
             switchVideo();
         }
     }
@@ -319,10 +279,7 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
     }
 
     private void onBottomRightLayoutClick() {
-        if (mCurrentPlayPosition == POSITION_LEFT &&
-                mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-            mMediaPlayer.stop();
-            mLoadingProgress.setVisibility(View.VISIBLE);
+        if (mCurrentPlayPosition == POSITION_LEFT) {
             switchVideo();
         }
     }
@@ -352,7 +309,6 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
                 if (code == 0) {
                     updateCurrentGroup(response.getJSONObject("result").getJSONObject("next"));
                     if (!hasNextGroup()) {
-                        mLoadingProgress.setVisibility(View.INVISIBLE);
                         switchToFinishMode();
                         return;
                     }
@@ -410,7 +366,6 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
                 if (response.getInt("code") == 0) {
                     updateCurrentGroup(response.getJSONObject("result").getJSONObject("next"));
                     if (!hasNextGroup()) {
-                        mLoadingProgress.setVisibility(View.INVISIBLE);
                         switchToFinishMode();
                         return;
                     }
@@ -586,82 +541,30 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
         switchToWatchMode();
 
         mCurrentPlayPosition = POSITION_LEFT;
-        mLoadingProgress.setVisibility(View.VISIBLE);
-        mVideoLoader.loadVideo(null, mCurrentLeftVideoInfo.getVideoUrl());
+        mVideoView.setVideoInfo(mCurrentLeftVideoInfo);
+        mVideoView.startPlay();
     }
 
     private void stopPlayGroup() {
-        mPlayerRecycler.recycle(mMediaPlayer);
-        mMediaPlayer = null;
-    }
-
-    // VideoLoader.LoadListener
-    @Override
-    public void onLoadComplete(Object player, String url, String filePath) {
-        mLoadingProgress.setVisibility(View.INVISIBLE);
-        if ((url.equals(mCurrentLeftVideoInfo.getVideoUrl())) && mMediaPlayer == null) {
-            mVideoLoader.loadVideo(null, mCurrentRightVideoInfo.getVideoUrl());
-        }
-
-        if ((url.equals(mCurrentLeftVideoInfo.getVideoUrl())
-                && mCurrentPlayPosition == POSITION_LEFT)
-                ||
-                (url.equals(mCurrentRightVideoInfo.getVideoUrl())
-                        && mCurrentPlayPosition == POSITION_RIGHT)) {
-            try {
-                mPlayerRecycler.recycle(mMediaPlayer);
-                mMediaPlayer = mPlayerRecycler.obtain();
-                mMediaPlayer.setDataSource(filePath);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            mMediaPlayer.prepareAsync();
-            onPlay(url);
-        }
-    }
-
-    @Override
-    public void onLoadProgress(String url, float progress) {
+        mVideoView.stop();
     }
 
 
-    // SurfaceHolder.Callback
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        if (mMediaPlayer != null) {
-            mMediaPlayer.setDisplay(mPlaySurface.getHolder());
-        }
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-    }
-
-
-    // IjkPlayer
-    @Override
-    public void onPrepared(IMediaPlayer iMediaPlayer) {
-        mMediaPlayer.start();
-    }
-
-    @Override
-    public void onCompletion(IMediaPlayer iMediaPlayer) {
+    public void onCompletion(MediaPlayer iMediaPlayer) {
         switchVideo();
     }
 
     private void switchVideo() {
         if (mCurrentPlayPosition == POSITION_LEFT) {
             mCurrentPlayPosition = POSITION_RIGHT;
-            mVideoLoader.loadVideo(null, mCurrentRightVideoInfo.getVideoUrl());
+            mVideoView.setVideoInfo(mCurrentRightVideoInfo);
+            mVideoView.startPlay();
         }
         else if (mCurrentPlayPosition == POSITION_RIGHT) {
             mCurrentPlayPosition = POSITION_LEFT;
-            mLoadingProgress.setVisibility(View.VISIBLE);
-            mVideoLoader.loadVideo(null, mCurrentLeftVideoInfo.getVideoUrl());
+            mVideoView.setVideoInfo(mCurrentLeftVideoInfo);
+            mVideoView.startPlay();
         }
     }
 
@@ -856,64 +759,6 @@ public class PlayFragment extends MainBaseFragment implements View.OnClickListen
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-
-    class PlayerRecycler {
-        private Stack<IjkMediaPlayer> mStack = new Stack<>();
-
-        public IjkMediaPlayer obtain() {
-            IjkMediaPlayer player;
-            if (mStack.size() == 0) {
-                player = newPlayer();
-            }
-            else {
-                player = mStack.pop();
-            }
-            player.setDisplay(mPlaySurface.getHolder());
-            return player;
-        }
-
-        private IjkMediaPlayer newPlayer() {
-            IjkMediaPlayer player = new IjkMediaPlayer();
-            player.setOnPreparedListener(PlayFragment.this);
-            player.setOnCompletionListener(PlayFragment.this);
-            return player;
-        }
-
-        public void recycle(final IjkMediaPlayer player) {
-            new Thread() {
-                @Override
-                public void run() {
-                    recycleSync(player);
-                }
-            }.start();
-        }
-
-        private void recycleSync(IjkMediaPlayer player) {
-            if (player == null) {
-                return;
-            }
-            if (player.isPlaying()) {
-                player.stop();
-            }
-            player.reset();
-            synchronized (mStack) {
-                mStack.push(player);
-            }
-        }
-
-        public void destory() {
-            new Thread() {
-                @Override
-                public void run() {
-                    recycleSync(mMediaPlayer);
-                    while (mStack.size() > 0) {
-                        mStack.pop().release();
-                    }
-                }
-            }.start();
         }
     }
 }

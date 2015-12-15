@@ -33,7 +33,7 @@ import java.util.List;
  * Created by jinchangzhu on 11/4/15.
  */
 public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceTextureListener,
-        Downloader.LoadListener {
+        Downloader.LoadListener, MediaPlayer.OnCompletionListener {
 
     private static final int VIDEO_WIDTH_RATIO = 4;
     private static final int VIDEO_HEIGHT_RATIO = 3;
@@ -60,6 +60,8 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     private DanmakuThread mDanmakuThread;
 
     private Surface mSurface;
+
+    private MediaPlayer.OnCompletionListener mCompletionListener;
 
     public KoolewVideoView(Context context) {
         this(context, null);
@@ -194,7 +196,11 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     }
 
     protected MediaPlayer generateMediaPlayer() {
-        return MediaPlayer.create(getContext(), Uri.parse("file://" + mVideoPath));
+        MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), Uri.parse("file://" + mVideoPath));
+        if (mCompletionListener != null) {
+            mediaPlayer.setOnCompletionListener(this);
+        }
+        return mediaPlayer;
     }
 
     protected synchronized void start() {
@@ -283,6 +289,10 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         }
     }
 
+    public void setCompletionListener(MediaPlayer.OnCompletionListener listener) {
+        mCompletionListener = listener;
+    }
+
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         mSurface = new Surface(surface);
@@ -317,6 +327,13 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
     @Override
     public void onDownloadFailed(int errorCode, String errorMessage) {
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        if (mCompletionListener != null) {
+            mCompletionListener.onCompletion(mp);
+        }
     }
 
 

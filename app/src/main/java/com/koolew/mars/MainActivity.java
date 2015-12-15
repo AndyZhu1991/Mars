@@ -129,8 +129,6 @@ public class MainActivity extends BaseV4FragmentActivity
         mNameView.setUserInfo(MyAccountInfo.getNickname(), MyAccountInfo.getVip());
         mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
 
-        switchFragment(0);
-
         mTopIconLayouts[0]   = (FrameLayout) findViewById(R.id.top_icon_layout1);
         mTopIcons[0]         = (ImageView) findViewById(R.id.top_icon1);
         mTopRedPoints[0]     = (RedPointView) findViewById(R.id.top_red_point1);
