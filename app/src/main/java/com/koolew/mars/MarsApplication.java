@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.koolew.mars.imageloader.VideoThumbDecoder;
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.remoteconfig.RemoteConfigManager;
 import com.koolew.mars.utils.BgmUtil;
 import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.utils.FirstHintUtil;
@@ -54,6 +55,7 @@ public class MarsApplication extends Application {
         FirstHintUtil.init(this);
         Downloader.init();
         KooSoundUtil.init(this);
+        RemoteConfigManager.init(this);
 
         Log.d(TAG, "Is debug: " + DEBUG);
         Log.d(TAG, "Init in MarsApplication takes: " + (System.currentTimeMillis() - start));

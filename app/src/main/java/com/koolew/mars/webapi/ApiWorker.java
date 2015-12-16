@@ -838,7 +838,7 @@ public class ApiWorker {
         return jsonObjectRequest;
     }
 
-    private JSONObject standardGetRequestSync(String url)
+    public JSONObject standardGetRequestSync(String url)
             throws InterruptedException, ExecutionException, TimeoutException {
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         standardGetRequest(url, future, future);

@@ -106,6 +106,10 @@ public class UrlHelper {
     public static final String KOO_URL = V4_URL + "video/koo";
     public static final String VIDEO_DELETE_URL = V4_URL + "video/delete";
 
+    // Tag
+    public static final String VIDEO_TAG_URL = V5_URL + "tag?category=video";
+    public static final String MOVIE_TAG_URL = V5_URL + "tag?category=movie";
+
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
 
