@@ -24,6 +24,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
 
+import cn.jiajixin.nuwa.Nuwa;
 import cn.jpush.android.api.JPushInterface;
 import cn.sharesdk.framework.ShareSDK;
 
@@ -42,6 +43,7 @@ public class MarsApplication extends Application {
 
         long start = System.currentTimeMillis();
 
+        tryToLoadPatch();
         Utils.init(this);
         ApiWorker.init(getApplicationContext());
         initImageLoader(getApplicationContext());
@@ -65,6 +67,11 @@ public class MarsApplication extends Application {
     public void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(base);
+        Nuwa.init(this);
+    }
+
+    private void tryToLoadPatch() {
+        Nuwa.loadPatch(this, "/sdcard/patch.jar");
     }
 
     public static void initImageLoader(Context context) {
