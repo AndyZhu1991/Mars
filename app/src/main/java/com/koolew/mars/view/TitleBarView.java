@@ -93,6 +93,10 @@ public class TitleBarView extends FrameLayout implements View.OnClickListener {
         mTitleView.setText(title);
     }
 
+    public void setRightImage(int resId) {
+        mRightImage.setImageResource(resId);
+    }
+
     public void setRightLayoutVisibility(int visibility) {
         mRightLayout.setVisibility(visibility);
     }

@@ -330,6 +330,9 @@
     <!-- For JoinMovieActivity -->
     <string name="join_movie_title">参与电影卡</string>
 
+    <!-- For JoinVideoTopicActivity -->
+    <string name="join_video_topic_title">参与话题卡</string>
+
     <!-- ShareManager -->
     <string name="share_video_description">[9秒小视频]</string>
     <string name="share_topic_description">[小视频合集]</string>

@@ -3,11 +3,13 @@
     android:layout_width="wrap_content"
     android:layout_height="24dp"
     android:minWidth="24dp"
+    android:layout_marginLeft="2.5dp"
+    android:layout_marginRight="2.5dp"
     android:paddingLeft="9dp"
     android:paddingRight="9dp"
     android:gravity="center_vertical"
     android:textSize="12sp"
-    android:textColor="@android:color/white"
+    android:textColor="@color/koolew_deep_half_transparent_white"
     android:background="@drawable/tag_unselected_bg">
 
 </TextView>

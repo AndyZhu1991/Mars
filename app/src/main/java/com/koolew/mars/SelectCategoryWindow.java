@@ -37,7 +37,7 @@ public class SelectCategoryWindow extends PopupWindow implements View.OnClickLis
         dismiss();
         switch (v.getId()) {
             case R.id.create_topic:
-                mContext.startActivity(new Intent(mContext, AddTopicActivity.class));
+                JoinVideoTopicFragment.startThisFragment(mContext);
                 break;
             case R.id.join_movie:
                 mContext.startActivity(new Intent(mContext, JoinMovieActivity.class));

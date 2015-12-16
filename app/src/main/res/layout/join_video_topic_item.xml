@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="51dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginTop="3dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginBottom="3dp">
+
+    <FrameLayout
+        android:layout_width="66dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/join_video_item_left_bg">
+        
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/thumb"
+            android:layout_width="60dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:background="@color/koolew_gray"
+            app:riv_corner_radius="4dp"/>
+        
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="21dp"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_play"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="1dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/join_video_item_right_bg">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="7dp"
+            android:textSize="16sp"
+            android:textColor="@color/koolew_black"
+            android:maxLines="2"/>
+
+        <ImageView
+            android:id="@+id/capture_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="10dp"
+            android:src="@mipmap/ic_btn_capture_video"/>
+    </LinearLayout>
+</LinearLayout>

@@ -780,7 +780,7 @@ public class ApiWorker {
 
 
     // Standard request here.
-    private JsonObjectRequest standardGetRequest(String url,
+    public JsonObjectRequest standardGetRequest(String url,
                                                  Response.Listener<JSONObject> listener,
                                                  Response.ErrorListener errorListener) {
         return standardGetRequest(url, listener, errorListener, null);

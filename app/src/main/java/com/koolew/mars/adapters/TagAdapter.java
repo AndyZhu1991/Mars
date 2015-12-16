@@ -3,6 +3,7 @@ package com.koolew.mars.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,7 +76,8 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagItemHolder> {
 
     @Override
     public TagItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new TagItemHolder(LayoutInflater.from(mContext).inflate(R.layout.tag_item, parent, false));
+        return new TagItemHolder(LayoutInflater.from(mContext)
+                .inflate(R.layout.tag_item, parent, false));
     }
 
     @Override
@@ -87,7 +89,8 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagItemHolder> {
             holder.textView.setBackgroundResource(R.drawable.tag_selected_bg);
         }
         else {
-            holder.textView.setTextColor(Color.WHITE);
+            holder.textView.setTextColor(mContext.getResources()
+                    .getColor(R.color.koolew_deep_half_transparent_white));
             holder.textView.setBackgroundResource(R.drawable.tag_unselected_bg);
         }
     }
@@ -109,8 +112,19 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagItemHolder> {
 
         @Override
         public void onClick(View v) {
-            if (tagChangedListener != null) {
-                tagChangedListener.onSelectedTagChanged(mTags.get(getAdapterPosition()));
+            int lastPosition = mSelectedPosition;
+            int currentPosition = getAdapterPosition();
+            if (lastPosition != currentPosition) {
+                mSelectedPosition = currentPosition;
+                notifyItemChanged(lastPosition);
+                notifyItemChanged(currentPosition);
+                if (tagChangedListener != null) {
+                    Tag selectedTag = mTags.get(currentPosition);
+                    if (TextUtils.isEmpty(selectedTag.getId())) {
+                        selectedTag = null;
+                    }
+                    tagChangedListener.onSelectedTagChanged(selectedTag);
+                }
             }
         }
     }
