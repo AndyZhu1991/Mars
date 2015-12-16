@@ -1,5 +1,6 @@
 package com.koolew.mars;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +19,9 @@ import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.utils.JsonUtil;
 import com.koolew.mars.utils.Utils;
+import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -31,18 +34,36 @@ import java.util.List;
 /**
  * Created by jinchangzhu on 10/14/15.
  */
-public class TagSquareFragment extends RecyclerListFragmentMould<TagSquareFragment.SquareAdapter>
+public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetailFragment.SquareAdapter>
         implements View.OnClickListener {
+
+    public static final String KEY_SQUARE_TITLE = "square title";
+    public static final String KEY_SQUARE_ID = "square id";
 
     private ImageView mLeftThumb;
     private ImageView mRightThumb;
     private View mJudgeLayout;
 
+    private String mSquareTitle;
+    private String mSquareId;
 
-    public TagSquareFragment() {
+
+    public SquareDetailFragment() {
         super();
         mLayoutResId = R.layout.fragment_tag_square;
-        isNeedLoadMore = true;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Intent intent = getActivity().getIntent();
+        mSquareTitle = intent.getStringExtra(KEY_SQUARE_TITLE);
+        mSquareId = intent.getStringExtra(KEY_SQUARE_ID);
+
+        TitleBarView titleBarView = ((TitleFragmentActivity) getActivity()).getTitleBar();
+        titleBarView.setBackgroundColor(getResources().getColor(R.color.koolew_black));
+        titleBarView.setTitle(mSquareTitle);
     }
 
     @Override
@@ -66,12 +87,13 @@ public class TagSquareFragment extends RecyclerListFragmentMould<TagSquareFragme
 
     @Override
     protected JsonObjectRequest doRefreshRequest() {
-        return ApiWorker.getInstance().requestSquare(mRefreshListener, null);
+        return ApiWorker.getInstance().standardGetRequest(UrlHelper.getSquareDetailUrl(mSquareId),
+                mRefreshListener, null);
     }
 
     @Override
     protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().requestSquare(mLoadMoreListener, null);
+        return null;
     }
 
     @Override
@@ -97,7 +119,7 @@ public class TagSquareFragment extends RecyclerListFragmentMould<TagSquareFragme
             int code = response.getInt("code");
             if (code == 0) {
                 JSONObject result = response.getJSONObject("result");
-                return result.getJSONArray("cards");
+                return result.getJSONArray("videos");
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -116,6 +138,14 @@ public class TagSquareFragment extends RecyclerListFragmentMould<TagSquareFragme
 
     private void goToJudge() {
     }
+
+    public static void startThisFragment(Context context, String squareTitle, String squareId) {
+        Bundle extras = new Bundle();
+        extras.putString(KEY_SQUARE_TITLE, squareTitle);
+        extras.putString(KEY_SQUARE_ID, squareId);
+        TitleFragmentActivity.launchFragment(context, SquareDetailFragment.class, extras);
+    }
+
 
     class SquareAdapter extends LoadMoreAdapter {
 

@@ -268,6 +268,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
                 }
                 else if (v == thumbs[2]) {
                     // Go to square tab activity
+                    SquareDetailFragment.startThisFragment(getActivity(), item.name, item.id);
                 }
             }
         }
