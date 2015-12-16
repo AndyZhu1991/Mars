@@ -47,6 +47,7 @@
     <string name="retry">重试</string>
     <string name="there_is_an_error">"出错啦 T_T"</string>
     <string name="ok">好的</string>
+    <string name="recommend">推荐</string>
 
     <!-- For MainActivity -->
     <string name="title_koolew">首页</string>
