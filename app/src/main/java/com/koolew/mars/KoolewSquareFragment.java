@@ -127,7 +127,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
 
     @Override
     protected boolean handleRefresh(JSONObject response) {
-        JSONArray cards = retrieveSquareTags(response);
+        JSONArray cards = retrieveSquareCards(response);
         if (cards.length() > 0) {
             mAdapter.setItems(cards);
         }
@@ -136,19 +136,19 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
 
     @Override
     protected boolean handleLoadMore(JSONObject response) {
-        JSONArray cards = retrieveSquareTags(response);
+        JSONArray cards = retrieveSquareCards(response);
         if (cards.length() > 0) {
             mAdapter.addItems(cards);
         }
         return true;
     }
 
-    private JSONArray retrieveSquareTags(JSONObject response) {
+    private JSONArray retrieveSquareCards(JSONObject response) {
         try {
             int code = response.getInt("code");
             if (code == 0) {
                 JSONObject result = response.getJSONObject("result");
-                return result.getJSONArray("tags");
+                return result.getJSONArray("cards");
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -179,7 +179,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
 
     class SquareAdapter extends LoadMoreAdapter {
 
-        private List<SquareTagItem> mData = new ArrayList<>();
+        private List<SquareItem> mData = new ArrayList<>();
 
         public void setItems(JSONArray jsonArray) {
             mData.clear();
@@ -198,7 +198,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
             int length = jsonArray.length();
             for (int i = 0; i < length; i++) {
                 try {
-                    mData.add(new SquareTagItem(jsonArray.getJSONObject(i)));
+                    mData.add(new SquareItem(jsonArray.getJSONObject(i)));
                     addedCount++;
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -215,11 +215,11 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
 
         @Override
         public void onBindCustomViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-            SquareTagItem item = mData.get(position);
+            SquareItem item = mData.get(position);
             SquareTagHolder holder = (SquareTagHolder) viewHolder;
-            ImageLoader.getInstance().displayImage(item.tagIcon, holder.tagIcon);
-            holder.tagName.setText(item.tagName);
-            holder.tagName.setTextColor(item.tagColor);
+            ImageLoader.getInstance().displayImage(item.icon, holder.tagIcon);
+            holder.tagName.setText(item.name);
+            holder.tagName.setTextColor(item.color);
             if (item.videoInfos.length > 0) {
                 ImageLoader.getInstance().displayImage(item.videoInfos[0].getVideoThumb(), holder.thumbs[0]);
             }
@@ -259,7 +259,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
 
             @Override
             public void onClick(View v) {
-                SquareTagItem item = mData.get(getAdapterPosition());
+                SquareItem item = mData.get(getAdapterPosition());
                 if (v == thumbs[0] && item.videoInfos.length > 0) {
                     SingleMediaFragment.startThisFragment(getActivity(), item.videoInfos[0].getVideoId());
                 }
@@ -298,22 +298,18 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
         }
     }
 
-    static class SquareTagItem {
-        String tagId;
-        String tagName;
-        String tagIcon;
-        int tagColor;
+    static class SquareItem {
+        String id;
+        String name;
+        String icon;
+        int color;
         BaseVideoInfo[] videoInfos;
 
-        public SquareTagItem(JSONObject itemObject) {
-            JSONObject tag = JsonUtil.getJSONObjectIfHas(itemObject, "tag");
-            if (tag == null) {
-                return;
-            }
-            tagId = JsonUtil.getStringIfHas(tag, "tag_id");
-            tagName = JsonUtil.getStringIfHas(tag, "tag_name");
-            tagIcon = JsonUtil.getStringIfHas(tag, "tag_icon");
-            tagColor = JsonUtil.getIntIfHas(tag, "tag_color", Color.BLACK);
+        public SquareItem(JSONObject itemObject) {
+            id = JsonUtil.getStringIfHas(itemObject, "id");
+            name = JsonUtil.getStringIfHas(itemObject, "name");
+            icon = JsonUtil.getStringIfHas(itemObject, "icon");
+            color = JsonUtil.getIntIfHas(itemObject, "color", Color.BLACK);
 
             JSONArray videosJson = JsonUtil.getJSONArrayIfHas(itemObject, "videos", new JSONArray());
             int videoCount = videosJson.length();
