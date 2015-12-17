@@ -82,7 +82,7 @@ public class UrlHelper {
     public static final String BANNER_URL = V4_URL + "discovery/banner";
     public static final String SQUARE_URL = V5_URL + "discovery/square";
     private static final String FEEDS_HOT_URL = V4_URL + "discovery/hot";
-    private static final String GUESS_JUDGE_URL = V4_URL + "discovery/judge";
+    private static final String GUESS_JUDGE_URL = V5_URL + "discovery/judge";
     private static final String SQUARE_DETAIL_URL = V5_URL + "discovery/square/detail";
 
     public static final String CHECK_VERSION_URL = BASE_URL + "version";
@@ -347,13 +347,18 @@ public class UrlHelper {
                 .build().toString();
     }
 
-    public static String getDefaultPlayGroupUrl() {
-        return GUESS_JUDGE_URL;
-    }
-
-    public static String getJudgeUrl(String videoId) {
+    public static String getDefaultPlayGroupUrl(String squareId) {
         return Uri.parse(GUESS_JUDGE_URL)
                 .buildUpon()
+                .appendQueryParameter("square_id", squareId)
+                .build()
+                .toString();
+    }
+
+    public static String getJudgeUrl(String squareId, String videoId) {
+        return Uri.parse(GUESS_JUDGE_URL)
+                .buildUpon()
+                .appendQueryParameter("square_id", squareId)
                 .appendQueryParameter("video_id", videoId)
                 .build()
                 .toString();

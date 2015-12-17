@@ -664,15 +664,16 @@ public class ApiWorker {
                 listener, errorListener);
     }
 
-    public JsonObjectRequest requestDefaultPlayGroup(Response.Listener<JSONObject> listener,
+    public JsonObjectRequest requestDefaultPlayGroup(String squareId,
+                                                     Response.Listener<JSONObject> listener,
                                                      Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getDefaultPlayGroupUrl(), listener, errorListener);
+        return standardGetRequest(UrlHelper.getDefaultPlayGroupUrl(squareId), listener, errorListener);
     }
 
-    public JsonObjectRequest judgeVideo(String videoId,
+    public JsonObjectRequest judgeVideo(String squareId, String videoId,
                                         Response.Listener<JSONObject> listener,
                                         Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getJudgeUrl(videoId), listener, errorListener);
+        return standardGetRequest(UrlHelper.getJudgeUrl(squareId, videoId), listener, errorListener);
     }
 
     public JsonObjectRequest requestPayPlayGroup(Response.Listener<JSONObject> listener,

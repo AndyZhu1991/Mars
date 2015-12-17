@@ -441,6 +441,9 @@ public class MainActivity extends BaseV4FragmentActivity
         }
 
         public MainBaseFragment getFragment() {
+            if (fragmentClass == null) {
+                return null;
+            }
             try {
                 return (MainBaseFragment) fragmentClass.newInstance();
             } catch (InstantiationException e) {
@@ -488,7 +491,7 @@ public class MainActivity extends BaseV4FragmentActivity
                         R.mipmap.ic_drawer_list_play_selected,
                         R.string.title_play,
                         R.color.drawer_list_play_select,
-                        PlayFragment.class),
+                        null),
 
                 new DrawerItem(R.mipmap.ic_drawer_list_message,
                         R.mipmap.ic_drawer_list_message_selected,

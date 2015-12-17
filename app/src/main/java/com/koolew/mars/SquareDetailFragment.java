@@ -137,6 +137,7 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
     }
 
     private void goToJudge() {
+        PlayFragment.startThisFragment(getActivity(), mSquareId);
     }
 
     public static void startThisFragment(Context context, String squareTitle, String squareId) {
