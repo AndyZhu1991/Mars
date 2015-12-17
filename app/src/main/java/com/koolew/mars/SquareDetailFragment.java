@@ -232,10 +232,6 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
                 private ImageView avatar;
                 private ImageView thumb;
                 private TextView kooTotal;
-                private TextView firstNickname;
-                private TextView firstKooCount;
-                private TextView secondNickname;
-                private TextView secondKooCount;
 
                 public SubItemHolder(View itemView, int position) {
                     this.position = position;
@@ -251,11 +247,7 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
                     thumb.setOnClickListener(this);
                     kooTotal = (TextView) itemView.findViewById(R.id.koo_total);
                     kooTotal.setOnClickListener(this);
-                    firstNickname = (TextView) itemView.findViewById(R.id.first_nickname);
-                    firstKooCount = (TextView) itemView.findViewById(R.id.first_koo_count);
-                    secondNickname = (TextView) itemView.findViewById(R.id.second_nickname);
-                    secondKooCount = (TextView) itemView.findViewById(R.id.second_koo_count);
-                    itemView.findViewById(R.id.fans_layout).setOnClickListener(this);
+                    itemView.findViewById(R.id.koo_layout).setOnClickListener(this);
                 }
 
                 private int calcThumbHeight() {
@@ -267,8 +259,7 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
                 }
 
                 private SquareItem getItem() {
-                    int positionInSquareLine = getAdapterPosition() - 1;
-                    return mData.get(positionInSquareLine * 2 + position);
+                    return mData.get(getAdapterPosition() * 2 + position);
                 }
 
                 public void bindSquareItem(SquareItem item) {
@@ -285,22 +276,6 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
                         ImageLoader.getInstance().displayImage(item.videoInfo.getVideoThumb(),
                                 thumb, ImageLoaderHelper.topicThumbLoadOptions);
                         kooTotal.setText(String.valueOf(item.videoInfo.getKooTotal()));
-                        if (item.supporters.length >= 1) {
-                            firstNickname.setText(item.supporters[0].getNickname());
-                            firstKooCount.setText(String.valueOf(item.supporters[0].kooTotal));
-                        }
-                        else {
-                            firstNickname.setText("");
-                            firstKooCount.setText("0");
-                        }
-                        if (item.supporters.length >= 2) {
-                            secondNickname.setText(item.supporters[1].getNickname());
-                            secondKooCount.setText(String.valueOf(item.supporters[1].kooTotal));
-                        }
-                        else {
-                            secondNickname.setText("");
-                            secondKooCount.setText("0");
-                        }
                     }
                 }
 
@@ -316,8 +291,7 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
                             SingleMediaFragment.startThisFragment(getActivity(),
                                     item.videoInfo.getVideoId());
                             break;
-                        case R.id.koo_total:
-                        case R.id.fans_layout:
+                        case R.id.koo_layout:
                             Intent intent2 = new Intent(getActivity(), VideoKooRankActivity.class);
                             intent2.putExtra(VideoKooRankActivity.KEY_VIDEO_ID,
                                     item.videoInfo.getVideoId());
@@ -337,13 +311,9 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
         private BaseVideoInfo videoInfo;
         private BaseTopicInfo topicInfo;
         private BaseUserInfo userInfo;
-        private Supporter[] supporters;
 
         public SquareItem(JSONObject jsonObject) {
-            JSONObject video = JsonUtil.getJSONObjectIfHas(jsonObject, "video");
-            if (video != null) {
-                videoInfo = new BaseVideoInfo(video);
-            }
+            videoInfo = new BaseVideoInfo(jsonObject);
 
             JSONObject topic = JsonUtil.getJSONObjectIfHas(jsonObject, "topic");
             if (topic != null) {
@@ -354,30 +324,6 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
             if (user != null) {
                 userInfo = new BaseUserInfo(user);
             }
-
-            JSONArray supportersArray = JsonUtil.getJSONArrayIfHas(jsonObject, "supporters");
-            if (supportersArray != null) {
-                int length = supportersArray.length();
-                supporters = new Supporter[length];
-                for (int i = 0; i < length; i++) {
-                    try {
-                        supporters[i] = new Supporter(supportersArray.getJSONObject(i));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-    }
-
-    static class Supporter extends BaseUserInfo {
-        private int kooTotal;
-
-        public Supporter(JSONObject jsonObject) {
-            super(jsonObject);
-
-            kooTotal = JsonUtil.getIntIfHas(jsonObject, "koo_total");
         }
     }
 }
