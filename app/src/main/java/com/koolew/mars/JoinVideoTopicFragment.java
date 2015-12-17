@@ -40,6 +40,7 @@ public class JoinVideoTopicFragment
 
     private static final int REQUEST_CODE_CREATE_TOPIC = 1;
 
+    private int page = 0;
     private Tag selectedTag = null;
 
     private RecyclerView mTagRecyclerView;
@@ -85,22 +86,32 @@ public class JoinVideoTopicFragment
 
     @Override
     protected JsonObjectRequest doRefreshRequest() {
+        page = 0;
         if (selectedTag == null) {
             return ApiWorker.getInstance().standardGetRequest(
-                    UrlHelper.getRecommendTopicUrl(BaseTopicInfo.CATEGORY_VIDEO),
+                    UrlHelper.getRecommendTopicUrl(BaseTopicInfo.CATEGORY_VIDEO, page),
                     mRefreshListener, null);
         }
         else {
             return ApiWorker.getInstance().standardGetRequest(
-                    UrlHelper.getTopicUrlByCategoryAndTag(
-                            BaseTopicInfo.CATEGORY_VIDEO, selectedTag.getId()),
-                    mLoadMoreListener, null);
+                    UrlHelper.getTopicUrl(BaseTopicInfo.CATEGORY_VIDEO, selectedTag.getId(), page),
+                    mRefreshListener, null);
         }
     }
 
     @Override
     protected JsonObjectRequest doLoadMoreRequest() {
-        return null;
+        page = 1;
+        if (selectedTag == null) {
+            return ApiWorker.getInstance().standardGetRequest(
+                    UrlHelper.getRecommendTopicUrl(BaseTopicInfo.CATEGORY_VIDEO, page),
+                    mLoadMoreListener, null);
+        }
+        else {
+            return ApiWorker.getInstance().standardGetRequest(
+                    UrlHelper.getTopicUrl(BaseTopicInfo.CATEGORY_VIDEO, selectedTag.getId(), page),
+                    mLoadMoreListener, null);
+        }
     }
 
     @Override
@@ -110,11 +121,9 @@ public class JoinVideoTopicFragment
             if (code == 0) {
                 JSONArray topics = response.getJSONObject("result").getJSONArray("topics");
                 mAdapter.topicInfos.clear();
-                int length = topics.length();
-                for (int i = 0; i < length; i++) {
-                    mAdapter.topicInfos.add(new BaseTopicInfo(topics.getJSONObject(i)));
-                }
+                int addedCount = mAdapter.addTopics(topics);
                 mAdapter.notifyDataSetChanged();
+                return addedCount > 0;
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -124,6 +133,20 @@ public class JoinVideoTopicFragment
 
     @Override
     protected boolean handleLoadMore(JSONObject response) {
+        try {
+            int code = response.getInt("code");
+            if (code == 0) {
+                JSONArray topics = response.getJSONObject("result").getJSONArray("topics");
+                int originCount = mAdapter.topicInfos.size();
+                int addedCount = mAdapter.addTopics(topics);
+                if (addedCount > 0) {
+                    mAdapter.notifyItemRangeInserted(originCount, addedCount);
+                    return true;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
@@ -158,6 +181,20 @@ public class JoinVideoTopicFragment
 
     class JoinVideoTopicAdapter extends LoadMoreAdapter {
         private List<BaseTopicInfo> topicInfos = new ArrayList<>();
+
+        private int addTopics(JSONArray topics) {
+            int length = topics.length();
+            int addedCount = 0;
+            for (int i = 0; i < length; i++) {
+                try {
+                    topicInfos.add(new BaseTopicInfo(topics.getJSONObject(i)));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                addedCount++;
+            }
+            return addedCount;
+        }
 
         @Override
         public RecyclerView.ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {

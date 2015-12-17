@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +13,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.adapters.TagAdapter;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseTopicInfo;
+import com.koolew.mars.infos.Tag;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
+import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -30,7 +35,8 @@ import java.util.List;
 /**
  * Created by jinchangzhu on 11/12/15.
  */
-public class JoinMovieActivity extends BaseV4FragmentActivity {
+public class JoinMovieActivity extends BaseV4FragmentActivity
+        implements TitleBarView.OnRightLayoutClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +48,44 @@ public class JoinMovieActivity extends BaseV4FragmentActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.fragment_container, new JoinMovieFragment());
         fragmentTransaction.commit();
+
+        ((TitleBarView) findViewById(R.id.title_bar)).setOnRightLayoutClickListener(this);
     }
 
-    public static class JoinMovieFragment extends RecyclerListFragmentMould<JoinMovieAdapter> {
+    @Override
+    public void onRightLayoutClick() {
+        // Go to movie add explain
+    }
+
+    public static class JoinMovieFragment extends RecyclerListFragmentMould<JoinMovieAdapter>
+            implements TagAdapter.OnSelectedTagChangedListener {
+        private static final int MOVIE_THEME_COLOR = 0xFF462762;
+
+        private Tag mCurrentTag = null;
+        private RecyclerView mTagRecycler;
 
         private int page = 0;
 
         public JoinMovieFragment() {
             super();
-            mLayoutResId = R.layout.refresh_recycler_without_shadow;
+            mLayoutResId = R.layout.fragment_join_video_topic;
             isNeedLoadMore = true;
+        }
+
+        @Override
+        public void onCreateViewLazy(Bundle savedInstanceState) {
+            super.onCreateViewLazy(savedInstanceState);
+
+            findViewById(R.id.content_layout).setBackgroundColor(MOVIE_THEME_COLOR);
+            mRefreshLayout.setBackgroundColor(MOVIE_THEME_COLOR);
+            mTagRecycler = (RecyclerView) findViewById(R.id.tag_recycler);
+            mTagRecycler.setLayoutManager(new LinearLayoutManager(
+                    getActivity(), LinearLayoutManager.HORIZONTAL, false));
+            TagAdapter tagAdapter = new TagAdapter(getActivity());
+            tagAdapter.initTags(TagAdapter.TAGS_MOVIE, true);
+            tagAdapter.setTextColorSelected(MOVIE_THEME_COLOR);
+            tagAdapter.setTagChangedListener(this);
+            mTagRecycler.setAdapter(tagAdapter);
         }
 
         @Override
@@ -61,19 +95,33 @@ public class JoinMovieActivity extends BaseV4FragmentActivity {
 
         @Override
         protected int getThemeColor() {
-            return getResources().getColor(R.color.koolew_light_orange);
+            return MOVIE_THEME_COLOR;
         }
 
         @Override
         protected JsonObjectRequest doRefreshRequest() {
             page = 0;
-            return ApiWorker.getInstance().getMovies(page, mRefreshListener, null);
+            if (mCurrentTag == null) {
+                return ApiWorker.getInstance().getMovies(page, mRefreshListener, null);
+            }
+            else {
+                return ApiWorker.getInstance().standardGetRequest(
+                        UrlHelper.getTopicUrl(BaseTopicInfo.CATEGORY_MOVIE, mCurrentTag.getId(), page),
+                        mRefreshListener, null);
+            }
         }
 
         @Override
         protected JsonObjectRequest doLoadMoreRequest() {
             page++;
-            return ApiWorker.getInstance().getMovies(page, mLoadMoreListener, null);
+            if (mCurrentTag == null) {
+                return ApiWorker.getInstance().getMovies(page, mLoadMoreListener, null);
+            }
+            else {
+                return ApiWorker.getInstance().standardGetRequest(
+                        UrlHelper.getTopicUrl(BaseTopicInfo.CATEGORY_MOVIE, mCurrentTag.getId(), page),
+                        mLoadMoreListener, null);
+            }
         }
 
         @Override
@@ -94,6 +142,13 @@ public class JoinMovieActivity extends BaseV4FragmentActivity {
                 e.printStackTrace();
             }
             return false;
+        }
+
+        @Override
+        public void onSelectedTagChanged(Tag tag) {
+            mCurrentTag = tag;
+            mRefreshLayout.setRefreshing(true);
+            onRefresh();
         }
     }
 
@@ -140,13 +195,25 @@ public class JoinMovieActivity extends BaseV4FragmentActivity {
             int length = topics.length();
             for (int i = 0; i < length; i++) {
                 try {
-                    mMovieInfoList.add(new MovieInfo(topics.getJSONObject(i)));
+                    MovieInfo movieInfo = new MovieInfo(topics.getJSONObject(i));
+                    if (!has(movieInfo)) {
+                        mMovieInfoList.add(movieInfo);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 addedCount++;
             }
             return addedCount;
+        }
+
+        private boolean has(MovieInfo movieInfo) {
+            for (MovieInfo m: mMovieInfoList) {
+                if (m.getTopicId().equals(movieInfo.getTopicId())) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         @Override

@@ -7,10 +7,12 @@
     android:background="@color/koolew_light_orange">
 
     <com.koolew.mars.view.TitleBarView
+        android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/koolew_light_orange"
-        app:title_text="@string/choice_movie_topic"/>
+        android:background="#6D3C9A"
+        app:title_text="@string/join_movie_title"
+        app:right_image_src="@mipmap/ic_explain"/>
 
     <FrameLayout
         android:id="@+id/fragment_container"

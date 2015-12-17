@@ -410,18 +410,20 @@ public class UrlHelper {
                 .build().toString();
     }
 
-    public static String getRecommendTopicUrl(String category) {
+    public static String getRecommendTopicUrl(String category, int page) {
         return Uri.parse(RECOMMEND_TOPIC_URL)
                 .buildUpon()
                 .appendQueryParameter("category", category)
+                .appendQueryParameter("page", String.valueOf(page))
                 .build().toString();
     }
 
-    public static String getTopicUrlByCategoryAndTag(String category, String tag) {
+    public static String getTopicUrl(String category, String tag, int page) {
         return Uri.parse(TOPIC_URL)
                 .buildUpon()
                 .appendQueryParameter("category", category)
                 .appendQueryParameter("tag", tag)
+                .appendQueryParameter("page", String.valueOf(page))
                 .build().toString();
     }
 
