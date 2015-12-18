@@ -487,12 +487,6 @@ public class MainActivity extends BaseV4FragmentActivity
                         R.color.drawer_list_koolew_select,
                         KoolewFragment.class),
 
-                new DrawerItem(R.mipmap.ic_drawer_list_play,
-                        R.mipmap.ic_drawer_list_play_selected,
-                        R.string.title_play,
-                        R.color.drawer_list_play_select,
-                        null),
-
                 new DrawerItem(R.mipmap.ic_drawer_list_message,
                         R.mipmap.ic_drawer_list_message_selected,
                         R.string.title_message,
@@ -538,10 +532,10 @@ public class MainActivity extends BaseV4FragmentActivity
                 holder.title.setTextColor(getResources().getColor(UNSELECT_COLOR_RES));
             }
             holder.title.setText(drawerItems[position].titleRes);
-            if (position == 2) { // Message
+            if (position == 1) { // Message
                 holder.redPoint.registerPath(RedPointManager.PATH_MESSAGE);
             }
-            if (position == 3) { // Friends
+            if (position == 2) { // Friends
                 holder.redPoint.registerPath(RedPointManager.PATH_FRIENDS);
             }
         }
