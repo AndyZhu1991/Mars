@@ -2,8 +2,10 @@ package com.koolew.mars;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,9 +18,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.adapters.TagAdapter;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseTopicInfo;
+import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.infos.Tag;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
+import com.koolew.mars.remoteconfig.RemoteConfigManager;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiWorker;
@@ -36,7 +40,15 @@ import java.util.List;
  * Created by jinchangzhu on 11/12/15.
  */
 public class JoinMovieActivity extends BaseV4FragmentActivity
-        implements TitleBarView.OnRightLayoutClickListener {
+        implements TitleBarView.OnRightLayoutClickListener, TagAdapter.OnSelectedTagChangedListener,
+        ViewPager.OnPageChangeListener {
+
+    private static final int MOVIE_THEME_COLOR = 0xFF462762;
+
+    private RecyclerView mTagRecycler;
+    private TagAdapter mTagAdapter;
+    private ViewPager mTagPager;
+    private MovieTagPagerAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +56,27 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
 
         setContentView(R.layout.activity_join_movie);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container, new JoinMovieFragment());
-        fragmentTransaction.commit();
-
         ((TitleBarView) findViewById(R.id.title_bar)).setOnRightLayoutClickListener(this);
+
+        mTagRecycler = (RecyclerView) findViewById(R.id.tag_recycler);
+        mTagRecycler.setLayoutManager(new LinearLayoutManager(
+                this, LinearLayoutManager.HORIZONTAL, false));
+        mTagAdapter = new TagAdapter(this);
+        mTagAdapter.initTags(TagAdapter.TAGS_MOVIE, true);
+        mTagAdapter.setTextColorSelected(MOVIE_THEME_COLOR);
+        mTagAdapter.setTagChangedListener(this);
+        mTagRecycler.setAdapter(mTagAdapter);
+
+        mTagPager = (ViewPager) findViewById(R.id.tag_pager);
+        mPagerAdapter = new MovieTagPagerAdapter(getSupportFragmentManager());
+        mPagerAdapter.fragments.add(new JoinMovieFragment(null));
+        List<Tag> tags = RemoteConfigManager.getInstance().getMovieTagsConfig().getConfig();
+        for (Tag tag: tags) {
+            mPagerAdapter.fragments.add(new JoinMovieFragment(tag));
+        }
+        mTagPager.setOffscreenPageLimit(mPagerAdapter.getCount());
+        mTagPager.setAdapter(mPagerAdapter);
+        mTagPager.addOnPageChangeListener(this);
     }
 
     @Override
@@ -57,35 +84,71 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
         // Go to movie add explain
     }
 
-    public static class JoinMovieFragment extends RecyclerListFragmentMould<JoinMovieAdapter>
-            implements TagAdapter.OnSelectedTagChangedListener {
-        private static final int MOVIE_THEME_COLOR = 0xFF462762;
+    @Override
+    public void onSelectedTagChanged(Tag tag) {
+        int currentPosition = mTagPager.getCurrentItem();
+        int newPosition = 0;
+        for (int i = 0; i < mPagerAdapter.fragments.size(); i++) {
+            Tag tagi = mPagerAdapter.fragments.get(i).mTag;
+            if (tag == tagi) {
+                newPosition = i;
+            }
+        }
 
-        private Tag mCurrentTag = null;
-        private RecyclerView mTagRecycler;
+        if (currentPosition == newPosition) {
+            // Do nothing
+        }
+        else if (Math.abs(currentPosition - newPosition) == 1) {
+            mTagPager.setCurrentItem(newPosition, true);
+        }
+        else {
+            mTagPager.setCurrentItem(newPosition, false);
+        }
+    }
 
-        private int page = 0;
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
 
-        public JoinMovieFragment() {
-            super();
-            mLayoutResId = R.layout.fragment_join_video_topic;
-            isNeedLoadMore = true;
+    @Override
+    public void onPageSelected(int position) {
+        mTagAdapter.setSelectedPosition(position);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+    }
+
+    public static class MovieTagPagerAdapter extends FragmentPagerAdapter {
+
+        private List<JoinMovieFragment> fragments = new ArrayList<>();
+
+        public MovieTagPagerAdapter(FragmentManager fm) {
+            super(fm);
         }
 
         @Override
-        public void onCreateViewLazy(Bundle savedInstanceState) {
-            super.onCreateViewLazy(savedInstanceState);
+        public Fragment getItem(int position) {
+            return fragments.get(position);
+        }
 
-            findViewById(R.id.content_layout).setBackgroundColor(MOVIE_THEME_COLOR);
-            mRefreshLayout.setBackgroundColor(MOVIE_THEME_COLOR);
-            mTagRecycler = (RecyclerView) findViewById(R.id.tag_recycler);
-            mTagRecycler.setLayoutManager(new LinearLayoutManager(
-                    getActivity(), LinearLayoutManager.HORIZONTAL, false));
-            TagAdapter tagAdapter = new TagAdapter(getActivity());
-            tagAdapter.initTags(TagAdapter.TAGS_MOVIE, true);
-            tagAdapter.setTextColorSelected(MOVIE_THEME_COLOR);
-            tagAdapter.setTagChangedListener(this);
-            mTagRecycler.setAdapter(tagAdapter);
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
+    }
+
+    public static class JoinMovieFragment extends RecyclerListFragmentMould<JoinMovieAdapter> {
+
+        private Tag mTag = null;
+        private int page = 0;
+
+        public JoinMovieFragment(Tag tag) {
+            super();
+            mLayoutResId = R.layout.refresh_recycler_without_shadow;
+            mTag = tag;
+            isNeedLoadMore = true;
+            isLazyLoad = true;
         }
 
         @Override
@@ -101,12 +164,12 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
         @Override
         protected JsonObjectRequest doRefreshRequest() {
             page = 0;
-            if (mCurrentTag == null) {
+            if (mTag == null) {
                 return ApiWorker.getInstance().getMovies(page, mRefreshListener, null);
             }
             else {
                 return ApiWorker.getInstance().standardGetRequest(
-                        UrlHelper.getTopicUrl(BaseTopicInfo.CATEGORY_MOVIE, mCurrentTag.getId(), page),
+                        UrlHelper.getTopicUrl(BaseTopicInfo.CATEGORY_MOVIE, mTag.getId(), page),
                         mRefreshListener, null);
             }
         }
@@ -114,12 +177,12 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
         @Override
         protected JsonObjectRequest doLoadMoreRequest() {
             page++;
-            if (mCurrentTag == null) {
+            if (mTag == null) {
                 return ApiWorker.getInstance().getMovies(page, mLoadMoreListener, null);
             }
             else {
                 return ApiWorker.getInstance().standardGetRequest(
-                        UrlHelper.getTopicUrl(BaseTopicInfo.CATEGORY_MOVIE, mCurrentTag.getId(), page),
+                        UrlHelper.getTopicUrl(BaseTopicInfo.CATEGORY_MOVIE, mTag.getId(), page),
                         mLoadMoreListener, null);
             }
         }
@@ -143,19 +206,12 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
             }
             return false;
         }
-
-        @Override
-        public void onSelectedTagChanged(Tag tag) {
-            mCurrentTag = tag;
-            mRefreshLayout.setRefreshing(true);
-            onRefresh();
-        }
     }
 
     public static class JoinMovieAdapter extends LoadMoreAdapter {
 
         private Context mContext;
-        private List<MovieInfo> mMovieInfoList = new ArrayList<>();
+        private List<MovieTopicInfo> mMovieInfoList = new ArrayList<>();
 
         public JoinMovieAdapter(Context context) {
             mContext = context;
@@ -195,7 +251,7 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
             int length = topics.length();
             for (int i = 0; i < length; i++) {
                 try {
-                    MovieInfo movieInfo = new MovieInfo(topics.getJSONObject(i));
+                    MovieTopicInfo movieInfo = new MovieTopicInfo(topics.getJSONObject(i));
                     if (!has(movieInfo)) {
                         mMovieInfoList.add(movieInfo);
                     }
@@ -207,8 +263,8 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
             return addedCount;
         }
 
-        private boolean has(MovieInfo movieInfo) {
-            for (MovieInfo m: mMovieInfoList) {
+        private boolean has(MovieTopicInfo movieInfo) {
+            for (MovieTopicInfo m: mMovieInfoList) {
                 if (m.getTopicId().equals(movieInfo.getTopicId())) {
                     return true;
                 }
@@ -225,12 +281,10 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
         @Override
         public void onBindCustomViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
             JoinMovieHolder holder = (JoinMovieHolder) viewHolder;
-            MovieInfo item = mMovieInfoList.get(position);
-            ImageLoader.getInstance().displayImage(item.getThumb(), holder.thumb,
+            MovieTopicInfo item = mMovieInfoList.get(position);
+            ImageLoader.getInstance().displayImage(item.getThumbnail(), holder.thumb,
                     ImageLoaderHelper.topicThumbLoadOptions);
             holder.title.setText(item.getTitle());
-            holder.videoCount.setText(mContext.getString(R.string.video_count_label,
-                    item.getVideoCount()));
         }
 
         @Override
@@ -243,7 +297,7 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
 
             private ImageView thumb;
             private TextView title;
-            private TextView videoCount;
+            private View capture;
 
             public JoinMovieHolder(View itemView) {
                 super(itemView);
@@ -251,26 +305,20 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
 
                 thumb = (ImageView) itemView.findViewById(R.id.video_thumb);
                 title = (TextView) itemView.findViewById(R.id.title);
-                videoCount = (TextView) itemView.findViewById(R.id.video_count);
+                capture = itemView.findViewById(R.id.capture);
+                capture.setOnClickListener(this);
             }
 
             @Override
             public void onClick(View v) {
-                MovieInfo item = mMovieInfoList.get(getAdapterPosition());
-                TopicMediaActivity.startThisActivity(mContext, item.getTopicId(),
-                        TopicMediaActivity.TYPE_WORLD);
-            }
-        }
-    }
-
-    public static class MovieInfo extends BaseTopicInfo {
-        public MovieInfo(JSONObject jsonObject) {
-            super(jsonObject);
-            try {
-                thumb = jsonObject.getJSONObject("attri").getJSONObject("movie")
-                        .getString("thumbnail");
-            } catch (JSONException e) {
-                e.printStackTrace();
+                MovieTopicInfo item = mMovieInfoList.get(getAdapterPosition());
+                if (v == itemView) {
+                    TopicMediaActivity.startThisActivity(mContext, item.getTopicId(),
+                            TopicMediaActivity.TYPE_WORLD);
+                }
+                else if (v == capture) {
+                    MovieStudioActivity.startThisActivity(mContext, item);
+                }
             }
         }
     }

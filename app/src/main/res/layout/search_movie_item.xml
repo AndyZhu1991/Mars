@@ -32,27 +32,24 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="1dp"
         android:gravity="center_vertical"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:background="@drawable/movie_item_right_bg">
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="8dp"
             android:textSize="16sp"
             android:textColor="#4A4A4A"
             android:singleLine="true"/>
 
-        <TextView
-            android:id="@+id/video_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:drawableLeft="@mipmap/ic_video_gray"
-            android:drawablePadding="1dp"
-            android:textColor="#ADBBC7"
-            android:textSize="12sp"/>
+        <ImageView
+            android:id="@+id/capture"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="10dp"
+            android:src="@mipmap/ic_btn_capture_movie"/>
     </LinearLayout>
 </LinearLayout>

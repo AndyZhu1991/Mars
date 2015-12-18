@@ -107,6 +107,15 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagItemHolder> {
         return null;
     }
 
+    public void setSelectedPosition(int newPosition) {
+        if (mSelectedPosition != newPosition) {
+            int lastPosition = mSelectedPosition;
+            mSelectedPosition = newPosition;
+            notifyItemChanged(lastPosition);
+            notifyItemChanged(newPosition);
+        }
+    }
+
 
     class TagItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView textView;
@@ -120,13 +129,12 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagItemHolder> {
         @Override
         public void onClick(View v) {
             int lastPosition = mSelectedPosition;
-            int currentPosition = getAdapterPosition();
-            if (lastPosition != currentPosition) {
-                mSelectedPosition = currentPosition;
-                notifyItemChanged(lastPosition);
-                notifyItemChanged(currentPosition);
+            int newPosition = getAdapterPosition();
+            if (lastPosition != newPosition) {
+                setSelectedPosition(newPosition);
+
                 if (tagChangedListener != null) {
-                    Tag selectedTag = mTags.get(currentPosition);
+                    Tag selectedTag = mTags.get(newPosition);
                     if (TextUtils.isEmpty(selectedTag.getId())) {
                         selectedTag = null;
                     }
