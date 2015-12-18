@@ -64,6 +64,16 @@ public class ShareManager {
                 new UrlShareImage(videoInfo.getVideoThumb()), buildVideoUrl(videoInfo));
     }
 
+    public void shareVideoTo(ShareChanel shareChanel, BaseVideoInfo videoInfo, String content, String desc) {
+        if (TextUtils.isEmpty(desc)) {
+            shareVideoTo(shareChanel, videoInfo, content);
+        }
+        else {
+            share(sharePlatformName[shareChanel.ordinal()], "", desc,
+                    new UrlShareImage(videoInfo.getVideoThumb()), buildVideoUrl(videoInfo));
+        }
+    }
+
     public void shareTopicTo(ShareChanel shareChanel, String topicId, String content) {
         share(sharePlatformName[shareChanel.ordinal()], content, topicDescription(),
                 DEFAULT_SHARE_IMAGE, buildTopicUrl(topicId));

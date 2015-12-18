@@ -100,6 +100,13 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagItemHolder> {
         return mTags.size();
     }
 
+    public Tag getSelectedTag() {
+        if (mTags != null && mTags.size() > 0) {
+            return mTags.get(mSelectedPosition);
+        }
+        return null;
+    }
+
 
     class TagItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView textView;

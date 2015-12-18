@@ -20,7 +20,7 @@
 
     <!-- For InputPasswordActivity -->
     <dimen name="digit_margin_lr">15dp</dimen>
-    
+
     <!-- For VideoShootActivity -->
     <dimen name="video_shoot_progress_height">20dp</dimen>
     <dimen name="only_friends_visible_height">20dp</dimen>
@@ -102,5 +102,5 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    
+
 </resources>

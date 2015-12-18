@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         TitleBarView:title_text="@string/video_edit_title"
-        TitleBarView:right_text="@string/done"/>
+        TitleBarView:right_text="@string/next_step"/>
 
     <FrameLayout
         android:id="@+id/video_frame"
@@ -37,42 +37,6 @@
             android:layout_gravity="center"/>
     </FrameLayout>
 
-    <RelativeLayout
-        android:id="@+id/privacy_layout"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="#5B5B5B">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_centerVertical="true"
-            android:text="@string/who_can_see"
-            android:textSize="14sp"
-            android:textColor="#D8D8D8"/>
-
-        <ImageView
-            android:id="@+id/into_arrow"
-            android:layout_width="7dp"
-            android:layout_height="12dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/into_arrow"/>
-
-        <TextView
-            android:id="@+id/authority_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/into_arrow"
-            android:layout_marginRight="10dp"
-            android:layout_centerVertical="true"
-            android:text="@string/public_visible"
-            android:textSize="14sp"
-            android:textColor="#9B9B9B"/>
-    </RelativeLayout>
-
     <LinearLayout
         android:id="@+id/music_layout"
         android:layout_width="match_parent"
@@ -94,133 +58,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </LinearLayout>
-    
+
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="24dp"
-        android:layout_marginLeft="15dp"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/choice_a_tag_please"
         android:textSize="14sp"
-        android:textColor="#9B9B9B"
-        android:text="@string/share"/>
+        android:textColor="@android:color/white"/>
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="37dp"
+        android:layout_height="1dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginRight="10dp"
-        android:orientation="horizontal">
+        android:background="@color/koolew_deep_half_transparent_white"/>
 
-        <LinearLayout
-            android:id="@+id/wechat_moments"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/video_edit_share_item_bg"
-            android:onClick="onShareItemClick">
-
-            <ImageView
-                android:layout_width="23dp"
-                android:layout_height="23dp"
-                android:layout_marginLeft="10dp"
-                android:src="@drawable/ic_wechat_moments_after_record"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:textSize="14sp"
-                android:textColor="@android:color/white"
-                android:text="@string/wechat_moments"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/wechat_friends"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginLeft="4dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/video_edit_share_item_bg"
-            android:onClick="onShareItemClick">
-
-            <ImageView
-                android:layout_width="23dp"
-                android:layout_height="23dp"
-                android:layout_marginLeft="10dp"
-                android:src="@drawable/ic_wechat_friends_after_record"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:textSize="14sp"
-                android:textColor="@android:color/white"
-                android:text="@string/wechat_friends"/>
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/tag_recycler"
         android:layout_width="match_parent"
-        android:layout_height="37dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginRight="10dp"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:id="@+id/qq"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/video_edit_share_item_bg"
-            android:onClick="onShareItemClick">
-
-            <ImageView
-                android:layout_width="23dp"
-                android:layout_height="23dp"
-                android:layout_marginLeft="10dp"
-                android:src="@drawable/ic_qq_after_record"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:textSize="14sp"
-                android:textColor="@android:color/white"
-                android:text="@string/qq"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/weibo"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginLeft="4dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/video_edit_share_item_bg"
-            android:onClick="onShareItemClick">
-
-            <ImageView
-                android:layout_width="23dp"
-                android:layout_height="23dp"
-                android:layout_marginLeft="10dp"
-                android:src="@drawable/ic_weibo_after_record"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:textSize="14sp"
-                android:textColor="@android:color/white"
-                android:text="@string/weibo"/>
-        </LinearLayout>
-    </LinearLayout>
-
+        android:layout_height="24dp"
+        android:layout_margin="10dp"/>
 </LinearLayout>

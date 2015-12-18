@@ -100,8 +100,10 @@
     <string name="loading_friends">正在加载好友列表...</string>
 
     <!-- For KoolewFragment -->
-    <string name="koolew_news_title">关 注</string> <!-- 新鲜事 -->
-    <string name="koolew_involve_title">我 的</string> <!-- 与我相关 -->
+    <string name="koolew_news_title">关 注</string>
+    <!-- 新鲜事 -->
+    <string name="koolew_involve_title">我 的</string>
+    <!-- 与我相关 -->
     <string name="koolew_recommend_title">话 题</string>
     <string name="koolew_hot_title">排 行</string>
     <string name="koolew_meet_title">遇见</string>
@@ -171,6 +173,10 @@
     <string name="uploading">正在上传...</string>
     <string name="upload_failed">上传失败</string>
     <string name="save_to_local_failed">保存到本地失败</string>
+    <string name="choice_a_tag_please">请选择一个分类：</string>
+
+    <!-- For VideoShareActivity -->
+    <string name="video_share_hint_message">写上一句分享的话语</string>
 
     <!-- For friend meet item -->
     <string name="common_topic">共同话题</string>
@@ -444,7 +450,7 @@
     <!-- For square -->
     <string name="square_video_desc">最近热门视频</string>
     <string name="top_fans">粉丝团</string>
-    
+
     <!-- For tag square -->
     <string name="i_decide_the_top">我来决定谁当榜首！</string>
     <string name="go_to_judge">"我去当裁判 >"</string>

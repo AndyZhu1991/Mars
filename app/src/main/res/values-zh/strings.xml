@@ -171,6 +171,10 @@
     <string name="uploading">正在上传...</string>
     <string name="upload_failed">上传失败</string>
     <string name="save_to_local_failed">保存到本地失败</string>
+    <string name="choice_a_tag_please">请选择一个分类：</string>
+
+    <!-- For VideoShareActivity -->
+    <string name="video_share_hint_message">写上一句分享的话语</string>
 
     <!-- For friend meet item -->
     <string name="common_topic">共同话题</string>

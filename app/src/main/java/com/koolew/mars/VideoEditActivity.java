@@ -1,14 +1,8 @@
 package com.koolew.mars;
 
-import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,40 +13,24 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.koolew.mars.infos.BaseUserInfo;
+import com.koolew.mars.adapters.TagAdapter;
 import com.koolew.mars.infos.BaseVideoInfo;
-import com.koolew.mars.infos.MyAccountInfo;
-import com.koolew.mars.qiniu.UploadHelper;
-import com.koolew.mars.share.ShareManager;
+import com.koolew.mars.infos.Tag;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.BgmUtil;
-import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.utils.FileUtil;
-import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.TitleBarView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import org.json.JSONObject;
-
-import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-
-import cn.sharesdk.framework.Platform;
 
 
-public class VideoEditActivity extends BaseActivity
-        implements TitleBarView.OnRightLayoutClickListener, View.OnClickListener{
+public class VideoEditActivity extends BaseActivity implements View.OnClickListener,
+        TitleBarView.OnRightLayoutClickListener, TagAdapter.OnSelectedTagChangedListener {
 
-    public static final int REQUEST_VIDEO_PRIVACY = 1;
+    public static final int REQUEST_CODE_UPLOAD_VIDEO = 1;
 
     public static final int RESULT_UPLOADED = RESULT_FIRST_USER + 1;
     public static final int RESULT_BACKGROUND_UPLOAD = RESULT_FIRST_USER + 2;
@@ -76,26 +54,20 @@ public class VideoEditActivity extends BaseActivity
 
     private String mSelectedBgmPath;
 
-    private int mAuthority;
-
     private TitleBarView mTitleBar;
     private FrameLayout mVideoFrame;
     private SurfaceView mPlaySurface;
     private ImageView mThumb;
     private ImageView mPlayImage;
-    private RelativeLayout mPrivacyLayout;
-    private TextView mAuthorityText;
     private ImageView mBgmSwitch;
 
     private RecyclerView mRecyclerView;
     private MusicSelectAdapter mAdapter;
 
-    private BgmPlayer mBgmPlayer;
+    private RecyclerView mTagRecycler;
+    private Tag mTag;
 
-    private View mShareItemWechatMoments;
-    private View mShareItemWechatFriends;
-    private View mShareItemQQ;
-    private View mShareItemWeibo;
+    private BgmPlayer mBgmPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +93,6 @@ public class VideoEditActivity extends BaseActivity
     }
 
     private void initMembers() {
-        mAuthority = VideoPrivacyActivity.AUTHORITY_PUBLIC;
         mBgmPlayer = new BgmPlayer();
     }
 
@@ -141,9 +112,6 @@ public class VideoEditActivity extends BaseActivity
         mThumb = (ImageView) findViewById(R.id.thumb);
 
         mPlayImage = (ImageView) findViewById(R.id.play_image);
-        mPrivacyLayout = (RelativeLayout) findViewById(R.id.privacy_layout);
-        mPrivacyLayout.setOnClickListener(this);
-        mAuthorityText = (TextView) findViewById(R.id.authority_text);
 
         if (isMovie) {
             findViewById(R.id.music_layout).setVisibility(View.GONE);
@@ -160,10 +128,15 @@ public class VideoEditActivity extends BaseActivity
         mAdapter = new MusicSelectAdapter();
         mRecyclerView.setAdapter(mAdapter);
 
-        mShareItemWechatMoments = findViewById(R.id.wechat_moments);
-        mShareItemWechatFriends = findViewById(R.id.wechat_friends);
-        mShareItemQQ = findViewById(R.id.qq);
-        mShareItemWeibo = findViewById(R.id.weibo);
+        mTagRecycler = (RecyclerView) findViewById(R.id.tag_recycler);
+        mTagRecycler.setLayoutManager(new LinearLayoutManager(
+                this, LinearLayoutManager.HORIZONTAL, false));
+        TagAdapter tagAdapter = new TagAdapter(this);
+        tagAdapter.initTags(TagAdapter.TAGS_VIDEO, false);
+        tagAdapter.setTextColorSelected(0xFF333333);
+        tagAdapter.setTagChangedListener(this);
+        mTag = tagAdapter.getSelectedTag();
+        mTagRecycler.setAdapter(tagAdapter);
     }
 
     @Override
@@ -184,172 +157,6 @@ public class VideoEditActivity extends BaseActivity
         super.onBackPressed();
     }
 
-    @Override
-    public void onRightLayoutClick() {
-        final String finalVideo;
-        if (mSelectedBgmPath == null) {
-            finalVideo = mConcatedVideo;
-        } else {
-            finalVideo = new File(mConcatedVideo).getParent() + "/final.mp4";
-            try {
-                Mp4ParserUtil.setVideoBgm(mConcatedVideo, mSelectedBgmPath, finalVideo);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        new AsyncTask<String, Void, Boolean>() {
-            private ProgressDialog mUploadingDialog;
-
-            @Override
-            protected void onPreExecute() {
-                mUploadingDialog = DialogUtil.getGeneralProgressDialog
-                        (VideoEditActivity.this, R.string.uploading);
-                mUploadingDialog.show();
-            }
-
-            @Override
-            protected Boolean doInBackground(String... params) {
-                if (isMovie) {
-                    mUploadedVideo = UploadHelper.uploadMovie(params[0], params[1],
-                            params[2], mAuthority, mFrom);
-                }
-                else {
-                    mUploadedVideo = UploadHelper.uploadVideo(params[0], params[1],
-                            params[2], mAuthority);
-                }
-                if (mUploadedVideo != null) {
-                    BaseUserInfo userInfo = new BaseUserInfo(new JSONObject());
-                    userInfo.setNickname(MyAccountInfo.getNickname());
-                    userInfo.setUid(MyAccountInfo.getUid());
-                    mUploadedVideo.setUserInfo(userInfo);
-                    try {
-                        saveAndRegisterVideo();
-                    }
-                    catch (Exception e) {
-                        Toast.makeText(VideoEditActivity.this, R.string.save_to_local_failed,
-                                Toast.LENGTH_SHORT).show();
-                    }
-                    shareVideoIfNeed();
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-
-            private void saveAndRegisterVideo() {
-                Uri videoTable = Uri.parse("content://media/external/video/media");
-
-                long timeMillis = System.currentTimeMillis();
-                String newFileName = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss")
-                        .format(new Date(timeMillis)) + ".mp4";
-                String newFilePath = Environment.getExternalStorageDirectory()
-                        + "/koolew/" + newFileName;
-
-                FileUtil.copyFile(finalVideo, newFilePath);
-
-                ContentValues values = new ContentValues(7);
-                //values.put(MediaStore.Video.Media.TITLE, title);
-                values.put(MediaStore.Video.Media.DISPLAY_NAME, newFileName);
-                values.put(MediaStore.Video.Media.DATE_TAKEN, timeMillis);
-                values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
-                values.put(MediaStore.Video.Media.DATA, newFilePath);
-
-                values.put(MediaStore.Video.Media.SIZE, new File(newFilePath).length());
-
-                getContentResolver().insert(videoTable, values);
-            }
-
-            @Override
-            protected void onPostExecute(Boolean isSuccess) {
-                mUploadingDialog.dismiss();
-                if (isSuccess) {
-                    setResult(RESULT_UPLOADED);
-                    finish();
-                } else {
-                    Toast.makeText(VideoEditActivity.this, R.string.upload_failed, Toast.LENGTH_SHORT).show();
-                }
-            }
-        }.execute(mTopicId, finalVideo, mVideoThumb);
-    }
-
-    private void shareVideoIfNeed() {
-        ShareManager.ShareChanel shareChanel = null;
-        if (mShareItemWechatMoments.isSelected()) {
-            shareChanel = ShareManager.ShareChanel.WECHAT_MOMENTS;
-        }
-        else if (mShareItemWechatFriends.isSelected()) {
-            shareChanel = ShareManager.ShareChanel.WECHAT_FRIENDS;
-        }
-        else if (mShareItemQQ.isSelected()) {
-            shareChanel = ShareManager.ShareChanel.QZONE;
-        }
-        else if (mShareItemWeibo.isSelected()) {
-            shareChanel = ShareManager.ShareChanel.WEIBO;
-        }
-
-        if (shareChanel != null) {
-            ShareManager.ShareListener shareListener;
-            if (ShareManager.ShareChanel.WEIBO.equals(shareChanel)) {
-                shareListener = new WeiboShareListener();
-            } else {
-                shareListener = new ShareListener();
-            }
-            new ShareManager(this, shareListener).
-                    shareVideoTo(shareChanel, mUploadedVideo, mTopicTitle);
-        }
-    }
-
-    class ShareListener extends ShareManager.ShareListener {
-
-        public ShareListener() {
-            super(VideoEditActivity.this);
-        }
-
-        @Override
-        protected void initMessages() {
-            mSuccessMessage = mActivity.getString(R.string.share_success);
-            mErrorMessage = mActivity.getString(R.string.share_failed);
-            mCancelMessage = mActivity.getString(R.string.share_cancel);
-        }
-
-        @Override
-        public void onCancel(Platform platform, int i) {
-            super.onCancel(platform, i);
-            shareToWeibo();
-        }
-
-        @Override
-        public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
-            super.onComplete(platform, i, hashMap);
-            shareToWeibo();
-        }
-
-        @Override
-        public void onError(Platform platform, int i, Throwable throwable) {
-            super.onError(platform, i, throwable);
-            shareToWeibo();
-        }
-
-        private void shareToWeibo() {
-            new ShareManager(VideoEditActivity.this, new WeiboShareListener()).
-                    shareVideoTo(ShareManager.ShareChanel.WEIBO, mUploadedVideo, mTopicTitle);
-        }
-    }
-
-    class WeiboShareListener extends ShareManager.ShareListener {
-
-        public WeiboShareListener() {
-            super(VideoEditActivity.this);
-        }
-
-        @Override
-        protected void initMessages() {
-            mSuccessMessage = mActivity.getString(R.string.share_success);
-            mErrorMessage = mActivity.getString(R.string.share_failed);
-            mCancelMessage = mActivity.getString(R.string.share_cancel);
-        }
-    }
 
     @Override
     public void onClick(View v) {
@@ -357,109 +164,32 @@ public class VideoEditActivity extends BaseActivity
             case R.id.video_frame:
                 onVideoPlayClick();
                 break;
-            case R.id.privacy_layout:
-                onPrivacyLayoutClick();
-                break;
             case R.id.bgm_switch:
                 onBgmSwitchClick();
                 break;
         }
     }
 
-    public void onShareItemClick(View v) {
-        ShareManager.ShareChanel shareChanel = null;
-        switch (v.getId()) {
-            case R.id.wechat_moments:
-                shareChanel = ShareManager.ShareChanel.WECHAT_MOMENTS;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_UPLOAD_VIDEO:
+                onVideoEditResult(resultCode);
                 break;
-            case R.id.wechat_friends:
-                shareChanel = ShareManager.ShareChanel.WECHAT_FRIENDS;
-                break;
-            case R.id.qq:
-                shareChanel = ShareManager.ShareChanel.QZONE;
-                break;
-            case R.id.weibo:
-                shareChanel = ShareManager.ShareChanel.WEIBO;
-                break;
-        }
-
-        if (ShareManager.isAuthValid(shareChanel)) {
-            onShareItemClickReal(v);
-        }
-        else {
-            authorizeByChanel(shareChanel, v);
         }
     }
 
-    private void authorizeByChanel(ShareManager.ShareChanel shareChanel, View originView) {
-        Toast.makeText(this, R.string.request_authorize, Toast.LENGTH_SHORT).show();
-        ShareManager.authorize(shareChanel, new AuthorizeListener(originView));
-    }
-
-    class AuthorizeListener extends ShareManager.ShareListener {
-        private View originView;
-
-        public AuthorizeListener(View originView) {
-            super(VideoEditActivity.this);
-
-            this.originView = originView;
-        }
-
-        @Override
-        protected void initMessages() {
-        }
-
-        @Override
-        public void onCancel(Platform platform, int i) {
-            onAuthorizeFailed();
-        }
-
-        @Override
-        public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
-            onAuthorizeSuccess();
-        }
-
-        @Override
-        public void onError(Platform platform, int i, Throwable throwable) {
-            onAuthorizeFailed();
-        }
-
-        private void onAuthorizeFailed() {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(VideoEditActivity.this, R.string.authorize_failed,
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-
-        private void onAuthorizeSuccess() {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(VideoEditActivity.this, R.string.authorize_success,
-                            Toast.LENGTH_SHORT).show();
-                    onShareItemClickReal(originView);
-                }
-            });
-        }
-    }
-
-    private void onShareItemClickReal(View v) {
-        boolean originalState = v.isSelected();
-        switch (v.getId()) {
-            case R.id.wechat_moments:
-            case R.id.wechat_friends:
-            case R.id.qq:
-                mShareItemWechatMoments.setSelected(false);
-                mShareItemWechatFriends.setSelected(false);
-                mShareItemQQ.setSelected(false);
+    private void onVideoEditResult(int resultCode) {
+        switch (resultCode) {
+            case RESULT_CANCELED:
                 break;
-            case R.id.weibo:
+            case VideoShareActivity.RESULT_UPLOADED:
+                setResult(RESULT_UPLOADED);
+                finish();
+                break;
+            case VideoShareActivity.RESULT_BACKGROUND_UPLOAD:
                 break;
         }
-        v.setSelected(!originalState);
     }
 
     private void onVideoPlayClick() {
@@ -493,30 +223,6 @@ public class VideoEditActivity extends BaseActivity
                     }
                 }.start();
             }
-        }
-    }
-
-    private void onPrivacyLayoutClick() {
-        Intent intent = new Intent(this, VideoPrivacyActivity.class);
-        startActivityForResult(intent, REQUEST_VIDEO_PRIVACY);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_VIDEO_PRIVACY:
-                setAuthority(resultCode);
-                break;
-        }
-    }
-
-    private void setAuthority(int authority) {
-        mAuthority = authority;
-        if (authority == VideoPrivacyActivity.AUTHORITY_PUBLIC) {
-            mAuthorityText.setText(R.string.public_visible);
-        }
-        else if (authority == VideoPrivacyActivity.AUTHORITY_FRIEND_ONLY) {
-            mAuthorityText.setText(R.string.only_friend_visible);
         }
     }
 
@@ -556,6 +262,27 @@ public class VideoEditActivity extends BaseActivity
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {}
     };
+
+    @Override
+    public void onRightLayoutClick() {
+        Intent intent = new Intent(this, VideoShareActivity.class);
+        intent.putExtra(VideoShareActivity.KEY_CONCATED_VIDEO, mConcatedVideo);
+        intent.putExtra(VideoShareActivity.KEY_FROM, mFrom);
+        intent.putExtra(VideoShareActivity.KEY_IS_MOVIE, isMovie);
+        intent.putExtra(VideoShareActivity.KEY_TOPIC_ID, mTopicId);
+        intent.putExtra(VideoShareActivity.KEY_TOPIC_TITLE, mTopicTitle);
+        intent.putExtra(VideoShareActivity.KEY_VIDEO_THUMB, mVideoThumb);
+        intent.putExtra(VideoShareActivity.KEY_SELECTED_BGM, mSelectedBgmPath);
+        if (mTag != null) {
+            intent.putExtra(VideoShareActivity.KEY_TAG_ID, mTag.getId());
+        }
+        startActivityForResult(intent, REQUEST_CODE_UPLOAD_VIDEO);
+    }
+
+    @Override
+    public void onSelectedTagChanged(Tag tag) {
+        mTag = tag;
+    }
 
 
     class BgmPlayer implements MediaPlayer.OnSeekCompleteListener,

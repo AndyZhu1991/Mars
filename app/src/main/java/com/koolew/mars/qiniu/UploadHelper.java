@@ -26,9 +26,9 @@ import java.util.concurrent.TimeoutException;
 public class UploadHelper {
 
     public static BaseVideoInfo uploadVideo(String topicId, String videoPath, String thumbPath,
-                                            int privacy) {
+                                            String tagId, int privacy) {
         UploadFuture.UploadResponse uploadResponse =
-                uploadMp4(topicId, videoPath, thumbPath, privacy, false, null);
+                uploadMp4(topicId, videoPath, thumbPath, privacy, false, null, tagId);
         if (uploadResponse == null) {
             return null;
         }
@@ -44,7 +44,7 @@ public class UploadHelper {
     public static BaseVideoInfo uploadMovie(String topicId, String videoPath, String thumbPath,
                                             int privacy, String from) {
         UploadFuture.UploadResponse uploadResponse =
-                uploadMp4(topicId, videoPath, thumbPath, privacy, true, from);
+                uploadMp4(topicId, videoPath, thumbPath, privacy, true, from, null);
         if (uploadResponse == null) {
             return null;
         }
@@ -59,7 +59,8 @@ public class UploadHelper {
 
     private static UploadFuture.UploadResponse uploadMp4(String topicId, String videoPath,
                                                          String thumbPath, int privacy,
-                                                         boolean isMovie, String from) {
+                                                         boolean isMovie, String from,
+                                                         String tagId) {
         try {
             JSONObject thumbTokenJson = ApiWorker.getInstance().requestQiniuThumbTokenSync();
             String thumbToken = null;
@@ -108,6 +109,9 @@ public class UploadHelper {
                 videoOption.put("x:platform", "android");
                 videoOption.put("x:version_code", String.valueOf(Utils.getCurrentVersionCode()));
                 videoOption.put("x:from", TextUtils.isEmpty(from) ? "" : from);
+            }
+            if (!isMovie && !TextUtils.isEmpty(tagId)) {
+                videoOption.put("x:tag", tagId);
             }
             uploadManager.put(videoPath, key, videoToken, videoFuture,
                     new UploadOptions(videoOption, null, false, null, null));
