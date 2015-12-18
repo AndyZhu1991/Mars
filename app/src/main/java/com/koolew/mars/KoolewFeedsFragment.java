@@ -334,7 +334,7 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
         public FeedsItem(JSONObject jsonObject) {
             topicInfo = BaseTopicInfo.dynamicTopicInfo(JsonUtil.getJSONObjectIfHas(jsonObject, "topic"));
             JSONArray videosJson = JsonUtil.getJSONArrayIfHas(jsonObject, "videos");
-            int videoCount = videosJson.length();
+            int videoCount = videosJson == null ? 0 : videosJson.length();
             for (int i = 0; i < videoCount && i < MAX_VIDEO_COUNT_PER_TOPIC; i++) {
                 try {
                     videoInfos[i] = new BaseVideoInfo(videosJson.getJSONObject(i));
