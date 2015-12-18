@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D3AB64">
+
+    <com.koolew.mars.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/koolew_light_orange"
+        app:title_text="@string/join_video_topic_title"
+        app:right_image_src="@mipmap/ic_add_new_topic"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/shadow_height"
+        android:background="@mipmap/shadow"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/tag_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:paddingLeft="2.5dp"
+        android:paddingRight="2.5dp"
+        android:clipToPadding="false"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/tag_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="6dp"/>
+</LinearLayout>

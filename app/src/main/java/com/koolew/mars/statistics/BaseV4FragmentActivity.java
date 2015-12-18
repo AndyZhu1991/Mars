@@ -9,15 +9,23 @@ import com.umeng.analytics.MobclickAgent;
  */
 public abstract class BaseV4FragmentActivity extends FragmentActivity {
 
+    protected boolean isNeedPageStatistics = false;
+
     @Override
     protected void onResume() {
         super.onResume();
+        if (isNeedPageStatistics) {
+            MobclickAgent.onPageStart(getClass().getSimpleName());
+        }
         MobclickAgent.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        if (isNeedPageStatistics) {
+            MobclickAgent.onPageEnd(getClass().getSimpleName());
+        }
         MobclickAgent.onPause(this);
     }
 }

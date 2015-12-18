@@ -50,6 +50,10 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
     private ViewPager mTagPager;
     private MovieTagPagerAdapter mPagerAdapter;
 
+    public JoinMovieActivity() {
+        isNeedPageStatistics = true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,6 +117,7 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
     @Override
     public void onPageSelected(int position) {
         mTagAdapter.setSelectedPosition(position);
+        mTagRecycler.scrollToPosition(position);
     }
 
     @Override
@@ -145,10 +150,16 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
 
         public JoinMovieFragment(Tag tag) {
             super();
+            isNeedLoadMore = false;
             mLayoutResId = R.layout.refresh_recycler_without_shadow;
             mTag = tag;
             isNeedLoadMore = true;
             isLazyLoad = true;
+        }
+
+        @Override
+        protected View createDefaultView() {
+            return null;
         }
 
         @Override
