@@ -37,16 +37,6 @@
                 app:textSize="16sp" />
 
             <TextView
-                android:id="@+id/video_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
-                android:textColor="#9EADB7"
-                android:textSize="10sp" />
-
-            <TextView
                 android:id="@+id/btn_act"
                 android:layout_width="70dp"
                 android:layout_height="24dp"
@@ -83,15 +73,14 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/video_date2"
+                android:id="@+id/video_date"
                 android:layout_width="wrap_content"
                 android:layout_height="22dp"
                 android:paddingRight="10dp"
                 android:layout_alignParentRight="true"
                 android:gravity="center_vertical"
                 android:textColor="#9EADB7"
-                android:textSize="10sp"
-                android:visibility="gone"/>
+                android:textSize="10sp"/>
 
             <View
                 android:layout_width="match_parent"

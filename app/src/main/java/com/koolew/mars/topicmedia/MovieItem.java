@@ -1,7 +1,6 @@
 package com.koolew.mars.topicmedia;
 
 import android.view.View;
-import android.widget.TextView;
 
 import com.koolew.mars.MovieStudioActivity;
 import com.koolew.mars.R;
@@ -43,9 +42,7 @@ public class MovieItem extends VideoItem {
 
         public ItemViewHolder(UniversalMediaAdapter adapter, View itemView) {
             super(adapter, itemView);
-            
-            videoDate.setVisibility(View.INVISIBLE);
-            videoDate = (TextView) itemView.findViewById(R.id.video_date2);
+
             actButton = itemView.findViewById(R.id.btn_act);
             actButton.setVisibility(View.VISIBLE);
             actButton.setOnClickListener(this);
