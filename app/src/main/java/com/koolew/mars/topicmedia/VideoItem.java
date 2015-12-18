@@ -17,6 +17,7 @@ import com.koolew.mars.SendDanmakuActivity;
 import com.koolew.mars.ShareVideoWindow;
 import com.koolew.mars.SingleMediaFragment;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
+import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.utils.KooSoundUtil;
@@ -88,6 +89,7 @@ public class VideoItem extends MediaItem {
     public static class ItemViewHolder extends MediaHolder<VideoItem> implements View.OnClickListener,
             ShareVideoWindow.OnVideoOperatedListener {
         protected ImageView avatar;
+        protected ImageView followIndicator;
         protected UserNameView userName;
         protected TextView videoDate;
         protected KoolewVideoView videoView;
@@ -102,11 +104,13 @@ public class VideoItem extends MediaItem {
 
         protected KooListener lastKooListener;
 
+
         public ItemViewHolder(UniversalMediaAdapter adapter, View itemView) {
             super(adapter, itemView);
 
             avatar = (ImageView) itemView.findViewById(R.id.avatar);
             avatar.setOnClickListener(this);
+            followIndicator = (ImageView) itemView.findViewById(R.id.follow_indicator);
             userName = (UserNameView) itemView.findViewById(R.id.name_view);
             userName.setOnClickListener(this);
             videoDate = (TextView) itemView.findViewById(R.id.video_date);
@@ -134,6 +138,22 @@ public class VideoItem extends MediaItem {
                     mItem.videoInfo.getCreateTime() * 1000));
             videoView.setVideoInfo(mItem.videoInfo);
             setKooAndComment(mItem.videoInfo);
+
+            BaseUserInfo userInfo = mItem.videoInfo.getUserInfo();
+            if (userInfo.getType() == BaseUserInfo.TYPE_SELF) {
+                followIndicator.setEnabled(false);
+                followIndicator.setVisibility(View.INVISIBLE);
+            }
+            else if (!userInfo.isFollowed()) {
+                followIndicator.setEnabled(true);
+                followIndicator.setImageResource(R.mipmap.user_follow_indicator_not_followed);
+                followIndicator.setVisibility(View.VISIBLE);
+            }
+            else {
+                followIndicator.setEnabled(false);
+                followIndicator.setImageResource(R.mipmap.user_follow_indicator_followed);
+                followIndicator.setVisibility(View.VISIBLE);
+            }
         }
 
         protected void setKooAndComment(BaseVideoInfo videoInfo) {
@@ -169,7 +189,10 @@ public class VideoItem extends MediaItem {
             else if (v == moreView) {
                 onMoreClick();
             }
-            else if (v == avatar || v == userName) {
+            else if (v == avatar) {
+                onAvatarClick();
+            }
+            else if (v == userName) {
                 onUserClick();
             }
             else if (v == kooAndComment) {
@@ -212,6 +235,18 @@ public class VideoItem extends MediaItem {
                     mItem.videoInfo, mAdapter.mTopicInfo.getTitle());
             shareVideoWindow.setOnVideoOperatedListener(this);
             shareVideoWindow.showAtLocation(itemView, Gravity.TOP, 0, 0);
+        }
+
+        protected void onAvatarClick() {
+            if (followIndicator.isEnabled()) {
+                followIndicator.setImageResource(R.mipmap.user_follow_indicator_followed);
+                followIndicator.setEnabled(false);
+                BaseUserInfo userInfo = mItem.videoInfo.getUserInfo();
+                ApiWorker.getInstance().followUser(userInfo.getUid(), new FollowListener(userInfo), null);
+            }
+            else {
+                onUserClick();
+            }
         }
 
         protected void onUserClick() {
@@ -272,6 +307,27 @@ public class VideoItem extends MediaItem {
                     else if (code == ApiErrorCode.COIN_NOT_ENOUGH) {
                         Toast.makeText(mContext, R.string.not_enough_coin_hint, Toast.LENGTH_SHORT)
                                 .show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        class FollowListener implements Response.Listener<JSONObject> {
+
+            private BaseUserInfo userInfo;
+
+            public FollowListener(BaseUserInfo userInfo) {
+                this.userInfo = userInfo;
+            }
+
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    int code = response.getInt("code");
+                    if (code == 0) {
+                        userInfo.doFollow();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

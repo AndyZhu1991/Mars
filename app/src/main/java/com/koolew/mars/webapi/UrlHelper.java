@@ -95,13 +95,13 @@ public class UrlHelper {
 
     // Topic
     public static final String TOPIC_URL = V5_URL + "topic"; // New Api category=movie/video
-    public static final String TOPIC_VIDEO_WORLD_URL = V4_URL + "topic/media";
+    public static final String TOPIC_VIDEO_WORLD_URL = V5_URL + "topic/media";
     public static final String ADD_TOPIC_URL = V4_URL + "topic/create";
     public static final String EDIT_TOPIC_DESC_URL = V4_URL + "topic";
     private static final String RECOMMEND_TOPIC_URL = V5_URL + "topic/recommend";
 
     // Video
-    private static final String SINGLE_VIDEO_URL = V4_URL + "video";
+    private static final String SINGLE_VIDEO_URL = V5_URL + "video";
     private static final String VIDEO_COMMENT_URL = V4_URL + "video/comment";
     public static final String SEND_DANMAKU_URL = V4_URL + "video/comment";
     private static final String VIDEO_KOO_RANK_URL = V4_URL + "video/koo";

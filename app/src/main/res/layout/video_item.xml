@@ -25,6 +25,16 @@
                 android:layout_marginLeft="10dp"
                 app:border_color="@color/avatar_gray_border"
                 app:border_width="2dp" />
+            
+            <ImageView
+                android:id="@+id/follow_indicator"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_alignRight="@+id/avatar"
+                android:layout_alignBottom="@+id/avatar"
+                android:layout_marginRight="-5dp"
+                android:layout_marginBottom="2dp"
+                android:visibility="visible"/>
 
             <com.koolew.mars.view.UserNameView
                 android:id="@+id/name_view"
@@ -36,21 +46,13 @@
                 app:textColor="@color/koolew_dark_gray"
                 app:textSize="16sp" />
 
-            <TextView
+            <ImageView
                 android:id="@+id/btn_act"
-                android:layout_width="70dp"
-                android:layout_height="24dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:layout_centerVertical="true"
-                android:paddingLeft="5dp"
-                android:gravity="center_vertical"
-                android:textSize="12sp"
-                android:textColor="@android:color/white"
-                android:text="@string/act_together"
-                android:drawablePadding="2dp"
-                android:drawableLeft="@mipmap/ic_act"
-                android:background="@drawable/video_item_act_bg"
+                android:padding="10dp"
+                android:src="@mipmap/ic_btn_capture_movie"
                 android:visibility="invisible"/>
         </RelativeLayout>
 

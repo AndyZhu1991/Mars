@@ -15,6 +15,14 @@ import java.util.List;
  */
 public class BaseUserInfo implements Serializable {
 
+    public static final int TYPE_UNKNOWN         = -1;
+    public static final int TYPE_SELF            = 0;
+    public static final int TYPE_STRANGER        = 1;
+    public static final int TYPE_FOLLOWED        = 2;
+    public static final int TYPE_FAN             = 3;
+    public static final int TYPE_FRIEND          = 4;
+    public static final int TYPE_NO_REGISTER     = 5;
+
     public static final int VIP_TYPE_NO_VIP = 0;
     public static final int VIP_TYPE_GOLD_VIP = 1;
     public static final int VIP_TYPE_SILVER_VIP = 2;
@@ -26,6 +34,7 @@ public class BaseUserInfo implements Serializable {
     public static final String KEY_FOLLOWS_COUNT = "follows";
     public static final String KEY_FANS_COUNT = "fans";
     public static final String KEY_KOO_COUNT = "koo_num";
+    public static final String KEY_TYPE = "type";
 
     private String uid;
     private String nickname;
@@ -34,6 +43,7 @@ public class BaseUserInfo implements Serializable {
     private int followsCount;
     private int fansCount;
     private int kooCount;
+    protected int type;
 
     public BaseUserInfo(JSONObject jsonObject) {
         try {
@@ -56,6 +66,7 @@ public class BaseUserInfo implements Serializable {
                 fansCount = jsonObject.getInt(KEY_FANS_COUNT);
             }
             kooCount = JsonUtil.getIntIfHas(jsonObject, KEY_KOO_COUNT);
+            type = JsonUtil.getIntIfHas(jsonObject, KEY_TYPE);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -103,6 +114,14 @@ public class BaseUserInfo implements Serializable {
         return kooCount;
     }
 
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
     public static List<BaseUserInfo> fromJSONArray(JSONArray jsonArray) {
         List<BaseUserInfo> list = new ArrayList<>();
 
@@ -117,4 +136,30 @@ public class BaseUserInfo implements Serializable {
 
         return list;
     }
+
+    public boolean isFollowed() {
+        return type == TYPE_FOLLOWED || type == TYPE_FRIEND;
+    }
+
+    public boolean isFan() {
+        return type == TYPE_FAN || type == TYPE_FRIEND;
+    }
+
+    public void doFollow() {
+        type = FRIEND_OP_ARRAY[DO_FOLLOW][type];
+    }
+
+    public void doUnfollow() {
+        type = FRIEND_OP_ARRAY[DO_UNFOLLOW][type];
+    }
+
+    public static final int NO_OPERATION = 0;
+    public static final int DO_FOLLOW    = 1;
+    public static final int DO_UNFOLLOW  = 2;
+
+    public static final int[][] FRIEND_OP_ARRAY = new int[][] {
+            new int[] {0, 1, 2, 3, 4, 5},  // No operation
+            new int[] {0, 2, 2, 4, 4, 5},  // Do follow
+            new int[] {0, 1, 1, 3, 3, 5},  // Do unfollow
+    };
 }
