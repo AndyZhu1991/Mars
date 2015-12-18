@@ -109,6 +109,7 @@
 
     <!-- For KoolewFeedsFragment -->
     <string name="see_more">查看更多</string>
+    <string name="search_topic_label">你想查询什么新话题？</string>
 
     <!-- For UserInvolveFragment -->
     <string name="joined_video">参与视频</string>

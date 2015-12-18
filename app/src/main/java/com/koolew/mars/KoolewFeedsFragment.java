@@ -1,5 +1,6 @@
 package com.koolew.mars;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MovieTopicInfo;
+import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.utils.JsonUtil;
@@ -105,39 +107,59 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
     @Override
     protected JsonObjectRequest doLoadMoreRequest() {
         return ApiWorker.getInstance().requestFeedsTopic(
-                mAdapter.getOldestCardTime(), mLoadMoreListener, null);
+                mAdapter.mData.getOldestCardTime(), mLoadMoreListener, null);
     }
 
 
+    private static final int HOLDER_TYPE_SEARCH = 1;
     private static final int HOLDER_TYPE_2ITEMS = 2;
     private static final int HOLDER_TYPE_3ITEMS = 3;
 
     class FeedsTopicAdapter extends LoadMoreAdapter {
 
-        private List<FeedsItem> mData = new ArrayList<>();
+        private FeedsData mData = new FeedsData();
 
         @Override
         public RecyclerView.ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
-            FeedsItemViewHolder holder = new FeedsItemViewHolder(LayoutInflater.from(getActivity())
-                    .inflate(R.layout.feeds_card_item, parent, false));
-
-            if (viewType == HOLDER_TYPE_2ITEMS) {
-                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) holder.thumbFrame0.getLayoutParams();
-                lp.weight = 4;
-                holder.thumbFrame0.setRatio(8, 3);
-                holder.thumbFrame1.setVisibility(View.GONE);
+            if (viewType == HOLDER_TYPE_SEARCH) {
+                return new SearchTopicHolder(LayoutInflater.from(getActivity())
+                        .inflate(R.layout.search_topic_item_feeds, parent, false));
             }
+            else {
+                FeedsItemViewHolder holder = new FeedsItemViewHolder(LayoutInflater.from(getActivity())
+                        .inflate(R.layout.feeds_card_item, parent, false));
 
-            return holder;
+                if (viewType == HOLDER_TYPE_2ITEMS) {
+                    LinearLayout.LayoutParams lp =
+                            (LinearLayout.LayoutParams) holder.thumbFrame0.getLayoutParams();
+                    lp.weight = 4;
+                    holder.thumbFrame0.setRatio(8, 3);
+                    holder.thumbFrame1.setVisibility(View.GONE);
+                }
+
+                return holder;
+            }
         }
 
         @Override
         public int getCustomItemViewType(int position) {
-            return mData.get(position).videoInfos[1] == null ? HOLDER_TYPE_2ITEMS : HOLDER_TYPE_3ITEMS;
+            FeedsItem feedsItem = mData.get(position);
+            if (feedsItem == null) {
+                return HOLDER_TYPE_SEARCH;
+            }
+            else {
+                return feedsItem.videoInfos[1] == null ? HOLDER_TYPE_2ITEMS : HOLDER_TYPE_3ITEMS;
+            }
         }
 
         @Override
         public void onBindCustomViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+            if (getCustomItemViewType(position) == HOLDER_TYPE_SEARCH) {
+                ImageLoader.getInstance().displayImage(MyAccountInfo.getAvatar(),
+                        ((SearchTopicHolder) viewHolder).avatar);
+                return;
+            }
+
             FeedsItemViewHolder holder = (FeedsItemViewHolder) viewHolder;
             FeedsItem item = mData.get(position);
 
@@ -179,13 +201,43 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
         public int getCustomItemCount() {
             return mData.size();
         }
+    }
+
+    static class FeedsData {
+        private List<FeedsItem> itemList = new ArrayList<>();
+
+        public int size() {
+            if (itemList.size() == 0) {
+                return 0;
+            }
+            else {
+                return itemList.size() + 1;
+            }
+        }
+
+        public FeedsItem get(int position) {
+            if (position == 0) {
+                return null;
+            }
+            else {
+                return itemList.get(position - 1);
+            }
+        }
+
+        public void add(FeedsItem feedsItem) {
+            itemList.add(feedsItem);
+        }
+
+        public void clear() {
+            itemList.clear();
+        }
 
         private long getOldestCardTime() {
-            if (mData.size() == 0) {
+            if (itemList.size() == 0) {
                 return Long.MAX_VALUE;
             }
             else {
-                return mData.get(mData.size() - 1).topicInfo.getUpdateTime();
+                return itemList.get(itemList.size() - 1).topicInfo.getUpdateTime();
             }
         }
     }
@@ -257,6 +309,21 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
 
         private void startFeedsMediaActivity(String topicId) {
             TopicMediaActivity.startThisActivity(getActivity(), topicId, TopicMediaActivity.TYPE_FEEDS);
+        }
+    }
+
+    class SearchTopicHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private ImageView avatar;
+
+        public SearchTopicHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+            avatar = (ImageView) itemView.findViewById(R.id.avatar);
+        }
+
+        @Override
+        public void onClick(View v) {
+            getActivity().startActivity(new Intent(getActivity(), AddTopicActivity.class));
         }
     }
 

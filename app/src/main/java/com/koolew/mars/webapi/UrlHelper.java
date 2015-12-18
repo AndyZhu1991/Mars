@@ -94,7 +94,7 @@ public class UrlHelper {
     public static final String NOTIFICATION_KOO_URL = V4_URL + "notification/koo";
 
     // Topic
-    public static final String TOPIC_URL = V4_URL + "topic"; // New Api category=movie/video
+    public static final String TOPIC_URL = V5_URL + "topic"; // New Api category=movie/video
     public static final String TOPIC_VIDEO_WORLD_URL = V4_URL + "topic/media";
     public static final String ADD_TOPIC_URL = V4_URL + "topic/create";
     public static final String EDIT_TOPIC_DESC_URL = V4_URL + "topic";
