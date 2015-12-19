@@ -257,8 +257,8 @@ public class VideoItem extends MediaItem {
             SingleMediaFragment.startThisFragment(mContext, mItem.videoInfo.getVideoId());
         }
 
-        public void hideKooAndComment() {
-            kooAndComment.setVisibility(View.GONE);
+        public void disableKooAndComment() {
+            kooAndComment.setEnabled(false);
         }
 
         @Override

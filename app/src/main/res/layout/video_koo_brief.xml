@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginBottom="5dp"
+    android:background="@drawable/video_koo_brief_bg">
+
+    <RelativeLayout
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="32dp">
+
+        <TextView
+            android:id="@+id/koo_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:textColor="#FC7B7B"
+            android:textSize="14sp"
+            android:text="@string/video_koo_brief_title_count"
+            android:drawableLeft="@mipmap/video_koo_brief_head_xxx"
+            android:drawablePadding="5dp"/>
+
+        <TextView
+            android:id="@+id/koo_item_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textColor="#9B9B9B"
+            android:textSize="12sp"
+            android:text="@string/more"
+            android:drawableRight="@mipmap/into_arrow"
+            android:drawablePadding="5dp"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EBEBEB"/>
+
+    <LinearLayout
+        android:id="@+id/user_view0"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatar0"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginLeft="10dp"
+            app:border_width="2dp"
+            app:border_color="@color/avatar_gray_border"/>
+
+        <TextView
+            android:id="@+id/nickname0"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="6dp"
+            android:textSize="14sp"
+            android:textColor="#5B5B5B"/>
+
+        <TextView
+            android:id="@+id/koo_count0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="10dp"
+            android:textSize="12sp"
+            android:textColor="#FC7B7B"
+            android:text="@string/item_count"
+            android:drawableLeft="@mipmap/ic_count_koo"
+            android:drawablePadding="3dp"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/dash_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@mipmap/horizontal_dash_line"/>
+
+    <LinearLayout
+        android:id="@+id/user_view1"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatar1"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginLeft="10dp"
+            app:border_width="2dp"
+            app:border_color="@color/avatar_gray_border"/>
+
+        <TextView
+            android:id="@+id/nickname1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="6dp"
+            android:textSize="14sp"
+            android:textColor="#5B5B5B"/>
+
+        <TextView
+            android:id="@+id/koo_count1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="10dp"
+            android:textSize="12sp"
+            android:textColor="#FC7B7B"
+            android:text="@string/item_count"
+            android:drawableLeft="@mipmap/ic_count_koo"
+            android:drawablePadding="3dp"/>
+    </LinearLayout>
+</LinearLayout>

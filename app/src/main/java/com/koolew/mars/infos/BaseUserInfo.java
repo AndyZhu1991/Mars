@@ -46,6 +46,9 @@ public class BaseUserInfo implements Serializable {
     protected int type;
 
     public BaseUserInfo(JSONObject jsonObject) {
+        if (jsonObject == null) {
+            return;
+        }
         try {
             if (jsonObject.has(KEY_UID)) {
                 uid = jsonObject.getString(KEY_UID);

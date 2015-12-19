@@ -15,8 +15,10 @@ import com.koolew.mars.topicmedia.BasicTitleItem;
 import com.koolew.mars.topicmedia.CommentItem;
 import com.koolew.mars.topicmedia.CommentTitleItem;
 import com.koolew.mars.topicmedia.MediaItem;
+import com.koolew.mars.topicmedia.MovieItem;
 import com.koolew.mars.topicmedia.UniversalMediaAdapter;
 import com.koolew.mars.topicmedia.VideoItem;
+import com.koolew.mars.topicmedia.VideoKooBriefItem;
 import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONArray;
@@ -97,7 +99,7 @@ public class SingleMediaFragment extends BaseTopicMediaFragment<SingleMediaFragm
                 holder.itemView.setOnClickListener(this);
             }
             else if (holder instanceof VideoItem.ItemViewHolder) {
-                ((VideoItem.ItemViewHolder) holder).hideKooAndComment();
+                ((VideoItem.ItemViewHolder) holder).disableKooAndComment();
             }
             return holder;
         }
@@ -126,7 +128,18 @@ public class SingleMediaFragment extends BaseTopicMediaFragment<SingleMediaFragm
         @Override
         protected MediaItem fromEveryRefreshObject(JSONObject itemObject) {
             mVideoInfo = new VideoInfo(itemObject);
-            return getRealMediaItem(itemObject);
+            if (mVideoInfo.getTopicInfo() == null) {
+                mVideoInfo.setTopicInfo(mTopicInfo);
+            }
+            if (mTopicInfo.getCategory().equals(BaseTopicInfo.CATEGORY_VIDEO)) {
+                return new VideoItem(mVideoInfo);
+            }
+            else if (mTopicInfo.getCategory().equals(BaseTopicInfo.CATEGORY_MOVIE)) {
+                return new MovieItem(mVideoInfo);
+            }
+            else {
+                throw new RuntimeException("Unknown category");
+            }
         }
 
         @Override
@@ -136,7 +149,16 @@ public class SingleMediaFragment extends BaseTopicMediaFragment<SingleMediaFragm
 
         @Override
         protected void onRefreshResult(JSONObject result, List<MediaItem> data) {
-            data.add(new CommentTitleItem(mVideoInfo));
+            try {
+                VideoKooBriefItem videoKooBriefItem = new VideoKooBriefItem(mVideoInfo,
+                        result.getJSONObject("video").getJSONArray("koo_ranks"));
+                if (videoKooBriefItem.hasKooRankUser()) {
+                    data.add(videoKooBriefItem);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            data.add(new CommentTitleItem(mVideoInfo.getCommentCount()));
         }
 
         @Override

@@ -165,7 +165,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="3dp"
-                    android:text="@string/comment"
+                    android:text="@string/danmaku"
                     android:textColor="@color/koolew_light_gray"
                     android:textSize="12sp" />
             </LinearLayout>
