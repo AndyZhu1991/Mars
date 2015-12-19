@@ -175,7 +175,7 @@ public class MainActivity extends BaseV4FragmentActivity
         mNameView.setUserInfo(MyAccountInfo.getNickname(), MyAccountInfo.getVip());
         mFansCountText.setText(getString(R.string.fans_count, MyAccountInfo.getFansCount()));
         mFollowsCountText.setText(getString(R.string.follows_count, MyAccountInfo.getFollowsCount()));
-        mCountKoo.setText(String.valueOf(MyAccountInfo.getKooNum()));
+        mCountKoo.setText(getString(R.string.got_support_num, MyAccountInfo.getKooNum()));
         long localCoinCount = MyAccountInfo.getCoinNum();
         mCountCoin.setText(String.valueOf(localCoinCount >= 0 ? localCoinCount : 0));
     }
@@ -215,8 +215,7 @@ public class MainActivity extends BaseV4FragmentActivity
                     MyAccountInfo.setKooNum(user.getLong("koo_num"));
                     MyAccountInfo.setFansCount(user.getInt("fans"));
                     MyAccountInfo.setFollowsCount(user.getInt("follows"));
-                    mIncomeNum.setText(getString(R.string.today_income_renminbi,
-                            user.getDouble("today_profit")));
+                    mIncomeNum.setText(String.format("%.3f", user.getDouble("today_profit")));
                     new PreferenceHelper(MainActivity.this).setPushBit(user.getInt("push_bit"));
 
                     mPhoneNumber.setNumber(MyAccountInfo.getPhoneNumber());
@@ -230,7 +229,7 @@ public class MainActivity extends BaseV4FragmentActivity
                         }
                     }.execute();
                     mNameView.setUserInfo(MyAccountInfo.getNickname(), MyAccountInfo.getVip());
-                    mCountKoo.setText(String.valueOf(MyAccountInfo.getKooNum()));
+                    mCountKoo.setText(getString(R.string.got_support_num, MyAccountInfo.getKooNum()));
                     mFansCountText.setText(getString(R.string.fans_count, MyAccountInfo.getFansCount()));
                     mFollowsCountText.setText(getString(R.string.follows_count, MyAccountInfo.getFollowsCount()));
                 }

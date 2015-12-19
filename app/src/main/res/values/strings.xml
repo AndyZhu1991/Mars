@@ -57,6 +57,7 @@
     <string name="title_clock_in">打卡领金币</string>
     <string name="title_settings">设置</string>
     <string name="title_add">新建话题</string>
+    <string name="got_support_num" formatted="false">获得支持：%d</string>
     <string name="got_koo">获得打赏</string>
     <string name="coin_count">金币数量</string>
     <string name="fans_count" formatted="false">"%d 粉丝"</string>
@@ -411,7 +412,7 @@
     <string name="item_count" formatted="false">%d条</string>
 
     <!-- For income activities -->
-    <string name="today_income_rmb">今日收益（元）</string>
+    <string name="today_income">今日收益</string>
     <string name="cash_income_desc">在可见上传有趣的视频，吸引粉丝，就可以获得现金收益</string>
     <string name="total_income_rmb">总收益（元）</string>
     <string name="this_month_income_rmb">当月收益（元）</string>
