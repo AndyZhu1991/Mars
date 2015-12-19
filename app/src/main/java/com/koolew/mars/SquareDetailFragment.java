@@ -52,10 +52,15 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
     private String mSquareTitle;
     private String mSquareId;
 
+    private int mNextPage;
+    private int mNextBefore;
+
 
     public SquareDetailFragment() {
         super();
         mLayoutResId = R.layout.fragment_tag_square;
+        isLazyLoad = false;
+        isNeedLoadMore = true;
     }
 
     @Override
@@ -92,16 +97,19 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
 
     @Override
     protected JsonObjectRequest doRefreshRequest() {
+        mNextPage = 0;
+        mNextBefore = 0;
         requestTopThumbs();
-        return ApiWorker.getInstance().standardGetRequest(UrlHelper.getSquareDetailUrl(mSquareId),
-                mRefreshListener, mThumbErrorListener);
+        return ApiWorker.getInstance().standardGetRequest(
+                UrlHelper.getSquareDetailUrl(mSquareId, mNextPage, mNextBefore),
+                mRefreshListener, null);
     }
 
     private Request<JSONObject> mTopThumbsRequest = null;
     private void requestTopThumbs() {
         if (mTopThumbsRequest == null) {
             mTopThumbsRequest = ApiWorker.getInstance()
-                    .requestDefaultPlayGroup(mSquareId, mThumbListener, null);
+                    .requestDefaultPlayGroup(mSquareId, mThumbListener, mThumbErrorListener);
         }
     }
 
@@ -140,25 +148,39 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
 
     @Override
     protected JsonObjectRequest doLoadMoreRequest() {
-        return null;
+        return ApiWorker.getInstance().standardGetRequest(
+                UrlHelper.getSquareDetailUrl(mSquareId, mNextPage, mNextBefore),
+                mLoadMoreListener, null);
     }
 
     @Override
     protected boolean handleRefresh(JSONObject response) {
         JSONArray cards = retrieveSquareCards(response);
+        updateNextPageAndBefore(response);
         if (cards.length() > 0) {
-            mAdapter.setItems(cards);
+            return mAdapter.setItems(cards) > 0;
         }
-        return true;
+        return false;
     }
 
     @Override
     protected boolean handleLoadMore(JSONObject response) {
         JSONArray cards = retrieveSquareCards(response);
+        updateNextPageAndBefore(response);
         if (cards.length() > 0) {
-            mAdapter.addItems(cards);
+            return mAdapter.addItems(cards) > 0;
         }
-        return true;
+        return false;
+    }
+
+    private void updateNextPageAndBefore(JSONObject response) {
+        try {
+            JSONObject next = response.getJSONObject("result").getJSONObject("next");
+            mNextPage = next.getInt("page");
+            mNextBefore = next.getInt("before");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private JSONArray retrieveSquareCards(JSONObject response) {
@@ -199,13 +221,14 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
 
         private List<SquareItem> mData = new ArrayList<>();
 
-        public void setItems(JSONArray jsonArray) {
+        public int setItems(JSONArray jsonArray) {
             mData.clear();
-            addData(jsonArray);
+            int addedCount = addData(jsonArray);
             notifyDataSetChanged();
+            return addedCount;
         }
 
-        public void addItems(JSONArray jsonArray) {
+        public int addItems(JSONArray jsonArray) {
             int originCount = mData.size();
             int addedCount = addData(jsonArray);
             if (originCount % 2 == 0) {
@@ -215,6 +238,7 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
                 notifyItemChanged(subItemToLine(originCount) - 1); // Last line
                 notifyItemRangeInserted(subItemToLine(originCount), subItemToLine(addedCount - 1));
             }
+            return addedCount;
         }
 
         private int addData(JSONArray jsonArray) {

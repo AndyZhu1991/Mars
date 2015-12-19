@@ -432,10 +432,12 @@ public class UrlHelper {
                 .build().toString();
     }
 
-    public static String getSquareDetailUrl(String squareId) {
+    public static String getSquareDetailUrl(String squareId, int page, int before) {
         return Uri.parse(SQUARE_DETAIL_URL)
                 .buildUpon()
                 .appendQueryParameter("square_id", squareId)
+                .appendQueryParameter("page", String.valueOf(page))
+                .appendQueryParameter("before", String.valueOf(before))
                 .build().toString();
     }
 
