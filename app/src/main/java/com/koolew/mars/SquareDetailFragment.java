@@ -4,12 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseTopicInfo;
@@ -20,6 +24,7 @@ import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.utils.JsonUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.TitleBarView;
+import com.koolew.mars.webapi.ApiErrorCode;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -87,9 +92,51 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
 
     @Override
     protected JsonObjectRequest doRefreshRequest() {
+        requestTopThumbs();
         return ApiWorker.getInstance().standardGetRequest(UrlHelper.getSquareDetailUrl(mSquareId),
-                mRefreshListener, null);
+                mRefreshListener, mThumbErrorListener);
     }
+
+    private Request<JSONObject> mTopThumbsRequest = null;
+    private void requestTopThumbs() {
+        if (mTopThumbsRequest == null) {
+            mTopThumbsRequest = ApiWorker.getInstance()
+                    .requestDefaultPlayGroup(mSquareId, mThumbListener, null);
+        }
+    }
+
+    private Response.Listener<JSONObject> mThumbListener = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            mTopThumbsRequest = null;
+            try {
+                int code = response.getInt("code");
+                if (code == 0) {
+                    JSONArray videos = response.getJSONObject("result").getJSONObject("next")
+                            .getJSONArray("videos");
+                    String thumbA = videos.getJSONObject(0).getString(BaseVideoInfo.KEY_THUMB_URL);
+                    if (!TextUtils.isEmpty(thumbA)) {
+                        ImageLoader.getInstance().displayImage(thumbA, mLeftThumb);
+                    }
+                    String thumbB = videos.getJSONObject(1).getString(BaseVideoInfo.KEY_THUMB_URL);
+                    if (!TextUtils.isEmpty(thumbB)) {
+                        ImageLoader.getInstance().displayImage(thumbB, mRightThumb);
+                    }
+                }
+                else if (code == ApiErrorCode.NO_MORE_ITEMS) {
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private Response.ErrorListener mThumbErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            mTopThumbsRequest = null;
+        }
+    };
 
     @Override
     protected JsonObjectRequest doLoadMoreRequest() {
