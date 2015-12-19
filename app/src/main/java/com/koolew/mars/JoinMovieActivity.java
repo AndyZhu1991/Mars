@@ -176,7 +176,9 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
         protected JsonObjectRequest doRefreshRequest() {
             page = 0;
             if (mTag == null) {
-                return ApiWorker.getInstance().getMovies(page, mRefreshListener, null);
+                return ApiWorker.getInstance().standardGetRequest(
+                        UrlHelper.getRecommendTopicUrl(BaseTopicInfo.CATEGORY_MOVIE, page),
+                        mRefreshListener, null);
             }
             else {
                 return ApiWorker.getInstance().standardGetRequest(
@@ -189,7 +191,9 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
         protected JsonObjectRequest doLoadMoreRequest() {
             page++;
             if (mTag == null) {
-                return ApiWorker.getInstance().getMovies(page, mLoadMoreListener, null);
+                return ApiWorker.getInstance().standardGetRequest(
+                        UrlHelper.getRecommendTopicUrl(BaseTopicInfo.CATEGORY_MOVIE, page),
+                        mLoadMoreListener, null);
             }
             else {
                 return ApiWorker.getInstance().standardGetRequest(

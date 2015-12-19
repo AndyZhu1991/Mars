@@ -199,7 +199,7 @@ public class JoinVideoActivity extends BaseV4FragmentActivity
 
         @Override
         protected JsonObjectRequest doLoadMoreRequest() {
-            page = 1;
+            page++;
             if (mTag == null) {
                 return ApiWorker.getInstance().standardGetRequest(
                         UrlHelper.getRecommendTopicUrl(BaseTopicInfo.CATEGORY_VIDEO, page),
