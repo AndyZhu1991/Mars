@@ -41,6 +41,22 @@ public class BaseVideoInfo implements Serializable {
     protected BaseTopicInfo mTopicInfo;
     private ArrayList<DanmakuItemInfo> mDanmakus;
 
+    public static BaseVideoInfo lightCopy(BaseVideoInfo videoInfo) {
+        BaseVideoInfo baseVideoInfo = new BaseVideoInfo();
+        baseVideoInfo.mVideoId = videoInfo.mVideoId;
+        baseVideoInfo.mVideoUrl = videoInfo.mVideoUrl;
+        baseVideoInfo.mVideoThumb = videoInfo.mVideoThumb;
+        baseVideoInfo.mCreateTime = videoInfo.mCreateTime;
+        baseVideoInfo.mPrivacy = videoInfo.mPrivacy;
+        baseVideoInfo.mKooNum = videoInfo.mKooNum;
+        baseVideoInfo.mKooTotal = videoInfo.mKooTotal;
+        baseVideoInfo.mCommentCount = videoInfo.mCommentCount;
+        baseVideoInfo.mUserInfo = videoInfo.mUserInfo;
+        baseVideoInfo.mTopicInfo = videoInfo.mTopicInfo;
+        baseVideoInfo.mDanmakus = videoInfo.mDanmakus;
+        return baseVideoInfo;
+    }
+
     protected BaseVideoInfo() {
     }
 

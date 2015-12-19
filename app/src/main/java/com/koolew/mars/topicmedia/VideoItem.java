@@ -226,7 +226,7 @@ public class VideoItem extends MediaItem {
 
         protected void onDanmakuSendClick() {
             Intent intent = new Intent(mContext, SendDanmakuActivity.class);
-            intent.putExtra(SendDanmakuActivity.KEY_VIDEO_INFO, mItem.videoInfo);
+            intent.putExtra(SendDanmakuActivity.KEY_VIDEO_INFO, BaseVideoInfo.lightCopy(mItem.videoInfo));
             mContext.startActivity(intent);
         }
 
