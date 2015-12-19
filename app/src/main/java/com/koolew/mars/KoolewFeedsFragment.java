@@ -164,7 +164,7 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
             FeedsItem item = mData.get(position);
 
             holder.title.setText(item.topicInfo.getTitle());
-            holder.videoCount.setText(getString(R.string.video_count_label, item.topicInfo.getVideoCount()));
+            holder.videoCount.setText(getString(R.string.video_count, item.topicInfo.getVideoCount()));
             if (item.topicInfo.getCategory().equals(BaseTopicInfo.CATEGORY_VIDEO)) {
                 holder.captureButton.setImageResource(R.mipmap.ic_btn_capture_video);
                 holder.movieCategoryImage.setVisibility(View.INVISIBLE);

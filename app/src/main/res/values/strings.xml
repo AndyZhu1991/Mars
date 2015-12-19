@@ -128,6 +128,7 @@
 
     <!-- For TopicInvitationList -->
     <string name="video_count_label" formatted="false">视频总数：%d个</string>
+    <string name="video_count" formatted="false">视频数：%d个</string>
     <string name="invited_label">你被点名啦！</string>
 
     <!-- For FeedsTopicActivity -->
