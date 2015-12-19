@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
+import com.koolew.mars.utils.UriProcessor;
 import com.koolew.mars.view.TitleBarView;
 
 
@@ -22,15 +23,20 @@ public class PushWrapperActivity extends BaseV4FragmentActivity {
         Fragment fragment;
         int themeColor;
         String title;
-        if (tabType.equals("feeds")) {
+        if (tabType.equals(UriProcessor.TAB_FEEDS)) {
             fragment = new KoolewFeedsFragment();
             themeColor = getResources().getColor(R.color.koolew_light_orange);
             title = getString(R.string.koolew_news_title);
         }
-        else if (tabType.equals("suggestion")) {
+        else if (tabType.equals(UriProcessor.TAB_SUGGESTION)) {
             fragment = new FriendMeetFragment();
             themeColor = getResources().getColor(R.color.koolew_light_blue);
             title = getString(R.string.friend_meet_title);
+        }
+        else if (tabType.equals(UriProcessor.TAB_SQUARE)) {
+            fragment = new KoolewSquareFragment();
+            themeColor = getResources().getColor(R.color.koolew_black);
+            title = getString(R.string.koolew_hot_title);
         }
         else {
             fragment = null;

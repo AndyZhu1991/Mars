@@ -30,13 +30,14 @@ public class UriProcessor {
     protected static final String KEY_USER_ID = "user_id";
     protected static final String KEY_TAB_ID = "tab_id";
 
-    protected static final String TAB_FEEDS = "feeds";
-    protected static final String TAB_SUGGESTION = "suggestion";
-    protected static final String TAB_ASSIGNMENT = "assignment";
-    protected static final String TAB_COMMENT = "comment";
-    protected static final String TAB_ME = "me";
-    protected static final String TAB_KOO = "koo";
-    protected static final String TAB_PROFIT = "profit";
+    public static final String TAB_FEEDS = "feeds";
+    public static final String TAB_SQUARE = "square";
+    public static final String TAB_SUGGESTION = "suggestion";
+    public static final String TAB_ASSIGNMENT = "assignment";
+    public static final String TAB_COMMENT = "comment";
+    public static final String TAB_ME = "me";
+    public static final String TAB_KOO = "koo";
+    public static final String TAB_PROFIT = "profit";
 
     private Context mContext;
 
@@ -99,7 +100,7 @@ public class UriProcessor {
     }
 
     protected void switchToTab(String tabId) {
-        if (tabId.equals(TAB_FEEDS) || tabId.equals(TAB_SUGGESTION)) {
+        if (tabId.equals(TAB_FEEDS) || tabId.equals(TAB_SUGGESTION) || tabId.equals(TAB_SQUARE)) {
             Intent intent = newIntent(mContext, PushWrapperActivity.class);
             intent.putExtra(PushWrapperActivity.KEY_TAB_TYPE, tabId);
             mContext.startActivity(intent);
