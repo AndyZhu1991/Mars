@@ -5,6 +5,7 @@ import android.hardware.Camera;
 import android.util.Log;
 
 import com.koolew.mars.AppProperty;
+import com.koolew.mars.utils.DeviceDetective;
 
 import java.io.IOException;
 import java.util.List;
@@ -113,7 +114,9 @@ public class CameraInstance {
         if (this.mCameraDevice != null) {
             Camera.Parameters params = this.mCameraDevice.getParameters();
             setBestCameraPreviewFpsRange(params);
-            params.setFlashMode("off");
+            if (!DeviceDetective.isMi3()) {
+                params.setFlashMode("off");
+            }
             params.setWhiteBalance(Camera.Parameters.WHITE_BALANCE_AUTO);
             params.setSceneMode(Camera.Parameters.SCENE_MODE_AUTO);
             params.setRecordingHint(true);
@@ -133,7 +136,7 @@ public class CameraInstance {
         int bestSizeIndex = -1;
         for (int i = 0; i < count; i++) {
             Camera.Size size = sizes.get(i);
-            if (size.width == 480 && size.height == 480) {
+            if (DeviceDetective.isMi3() && size.width == 480 && size.height == 480) {
                 // 米3在480*480的预览下会显示不正常
                 continue;
             }
