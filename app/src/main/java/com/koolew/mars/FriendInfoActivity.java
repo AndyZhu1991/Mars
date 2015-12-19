@@ -144,7 +144,7 @@ public class FriendInfoActivity extends BaseV4FragmentActivity implements View.O
                     new DisplayBlurImageAndPalette(mBlurAvatar, mUserInfo.getAvatar()) {
                         @Override
                         protected void onPalette(Palette palette) {
-                            mThemeColor = palette.getMutedColor(Color.BLACK);
+                            mThemeColor = palette.getDarkVibrantColor(palette.getMutedColor(Color.BLACK));
                             mFragment.setupThemeColor();
                         }
                     }.execute();
