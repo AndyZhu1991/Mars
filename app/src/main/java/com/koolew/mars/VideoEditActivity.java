@@ -41,6 +41,7 @@ public class VideoEditActivity extends BaseActivity implements View.OnClickListe
     public static final String KEY_TOPIC_TITLE = "topic title";
     public static final String KEY_IS_MOVIE = "is movie";
     public static final String KEY_FROM = "from";
+    public static final String KEY_TAG_ID = "tag id";
 
     private static final int NO_MUSIC_SELECTED = -1;
 
@@ -50,6 +51,7 @@ public class VideoEditActivity extends BaseActivity implements View.OnClickListe
     private String mTopicTitle;
     private boolean isMovie;
     private String mFrom;
+    private String mDefaultTagId;
     private BaseVideoInfo mUploadedVideo;
 
     private String mSelectedBgmPath;
@@ -80,6 +82,7 @@ public class VideoEditActivity extends BaseActivity implements View.OnClickListe
         mTopicTitle = getIntent().getStringExtra(KEY_TOPIC_TITLE);
         isMovie = getIntent().getBooleanExtra(KEY_IS_MOVIE, false);
         mFrom = getIntent().getStringExtra(KEY_FROM);
+        mDefaultTagId = getIntent().getStringExtra(KEY_TAG_ID);
 
         initMembers();
 
@@ -114,29 +117,32 @@ public class VideoEditActivity extends BaseActivity implements View.OnClickListe
         mPlayImage = (ImageView) findViewById(R.id.play_image);
 
         if (isMovie) {
-            findViewById(R.id.music_layout).setVisibility(View.GONE);
+            findViewById(R.id.just_for_video).setVisibility(View.GONE);
         }
 
-        mBgmSwitch = (ImageView) findViewById(R.id.bgm_switch);
-        mBgmSwitch.setOnClickListener(this);
+        if (!isMovie) {
+            mBgmSwitch = (ImageView) findViewById(R.id.bgm_switch);
+            mBgmSwitch.setOnClickListener(this);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mAdapter = new MusicSelectAdapter();
-        mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+            mRecyclerView.setHasFixedSize(true);
+            mRecyclerView.setLayoutManager(layoutManager);
+            mAdapter = new MusicSelectAdapter();
+            mRecyclerView.setAdapter(mAdapter);
 
-        mTagRecycler = (RecyclerView) findViewById(R.id.tag_recycler);
-        mTagRecycler.setLayoutManager(new LinearLayoutManager(
-                this, LinearLayoutManager.HORIZONTAL, false));
-        TagAdapter tagAdapter = new TagAdapter(this);
-        tagAdapter.initTags(TagAdapter.TAGS_VIDEO, false);
-        tagAdapter.setTextColorSelected(0xFF333333);
-        tagAdapter.setTagChangedListener(this);
-        mTag = tagAdapter.getSelectedTag();
-        mTagRecycler.setAdapter(tagAdapter);
+            mTagRecycler = (RecyclerView) findViewById(R.id.tag_recycler);
+            mTagRecycler.setLayoutManager(new LinearLayoutManager(
+                    this, LinearLayoutManager.HORIZONTAL, false));
+            TagAdapter tagAdapter = new TagAdapter(this);
+            tagAdapter.initTags(TagAdapter.TAGS_VIDEO, false);
+            tagAdapter.setTextColorSelected(0xFF333333);
+            tagAdapter.setTagChangedListener(this);
+            tagAdapter.setSelectedTag(mDefaultTagId);
+            mTag = tagAdapter.getSelectedTag();
+            mTagRecycler.setAdapter(tagAdapter);
+        }
     }
 
     @Override

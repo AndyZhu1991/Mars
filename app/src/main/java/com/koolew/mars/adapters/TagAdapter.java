@@ -116,6 +116,17 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagItemHolder> {
         }
     }
 
+    public void setSelectedTag(String tagId) {
+        int position = 0;
+        for (int i = 0; i < mTags.size(); i++) {
+            if (mTags.get(i).getId().equals(tagId)) {
+                position = i;
+                break;
+            }
+        }
+        setSelectedPosition(position);
+    }
+
 
     class TagItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView textView;

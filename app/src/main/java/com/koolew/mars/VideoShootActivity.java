@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.koolew.mars.camerautils.CameraSurfacePreview;
+import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
@@ -57,12 +58,14 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
     public static final String KEY_TOPIC_ID = "topic id";
     public static final String KEY_TOPIC_TITLE = "topic title";
+    public static final String KEY_TAG_ID = "tag id";
 
     private static final int MODE_PREVIEW = 0;
     private static final int MODE_PLAYBACK = 1;
 
     private String mTopicId;
     private String mTopicTitle;
+    private String mDefaultTag;
 
     private FrameLayout mPreviewFrame;
     //private CameraSurfacePreview mPreview;
@@ -104,6 +107,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
         mTopicId = getIntent().getStringExtra(KEY_TOPIC_ID);
         mTopicTitle = getIntent().getStringExtra(KEY_TOPIC_TITLE);
+        mDefaultTag = getIntent().getStringExtra(KEY_TAG_ID);
         if (TextUtils.isEmpty(mTopicId) || TextUtils.isEmpty(mTopicTitle)) {
             throw new RuntimeException("Start VideoShootActivity must has KEY_TOPIC_ID and KEY_TOPIC_TITLE extras");
         }
@@ -706,6 +710,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
                         recordingSessionView.getThumbName());
                 intent.putExtra(VideoEditActivity.KEY_TOPIC_ID, mTopicId);
                 intent.putExtra(VideoEditActivity.KEY_TOPIC_TITLE, mTopicTitle);
+                intent.putExtra(VideoEditActivity.KEY_TAG_ID, mDefaultTag);
                 startActivityForResult(intent, REQUEST_CODE_EDIT_VIDEO);
             }
         }.execute();
@@ -783,10 +788,16 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         switchCamera();
     }
 
-    public static void startThisActivity(Context context, String topicId, String topicTitle) {
+    public static void startThisActivity(Context context, BaseTopicInfo topicInfo) {
+        startThisActivity(context, topicInfo.getTopicId(), topicInfo.getTitle(), topicInfo.getTagId());
+    }
+
+    public static void startThisActivity(Context context, String topicId, String topicTitle,
+                                         String tagId) {
         Intent intent = new Intent(context, VideoShootActivity.class);
         intent.putExtra(VideoShootActivity.KEY_TOPIC_ID, topicId);
         intent.putExtra(VideoShootActivity.KEY_TOPIC_TITLE, topicTitle);
+        intent.putExtra(VideoShootActivity.KEY_TAG_ID, tagId);
         context.startActivity(intent);
     }
 

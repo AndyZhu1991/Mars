@@ -117,7 +117,7 @@ public class TopicMediaActivity extends BaseV4FragmentActivity implements View.O
     }
 
     protected void startVideoShootActivity() {
-        VideoShootActivity.startThisActivity(this, mTopicId, mTopicInfo.getTitle());
+        VideoShootActivity.startThisActivity(this, mTopicInfo);
     }
 
     protected void startMovieStudioActivity() {

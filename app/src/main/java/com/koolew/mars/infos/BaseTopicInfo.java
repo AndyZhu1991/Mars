@@ -22,6 +22,7 @@ public class BaseTopicInfo implements Serializable {
     public static final String KEY_THUMB = "thumb_url";
     public static final String KEY_UPDATE_TIME = "update_time";
     public static final String KEY_ATTR = "attri";
+    public static final String KEY_TAG_ID = "tag";
 
     public static final String CATEGORY_VIDEO = "video";
     public static final String CATEGORY_MOVIE = "movie";
@@ -33,6 +34,7 @@ public class BaseTopicInfo implements Serializable {
     protected int videoCount;
     protected String thumb;
     protected long updateTime;
+    protected String tagId;
 
     public BaseTopicInfo(JSONObject jsonObject) {
         try {
@@ -55,6 +57,7 @@ public class BaseTopicInfo implements Serializable {
             if (jsonObject.has(KEY_UPDATE_TIME)) {
                 updateTime = jsonObject.getLong(KEY_UPDATE_TIME);
             }
+            tagId = JsonUtil.getStringIfHas(jsonObject, KEY_TAG_ID);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -88,6 +91,9 @@ public class BaseTopicInfo implements Serializable {
         return videoCount;
     }
 
+    public String getTagId() {
+        return tagId;
+    }
 
     public static BaseTopicInfo dynamicTopicInfo(JSONObject jsonObject) {
         String category = JsonUtil.getStringIfHas(jsonObject, KEY_CATEGORY);

@@ -309,8 +309,7 @@ public class JoinVideoActivity extends BaseV4FragmentActivity
                                 TopicMediaActivity.TYPE_WORLD);
                     }
                     else if (v == captureBtn) {
-                        VideoShootActivity.startThisActivity(getActivity(), topicInfo.getTopicId(),
-                                topicInfo.getTitle());
+                        VideoShootActivity.startThisActivity(getActivity(), topicInfo);
                     }
                 }
             }

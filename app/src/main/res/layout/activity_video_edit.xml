@@ -38,47 +38,54 @@
     </FrameLayout>
 
     <LinearLayout
-        android:id="@+id/music_layout"
+        android:id="@+id/just_for_video"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:orientation="horizontal"
-        android:background="@android:color/black">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/bgm_switch"
+        <LinearLayout
+            android:id="@+id/music_layout"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:background="@android:color/black"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/bgm_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/music_disable" />
+
+            <include layout="@layout/vertical_divider" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@mipmap/music_disable"/>
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/choice_a_tag_please"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
 
-        <include layout="@layout/vertical_divider" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/koolew_deep_half_transparent_white" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
+            android:id="@+id/tag_recycler"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="24dp"
+            android:layout_margin="10dp" />
     </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/choice_a_tag_please"
-        android:textSize="14sp"
-        android:textColor="@android:color/white"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="10dp"
-        android:background="@color/koolew_deep_half_transparent_white"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/tag_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:layout_margin="10dp"/>
 </LinearLayout>

@@ -280,8 +280,7 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
             switch (v.getId()) {
                 case R.id.btn_capture:
                     if (topicInfo.getCategory().equals(BaseTopicInfo.CATEGORY_VIDEO)) {
-                        VideoShootActivity.startThisActivity(getActivity(), topicInfo.getTopicId(),
-                                topicInfo.getTitle());
+                        VideoShootActivity.startThisActivity(getActivity(), topicInfo);
                     }
                     else if (topicInfo.getCategory().equals(BaseTopicInfo.CATEGORY_MOVIE)) {
                         MovieStudioActivity.startThisActivity(getActivity(), (MovieTopicInfo) topicInfo);
