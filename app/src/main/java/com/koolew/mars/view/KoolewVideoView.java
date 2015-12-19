@@ -197,7 +197,7 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
     protected MediaPlayer generateMediaPlayer() {
         MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), Uri.parse("file://" + mVideoPath));
-        if (mCompletionListener != null) {
+        if (mediaPlayer != null && mCompletionListener != null) {
             mediaPlayer.setOnCompletionListener(this);
         }
         return mediaPlayer;

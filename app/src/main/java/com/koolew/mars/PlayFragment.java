@@ -145,6 +145,12 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
     }
 
     @Override
+    protected void onPageStart() {
+        super.onPageStart();
+        mVideoView.startPlay();
+    }
+
+    @Override
     public void onRightLayoutClick() {
         CurrentVideoInfo shareVideoInfo = mCurrentPlayPosition == POSITION_LEFT
                 ? mCurrentLeftVideoInfo : mCurrentRightVideoInfo;
@@ -252,7 +258,13 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
     private Response.Listener<JSONObject> mJudgeListener = new Response.Listener<JSONObject>() {
         @Override
         public void onResponse(JSONObject response) {
-            mBlockTouchFrame.setVisibility(View.INVISIBLE);
+            mBlockTouchFrame.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mBlockTouchFrame.setVisibility(View.INVISIBLE);
+                }
+            }, 500);
+
             try {
                 int code = response.getInt("code");
                 if (code == 0) {
@@ -281,7 +293,12 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
     private Response.ErrorListener mJudgeErrorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
-            mBlockTouchFrame.setVisibility(View.INVISIBLE);
+            mBlockTouchFrame.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mBlockTouchFrame.setVisibility(View.INVISIBLE);
+                }
+            }, 500);
             onJudgeError(error.getLocalizedMessage());
         }
     };
@@ -385,27 +402,38 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
         ImageLoader.getInstance().displayImage(mCurrentRightVideoInfo.userInfo.getAvatar(),
                 mRightAvatar, ImageLoaderHelper.avatarLoadOptions);
 
-        if (mCurrentLeftVideoInfo.userInfo.getType() == TypedUserInfo.TYPE_FOLLOWED
-                || mCurrentLeftVideoInfo.userInfo.getType() == TypedUserInfo.TYPE_FRIEND) {
-            mLeftFollowBtn.setText(R.string.followed);
-            mLeftFollowBtn.setEnabled(false);
-            mLeftFollowBtn.setBackgroundResource(R.drawable.play_follow_btn_followed_bg);
+        if (mCurrentLeftVideoInfo.userInfo.getType() == TypedUserInfo.TYPE_SELF) {
+            mLeftFollowBtn.setVisibility(View.INVISIBLE);
         }
         else {
-            mLeftFollowBtn.setText(R.string.follow);
-            mLeftFollowBtn.setEnabled(true);
-            mLeftFollowBtn.setBackgroundResource(R.drawable.play_follow_left_btn_bg);
+            mLeftFollowBtn.setVisibility(View.VISIBLE);
+            if (mCurrentLeftVideoInfo.userInfo.getType() == TypedUserInfo.TYPE_FOLLOWED
+                    || mCurrentLeftVideoInfo.userInfo.getType() == TypedUserInfo.TYPE_FRIEND) {
+                mLeftFollowBtn.setText(R.string.followed);
+                mLeftFollowBtn.setEnabled(false);
+                mLeftFollowBtn.setBackgroundResource(R.drawable.play_follow_btn_followed_bg);
+            } else {
+                mLeftFollowBtn.setText(R.string.follow);
+                mLeftFollowBtn.setEnabled(true);
+                mLeftFollowBtn.setBackgroundResource(R.drawable.play_follow_left_btn_bg);
+            }
         }
-        if (mCurrentRightVideoInfo.userInfo.getType() == TypedUserInfo.TYPE_FOLLOWED
-                || mCurrentRightVideoInfo.userInfo.getType() == TypedUserInfo.TYPE_FRIEND) {
-            mRightFollowBtn.setText(R.string.followed);
-            mRightFollowBtn.setEnabled(false);
-            mRightFollowBtn.setBackgroundResource(R.drawable.play_follow_btn_followed_bg);
+
+        if (mCurrentRightVideoInfo.userInfo.getType() == TypedUserInfo.TYPE_SELF) {
+            mRightFollowBtn.setVisibility(View.INVISIBLE);
         }
         else {
-            mRightFollowBtn.setText(R.string.follow);
-            mRightFollowBtn.setEnabled(true);
-            mRightFollowBtn.setBackgroundResource(R.drawable.play_follow_right_btn_bg);
+            mRightFollowBtn.setVisibility(View.VISIBLE);
+            if (mCurrentRightVideoInfo.userInfo.getType() == TypedUserInfo.TYPE_FOLLOWED
+                    || mCurrentRightVideoInfo.userInfo.getType() == TypedUserInfo.TYPE_FRIEND) {
+                mRightFollowBtn.setText(R.string.followed);
+                mRightFollowBtn.setEnabled(false);
+                mRightFollowBtn.setBackgroundResource(R.drawable.play_follow_btn_followed_bg);
+            } else {
+                mRightFollowBtn.setText(R.string.follow);
+                mRightFollowBtn.setEnabled(true);
+                mRightFollowBtn.setBackgroundResource(R.drawable.play_follow_right_btn_bg);
+            }
         }
     }
 

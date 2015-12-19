@@ -223,12 +223,15 @@
 <FrameLayout
     android:id="@+id/block_touch_frame"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#44000000">
 
     <ProgressBar
-        android:layout_width="88dp"
-        android:layout_height="88dp"
-        android:layout_gravity="center"/>
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:padding="6dp"
+        android:layout_gravity="center"
+        android:background="@drawable/play_progress_bg"/>
 </FrameLayout>
 
 </FrameLayout>
