@@ -28,6 +28,7 @@ import com.koolew.mars.camerautils.CameraSurfacePreview;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.statistics.BaseActivity;
+import com.koolew.mars.utils.DeviceDetective;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.AbsLongVideoSwitch;
 import com.koolew.mars.utils.PictureSelectUtil;
@@ -258,7 +259,9 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
             Camera.Parameters params = this.mCamera.getParameters();
             params.setPreviewFormat(ImageFormat.NV21);
             setBestCameraPreviewFpsRange(params);
-            params.setFlashMode("off");
+            if (!DeviceDetective.isMi3()) {
+                params.setFlashMode("off");
+            }
             params.setWhiteBalance(Camera.Parameters.WHITE_BALANCE_AUTO);
             params.setSceneMode(Camera.Parameters.SCENE_MODE_AUTO);
             params.setPreviewSize(previewWidth, previewHeight);
