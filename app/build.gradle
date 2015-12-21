@@ -10,8 +10,8 @@ android {
         applicationId "com.koolew.mars"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 14
-        versionName "2.2.1"
+        versionCode 15
+        versionName "2.3 beta"
         ndk {
             abiFilter "armeabi"
             abiFilter "armeabi-v7a"
