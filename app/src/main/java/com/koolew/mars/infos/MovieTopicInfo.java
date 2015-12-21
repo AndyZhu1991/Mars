@@ -59,6 +59,18 @@ public class MovieTopicInfo extends BaseTopicInfo implements Serializable {
         return fragments;
     }
 
+    public String findMovieName() {
+        int start = title.indexOf('《');
+        int end = title.indexOf('》');
+        int titleLen = title.length();
+        if (start >= 0 && start < titleLen && end >= 0 && end < titleLen && start < end) {
+            return title.substring(start + 1, end);
+        }
+        else {
+            return "";
+        }
+    }
+
     public static class MovieFragment implements Serializable {
         public static final String KEY_ACTOR_NAME = "actor";
         public static final String KEY_START = "start";

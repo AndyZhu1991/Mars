@@ -42,6 +42,8 @@ public class VideoEditActivity extends BaseActivity implements View.OnClickListe
     public static final String KEY_IS_MOVIE = "is movie";
     public static final String KEY_FROM = "from";
     public static final String KEY_TAG_ID = "tag id";
+    public static final String KEY_MOVIE_NAME = VideoShareActivity.KEY_MOVIE_NAME;
+    public static final String KEY_CHARACTER_NAME = VideoShareActivity.KEY_CHARACTER_NAME;
 
     private static final int NO_MUSIC_SELECTED = -1;
 
@@ -52,6 +54,8 @@ public class VideoEditActivity extends BaseActivity implements View.OnClickListe
     private boolean isMovie;
     private String mFrom;
     private String mDefaultTagId;
+    private String mMovieName;
+    private String mCharacterName;
     private BaseVideoInfo mUploadedVideo;
 
     private String mSelectedBgmPath;
@@ -83,6 +87,8 @@ public class VideoEditActivity extends BaseActivity implements View.OnClickListe
         isMovie = getIntent().getBooleanExtra(KEY_IS_MOVIE, false);
         mFrom = getIntent().getStringExtra(KEY_FROM);
         mDefaultTagId = getIntent().getStringExtra(KEY_TAG_ID);
+        mMovieName = getIntent().getStringExtra(KEY_MOVIE_NAME);
+        mCharacterName = getIntent().getStringExtra(KEY_CHARACTER_NAME);
 
         initMembers();
 
@@ -278,6 +284,8 @@ public class VideoEditActivity extends BaseActivity implements View.OnClickListe
         intent.putExtra(VideoShareActivity.KEY_TOPIC_ID, mTopicId);
         intent.putExtra(VideoShareActivity.KEY_TOPIC_TITLE, mTopicTitle);
         intent.putExtra(VideoShareActivity.KEY_VIDEO_THUMB, mVideoThumb);
+        intent.putExtra(VideoShareActivity.KEY_MOVIE_NAME, mMovieName);
+        intent.putExtra(VideoShareActivity.KEY_CHARACTER_NAME, mCharacterName);
         intent.putExtra(VideoShareActivity.KEY_SELECTED_BGM, mSelectedBgmPath);
         if (mTag != null) {
             intent.putExtra(VideoShareActivity.KEY_TAG_ID, mTag.getId());

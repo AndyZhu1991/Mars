@@ -64,6 +64,15 @@ public class ShareManager {
                 new UrlShareImage(videoInfo.getVideoThumb()), buildVideoUrl(videoInfo));
     }
 
+    public void shareMovieTo(ShareChanel shareChanel, BaseVideoInfo videoInfo, String movieName,
+                             String characterName, String desc) {
+        if (TextUtils.isEmpty(desc)) {
+            desc = buildMovieDescription(shareChanel, movieName, characterName);
+        }
+        share(sharePlatformName[shareChanel.ordinal()], "", desc,
+                new UrlShareImage(videoInfo.getVideoThumb()), buildVideoUrl(videoInfo));
+    }
+
     public void shareVideoTo(ShareChanel shareChanel, BaseVideoInfo videoInfo, String content, String desc) {
         if (TextUtils.isEmpty(desc)) {
             shareVideoTo(shareChanel, videoInfo, content);
@@ -181,6 +190,10 @@ public class ShareManager {
                 return content;
             }
         }
+    }
+
+    private String buildMovieDescription(ShareChanel chanel, String movieName, String characterName) {
+        return mContext.getString(R.string.share_movie_desc, movieName, characterName);
     }
 
     private String topicDescription() {

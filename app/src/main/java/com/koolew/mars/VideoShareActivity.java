@@ -53,6 +53,8 @@ public class VideoShareActivity extends AppCompatActivity implements View.OnClic
     public static final String KEY_SELECTED_BGM = "bgm";
     public static final String KEY_FROM = "from";
     public static final String KEY_TAG_ID = "tag";
+    public static final String KEY_MOVIE_NAME = "movie name";
+    public static final String KEY_CHARACTER_NAME = "character name";
 
     private int mAuthority;
     private RelativeLayout mPrivacyLayout;
@@ -72,6 +74,8 @@ public class VideoShareActivity extends AppCompatActivity implements View.OnClic
     private String mFrom;
     private String mSelectedBgmPath;
     private String mTagId;
+    private String mMovieName;
+    private String mCharacterName;
     private BaseVideoInfo mUploadedVideo;
 
     @Override
@@ -87,6 +91,8 @@ public class VideoShareActivity extends AppCompatActivity implements View.OnClic
         mSelectedBgmPath = getIntent().getStringExtra(KEY_SELECTED_BGM);
         mFrom = getIntent().getStringExtra(KEY_FROM);
         mTagId = getIntent().getStringExtra(KEY_TAG_ID);
+        mMovieName = getIntent().getStringExtra(KEY_MOVIE_NAME);
+        mCharacterName = getIntent().getStringExtra(KEY_CHARACTER_NAME);
 
         initMembers();
         initViews();
@@ -354,8 +360,14 @@ public class VideoShareActivity extends AppCompatActivity implements View.OnClic
             } else {
                 shareListener = new ShareListener();
             }
-            new ShareManager(this, shareListener).shareVideoTo(
-                    shareChanel, mUploadedVideo, mTopicTitle, mDescEdit.getText().toString());
+            if (isMovie) {
+                new ShareManager(this, shareListener).shareMovieTo(shareChanel, mUploadedVideo,
+                        mMovieName, mCharacterName, mDescEdit.getText().toString());
+            }
+            else {
+                new ShareManager(this, shareListener).shareVideoTo(
+                        shareChanel, mUploadedVideo, mTopicTitle, mDescEdit.getText().toString());
+            }
         }
     }
 
@@ -392,9 +404,16 @@ public class VideoShareActivity extends AppCompatActivity implements View.OnClic
 
         private void shareToWeibo() {
             if (mShareItemWeibo.isSelected()) {
-                new ShareManager(VideoShareActivity.this, new WeiboShareListener()).
-                        shareVideoTo(ShareManager.ShareChanel.WEIBO, mUploadedVideo, mTopicTitle,
-                                mDescEdit.getText().toString());
+                if (isMovie) {
+                    new ShareManager(VideoShareActivity.this, new WeiboShareListener()).
+                            shareMovieTo(ShareManager.ShareChanel.WEIBO, mUploadedVideo, mMovieName,
+                                    mCharacterName, mDescEdit.getText().toString());
+                }
+                else {
+                    new ShareManager(VideoShareActivity.this, new WeiboShareListener()).
+                            shareVideoTo(ShareManager.ShareChanel.WEIBO, mUploadedVideo, mTopicTitle,
+                                    mDescEdit.getText().toString());
+                }
             }
         }
     }

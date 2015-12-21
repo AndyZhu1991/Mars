@@ -345,6 +345,15 @@ public class MovieStudioActivity extends BaseActivity
         return false;
     }
 
+    private String firstUserActedCharacterName() {
+        for (MovieStudioItem item: mAdapter.items) {
+            if (item.capturedVideoPath != null) {
+                return item.actor;
+            }
+        }
+        return null;
+    }
+
     private void doStartCapture() {
         mRecorder = new ImageOnlyRecorder(generateVideoPath(),
                 AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
@@ -561,6 +570,8 @@ public class MovieStudioActivity extends BaseActivity
                 intent.putExtra(VideoEditActivity.KEY_TOPIC_ID, mMovieTopicInfo.getTopicId());
                 intent.putExtra(VideoEditActivity.KEY_IS_MOVIE, true);
                 intent.putExtra(VideoEditActivity.KEY_FROM, mFrom);
+                intent.putExtra(VideoEditActivity.KEY_MOVIE_NAME, mMovieTopicInfo.findMovieName());
+                intent.putExtra(VideoEditActivity.KEY_CHARACTER_NAME, firstUserActedCharacterName());
                 startActivityForResult(intent, REQUEST_CODE_UPLOAD_VIDEO);
             }
             else {
