@@ -36,7 +36,7 @@ public class PushWrapperActivity extends BaseV4FragmentActivity {
         else if (tabType.equals(UriProcessor.TAB_SQUARE)) {
             fragment = new KoolewSquareFragment();
             themeColor = getResources().getColor(R.color.koolew_black);
-            title = getString(R.string.koolew_hot_title);
+            title = getString(R.string.koolew_square_title);
         }
         else {
             fragment = null;
