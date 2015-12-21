@@ -333,7 +333,7 @@ public class TimelineAdapter extends LoadMoreAdapter {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.capture_topic_video:
-                    v.getContext().startActivity(new Intent(v.getContext(), AddTopicActivity.class));
+                    v.getContext().startActivity(new Intent(v.getContext(), JoinVideoActivity.class));
                     break;
                 case R.id.capture_movie:
                     v.getContext().startActivity(new Intent(v.getContext(), JoinMovieActivity.class));
