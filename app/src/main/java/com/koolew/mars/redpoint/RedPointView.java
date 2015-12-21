@@ -89,6 +89,9 @@ public class RedPointView extends TextView {
     public void setCount(int count) {
         mCount = count;
         if (count > 0) {
+            if (count > 99) {
+                count = 99;
+            }
             mRedPointVisiable = true;
             if (isNeedNum) {
                 setText(String.valueOf(count));
