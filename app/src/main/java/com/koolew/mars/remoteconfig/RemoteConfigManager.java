@@ -37,8 +37,18 @@ public class RemoteConfigManager {
         new Thread() {
             @Override
             public void run() {
-                videoTagsConfig.init(true);
-                movieTagsConfig.init(true);
+                videoTagsConfig.tryFetch(true);
+                movieTagsConfig.tryFetch(true);
+            }
+        }.start();
+    }
+
+    public void tryFetchAsync() {
+        new Thread() {
+            @Override
+            public void run() {
+                videoTagsConfig.tryFetch(false);
+                movieTagsConfig.tryFetch(false);
             }
         }.start();
     }

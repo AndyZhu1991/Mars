@@ -28,6 +28,7 @@ import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.preference.PreferenceHelper;
 import com.koolew.mars.redpoint.RedPointManager;
 import com.koolew.mars.redpoint.RedPointView;
+import com.koolew.mars.remoteconfig.RemoteConfigManager;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.update.Updater;
 import com.koolew.mars.utils.ColorUtil;
@@ -163,6 +164,13 @@ public class MainActivity extends BaseV4FragmentActivity
         if (updater != null) {
             updater.checkUpdateAutomatic();
         }
+
+        init();
+    }
+
+    // Some init ops, DO NOT take a long time!
+    private void init() {
+        RemoteConfigManager.getInstance().tryFetchAsync();
     }
 
     @Override

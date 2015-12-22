@@ -71,4 +71,9 @@ public class VideoTagsConfig extends BaseRemoteConfigItem<List<Tag>> {
         }
         return new ArrayList<>();
     }
+
+    @Override
+    boolean isValidate(List<Tag> config) {
+        return config != null && config.size() > 0;
+    }
 }

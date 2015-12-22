@@ -19,10 +19,10 @@ abstract class BaseRemoteConfigItem<T> {
 
     public BaseRemoteConfigItem(RemoteConfigManager manager) {
         mManager = manager;
+        mConfig = readFromSp();
     }
 
-    public void init(boolean forceFetch) {
-        mConfig = readFromSp();
+    public void tryFetch(boolean forceFetch) {
         if (forceFetch || !isValidate(mConfig)) {
             fetchConfig();
         }
