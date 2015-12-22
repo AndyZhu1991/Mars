@@ -227,7 +227,7 @@
     <string name="new_task">新任务</string>
     <string name="invitation_accepted">有人接受了你的点名</string>
     <string name="cache">缓存</string>
-    <string name="clear_cache">清空缓存</string>
+    <string name="clear_cache">释放内存空间</string>
     <string name="clear_cache_confirm_message">确认清空缓存吗？</string>
     <string name="clearing_cache">正在清理缓存</string>
 
