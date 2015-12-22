@@ -97,8 +97,8 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
     private void initSubPageColors() {
         if (subPageColors == null) {
             subPageColors = new int[]{
-                    getResources().getColor(R.color.koolew_light_orange),
                     getResources().getColor(R.color.koolew_black),
+                    getResources().getColor(R.color.koolew_light_orange),
                     getResources().getColor(R.color.koolew_deep_orange),
             };
         }
