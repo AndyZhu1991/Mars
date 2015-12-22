@@ -335,10 +335,10 @@
     <string name="delete_this_video">删除此视频</string>
 
     <!-- For JoinMovieActivity -->
-    <string name="join_movie_title">参与电影卡</string>
+    <string name="join_movie_title">参与表演</string>
 
     <!-- For JoinVideoTopicActivity -->
-    <string name="join_video_topic_title">参与话题卡</string>
+    <string name="join_video_topic_title">参与话题</string>
 
     <!-- ShareManager -->
     <string name="share_video_description">[9秒小视频]</string>
