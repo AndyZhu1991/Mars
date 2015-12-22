@@ -51,6 +51,11 @@ public class IncomeAnalysisActivity extends BaseV4FragmentActivity {
         }
 
         @Override
+        protected int getNoDataViewResId() {
+            return R.layout.no_income_layout;
+        }
+
+        @Override
         protected IncomeAnalysisAdapter useThisAdapter() {
             return new IncomeAnalysisAdapter(getActivity());
         }
