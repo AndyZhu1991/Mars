@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.sharesdk.framework.Platform;
+import cn.sharesdk.system.text.ShortMessage;
 
 /**
  * Created by jinchangzhu on 10/19/15.
@@ -98,7 +99,9 @@ public abstract class ShareWindow extends PopupWindow {
 
         @Override
         public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
-            super.onComplete(platform, i, hashMap);
+            if (!platform.getName().equals(ShortMessage.NAME)) {
+                super.onComplete(platform, i, hashMap);
+            }
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
