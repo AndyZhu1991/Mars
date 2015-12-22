@@ -20,6 +20,11 @@ public class FriendFollowsFragment extends RecyclerListFragmentMould<FriendSimpl
     }
 
     @Override
+    protected int getNoDataViewResId() {
+        return R.layout.no_follow_layout;
+    }
+
+    @Override
     protected FriendSimpleAdapter useThisAdapter() {
         return new FriendSimpleAdapter(getActivity()) {
             @Override

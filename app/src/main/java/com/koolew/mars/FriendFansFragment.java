@@ -22,6 +22,11 @@ public class FriendFansFragment extends RecyclerListFragmentMould<FriendSimpleAd
     }
 
     @Override
+    protected int getNoDataViewResId() {
+        return R.layout.no_fans_layout;
+    }
+
+    @Override
     protected FriendSimpleAdapter useThisAdapter() {
         return new FriendSimpleAdapter(getActivity()) {
             @Override
