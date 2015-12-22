@@ -246,6 +246,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
 
             public SquareTagHolder(View itemView) {
                 super(itemView);
+                itemView.setOnClickListener(this);
 
                 tagIcon = (ImageView) itemView.findViewById(R.id.tag_icon);
                 tagName = (TextView) itemView.findViewById(R.id.tag_name);
@@ -266,7 +267,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
                 else if (v == thumbs[1] && item.videoInfos.length > 1) {
                     SingleMediaFragment.startThisFragment(getActivity(), item.videoInfos[1].getVideoId());
                 }
-                else if (v == thumbs[2]) {
+                else if (v == thumbs[2] || v == itemView) {
                     // Go to square tab activity
                     SquareDetailFragment.startThisFragment(getActivity(), item.name, item.id);
                 }
