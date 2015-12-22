@@ -51,7 +51,7 @@
 
     <!-- For MainActivity -->
     <string name="title_koolew">首页</string>
-    <string name="title_play">星探</string>
+    <string name="title_play">擂台</string>
     <string name="title_message">消息</string>
     <string name="title_friend">好友</string>
     <string name="title_clock_in">打卡领金币</string>
