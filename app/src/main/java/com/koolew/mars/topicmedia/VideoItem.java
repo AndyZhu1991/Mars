@@ -7,10 +7,12 @@ import android.content.Intent;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
+import com.koolew.mars.FirstKooExplainWindow;
 import com.koolew.mars.FriendInfoActivity;
 import com.koolew.mars.R;
 import com.koolew.mars.SendDanmakuActivity;
@@ -20,6 +22,7 @@ import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.utils.FirstHintUtil;
 import com.koolew.mars.utils.KooSoundUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.KooAnimationView;
@@ -222,6 +225,26 @@ public class VideoItem extends MediaItem {
             // Do api request
             lastKooListener = new KooListener(mItem.videoInfo.getVideoId());
             ApiWorker.getInstance().kooVideo(mItem.videoInfo.getVideoId(), 1, lastKooListener, null);
+
+            showFirstKooWindowIfdNeed();
+        }
+
+        private void showFirstKooWindowIfdNeed() {
+            if (!FirstHintUtil.isFirstKoo()) {
+                return;
+            }
+
+            FirstKooExplainWindow window = new FirstKooExplainWindow(mContext);
+            window.getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            int windowHeight = window.getContentView().getMeasuredHeight();
+            window.showAsDropDown(kooIcon, 0, -windowHeight);
+            window.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+                    Utils.setWindowAlpha((Activity) mContext, 1.0f);
+                }
+            });
+            Utils.setWindowAlpha((Activity) mContext, 0.3f);
         }
 
         protected void onDanmakuSendClick() {
