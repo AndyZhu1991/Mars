@@ -182,20 +182,27 @@ public class Downloader implements DownloadStatusListener {
     @Override
     public void onDownloadComplete(int id) {
         DownloadEvent downloadEvent = getDownloadEvent(id);
-        downloadEvent.listener.onDownloadComplete(downloadEvent.url, downloadEvent.localPath);
+        if (downloadEvent != null) {
+            downloadEvent.listener.onDownloadComplete(downloadEvent.url, downloadEvent.localPath);
+        }
     }
 
     @Override
     public void onDownloadFailed(int id, int errorCode, String errorMessage) {
-        getDownloadEvent(id).listener.onDownloadFailed(errorCode, errorMessage);
+        DownloadEvent downloadEvent = getDownloadEvent(id);
+        if (downloadEvent != null) {
+            downloadEvent.listener.onDownloadFailed(errorCode, errorMessage);
+        }
     }
 
     @Override
     public void onProgress(int id, long totalBytes, long downloadedBytes, int progress) {
         DownloadEvent downloadEvent = getDownloadEvent(id);
-        downloadEvent.totalBytes = totalBytes;
-        downloadEvent.downloadsBytes = downloadedBytes;
-        downloadEvent.listener.onDownloadProgress(totalBytes, downloadedBytes, progress);
+        if (downloadEvent != null) {
+            downloadEvent.totalBytes = totalBytes;
+            downloadEvent.downloadsBytes = downloadedBytes;
+            downloadEvent.listener.onDownloadProgress(totalBytes, downloadedBytes, progress);
+        }
     }
 
     public interface LoadListener {
