@@ -38,7 +38,7 @@ public class ShareVideoWindow extends ShareWindow {
         mContent = content;
         mUid = videoInfo.getUserInfo().getUid();
 
-        if (MyAccountInfo.getUid().equals(mUid)) {
+        if (mUid.equals(MyAccountInfo.getUid())) {
             mContentView.findViewById(R.id.operation_image).setVisibility(View.GONE);
             ((TextView) mContentView.findViewById(R.id.operation_text))
                     .setText(R.string.delete_this_video);
