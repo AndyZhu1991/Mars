@@ -13,6 +13,7 @@ import com.koolew.mars.utils.BgmUtil;
 import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.utils.FirstHintUtil;
 import com.koolew.mars.utils.KooSoundUtil;
+import com.koolew.mars.utils.PatchUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -43,7 +44,7 @@ public class MarsApplication extends Application {
 
         long start = System.currentTimeMillis();
 
-        tryToLoadPatch();
+        PatchUtil.tryToLoadPatch(this);
         Utils.init(this);
         ApiWorker.init(getApplicationContext());
         initImageLoader(getApplicationContext());
@@ -58,6 +59,7 @@ public class MarsApplication extends Application {
         Downloader.init();
         KooSoundUtil.init(this);
         RemoteConfigManager.init(this);
+        PatchUtil.checkAndUpdatePatchAsync(this);
 
         Log.d(TAG, "Is debug: " + DEBUG);
         Log.d(TAG, "Init in MarsApplication takes: " + (System.currentTimeMillis() - start));
@@ -68,10 +70,6 @@ public class MarsApplication extends Application {
         super.attachBaseContext(base);
         MultiDex.install(base);
         Nuwa.init(this);
-    }
-
-    private void tryToLoadPatch() {
-        Nuwa.loadPatch(this, "/sdcard/patch.jar");
     }
 
     public static void initImageLoader(Context context) {

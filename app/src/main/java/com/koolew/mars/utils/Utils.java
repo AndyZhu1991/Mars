@@ -366,7 +366,7 @@ public class Utils {
         return clone;
     }
 
-    public static int getCurrentVersionCode() {
+    public static int getCurrentVersionCode(Context context) {
         PackageManager manager = context.getPackageManager();
         PackageInfo info = null;
         try {
@@ -375,6 +375,10 @@ public class Utils {
             e.printStackTrace();
         }
         return info.versionCode;
+    }
+
+    public static int getCurrentVersionCode() {
+        return getCurrentVersionCode(context);
     }
 
     public static void setWindowAlpha(Activity activity, float alpha) {

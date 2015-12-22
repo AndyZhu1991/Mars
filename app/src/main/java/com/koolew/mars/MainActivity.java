@@ -31,6 +31,7 @@ import com.koolew.mars.redpoint.RedPointView;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.update.Updater;
 import com.koolew.mars.utils.ColorUtil;
+import com.koolew.mars.utils.PatchUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.DrawerToggleView;
 import com.koolew.mars.view.PhoneNumberView;
@@ -168,6 +169,14 @@ public class MainActivity extends BaseV4FragmentActivity
     protected void onResume() {
         super.onResume();
         syncLocalMyInfo();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (PatchUtil.hasNewPatch()) {
+            System.exit(0);
+        }
     }
 
     private void syncLocalMyInfo() {

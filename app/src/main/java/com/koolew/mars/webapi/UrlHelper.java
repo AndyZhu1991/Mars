@@ -86,6 +86,7 @@ public class UrlHelper {
     private static final String SQUARE_DETAIL_URL = V5_URL + "discovery/square/detail";
 
     public static final String CHECK_VERSION_URL = BASE_URL + "version";
+    public static final String CHECK_PATCH_URL = BASE_URL + "patch";
 
     // Notification
     public static final String NOTIFICATION_BRIEF_URL = V4_URL + "notification/unread";
