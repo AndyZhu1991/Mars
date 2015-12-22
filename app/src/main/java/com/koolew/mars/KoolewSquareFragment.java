@@ -1,5 +1,6 @@
 package com.koolew.mars;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -338,10 +339,14 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
         private ImageView[] mImageViews;
 
         public void setData(JSONArray jsonArray) {
+            Activity activity = getActivity();
+            if (activity == null) {
+                return;
+            }
             int count = jsonArray.length();
             mImageViews = new ImageView[count];
             for (int i = 0; i < count; i++) {
-                mImageViews[i] = new ImageView(getActivity());
+                mImageViews[i] = new ImageView(activity);
                 mImageViews[i].setOnClickListener(mOnBannerClickListener);
                 mImageViews[i].setScaleType(ImageView.ScaleType.CENTER_CROP);
                 ViewPager.LayoutParams lp = new ViewPager.LayoutParams();
