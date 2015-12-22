@@ -156,7 +156,7 @@
             android:layout_marginBottom="29dp"
             android:textColor="#9B9B9B"
             android:textSize="14sp"
-            android:text="@string/income_analysis"
+            android:text="@string/income_history_analysis"
             android:drawableRight="@mipmap/into_arrow"
             android:drawablePadding="10dp"
             android:clickable="true"

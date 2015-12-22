@@ -420,7 +420,7 @@
     <string name="this_month_income_rmb">当月收益（元）</string>
     <string name="remain_income_rmb">未领收益（元）</string>
     <string name="cash_out">提现</string>
-    <string name="income_analysis">内容获利分析</string>
+    <string name="income_history_analysis">历史收入分析</string>
     <string name="bind_account">绑定账号</string>
     <string name="input_alipay_id">输入支付宝ID</string>
     <string name="please_input_correct_alipay">请输入正确的支付宝账号！</string>

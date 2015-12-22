@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/koolew_red"
-        app:title_text="@string/income_analysis"/>
+        app:title_text="@string/income_history_analysis"/>
 
     <FrameLayout
         android:id="@+id/fragment_container"
