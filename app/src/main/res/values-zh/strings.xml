@@ -453,8 +453,8 @@
     <string name="top_fans">粉丝团</string>
 
     <!-- For tag square -->
-    <string name="i_decide_the_top">我来决定谁当榜首！</string>
-    <string name="go_to_judge">"我去当裁判 >"</string>
+    <string name="square_detail_left_text">选中冠军可以分奖金哦～</string>
+    <string name="square_detail_right_text">"立即投票 >"</string>
 
     <!-- For MovieStudioActivity -->
     <string name="already_done">已完成</string>
