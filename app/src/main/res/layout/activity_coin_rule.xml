@@ -76,13 +76,6 @@
             android:textSize="13sp"
             android:textColor="@color/koolew_light_gray"
             android:text="@string/daily_clock_in"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:textColor="@color/koolew_light_gray"
-            android:text="@string/star_detective"/>
     </LinearLayout>
 
     <Button
