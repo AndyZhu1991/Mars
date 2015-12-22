@@ -86,6 +86,8 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
     @Override
     public void onRightLayoutClick() {
         // Go to movie add explain
+        KoolewWebActivity.startThisActivity(this, "http://www.koolew.com/movie.html",
+                getString(R.string.explain), MOVIE_THEME_COLOR);
     }
 
     @Override
