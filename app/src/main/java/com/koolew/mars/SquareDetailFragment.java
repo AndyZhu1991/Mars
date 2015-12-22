@@ -72,8 +72,11 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
         mSquareId = intent.getStringExtra(KEY_SQUARE_ID);
 
         TitleBarView titleBarView = ((TitleFragmentActivity) getActivity()).getTitleBar();
-        titleBarView.setBackgroundColor(getResources().getColor(R.color.koolew_black));
-        titleBarView.setTitle(mSquareTitle);
+        // 这个地方也会 null pointer ?!
+        if (titleBarView != null) {
+            titleBarView.setBackgroundColor(getResources().getColor(R.color.koolew_black));
+            titleBarView.setTitle(mSquareTitle);
+        }
     }
 
     @Override
