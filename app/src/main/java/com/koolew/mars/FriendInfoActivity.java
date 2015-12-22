@@ -342,7 +342,8 @@ public class FriendInfoActivity extends BaseV4FragmentActivity implements View.O
         @Override
         protected TimelineAdapter useThisAdapter() {
             TimelineAdapter adapter = new TimelineAdapter(getActivity());
-            if (MyAccountInfo.getUid().equals(mUid)) {
+            // 这TM也会NP，逗我的吧？
+            if (mUid.equals(MyAccountInfo.getUid())) {
                 adapter.setIsSelf();
             }
             return adapter;
