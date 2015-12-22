@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'bugly'   //添加Bugly符号表插件
+apply plugin: "cn.jiajixin.nuwa"
 
 android {
     compileSdkVersion 23
@@ -174,6 +175,7 @@ dependencies {
     compile 'com.tencent.bugly:crashreport:1.2.3.6'
     compile 'com.7heaven.ioswidget:iosswitch:0.5'
     compile 'com.umeng.analytics:analytics:latest.integration'
+    compile 'cn.jiajixin.nuwa:nuwa:1.0.0'
 }
 
 bugly {

@@ -13,6 +13,7 @@ import com.koolew.mars.utils.BgmUtil;
 import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.utils.FirstHintUtil;
 import com.koolew.mars.utils.KooSoundUtil;
+import com.koolew.mars.utils.PatchUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -24,6 +25,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
 
+import cn.jiajixin.nuwa.Nuwa;
 import cn.jpush.android.api.JPushInterface;
 import cn.sharesdk.framework.ShareSDK;
 
@@ -42,6 +44,7 @@ public class MarsApplication extends Application {
 
         long start = System.currentTimeMillis();
 
+        PatchUtil.tryToLoadPatch(this);
         Utils.init(this);
         ApiWorker.init(getApplicationContext());
         initImageLoader(getApplicationContext());
@@ -56,6 +59,7 @@ public class MarsApplication extends Application {
         Downloader.init();
         KooSoundUtil.init(this);
         RemoteConfigManager.init(this);
+        PatchUtil.checkAndUpdatePatchAsync(this);
 
         Log.d(TAG, "Is debug: " + DEBUG);
         Log.d(TAG, "Init in MarsApplication takes: " + (System.currentTimeMillis() - start));
@@ -65,6 +69,7 @@ public class MarsApplication extends Application {
     public void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(base);
+        Nuwa.init(this);
     }
 
     public static void initImageLoader(Context context) {

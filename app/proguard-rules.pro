@@ -165,3 +165,6 @@
 
 #实现DoNotConfuse的类不被混淆
 -keepnames class * implements com.koolew.mars.DoNotConfuse
+
+#Nuwa
+-keep class cn.jiajixin.nuwa.** { *; }
