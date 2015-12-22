@@ -38,6 +38,11 @@ public class DanmakuTabFragment extends
     }
 
     @Override
+    protected int getNoDataViewResId() {
+        return R.layout.no_danmaku_layout;
+    }
+
+    @Override
     protected DanmakuTabItemAdapter useThisAdapter() {
         return new DanmakuTabItemAdapter();
     }

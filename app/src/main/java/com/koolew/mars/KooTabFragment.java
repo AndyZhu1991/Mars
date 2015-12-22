@@ -41,6 +41,11 @@ public class KooTabFragment extends RecyclerListFragmentMould<KooTabFragment.Koo
     }
 
     @Override
+    protected int getNoDataViewResId() {
+        return R.layout.no_koo_layout;
+    }
+
+    @Override
     protected KooTabItemAdapter useThisAdapter() {
         return new KooTabItemAdapter();
     }

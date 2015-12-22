@@ -43,6 +43,11 @@ public class TaskTabFragment extends RecyclerListFragmentMould<TaskTabFragment.T
     }
 
     @Override
+    protected int getNoDataViewResId() {
+        return R.layout.no_task_layout;
+    }
+
+    @Override
     protected TaskAdapter useThisAdapter() {
         return new TaskAdapter();
     }
