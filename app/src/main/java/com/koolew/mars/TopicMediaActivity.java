@@ -207,7 +207,7 @@ public class TopicMediaActivity extends BaseV4FragmentActivity implements View.O
                     fragments[0] = new FeedsMediaFragment(mTopicId, mTargetVideoId);
                 }
             }
-            titles[0] = getString(R.string.feeds_title_friend);
+            titles[0] = getString(R.string.follow);
 
             fragments[1] = new WorldMediaFragment(mTopicId);
             titles[1] = getString(R.string.world_title_public);
