@@ -167,6 +167,13 @@
             android:layout_height="@dimen/shadow_height"
             android:background="@mipmap/shadow"/>
 
+        <ImageView
+            android:id="@+id/arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/play_arrow"
+            android:visibility="invisible"/>
+
         <LinearLayout
             android:id="@+id/finish_layout"
             android:layout_width="match_parent"

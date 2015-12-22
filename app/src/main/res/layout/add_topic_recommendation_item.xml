@@ -44,7 +44,7 @@
                 android:layout_marginRight="7dp"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"
-                android:text="@string/movie"
+                android:text="@string/act"
                 android:textSize="16sp"
                 android:textColor="@android:color/white"
                 android:background="#9679F7"

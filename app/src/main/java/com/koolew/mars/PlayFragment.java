@@ -1,5 +1,6 @@
 package com.koolew.mars;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -67,6 +68,8 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
     private View mTopRightShader;
     private View mBottomRightLayout;
 
+    private View mArrow;
+
     private View mFinishLayout;
     private View mCongratulationText;
     private View mFinishedText;
@@ -130,6 +133,8 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
         mRightFollowBtn.setOnClickListener(this);
         mBottomRightLayout = root.findViewById(R.id.bottom_right_layout);
         mBottomRightLayout.setOnClickListener(this);
+
+        mArrow = root.findViewById(R.id.arrow);
 
         mFinishLayout = root.findViewById(R.id.finish_layout);
         mFinishLayout.setOnClickListener(this);
@@ -335,6 +340,8 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
 
     private void startPlayGroup() {
         mCurrentPlayPosition = POSITION_LEFT;
+        mArrow.setVisibility(View.VISIBLE);
+        mArrow.setX(getArrowLeftOffsetX());
         play(mCurrentLeftVideoInfo);
     }
 
@@ -350,10 +357,12 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
     private void switchVideo() {
         if (mCurrentPlayPosition == POSITION_LEFT) {
             mCurrentPlayPosition = POSITION_RIGHT;
+            doArrowLeft2RightAnimation();
             play(mCurrentRightVideoInfo);
         }
         else if (mCurrentPlayPosition == POSITION_RIGHT) {
             mCurrentPlayPosition = POSITION_LEFT;
+            doArrowRight2LeftAnimation();
             play(mCurrentLeftVideoInfo);
         }
     }
@@ -394,6 +403,39 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
 
         mTitle.setText(getString(R.string.topic) + getString(R.string.colon) +
                 currentVideoInfo.topicInfo.getTitle());
+    }
+
+    private int arrowLeftOffsetX = 0;
+    private int getArrowLeftOffsetX() {
+        if (arrowLeftOffsetX == 0) {
+            int screenWidth = Utils.getScreenWidthPixel(getActivity());
+            int arrowWidth = mArrow.getWidth();
+            arrowLeftOffsetX = screenWidth / 4 - arrowWidth / 2;
+        }
+        return arrowLeftOffsetX;
+    }
+
+    private int arrowRightOffsetX = 0;
+    private int getArrowRightOffsetX() {
+        if (arrowRightOffsetX == 0) {
+            int screenWidth = Utils.getScreenWidthPixel(getActivity());
+            int arrowWidth = mArrow.getWidth();
+            arrowRightOffsetX = screenWidth / 4 * 3 - arrowWidth / 2;
+        }
+        return arrowRightOffsetX;
+    }
+
+    private static final long ARROW_ANIMATION_DURATION = 350; // ms
+    private void doArrowLeft2RightAnimation() {
+        ObjectAnimator.ofFloat(mArrow, "x", getArrowLeftOffsetX(), getArrowRightOffsetX())
+                .setDuration(ARROW_ANIMATION_DURATION)
+                .start();
+    }
+
+    private void doArrowRight2LeftAnimation() {
+        ObjectAnimator.ofFloat(mArrow, "x", getArrowRightOffsetX(), getArrowLeftOffsetX())
+                .setDuration(ARROW_ANIMATION_DURATION)
+                .start();
     }
 
     private void refreshUserInfo() {
