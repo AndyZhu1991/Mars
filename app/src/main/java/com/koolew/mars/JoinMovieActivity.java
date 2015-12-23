@@ -87,7 +87,7 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
     public void onRightLayoutClick() {
         // Go to movie add explain
         KoolewWebActivity.startThisActivity(this, "http://www.koolew.com/movie.html",
-                getString(R.string.explain), MOVIE_THEME_COLOR);
+                getString(R.string.explain), 0xFF6D3C9A);
     }
 
     @Override
@@ -307,6 +307,12 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
         @Override
         public int getCustomItemCount() {
             return mMovieInfoList.size();
+        }
+
+        @Override
+        protected LoadMoreAdapter.LoadMoreViewHolder createLoadMoreHolder(ViewGroup parent, int t) {
+            return mLoadMoreViewHolder = new LoadMoreViewHolder(LayoutInflater.from(mContext)
+                    .inflate(R.layout.join_movie_load_more_layout, parent, false));
         }
 
         class JoinMovieHolder extends RecyclerView.ViewHolder

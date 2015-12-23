@@ -343,6 +343,7 @@
 
     <!-- For JoinMovieActivity -->
     <string name="join_movie_title">参与表演</string>
+    <string name="no_more_movie_text">提交新视频，请联系官方微信号：可见App</string>
 
     <!-- For JoinVideoTopicActivity -->
     <string name="join_video_topic_title">参与话题</string>

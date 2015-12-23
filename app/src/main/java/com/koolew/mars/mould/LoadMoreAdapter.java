@@ -16,7 +16,7 @@ public abstract class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private boolean isNeedLoadMore;
     private boolean isLoading;
-    private LoadMoreViewHolder mLoadMoreViewHolder;
+    protected LoadMoreViewHolder mLoadMoreViewHolder;
     private LoadMoreListener mLoadMoreListener;
 
     public LoadMoreAdapter() {
@@ -34,7 +34,7 @@ public abstract class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-    private LoadMoreViewHolder createLoadMoreHolder(ViewGroup parent, int viewType) {
+    protected LoadMoreViewHolder createLoadMoreHolder(ViewGroup parent, int viewType) {
         View loadMoreView =  LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.load_more_footer, parent, false);
         mLoadMoreViewHolder = new LoadMoreViewHolder(loadMoreView);
@@ -158,7 +158,7 @@ public abstract class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.
         void onLoadMore();
     }
 
-    class LoadMoreViewHolder extends RecyclerView.ViewHolder {
+    public class LoadMoreViewHolder extends RecyclerView.ViewHolder {
 
         private View loadingFrame;
         private View noMoreFrame;
