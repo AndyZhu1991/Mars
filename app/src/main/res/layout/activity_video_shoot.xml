@@ -1,19 +1,23 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.koolew.mars.VideoShootActivity"
     android:orientation="vertical">
 
-    <FrameLayout
+    <com.koolew.mars.view.RatioFrameLayout
         android:id="@+id/preview_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        app:widthRatio="4"
+        app:heightRatio="3">
 
-        <com.koolew.mars.camerautils.CameraSurfacePreview
+        <fragment
+            class="com.koolew.mars.CameraPreviewFragment"
             android:id="@+id/camera_preview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
 
         <SurfaceView
             android:id="@+id/playback_surface"
@@ -64,7 +68,12 @@
             android:layout_gravity="center_horizontal"
             android:src="@mipmap/ic_play"
             android:visibility="invisible"/>
-    </FrameLayout>
+
+        <View
+            android:id="@+id/long_video_switch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </com.koolew.mars.view.RatioFrameLayout>
 
     <LinearLayout
         android:id="@+id/bottom_layout"
@@ -151,4 +160,4 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</FrameLayout>
+</LinearLayout>

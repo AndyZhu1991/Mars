@@ -6,8 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.ImageFormat;
-import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,14 +15,12 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.koolew.mars.camerautils.CameraSurfacePreview;
+import com.koolew.mars.camerautils.CameraInstance;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.statistics.BaseActivity;
@@ -32,25 +28,24 @@ import com.koolew.mars.utils.DeviceDetective;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.AbsLongVideoSwitch;
 import com.koolew.mars.utils.PictureSelectUtil;
-import com.koolew.mars.utils.RawImageUtil;
 import com.koolew.mars.utils.Utils;
-import com.koolew.mars.videotools.RealTimeYUV420RecorderWithAutoAudio;
+import com.koolew.mars.videotools.RealTimeRgbaRecorderWithAutoAudio;
 import com.koolew.mars.videotools.VideoTranscoder;
 import com.koolew.mars.view.RecordButton;
 import com.koolew.mars.view.RecordingSessionView;
 
+import org.bytedeco.javacpp.opencv_core;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import at.aau.itec.android.mediaplayer.MediaPlayer;
 
 public class VideoShootActivity extends BaseActivity implements OnClickListener,
-        RecordingSessionView.Listener {
+        RecordingSessionView.Listener, CameraPreviewFragment.FrameListener {
 
     private final static String TAG = "koolew-VideoShootA";
 
@@ -70,13 +65,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     private String mDefaultTag;
 
     private FrameLayout mPreviewFrame;
-    //private CameraSurfacePreview mPreview;
-    private CameraSurfacePreview mPreview;
-    private Camera mCamera;
-    private int mCurrentCamera;
-    private int previewWidth;
-    private int previewHeight;
-    private float bestPreviewRatio = 0.0f;
+    private CameraPreviewFragment mCameraPreviewFragment;
 
     private ImageView mChangeCamera;
     private ImageView mImportVideo;
@@ -89,10 +78,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
     private boolean isRecording = false;
 
-    private byte[] YUV420RotateBuffer;
-    private byte[] YUV420CropBuffer;
-
-    private RealTimeYUV420RecorderWithAutoAudio mRecorder;
+    private RealTimeRgbaRecorderWithAutoAudio mRecorder;
 
     // MODE_PREVIEW or MODE_PLAYBACK
     private int mCurrentSurfaceMode;
@@ -117,20 +103,8 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
         initMembers();
         initViews();
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (mCurrentSurfaceMode == MODE_PREVIEW) {
-            new Thread() {
-                @Override
-                public void run() {
-                    doOpenCamera(mCurrentCamera);
-                }
-            }.start();
-        }
+        CameraInstance.getInstance().setBackCameraAsDefault();
     }
 
     @Override
@@ -148,7 +122,6 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
             if (isRecording) {
                 stopRecord();
             }
-            releaseCamera();
         }
         recordingSessionView.onActivityPause();
     }
@@ -187,7 +160,6 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     }
 
     private void initMembers() {
-        mCurrentCamera = Camera.CameraInfo.CAMERA_FACING_BACK;
         mCurrentSurfaceMode = MODE_PREVIEW;
     }
 
@@ -195,9 +167,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         mPreviewFrame = (FrameLayout) findViewById(R.id.preview_frame);
         mChangeCamera = (ImageView) findViewById(R.id.change_camera);
 
-        // Create our Preview view and set it as the content of our activity.
-        mPreview = (CameraSurfacePreview) findViewById(R.id.camera_preview);
-        mPreview.setOnTouchListener(new LongVideoSwitch());
+        findViewById(R.id.long_video_switch).setOnTouchListener(new LongVideoSwitch());
 
         mVideoThumb = (ImageView) findViewById(R.id.video_thumb);
         FrameLayout.LayoutParams vtlp = (FrameLayout.LayoutParams) mVideoThumb.getLayoutParams();
@@ -231,55 +201,11 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         findViewById(R.id.close_layout).setOnClickListener(this);
         mChangeCamera.setOnClickListener(this);
         mPlayImage.setOnClickListener(this);
+
+        mCameraPreviewFragment =
+                (CameraPreviewFragment) getFragmentManager().findFragmentById(R.id.camera_preview);
+        mCameraPreviewFragment.setWantedSize(AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
     }
-
-
-    private void initLayoutParams() {
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mPreview.getLayoutParams();
-        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        int width = wm.getDefaultDisplay().getWidth();
-        lp.height = (int) (width * bestPreviewRatio);
-        int visiblePreviewHeight = width * AppProperty.RECORD_VIDEO_HEIGHT / AppProperty.RECORD_VIDEO_WIDTH;
-        if (mCurrentCamera == Camera.CameraInfo.CAMERA_FACING_BACK) {
-            lp.topMargin = 0 - (lp.height - visiblePreviewHeight) / 2;
-        }
-        else {
-            lp.topMargin = 0;
-        }
-        Log.d(TAG, "set preview layout params. topMargin: " + lp.topMargin + ", height: " + lp.height);
-        mPreview.setLayoutParams(lp);
-
-        LinearLayout bottomLayout = (LinearLayout) findViewById(R.id.bottom_layout);
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) bottomLayout.getLayoutParams();
-        params.topMargin = visiblePreviewHeight;
-        bottomLayout.setLayoutParams(params);
-    }
-
-
-    private void initCamera() {
-        if (this.mCamera != null) {
-            Camera.Parameters params = this.mCamera.getParameters();
-            params.setPreviewFormat(ImageFormat.NV21);
-            setBestCameraPreviewFpsRange(params);
-            if (!DeviceDetective.isMi3()) {
-                params.setFlashMode("off");
-            }
-            params.setWhiteBalance(Camera.Parameters.WHITE_BALANCE_AUTO);
-            params.setSceneMode(Camera.Parameters.SCENE_MODE_AUTO);
-            params.setPreviewSize(previewWidth, previewHeight);
-            this.mCamera.setDisplayOrientation(90);
-            params.setRecordingHint(true);
-            mCamera.addCallbackBuffer(new byte[previewWidth * previewHeight * 3 / 2]);
-            mCamera.setPreviewCallbackWithBuffer(new MyPreviewCallback());
-            List<String> focusModes = params.getSupportedFocusModes();
-            if (focusModes.contains("continuous-video") && shouldAutoFocus()) {
-                params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
-            }
-            this.mCamera.setParameters(params);
-            this.mCamera.startPreview();
-        }
-    }
-
 
     @Override
     public void onSwitchToPreviewMode() {
@@ -307,180 +233,15 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     }
 
     private void switchCamera() {
-        if (mCurrentCamera == Camera.CameraInfo.CAMERA_FACING_BACK) {
-            mCurrentCamera = Camera.CameraInfo.CAMERA_FACING_FRONT;
-        }
-        else {
-            mCurrentCamera = Camera.CameraInfo.CAMERA_FACING_BACK;
-        }
-
-        releaseCamera();
-        doOpenCamera(mCurrentCamera);
+        mCameraPreviewFragment.switchCamera();
     }
 
-    /**
-     *
-     * @param which Camera.CameraInfo.CAMERA_FACING_BACK for back camera
-     *              Camera.CameraInfo.CAMERA_FACING_FRONT for front camera
-     */
-    private void doOpenCamera(int which) {
-        Log.i(TAG, "Camera open....");
-        int numCameras = Camera.getNumberOfCameras();
-        Camera.CameraInfo info = new Camera.CameraInfo();
-        for (int i = 0; i < numCameras; i++) {
-            Camera.getCameraInfo(i, info);
-            if (info.facing == which) {
-                try {
-                    mCamera = Camera.open(i);
-                }
-                catch (RuntimeException re) {
-                    showCameraFailDialog();
-                    return;
-                }
-                break;
-            }
-        }
-        if (mCamera == null) {
-            Log.d(TAG, "No front-facing camera found; opening default");
-            mCamera = Camera.open();    // opens first back-facing camera
-        }
-        if (mCamera == null) {
-            throw new RuntimeException("Unable to open camera");
-        }
-        Log.i(TAG, "Camera open over....");
-        cameraHasOpened();
-    }
-
-    private void showCameraFailDialog() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                new AlertDialog.Builder(VideoShootActivity.this)
-                        .setMessage(R.string.fail_to_open_camera)
-                        .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                VideoShootActivity.this.onBackPressed();
-                            }
-                        })
-                        .setPositiveButton(android.R.string.ok, null)
-                        .show();
-            }
-        });
-    }
-
-    private void cameraHasOpened() {
-        Camera.Size bestSize = mCamera.getParameters().getPreferredPreviewSizeForVideo();
-        Log.d(TAG, "best width: " + bestSize.width + ", best height: " + bestSize.height);
-        bestPreviewRatio = 1.0f * bestSize.width / bestSize.height;
-        initBestCameraPreviewSize(mCamera.getParameters());
-        YUV420RotateBuffer = new byte[previewWidth * previewHeight * 3 / 2];
-        YUV420CropBuffer = new byte[AppProperty.RECORD_VIDEO_WIDTH * AppProperty.RECORD_VIDEO_HEIGHT * 3 / 2];
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                initLayoutParams();
-            }
-        });
-        SurfaceHolder holder = mPreview.getSurfaceHolder();
-        doStartPreview(holder);
-    }
-
-    private void doStartPreview(SurfaceHolder holder) {
-        Log.i(TAG, "doStartPreview...");
-
-        try {
-            this.mCamera.setPreviewDisplay(holder);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        initCamera();
-    }
-
-    private void releaseCamera(){
-        if (mCamera != null){
-            mCamera.release();        // release the camera for other applications
-            mCamera = null;
+    @Override
+    public void onNewFrame(opencv_core.IplImage frameImage, long timestamp) {
+        if (isRecording) {
+            mRecorder.putImage(frameImage, timestamp);
         }
     }
-
-    private void initBestCameraPreviewSize(Camera.Parameters params) {
-        List<Camera.Size> sizes = params.getSupportedPreviewSizes();
-        List<Camera.Size> _480heightSize = new ArrayList<>();
-        for (Camera.Size size: sizes) {
-            if (size.height == 480) {
-                Log.d(TAG, "width:" + size.width + ", height:" + size.height);
-                _480heightSize.add(size);
-            }
-        }
-
-        int bestWidth = (int) (480 * bestPreviewRatio);
-        int minWidthDiff = Integer.MAX_VALUE;
-        Camera.Size bestSize = null;
-        for (Camera.Size size: _480heightSize) {
-            int widthDiff = Math.abs(size.width - bestWidth);
-            if (widthDiff < minWidthDiff) {
-                bestSize = size;
-                minWidthDiff = widthDiff;
-            }
-        }
-
-        previewHeight = bestSize.height;
-        previewWidth = bestSize.width;
-    }
-
-    private void setBestCameraPreviewFpsRange(Camera.Parameters params) {
-        List<int[]> previewFpsRanges = params.getSupportedPreviewFpsRange();
-
-        int count = previewFpsRanges.size();
-        int minFpsDiff = Integer.MAX_VALUE;
-        int bestRangeIndex = -1;
-        int appVideoFps = AppProperty.RECORD_VIDEO_FPS * 1000; // getSupportedPreviewFpsRange return 1000-time values
-        for (int i = 0; i < count; i++) {
-            int[] fpsRange = previewFpsRanges.get(i);
-            int fpsDiff = Math.abs(fpsRange[0] - appVideoFps) + Math.abs(fpsRange[1] - appVideoFps);
-            if (fpsDiff < minFpsDiff) {
-                minFpsDiff = fpsDiff;
-                bestRangeIndex = i;
-                if (minFpsDiff == 0) {
-                    break;
-                }
-            }
-        }
-
-        if (bestRangeIndex == -1) {
-            throw new RuntimeException("No camera preview fps range!");
-        }
-        int[] bestFpsRange = previewFpsRanges.get(bestRangeIndex);
-        params.setPreviewFpsRange(bestFpsRange[0], bestFpsRange[1]);
-    }
-
-    class MyPreviewCallback implements Camera.PreviewCallback {
-        @Override
-        public void onPreviewFrame(byte[] data, Camera camera) {
-            if (isRecording){//mVideoEncoder != null && mVideoEncoder.isEncoding == true) {
-                if (mCurrentCamera == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                    RawImageUtil.rotateYUV420Degree90(data, YUV420RotateBuffer,
-                            previewWidth, previewHeight);
-                    RawImageUtil.cropYUV420VerticalCenter(YUV420RotateBuffer, YUV420CropBuffer,
-                            previewHeight, previewWidth, AppProperty.RECORD_VIDEO_HEIGHT);
-                }
-                else {
-                    RawImageUtil.rotateYUV420Degree270(data, YUV420RotateBuffer,
-                            previewWidth, previewHeight);
-                    RawImageUtil.cropYUV420Vertical(YUV420RotateBuffer, YUV420CropBuffer,
-                            previewHeight, previewWidth, 0, AppProperty.RECORD_VIDEO_HEIGHT);
-                }
-                long start = System.currentTimeMillis();
-                mRecorder.putImage(YUV420CropBuffer, System.currentTimeMillis() * 1000);
-                Log.d("stdzhu", "camera preview: " + (System.currentTimeMillis() - start));
-            }
-
-            camera.addCallbackBuffer(data);
-        }
-    }
-
 
     private void switchToPlaybackMode() {
         if (mCurrentSurfaceMode == MODE_PLAYBACK) {
@@ -488,9 +249,6 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         }
         mCurrentSurfaceMode = MODE_PLAYBACK;
 
-        releaseCamera();
-
-        mPreview.setVisibility(View.INVISIBLE);
         mPlaybackSurface.setVisibility(View.VISIBLE);
         mChangeCamera.setVisibility(View.INVISIBLE);
         mVideoThumb.setVisibility(View.VISIBLE);
@@ -506,12 +264,9 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         recordingSessionView.switchToPreviewMode();
 
         mPlaybackSurface.setVisibility(View.INVISIBLE);
-        mPreview.setVisibility(View.VISIBLE);
         mChangeCamera.setVisibility(View.VISIBLE);
         mVideoThumb.setVisibility(View.INVISIBLE);
         mPlayImage.setVisibility(View.INVISIBLE);
-
-        doOpenCamera(mCurrentCamera);
     }
 
     private SurfaceHolder.Callback mPlaybackSurfaceCallback = new SurfaceHolder.Callback() {
@@ -549,7 +304,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     }
 
     private void startRecord() {
-        mRecorder = new RealTimeYUV420RecorderWithAutoAudio(
+        mRecorder = new RealTimeRgbaRecorderWithAutoAudio(
                 recordingSessionView.generateAVideoFilePath(),
                 AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
         recordingSessionView.startOneRecording(mRecorder);
@@ -561,6 +316,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         mCaptureText.setText(R.string.capturing);
 
         isRecording = true;
+        mCameraPreviewFragment.setFrameListener(this);
     }
 
     private void stopRecord() {
@@ -571,6 +327,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
     private void doStopRecord() {
         if (isRecording) {
+            mCameraPreviewFragment.clearFrameListener();
             isRecording = false;
 
             mCaptureText.setText(R.string.capture_video);
@@ -804,38 +561,6 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         intent.putExtra(VideoShootActivity.KEY_TOPIC_TITLE, topicTitle);
         intent.putExtra(VideoShootActivity.KEY_TAG_ID, tagId);
         context.startActivity(intent);
-    }
-
-    // 已知红米1和红米NOTE1在升级MIUI V6之后，打开自动对焦会在预览界面卡住
-    private boolean shouldAutoFocus() {
-        String model = Build.MODEL;
-        String miuiVersion = getMiuiVersionName();
-        if ((model.startsWith("HM 1") || model.startsWith("HM NOTE 1")) &&
-                (miuiVersion.equals("V6") || miuiVersion.equals("V7"))) {
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-
-    public static String getMiuiVersionName() {
-        String line;
-        BufferedReader reader = null;
-        try {
-            Process p = Runtime.getRuntime().exec("getprop ro.miui.ui.version.name" );
-            reader = new BufferedReader(new InputStreamReader(p.getInputStream()), 1024);
-            line = reader.readLine();
-            return line;
-        } catch (IOException e) {
-        } finally {
-            try {
-                reader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return "UNKNOWN";
     }
 
     class LongVideoSwitch extends AbsLongVideoSwitch {

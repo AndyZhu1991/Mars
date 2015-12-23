@@ -2,6 +2,7 @@ package com.koolew.mars.camerautils;
 
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.os.Build;
 import android.util.Log;
 
 import com.koolew.mars.AppProperty;
@@ -20,7 +21,7 @@ public class CameraInstance {
 
     private boolean mIsPreviewing = false;
 
-    private int mCameraID = Camera.CameraInfo.CAMERA_FACING_FRONT;
+    private int mCameraID;
     private int mDefaultCameraID = -1;
 
     private static CameraInstance mThisInstance;
@@ -37,6 +38,18 @@ public class CameraInstance {
         mThisInstance.wantedWidth = wantedWidth;
         mThisInstance.wantedHeight = wantedHeight;
         return mThisInstance;
+    }
+
+    public static CameraInstance getInstance() {
+        return getInstance(480, 360);
+    }
+
+    public void setFrontCameraAsDefault() {
+        mCameraID = Camera.CameraInfo.CAMERA_FACING_FRONT;
+    }
+
+    public void setBackCameraAsDefault() {
+        mCameraID = Camera.CameraInfo.CAMERA_FACING_BACK;
     }
 
     public boolean isPreviewing() { return mIsPreviewing; }
@@ -126,10 +139,23 @@ public class CameraInstance {
             mBestPreviewRatio = 1.0f * bestVideoSize.width / bestVideoSize.height;
             setBestCameraPreviewSize(params);
             List<String> focusModes = params.getSupportedFocusModes();
-            if (focusModes.contains("continuous-video")) {
+            if (focusModes.contains("continuous-video") && shouldAutoFocus()) {
                 params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
             }
             mCameraDevice.setParameters(params);
+        }
+    }
+
+    // 已知红米1和红米NOTE1在升级MIUI V6之后，打开自动对焦会在预览界面卡住
+    private boolean shouldAutoFocus() {
+        String model = Build.MODEL;
+        String miuiVersion = DeviceDetective.getMiuiVersionName();
+        if ((model.startsWith("HM 1") || model.startsWith("HM NOTE 1")) &&
+                (miuiVersion.equals("V6") || miuiVersion.equals("V7"))) {
+            return false;
+        }
+        else {
+            return true;
         }
     }
 

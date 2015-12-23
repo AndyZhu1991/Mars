@@ -51,6 +51,7 @@ public class CameraPreviewFragment extends Fragment {
     private int previewWidth;
     private int previewHeight;
 
+    private Object mFrameListenerLock = new Object();
     private FrameListener mFrameListener;
 
 
@@ -128,7 +129,9 @@ public class CameraPreviewFragment extends Fragment {
     }
 
     public void clearFrameListener() {
-        mFrameListener = null;
+        synchronized (mFrameListenerLock) {
+            mFrameListener = null;
+        }
     }
 
     public Rect getRoiRect(Rect surfaceRect) {
@@ -321,14 +324,16 @@ public class CameraPreviewFragment extends Fragment {
 
             mMyRenderer.renderTexture(mTextureID, drawViewport);
 
-            if (mFrameListener != null) {
-                GLES20.glReadPixels(roiRect.left, roiRect.top, roiRect.width(), roiRect.height(),
-                        GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, roiImage.getByteBuffer());
-                if (getRotationX() > -1 && getRotationX() < 1) { // getRotationX() == 0
-                    opencv_core.cvFlip(roiImage, null, 0);
+            synchronized (mFrameListenerLock) {
+                if (mFrameListener != null) {
+                    GLES20.glReadPixels(roiRect.left, roiRect.top, roiRect.width(), roiRect.height(),
+                            GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, roiImage.getByteBuffer());
+                    if (getRotationX() > -1 && getRotationX() < 1) { // getRotationX() == 0
+                        opencv_core.cvFlip(roiImage, null, 0);
+                    }
+                    Log.d("stdzhu", "new frame: " + System.currentTimeMillis());
+                    mFrameListener.onNewFrame(roiImage, System.nanoTime() / 1000);
                 }
-                Log.d("stdzhu", "new frame: " + System.currentTimeMillis());
-                mFrameListener.onNewFrame(roiImage, System.nanoTime() / 1000);
             }
 
             if(mSurfaceTexture != null)

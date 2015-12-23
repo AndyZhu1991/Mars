@@ -15,14 +15,14 @@ import static com.koolew.mars.videotools.Params.AUDIO_SAMPLE_RATE;
 /**
  * Created by jinchangzhu on 9/10/15.
  */
-public class RealTimeYUV420RecorderWithAutoAudio extends CachedRecorder
+public class RealTimeRgbaRecorderWithAutoAudio extends CachedRecorder
         implements RecordingSessionView.RecordingItem {
 
     private boolean isEncoding = false;
 
     private AudioDataFillThread audioDataFillThread;
 
-    public RealTimeYUV420RecorderWithAutoAudio(String filePath, int width, int height) {
+    public RealTimeRgbaRecorderWithAutoAudio(String filePath, int width, int height) {
         super(filePath, width, height);
 
         audioDataFillThread = new AudioDataFillThread();
@@ -30,7 +30,7 @@ public class RealTimeYUV420RecorderWithAutoAudio extends CachedRecorder
 
     @Override
     protected void initCacheQueues() {
-        imageCache = new YUV420RecycleQueue(200, width, height);
+        imageCache = new RGBARecycleQueue(100, width, height);
         audioCache = new AudioBufferRecycleQueue(2000);
     }
 

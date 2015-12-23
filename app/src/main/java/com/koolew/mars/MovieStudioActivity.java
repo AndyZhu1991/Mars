@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.koolew.mars.camerautils.CameraInstance;
 import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
@@ -129,6 +130,8 @@ public class MovieStudioActivity extends BaseActivity
             splitPoints[i] = mMovieTopicInfo.getFragments()[i].getEnd();
         }
         new CutVideoTask().execute();
+
+        CameraInstance.getInstance().setFrontCameraAsDefault();
     }
 
     private void initViews() {
