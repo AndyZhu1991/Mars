@@ -26,6 +26,7 @@ public class CameraInstance {
     private static CameraInstance mThisInstance;
     private int mPreviewWidth;
     private int mPreviewHeight;
+    private float mBestPreviewRatio = 1.0f;
 
     private CameraInstance() {}
 
@@ -40,8 +41,9 @@ public class CameraInstance {
 
     public boolean isPreviewing() { return mIsPreviewing; }
 
-    public int previewWidth() { return mPreviewWidth; }
-    public int previewHeight() { return mPreviewHeight; }
+    public float getBestPreviewRatio() {
+        return mBestPreviewRatio;
+    }
     public int getCameraID() {
         return mCameraID;
     }
@@ -120,6 +122,8 @@ public class CameraInstance {
             params.setWhiteBalance(Camera.Parameters.WHITE_BALANCE_AUTO);
             params.setSceneMode(Camera.Parameters.SCENE_MODE_AUTO);
             params.setRecordingHint(true);
+            Camera.Size bestVideoSize = params.getPreferredPreviewSizeForVideo();
+            mBestPreviewRatio = 1.0f * bestVideoSize.width / bestVideoSize.height;
             setBestCameraPreviewSize(params);
             List<String> focusModes = params.getSupportedFocusModes();
             if (focusModes.contains("continuous-video")) {
@@ -131,30 +135,17 @@ public class CameraInstance {
 
     private void setBestCameraPreviewSize(Camera.Parameters params) {
         List<Camera.Size> sizes = params.getSupportedPreviewSizes();
-        int count = sizes.size();
-        int minSizeDiff = 0x7FFFFFFF;
-        int bestSizeIndex = -1;
-        for (int i = 0; i < count; i++) {
-            Camera.Size size = sizes.get(i);
-            if (DeviceDetective.isMi3() && size.width == 480 && size.height == 480) {
-                // 米3在480*480的预览下会显示不正常
-                continue;
-            }
-            if (Math.abs(size.height - wantedWidth) < minSizeDiff) {
-                minSizeDiff = Math.abs(size.height - wantedWidth);
-                bestSizeIndex = i;
-                if (minSizeDiff == 0) {
-                    break;
-                }
+        Camera.Size bestSize = null;
+        float minRatioDiff = Float.MAX_VALUE;
+        for (Camera.Size size: sizes) {
+            float ratio = 1.0f * size.width / size.height;
+            if (Math.abs(ratio - mBestPreviewRatio) < minRatioDiff && size.height >= wantedWidth) {
+                minRatioDiff = ratio;
+                bestSize = size;
             }
         }
 
-        if (bestSizeIndex != -1) {
-            Camera.Size bestSize = sizes.get(bestSizeIndex);
-            mPreviewWidth = bestSize.width;
-            mPreviewHeight = bestSize.height;
-            params.setPreviewSize(bestSize.width, bestSize.height);
-        }
+        params.setPreviewSize(bestSize.width, bestSize.height);
     }
 
     private void setBestCameraPreviewFpsRange(Camera.Parameters params) {

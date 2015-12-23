@@ -42,6 +42,7 @@ import com.koolew.mars.view.RecordingSessionView;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -75,6 +76,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     private int mCurrentCamera;
     private int previewWidth;
     private int previewHeight;
+    private float bestPreviewRatio = 0.0f;
 
     private ImageView mChangeCamera;
     private ImageView mImportVideo;
@@ -236,7 +238,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mPreview.getLayoutParams();
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         int width = wm.getDefaultDisplay().getWidth();
-        lp.height = width * previewWidth / previewHeight;
+        lp.height = (int) (width * bestPreviewRatio);
         int visiblePreviewHeight = width * AppProperty.RECORD_VIDEO_HEIGHT / AppProperty.RECORD_VIDEO_WIDTH;
         if (mCurrentCamera == Camera.CameraInfo.CAMERA_FACING_BACK) {
             lp.topMargin = 0 - (lp.height - visiblePreviewHeight) / 2;
@@ -368,6 +370,9 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     }
 
     private void cameraHasOpened() {
+        Camera.Size bestSize = mCamera.getParameters().getPreferredPreviewSizeForVideo();
+        Log.d(TAG, "best width: " + bestSize.width + ", best height: " + bestSize.height);
+        bestPreviewRatio = 1.0f * bestSize.width / bestSize.height;
         initBestCameraPreviewSize(mCamera.getParameters());
         YUV420RotateBuffer = new byte[previewWidth * previewHeight * 3 / 2];
         YUV420CropBuffer = new byte[AppProperty.RECORD_VIDEO_WIDTH * AppProperty.RECORD_VIDEO_HEIGHT * 3 / 2];
@@ -402,30 +407,27 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
     private void initBestCameraPreviewSize(Camera.Parameters params) {
         List<Camera.Size> sizes = params.getSupportedPreviewSizes();
-        int count = sizes.size();
-        int minSizeDiff = 0x7FFFFFFF;
-        int bestSizeIndex = -1;
-        for (int i = 0; i < count; i++) {
-            Camera.Size size = sizes.get(i);
-            if (size.width == 480 && size.height == 480) {
-                // 米3在480*480的预览下会显示不正常
-                continue;
-            }
-            Log.d(TAG, "width:" + size.width + ", height:" + size.height);
-            if (Math.abs(size.height - AppProperty.RECORD_VIDEO_WIDTH) < minSizeDiff) {
-                minSizeDiff = Math.abs(size.height - AppProperty.RECORD_VIDEO_WIDTH);
-                bestSizeIndex = i;
-                if (minSizeDiff == 0) {
-                    break;
-                }
+        List<Camera.Size> _480heightSize = new ArrayList<>();
+        for (Camera.Size size: sizes) {
+            if (size.height == 480) {
+                Log.d(TAG, "width:" + size.width + ", height:" + size.height);
+                _480heightSize.add(size);
             }
         }
 
-        if (bestSizeIndex != -1) {
-            Camera.Size bestSize = sizes.get(bestSizeIndex);
-            previewHeight = bestSize.height;
-            previewWidth = bestSize.width;
+        int bestWidth = (int) (480 * bestPreviewRatio);
+        int minWidthDiff = Integer.MAX_VALUE;
+        Camera.Size bestSize = null;
+        for (Camera.Size size: _480heightSize) {
+            int widthDiff = Math.abs(size.width - bestWidth);
+            if (widthDiff < minWidthDiff) {
+                bestSize = size;
+                minWidthDiff = widthDiff;
+            }
         }
+
+        previewHeight = bestSize.height;
+        previewWidth = bestSize.width;
     }
 
     private void setBestCameraPreviewFpsRange(Camera.Parameters params) {

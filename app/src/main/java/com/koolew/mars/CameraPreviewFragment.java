@@ -85,8 +85,8 @@ public class CameraPreviewFragment extends Fragment {
 
     private void onCameraSizeChanged() {
         ViewGroup.LayoutParams plp = mPreviewGLTexture.getLayoutParams();
-        plp.width = cameraInstance().previewHeight();
-        plp.height = cameraInstance().previewWidth();
+        plp.width = wantedWidth;
+        plp.height = (int) (wantedWidth * cameraInstance().getBestPreviewRatio());
         mPreviewGLTexture.setLayoutParams(plp);
 
         previewWidth = plp.width;
