@@ -22,8 +22,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.tencent.bugly.crashreport.CrashReport;
-import com.umeng.analytics.AnalyticsConfig;
-import com.umeng.analytics.MobclickAgent;
+import com.tendcloud.tenddata.TCAgent;
 
 import cn.jiajixin.nuwa.Nuwa;
 import cn.jpush.android.api.JPushInterface;
@@ -53,7 +52,7 @@ public class MarsApplication extends Application {
         initJpush(getApplicationContext());
         ShareSDK.initSDK(getApplicationContext());
         initBugly();
-        initUmeng();
+        TCAgent.init(this);
         com.koolew.mars.videotools.Utils.preloadRecorder(this);
         FirstHintUtil.init(this);
         Downloader.init();
@@ -116,11 +115,5 @@ public class MarsApplication extends Application {
         if (!DEBUG) {
             CrashReport.initCrashReport(getApplicationContext(), "900006713", false);
         }
-    }
-
-    private void initUmeng() {
-        MobclickAgent.openActivityDurationTrack(false); // 禁止友盟默认的页面统计方式
-        AnalyticsConfig.enableEncrypt(true); // 设置是否对日志信息进行加密
-        MobclickAgent.setDebugMode(DEBUG);
     }
 }

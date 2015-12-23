@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 
-import com.umeng.analytics.MobclickAgent;
+import com.tendcloud.tenddata.TCAgent;
 
 /**
  * Created by jinchangzhu on 10/9/15.
@@ -187,14 +187,14 @@ public class BaseLazyV4Fragment extends com.shizhefei.fragment.BaseFragment {
     protected void onPageStart() {
         if (isNeedPageStatistics && !isPageStarted) {
             isPageStarted = true;
-            MobclickAgent.onPageStart(getClass().getSimpleName());
+            TCAgent.onPageStart(getActivity(), getClass().getSimpleName());
         }
     }
 
     protected void onPageEnd() {
         if (isNeedPageStatistics && isPageStarted) {
             isPageStarted = false;
-            MobclickAgent.onPageEnd(getClass().getSimpleName());
+            TCAgent.onPageEnd(getActivity(), getClass().getSimpleName());
         }
     }
 }

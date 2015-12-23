@@ -9,12 +9,10 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.koolew.mars.statistics.BaseActivity;
-import com.koolew.mars.statistics.StatisticsEvent;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.MaxLengthWatcher;
 import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiWorker;
-import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,8 +66,6 @@ public class CreateTopicActivity extends BaseActivity implements Response.Listen
         mConnectingDialog.dismiss();
         try {
             if (response.getInt("code") == 0) {
-                MobclickAgent.onEvent(CreateTopicActivity.this, StatisticsEvent.EVENT_ADD_TOPIC);
-
                 String tid = response.getJSONObject("result").getString("uid");
                 TopicMediaActivity.startThisActivity(CreateTopicActivity.this, tid,
                         TopicMediaActivity.TYPE_FEEDS);

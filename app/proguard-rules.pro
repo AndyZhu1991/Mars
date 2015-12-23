@@ -168,3 +168,6 @@
 
 #Nuwa
 -keep class cn.jiajixin.nuwa.** { *; }
+
+# Talking data
+-keep public class com.tendcloud.tenddata.** { public protected *;}

@@ -2,7 +2,7 @@ package com.koolew.mars.statistics;
 
 import android.support.v4.app.FragmentActivity;
 
-import com.umeng.analytics.MobclickAgent;
+import com.tendcloud.tenddata.TCAgent;
 
 /**
  * Created by jinchangzhu on 8/20/15.
@@ -15,17 +15,15 @@ public abstract class BaseV4FragmentActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         if (isNeedPageStatistics) {
-            MobclickAgent.onPageStart(getClass().getSimpleName());
+            TCAgent.onResume(this);
         }
-        MobclickAgent.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         if (isNeedPageStatistics) {
-            MobclickAgent.onPageEnd(getClass().getSimpleName());
+            TCAgent.onPause(this);
         }
-        MobclickAgent.onPause(this);
     }
 }
