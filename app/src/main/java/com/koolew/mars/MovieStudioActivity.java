@@ -103,6 +103,10 @@ public class MovieStudioActivity extends BaseActivity
     private opencv_core.IplImage maskImage;
     private opencv_core.CvRect maskRect;
 
+    public MovieStudioActivity() {
+        CameraInstance.getInstance().setFrontCameraAsDefault();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,8 +134,6 @@ public class MovieStudioActivity extends BaseActivity
             splitPoints[i] = mMovieTopicInfo.getFragments()[i].getEnd();
         }
         new CutVideoTask().execute();
-
-        CameraInstance.getInstance().setFrontCameraAsDefault();
     }
 
     private void initViews() {

@@ -88,6 +88,10 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     private ImageView mPlayImage;
 
 
+    public VideoShootActivity() {
+        CameraInstance.getInstance().setBackCameraAsDefault();
+    }
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,8 +107,6 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
         initMembers();
         initViews();
-
-        CameraInstance.getInstance().setBackCameraAsDefault();
     }
 
     @Override

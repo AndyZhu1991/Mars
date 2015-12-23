@@ -164,9 +164,9 @@ public class CameraInstance {
         Camera.Size bestSize = null;
         float minRatioDiff = Float.MAX_VALUE;
         for (Camera.Size size: sizes) {
-            float ratio = 1.0f * size.width / size.height;
-            if (Math.abs(ratio - mBestPreviewRatio) < minRatioDiff && size.height >= wantedWidth) {
-                minRatioDiff = ratio;
+            float ratioDiff = Math.abs(1.0f * size.width / size.height - mBestPreviewRatio);
+            if (ratioDiff < minRatioDiff && size.height >= wantedWidth) {
+                minRatioDiff = ratioDiff;
                 bestSize = size;
             }
         }
