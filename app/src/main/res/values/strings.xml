@@ -420,11 +420,12 @@
     <string name="no_koo_text">多给别人打赏，\n别人也会来支持你～</string>
     <string name="no_task_text">没有任务了哦，\n快让好友点名你吧！</string>
 
-    <!-- For CheckDanmakuActivity -->
+    <!-- For SingleMediaActivity -->
     <string name="kooed_count" formatted="false">被打赏%d次</string>
     <string name="support_comment_count" formatted="false">%d支持·%d评论</string>
     <string name="video_koo_brief_title_count" formatted="false">支持(%d)</string>
     <string name="item_count" formatted="false">%d条</string>
+    <string name="no_danmaku_footer_text">快来做第一个弹幕的人吧！</string>
 
     <!-- For income activities -->
     <string name="today_income">今日收益</string>

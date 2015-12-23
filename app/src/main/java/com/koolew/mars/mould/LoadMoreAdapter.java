@@ -51,7 +51,7 @@ public abstract class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-    private void bindLoadMoreViewHolder(LoadMoreViewHolder holder, int position) {
+    protected void bindLoadMoreViewHolder(LoadMoreViewHolder holder, int position) {
     }
 
     @Override
@@ -160,8 +160,8 @@ public abstract class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.
 
     public class LoadMoreViewHolder extends RecyclerView.ViewHolder {
 
-        private View loadingFrame;
-        private View noMoreFrame;
+        protected View loadingFrame;
+        protected View noMoreFrame;
 
         private boolean hasMore;
 

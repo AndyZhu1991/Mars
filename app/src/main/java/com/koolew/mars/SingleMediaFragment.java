@@ -3,8 +3,10 @@ package com.koolew.mars;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseCommentInfo;
@@ -91,6 +93,8 @@ public class SingleMediaFragment extends BaseTopicMediaFragment<SingleMediaFragm
 
         private VideoInfo mVideoInfo;
 
+        private SingleMediaLoadMoreHolder mSingleMediaLoadMoreHolder;
+
         public SingleMediaAdapter(Context context) {
             super(context);
         }
@@ -105,6 +109,24 @@ public class SingleMediaFragment extends BaseTopicMediaFragment<SingleMediaFragm
                 ((VideoItem.ItemViewHolder) holder).disableKooAndComment();
             }
             return holder;
+        }
+
+        @Override
+        protected LoadMoreViewHolder createLoadMoreHolder(ViewGroup parent, int viewType) {
+            mSingleMediaLoadMoreHolder = new SingleMediaLoadMoreHolder(LayoutInflater.from(mContext)
+                    .inflate(R.layout.load_more_footer, parent, false));
+            mLoadMoreViewHolder = mSingleMediaLoadMoreHolder;
+            return mLoadMoreViewHolder;
+        }
+
+        @Override
+        protected void bindLoadMoreViewHolder(LoadMoreViewHolder holder, int position) {
+            if (mVideoInfo.getCommentCount() == 0) {
+                mSingleMediaLoadMoreHolder.setNoMoreText(R.string.no_danmaku_footer_text);
+            }
+            else {
+                mSingleMediaLoadMoreHolder.setNoMoreText(R.string.there_is_no_more);
+            }
         }
 
         @Override
@@ -196,6 +218,17 @@ public class SingleMediaFragment extends BaseTopicMediaFragment<SingleMediaFragm
                 super.setKooTotal(count);
 
                 notifyItemChanged(2); // Comment title always at position-2
+            }
+        }
+
+        class SingleMediaLoadMoreHolder extends LoadMoreViewHolder {
+
+            public SingleMediaLoadMoreHolder(View itemView) {
+                super(itemView);
+            }
+
+            public void setNoMoreText(int redId) {
+                ((TextView) noMoreFrame).setText(redId);
             }
         }
     }
