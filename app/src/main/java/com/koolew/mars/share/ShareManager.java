@@ -64,15 +64,6 @@ public class ShareManager {
                 new UrlShareImage(videoInfo.getVideoThumb()), buildVideoUrl(videoInfo));
     }
 
-    public void shareMovieTo(ShareChanel shareChanel, BaseVideoInfo videoInfo, String movieName,
-                             String characterName, String desc) {
-        if (TextUtils.isEmpty(desc)) {
-            desc = buildMovieDescription(shareChanel, movieName, characterName);
-        }
-        share(sharePlatformName[shareChanel.ordinal()], "", desc,
-                new UrlShareImage(videoInfo.getVideoThumb()), buildVideoUrl(videoInfo));
-    }
-
     public void shareVideoTo(ShareChanel shareChanel, BaseVideoInfo videoInfo, String content, String desc) {
         if (TextUtils.isEmpty(desc)) {
             shareVideoTo(shareChanel, videoInfo, content);
@@ -81,6 +72,21 @@ public class ShareManager {
             share(sharePlatformName[shareChanel.ordinal()], "", desc,
                     new UrlShareImage(videoInfo.getVideoThumb()), buildVideoUrl(videoInfo));
         }
+    }
+
+    public void shareMyMovieTo(ShareChanel shareChanel, BaseVideoInfo videoInfo, String movieName,
+                               String characterName, String desc) {
+        if (TextUtils.isEmpty(desc)) {
+            desc = buildMyMovieDescription(shareChanel, videoInfo, movieName, characterName);
+        }
+        share(sharePlatformName[shareChanel.ordinal()], "", desc,
+                new UrlShareImage(videoInfo.getVideoThumb()), buildVideoUrl(videoInfo));
+    }
+
+    public void shareOthersMovieTo(ShareChanel shareChanel, BaseVideoInfo videoInfo, String movieName) {
+        share(sharePlatformName[shareChanel.ordinal()], "",
+                buildOthersMovieDescription(shareChanel, videoInfo, movieName),
+                new UrlShareImage(videoInfo.getVideoThumb()), buildVideoUrl(videoInfo));
     }
 
     public void shareTopicTo(ShareChanel shareChanel, String topicId, String content) {
@@ -192,8 +198,26 @@ public class ShareManager {
         }
     }
 
-    private String buildMovieDescription(ShareChanel chanel, String movieName, String characterName) {
-        return mContext.getString(R.string.share_movie_desc, movieName, characterName);
+    private String buildMyMovieDescription(ShareChanel chanel, BaseVideoInfo videoInfo,
+                                           String movieName, String characterName) {
+        if (chanel.equals(ShareChanel.WEIBO)) {
+            return mContext.getString(R.string.share_my_movie_weibo_desc, movieName, characterName,
+                    buildVideoUrl(videoInfo));
+        }
+        else {
+            return mContext.getString(R.string.share_my_movie_desc, movieName, characterName);
+        }
+    }
+
+    private String buildOthersMovieDescription(ShareChanel chanel, BaseVideoInfo videoInfo,
+                                               String movieName) {
+        if (chanel.equals(ShareChanel.WEIBO)) {
+            return mContext.getString(R.string.share_others_movie_weibo_desc, movieName,
+                    buildVideoUrl(videoInfo));
+        }
+        else {
+            return mContext.getString(R.string.share_others_movie_desc, movieName);
+        }
     }
 
     private String topicDescription() {

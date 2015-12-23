@@ -19,13 +19,13 @@ import org.json.JSONObject;
  */
 public class ShareVideoWindow extends ShareWindow {
 
-    private BaseVideoInfo mVideoInfo;
-    private String mId;
-    private String mContent;
-    private String mUid;
+    protected BaseVideoInfo mVideoInfo;
+    protected String mId;
+    protected String mContent;
+    protected String mUid;
 
-    private Dialog mProgressDialog;
-    private OnVideoOperatedListener mVideoOperatedListener;
+    protected Dialog mProgressDialog;
+    protected OnVideoOperatedListener mVideoOperatedListener;
 
 
     public ShareVideoWindow(Activity activity, BaseVideoInfo videoInfo, String content) {

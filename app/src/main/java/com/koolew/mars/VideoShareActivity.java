@@ -361,7 +361,7 @@ public class VideoShareActivity extends AppCompatActivity implements View.OnClic
                 shareListener = new ShareListener();
             }
             if (isMovie) {
-                new ShareManager(this, shareListener).shareMovieTo(shareChanel, mUploadedVideo,
+                new ShareManager(this, shareListener).shareMyMovieTo(shareChanel, mUploadedVideo,
                         mMovieName, mCharacterName, mDescEdit.getText().toString());
             }
             else {
@@ -406,7 +406,7 @@ public class VideoShareActivity extends AppCompatActivity implements View.OnClic
             if (mShareItemWeibo.isSelected()) {
                 if (isMovie) {
                     new ShareManager(VideoShareActivity.this, new WeiboShareListener()).
-                            shareMovieTo(ShareManager.ShareChanel.WEIBO, mUploadedVideo, mMovieName,
+                            shareMyMovieTo(ShareManager.ShareChanel.WEIBO, mUploadedVideo, mMovieName,
                                     mCharacterName, mDescEdit.getText().toString());
                 }
                 else {

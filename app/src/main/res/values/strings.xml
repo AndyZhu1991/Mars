@@ -352,7 +352,10 @@
     <string name="share_topic_description">[小视频合集]</string>
     <string name="invite_desc_wechat" formatted="false">"你被 %s 点名：“%s”（看到点名必须回复！）"</string>
     <string name="invite_desc_weibo_n_qzone" formatted="false">"（对，就是你！）快来支持 %s 发起的点名：“%s”"</string>
-    <string name="share_movie_desc" formatted="false">我在《%s》里扮演了%s！快来和我演对手戏！</string>
+    <string name="share_my_movie_desc" formatted="false">我在《%s》里扮演了%s！快来和我演对手戏！</string>
+    <string name="share_my_movie_weibo_desc" formatted="false">我在《%s》里扮演了%s！快来和我演对手戏！→%s（通过@可见App 拍摄）</string>
+    <string name="share_others_movie_desc" formatted="false">《%s》被翻拍成这样了！你们都太会玩了！</string>
+    <string name="share_others_movie_weibo_desc" formatted="false">《%s》被翻拍成这样了！你们都太会玩了！点击查看→%s（通过@可见App 拍摄）</string>
     <string name="share_my_video_to_wechat_desc" formatted="false">"导演 %s 创作了一个小视频「%s」，欢迎围观~"</string>
     <string name="share_my_video_to_weibo_desc" formatted="false">"我拍了一个视频「%s」，欢迎围观→%s（通过@可见App 拍摄）"</string>
     <string name="share_others_video_to_wechat_desc" formatted="false">"这个视频不看会后悔！「%s」by%s"</string>
