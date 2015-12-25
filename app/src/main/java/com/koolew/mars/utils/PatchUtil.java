@@ -46,7 +46,7 @@ public class PatchUtil {
     }
 
     public static boolean hasNewPatch() {
-        return loadedPatchCode < lastPatchCode;
+        return lastAppCode == Utils.getCurrentVersionCode() && loadedPatchCode < lastPatchCode;
     }
 
     public static void checkAndUpdatePatchAsync(final Context context) {
