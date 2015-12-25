@@ -53,6 +53,11 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
     }
 
     @Override
+    protected int getNoDataViewResId() {
+        return R.layout.koolew_feeds_no_data_layout;
+    }
+
+    @Override
     protected boolean handleRefresh(JSONObject response) {
         mAdapter.mData.clear();
         try {
