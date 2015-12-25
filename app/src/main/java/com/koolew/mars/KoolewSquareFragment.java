@@ -365,7 +365,12 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
 
         @Override
         public int getCount() {
-            return mImageViews.length;
+            if (mImageViews == null) {
+                return 0;
+            }
+            else {
+                return mImageViews.length;
+            }
         }
 
         @Override
