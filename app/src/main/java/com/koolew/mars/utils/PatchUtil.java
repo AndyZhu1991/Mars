@@ -89,6 +89,10 @@ public class PatchUtil {
             return;
         }
 
+        if (lastAppCode != Utils.getCurrentVersionCode(context)) {
+            return;
+        }
+
         final File finalPatch = new File(getInternalPatchDir(context),
                 getPatchNameByAppVersionAndPatchVersion(lastAppCode, lastPatchCode));
         try {
