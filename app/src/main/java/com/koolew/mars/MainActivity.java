@@ -263,6 +263,11 @@ public class MainActivity extends BaseV4FragmentActivity
     }
 
     private void switchFragment(int position) {
+        if (mAdapter.checkedPosition == position && mCurFragment != null) {
+            mDrawerLayout.closeDrawer(mLeftDrawer);
+            return;
+        }
+
         MainBaseFragment fragment = mAdapter.drawerItems[position].getFragment();
         if (fragment != null) {
             mAdapter.checkedPosition = position;
@@ -361,10 +366,10 @@ public class MainActivity extends BaseV4FragmentActivity
                 mCurFragment.onTopIconClick(1);
                 break;
             case R.id.fans_count_text:
-                TitleFragmentActivity.launchFragment(this, FansFragment.class);
+                switchToFansFragment();
                 break;
             case R.id.follows_count_text:
-                TitleFragmentActivity.launchFragment(this, FollowsFragment.class);
+                switchToFollowsFragment();
                 break;
             case R.id.income_layout:
                 startActivity(new Intent(this, TodayIncomeActivity.class));
@@ -380,6 +385,16 @@ public class MainActivity extends BaseV4FragmentActivity
     private void startKooRankActivity() {
         Intent intent = new Intent(this, KooRankActivity.class);
         startActivity(intent);
+    }
+
+    private void switchToFansFragment() {
+        switchFragment(2);
+        ((FriendFragment) mCurFragment).switchToPosition(FriendFragment.FriendTab.FANS);
+    }
+
+    private void switchToFollowsFragment() {
+        switchFragment(2);
+        ((FriendFragment) mCurFragment).switchToPosition(FriendFragment.FriendTab.FOLLOWED);
     }
 
     @Override

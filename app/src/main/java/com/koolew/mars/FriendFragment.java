@@ -36,6 +36,7 @@ public class FriendFragment extends MainBaseFragment {
     private IndicatorViewPager indicatorViewPager;
     private ScrollIndicatorView indicator;
     private ViewPager viewPager;
+    private int pagerPosition = 0;
 
 
     /**
@@ -84,7 +85,20 @@ public class FriendFragment extends MainBaseFragment {
         indicatorViewPager = new IndicatorViewPager(indicator, viewPager);
         indicatorViewPager.setAdapter(new FriendFragmentPagerAdapter(getChildFragmentManager()));
 
+        viewPager.setCurrentItem(pagerPosition, false);
+
         return root;
+    }
+
+    public enum FriendTab {
+        MEET, FRIEND, FOLLOWED, FANS, CONTACTS
+    }
+
+    public void switchToPosition(FriendTab tab) {
+        pagerPosition = tab.ordinal();
+        if (viewPager != null) {
+            viewPager.setCurrentItem(tab.ordinal(), true);
+        }
     }
 
     @Override
