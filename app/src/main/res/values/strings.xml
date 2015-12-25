@@ -413,9 +413,6 @@
     <string name="play_not_enough_coin">金币不足，快去赚金币吧！</string>
     <string name="preparing_for_more_video">更多候选视频正在准备中，请稍等。</string>
 
-    <!-- For MessagesActivity -->
-    <string name="message_area">消息区</string>
-
     <!-- For sub fragments -->
     <string name="no_danmaku_text">视频上可以发弹幕了，\n快去试试～</string>
     <string name="no_koo_text">多给别人打赏，\n别人也会来支持你～</string>

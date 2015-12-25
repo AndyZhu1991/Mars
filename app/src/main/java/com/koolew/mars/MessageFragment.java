@@ -12,10 +12,8 @@ import android.widget.TextView;
 
 import com.koolew.mars.redpoint.RedPointManager;
 import com.koolew.mars.redpoint.RedPointView;
-import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.utils.PagerScrollSmoothColorListener;
 import com.koolew.mars.utils.Utils;
-import com.koolew.mars.view.TitleBarView;
 import com.shizhefei.view.indicator.IndicatorViewPager;
 import com.shizhefei.view.indicator.ScrollIndicatorView;
 import com.shizhefei.view.indicator.slidebar.ColorBar;
@@ -24,32 +22,43 @@ import com.shizhefei.view.indicator.transition.OnTransitionTextListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by jinchangzhu on 12/25/15.
+ */
+public class MessageFragment extends MainBaseFragment {
 
-public class MessagesActivity extends BaseV4FragmentActivity {
+    public enum MessageTab {
+        DANMAKU, KOO, NOTIFICATION, TASK
+    }
 
-    public static final String KEY_WHICH_TAB = "which tab";
-    public static final int DANMAKU_TAB = 0;
-    public static final int KOO_TAB = 1;
-    public static final int NOTIFICATION_TAB = 2;
-    public static final int TASK_TAB = 3;
+    public MessageFragment() {
+        isNeedPageStatistics = false;
+    }
 
-    private TitleBarView titleBar;
     private IndicatorViewPager indicatorViewPager;
     private ScrollIndicatorView indicator;
     private ViewPager viewPager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_messages);
+        mToolbarInterface.setToolbarTitle(getString(R.string.title_message));
+    }
 
-        titleBar = (TitleBarView) findViewById(R.id.title_bar);
-        viewPager = (ViewPager) findViewById(R.id.view_pager);
-        indicator = (ScrollIndicatorView) findViewById(R.id.indicator);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_message, container, false);
 
-        indicator.setScrollBar(new ColorBar(this, Color.WHITE,
+        mToolbarInterface.setToolbarColor(getResources().getColor(R.color.koolew_light_blue));
+        mToolbarInterface.setTopIconCount(0);
+
+        viewPager = (ViewPager) root.findViewById(R.id.view_pager);
+        indicator = (ScrollIndicatorView) root.findViewById(R.id.indicator);
+
+        indicator.setScrollBar(new ColorBar(getActivity(), Color.WHITE,
                 getResources().getDimensionPixelSize(R.dimen.underline_height)));
-        indicator.setOnTransitionListener(new TransitionTextListener().setColorId(this,
+        indicator.setOnTransitionListener(new TransitionTextListener().setColorId(getActivity(),
                 R.color.title_text_color_indicated, R.color.title_text_color_unindicate));
 
         viewPager.setOffscreenPageLimit(4);
@@ -60,10 +69,16 @@ public class MessagesActivity extends BaseV4FragmentActivity {
                 getResources().getColor(R.color.koolew_light_green)
         ));
         indicatorViewPager = new IndicatorViewPager(indicator, viewPager);
-        indicatorViewPager.setAdapter(new MessageFragmentPagerAdapter(getSupportFragmentManager()));
-        indicatorViewPager.setCurrentItem(getIntent().getIntExtra(KEY_WHICH_TAB, 0), false);
+        indicatorViewPager.setAdapter(new MessageFragmentPagerAdapter(getChildFragmentManager()));
+        indicatorViewPager.setCurrentItem(mStartTabPosition, false);
+
+        return root;
     }
 
+    @Override
+    protected ViewPager getViewPager() {
+        return viewPager;
+    }
 
     class MessageFragmentPagerAdapter extends IndicatorViewPager.IndicatorFragmentPagerAdapter {
 
@@ -102,12 +117,12 @@ public class MessagesActivity extends BaseV4FragmentActivity {
         @Override
         public View getViewForTab(int position, View convertView, ViewGroup container) {
             if (convertView == null) {
-                convertView = LayoutInflater.from(MessagesActivity.this)
+                convertView = LayoutInflater.from(getActivity())
                         .inflate(R.layout.indicator_with_red_point, container, false);
             }
             TextView textView = (TextView) convertView.findViewById(R.id.text);
             textView.setText(titleList.get(position));
-            int paddingLR = (int) Utils.dpToPixels(MessagesActivity.this, 10);
+            int paddingLR = (int) Utils.dpToPixels(getActivity(), 10);
             textView.setPadding(paddingLR, 0, paddingLR, 0);
             RedPointView redPoint = (RedPointView) convertView.findViewById(R.id.red_point);
             redPoint.registerPath(redPointPathList.get(position));
@@ -128,7 +143,7 @@ public class MessagesActivity extends BaseV4FragmentActivity {
 
         @Override
         public void onColorChanged(int color) {
-            titleBar.setBackgroundColor(color);
+            mToolbarInterface.setToolbarColor(color);
             indicator.setBackgroundColor(color);
         }
     }

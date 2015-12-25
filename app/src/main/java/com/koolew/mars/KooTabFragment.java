@@ -52,7 +52,7 @@ public class KooTabFragment extends RecyclerListFragmentMould<KooTabFragment.Koo
 
     @Override
     protected int getThemeColor() {
-        return getResources().getColor(R.color.koolew_red);
+        return getResources().getColor(R.color.koolew_light_red);
     }
 
     @Override

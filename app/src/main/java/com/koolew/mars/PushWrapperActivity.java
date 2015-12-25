@@ -38,6 +38,21 @@ public class PushWrapperActivity extends BaseV4FragmentActivity {
             themeColor = getResources().getColor(R.color.koolew_black);
             title = getString(R.string.koolew_square_title);
         }
+        else if (tabType.equals(UriProcessor.TAB_COMMENT)) {
+            fragment = new DanmakuTabFragment();
+            themeColor = getResources().getColor(R.color.koolew_light_blue);
+            title = getString(R.string.danmaku);
+        }
+        else if (tabType.equals(UriProcessor.TAB_KOO)) {
+            fragment = new KooTabFragment();
+            themeColor = getResources().getColor(R.color.koolew_light_red);
+            title = getString(R.string.musang);
+        }
+        else if (tabType.equals(UriProcessor.TAB_ASSIGNMENT)) {
+            fragment = new TaskTabFragment();
+            themeColor = getResources().getColor(R.color.koolew_light_green);
+            title = getString(R.string.task);
+        }
         else {
             fragment = null;
             themeColor = 0xFF000000;

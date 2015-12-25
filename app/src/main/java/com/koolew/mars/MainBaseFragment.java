@@ -3,6 +3,7 @@ package com.koolew.mars;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 
 import com.koolew.mars.statistics.BaseV4Fragment;
 
@@ -13,6 +14,8 @@ public class MainBaseFragment extends BaseV4Fragment {
 
     protected OnFragmentInteractionListener mListener;
     protected ToolbarOperateInterface mToolbarInterface;
+
+    protected int mStartTabPosition = 0;
 
     @Override
     public void onAttach(Activity activity) {
@@ -42,6 +45,21 @@ public class MainBaseFragment extends BaseV4Fragment {
     }
 
     public void onTopIconClick(int position) {
+    }
+
+    public void switchTab(int position) {
+        ViewPager viewPager = getViewPager();
+        if (viewPager == null) {
+            mStartTabPosition = position;
+        }
+        else {
+            viewPager.setCurrentItem(position, true);
+        }
+    }
+
+    // Override it while has ViewPager
+    protected ViewPager getViewPager() {
+        return null;
     }
 
     /**

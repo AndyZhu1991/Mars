@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.koolew.mars.redpoint.RedPointManager;
 import com.koolew.mars.view.KoolewViewPagerIndicator;
 
 import java.util.ArrayList;
@@ -30,6 +29,10 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
     private static final String TAG = "koolew-KoolewFragment";
 
     private static int[] subPageColors = null;
+
+    public enum KoolewTab {
+        SQUARE, FEEDS, INVOLVE
+    }
 
     private ViewPager mViewPager;
     private KoolewFragmentPagerAdapter mAdapter;
@@ -59,8 +62,6 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
         super.onCreate(savedInstanceState);
         mToolbarInterface.setToolbarTitle(getString(R.string.title_koolew));
         initSubPageColors();
-
-        mToolbarInterface.setTopRedPointPath(0, RedPointManager.PATH_MESSAGE);
     }
 
     @Override
@@ -83,6 +84,7 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
                     }
                 }
         );
+        mViewPager.setCurrentItem(mStartTabPosition, false);
 
         mToolbarInterface.setToolbarColor(subPageColors[mViewPager.getCurrentItem()]);
 
@@ -92,6 +94,11 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
         mBtnAddTopic.setOnClickListener(this);
 
         return root;
+    }
+
+    @Override
+    protected ViewPager getViewPager() {
+        return mViewPager;
     }
 
     private void initSubPageColors() {

@@ -33,10 +33,13 @@ public class FriendFragment extends MainBaseFragment {
 
     private static final String TAG = "koolew-KoolewFragment";
 
+    public enum FriendTab {
+        MEET, FRIEND, FOLLOWED, FANS, CONTACTS
+    }
+
     private IndicatorViewPager indicatorViewPager;
     private ScrollIndicatorView indicator;
     private ViewPager viewPager;
-    private int pagerPosition = 0;
 
 
     /**
@@ -85,26 +88,20 @@ public class FriendFragment extends MainBaseFragment {
         indicatorViewPager = new IndicatorViewPager(indicator, viewPager);
         indicatorViewPager.setAdapter(new FriendFragmentPagerAdapter(getChildFragmentManager()));
 
-        viewPager.setCurrentItem(pagerPosition, false);
+        viewPager.setCurrentItem(mStartTabPosition, false);
 
         return root;
-    }
-
-    public enum FriendTab {
-        MEET, FRIEND, FOLLOWED, FANS, CONTACTS
-    }
-
-    public void switchToPosition(FriendTab tab) {
-        pagerPosition = tab.ordinal();
-        if (viewPager != null) {
-            viewPager.setCurrentItem(tab.ordinal(), true);
-        }
     }
 
     @Override
     public void onTopIconClick(int position) {
         new SearchUserWindow(getActivity()).showAtLocation(
                 getActivity().findViewById(R.id.my_toolbar), Gravity.TOP, 0, 0);
+    }
+
+    @Override
+    protected ViewPager getViewPager() {
+        return viewPager;
     }
 
     class FriendFragmentPagerAdapter extends IndicatorViewPager.IndicatorFragmentPagerAdapter {

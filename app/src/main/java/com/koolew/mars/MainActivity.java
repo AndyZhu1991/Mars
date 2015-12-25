@@ -263,8 +263,15 @@ public class MainActivity extends BaseV4FragmentActivity
     }
 
     private void switchFragment(int position) {
+        switchFragment(position, -1);
+    }
+
+    private void switchFragment(int position, int tabPosition) {
         if (mAdapter.checkedPosition == position && mCurFragment != null) {
             mDrawerLayout.closeDrawer(mLeftDrawer);
+            if (tabPosition >= 0) {
+                mCurFragment.switchTab(tabPosition);
+            }
             return;
         }
 
@@ -273,6 +280,9 @@ public class MainActivity extends BaseV4FragmentActivity
             mAdapter.checkedPosition = position;
             mAdapter.notifyDataSetChanged();
             mCurFragment = fragment;
+            if (tabPosition >= 0) {
+                mCurFragment.switchTab(tabPosition);
+            }
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, mCurFragment).commit();
@@ -388,13 +398,11 @@ public class MainActivity extends BaseV4FragmentActivity
     }
 
     private void switchToFansFragment() {
-        switchFragment(2);
-        ((FriendFragment) mCurFragment).switchToPosition(FriendFragment.FriendTab.FANS);
+        switchFragment(DRAWER_POSITION_FRIENDSHIP, FriendFragment.FriendTab.FANS.ordinal());
     }
 
     private void switchToFollowsFragment() {
-        switchFragment(2);
-        ((FriendFragment) mCurFragment).switchToPosition(FriendFragment.FriendTab.FOLLOWED);
+        switchFragment(DRAWER_POSITION_FRIENDSHIP, FriendFragment.FriendTab.FOLLOWED.ordinal());
     }
 
     @Override
@@ -443,9 +451,22 @@ public class MainActivity extends BaseV4FragmentActivity
         @Override
         protected void switchToTab(String tabId) {
             if (tabId.equals(TAB_FEEDS)) {
+                switchFragment(DRAWER_POSITION_MAIN, KoolewFragment.KoolewTab.FEEDS.ordinal());
+            }
+            else if (tabId.equals(TAB_COMMENT)) {
+                switchFragment(DRAWER_POSITION_MESSAGE, MessageFragment.MessageTab.DANMAKU.ordinal());
+            }
+            else if (tabId.equals(TAB_KOO)) {
+                switchFragment(DRAWER_POSITION_MESSAGE, MessageFragment.MessageTab.KOO.ordinal());
+            }
+            else if (tabId.equals(TAB_ASSIGNMENT)) {
+                switchFragment(DRAWER_POSITION_MESSAGE, MessageFragment.MessageTab.TASK.ordinal());
             }
             else if (tabId.equals(TAB_SUGGESTION)) {
-                switchFragment(1);
+                switchFragment(DRAWER_POSITION_FRIENDSHIP, FriendFragment.FriendTab.MEET.ordinal());
+            }
+            else if (tabId.equals(TAB_ME)) {
+                mDrawerLayout.openDrawer(mLeftDrawer);
             }
             else {
                 super.switchToTab(tabId);
@@ -498,8 +519,7 @@ public class MainActivity extends BaseV4FragmentActivity
 
             icon = (ImageView) itemView.findViewById(R.id.icon);
             title = (TextView) itemView.findViewById(R.id.text);
-            redPoint = (RedPointView) itemView
-                    .findViewById(R.id.red_point);
+            redPoint = (RedPointView) itemView.findViewById(R.id.red_point);
         }
 
         @Override
@@ -507,6 +527,11 @@ public class MainActivity extends BaseV4FragmentActivity
             onItemClick(getAdapterPosition());
         }
     }
+
+    private static final int DRAWER_POSITION_MAIN = 0;
+    private static final int DRAWER_POSITION_MESSAGE = 1;
+    private static final int DRAWER_POSITION_FRIENDSHIP = 2;
+    private static final int DRAWER_POSITION_SETTINGS = 3;
 
     class DrawerAdapter extends RecyclerView.Adapter<DrawerHolder> {
         private int checkedPosition;
@@ -522,14 +547,7 @@ public class MainActivity extends BaseV4FragmentActivity
                         R.mipmap.ic_drawer_list_message_selected,
                         R.string.title_message,
                         R.color.drawer_list_message_select,
-                        null) {
-                    @Override
-                    public MainBaseFragment getFragment() {
-                        Intent intent = new Intent(MainActivity.this, MessagesActivity.class);
-                        startActivity(intent);
-                        return null;
-                    }
-                },
+                        MessageFragment.class),
 
                 new DrawerItem(R.mipmap.ic_drawer_list_friend,
                         R.mipmap.ic_drawer_list_friend_selected,
@@ -563,10 +581,10 @@ public class MainActivity extends BaseV4FragmentActivity
                 holder.title.setTextColor(getResources().getColor(UNSELECT_COLOR_RES));
             }
             holder.title.setText(drawerItems[position].titleRes);
-            if (position == 1) { // Message
+            if (position == DRAWER_POSITION_MESSAGE) {
                 holder.redPoint.registerPath(RedPointManager.PATH_MESSAGE);
             }
-            if (position == 2) { // Friends
+            if (position == DRAWER_POSITION_FRIENDSHIP) {
                 holder.redPoint.registerPath(RedPointManager.PATH_FRIENDS);
             }
         }

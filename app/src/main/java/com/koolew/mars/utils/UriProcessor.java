@@ -8,7 +8,6 @@ import android.text.TextUtils;
 
 import com.koolew.mars.FriendInfoActivity;
 import com.koolew.mars.KoolewWebActivity;
-import com.koolew.mars.MessagesActivity;
 import com.koolew.mars.PushWrapperActivity;
 import com.koolew.mars.SingleMediaFragment;
 import com.koolew.mars.TitleFragmentActivity;
@@ -100,26 +99,13 @@ public class UriProcessor {
     }
 
     protected void switchToTab(String tabId) {
-        if (tabId.equals(TAB_FEEDS) || tabId.equals(TAB_SUGGESTION) || tabId.equals(TAB_SQUARE)) {
+        if (tabId.equals(TAB_FEEDS) || tabId.equals(TAB_SUGGESTION) || tabId.equals(TAB_SQUARE)
+                || tabId.equals(TAB_COMMENT) || tabId.equals(TAB_KOO) || tabId.equals(TAB_ASSIGNMENT)) {
             Intent intent = newIntent(mContext, PushWrapperActivity.class);
             intent.putExtra(PushWrapperActivity.KEY_TAB_TYPE, tabId);
             mContext.startActivity(intent);
         }
-        else if (tabId.equals(TAB_ASSIGNMENT)) {
-            Intent intent = newIntent(mContext, MessagesActivity.class);
-            intent.putExtra(MessagesActivity.KEY_WHICH_TAB, MessagesActivity.TASK_TAB);
-            mContext.startActivity(intent);
-        }
-        else if (tabId.equals(TAB_COMMENT)) {
-            Intent intent = newIntent(mContext, MessagesActivity.class);
-            mContext.startActivity(intent);
-        }
         else if (tabId.equals(TAB_ME)) {
-        }
-        else if (tabId.equals(TAB_KOO)) {
-            Intent intent = newIntent(mContext, MessagesActivity.class);
-            intent.putExtra(MessagesActivity.KEY_WHICH_TAB, MessagesActivity.KOO_TAB);
-            mContext.startActivity(intent);
         }
         else if (tabId.equals(TAB_PROFIT)) {
             mContext.startActivity(newIntent(mContext, TodayIncomeActivity.class));
