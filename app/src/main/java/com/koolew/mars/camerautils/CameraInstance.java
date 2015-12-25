@@ -136,7 +136,12 @@ public class CameraInstance {
             params.setSceneMode(Camera.Parameters.SCENE_MODE_AUTO);
             params.setRecordingHint(true);
             Camera.Size bestVideoSize = params.getPreferredPreviewSizeForVideo();
-            mBestPreviewRatio = 1.0f * bestVideoSize.width / bestVideoSize.height;
+            if (bestVideoSize == null) {
+                mBestPreviewRatio = 16f / 9;
+            }
+            else {
+                mBestPreviewRatio = 1.0f * bestVideoSize.width / bestVideoSize.height;
+            }
             setBestCameraPreviewSize(params);
             List<String> focusModes = params.getSupportedFocusModes();
             if (focusModes.contains("continuous-video") && shouldAutoFocus()) {
