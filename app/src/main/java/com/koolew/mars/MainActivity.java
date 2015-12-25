@@ -151,7 +151,7 @@ public class MainActivity extends BaseV4FragmentActivity
         });
 
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
+        if (bundle != null && !wasLaunchedFromRecents()) {
             String pushUri = bundle.getString(KEY_PUSH_URI);
             if (!TextUtils.isEmpty(pushUri)) {
                 new UriProcessor(this).process(pushUri);
@@ -171,6 +171,10 @@ public class MainActivity extends BaseV4FragmentActivity
     // Some init ops, DO NOT take a long time!
     private void init() {
         RemoteConfigManager.getInstance().tryFetchAsync();
+    }
+
+    private boolean wasLaunchedFromRecents() {
+        return (getIntent().getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0;
     }
 
     @Override
