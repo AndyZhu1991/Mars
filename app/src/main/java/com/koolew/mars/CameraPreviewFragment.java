@@ -22,15 +22,18 @@ import android.widget.FrameLayout;
 import com.koolew.mars.camerautils.CameraInstance;
 import com.koolew.mars.opengl.filter.FrameRenderer;
 import com.koolew.mars.opengl.filter.FrameRendererBlur;
-import com.koolew.mars.opengl.filter.FrameRendererDrawOrigin;
 import com.koolew.mars.opengl.filter.FrameRendererEdge;
 import com.koolew.mars.opengl.filter.FrameRendererEmboss;
 import com.koolew.mars.opengl.filter.FrameRendererLerpBlur;
+import com.koolew.mars.opengl.filter.FrameRendererToneCurve;
 import com.koolew.mars.opengl.filter.FrameRendererWave;
 import com.koolew.mars.opengl.render.GLTextureView;
 import com.koolew.mars.opengl.utils.Common;
 
 import org.bytedeco.javacpp.opencv_core;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -249,13 +252,19 @@ public class CameraPreviewFragment extends Fragment {
             mSurfaceTexture.setOnFrameAvailableListener(this);
 
             //FrameRendererDrawOrigin rendererWave = FrameRendererDrawOrigin.create(false);
-            FrameRendererDrawOrigin rendererWave = FrameRendererDrawOrigin.create(false);
-            if(!rendererWave.init(true)) {
+            FrameRendererToneCurve renderer = new FrameRendererToneCurve();
+            try {
+                renderer.setFromCurveFileInputStream(
+                        new BufferedInputStream(getResources().getAssets().open("beauty001.acv")));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(!renderer.init(true)) {
                 Log.e(LOG_TAG, "init filter failed!\n");
             }
-            mMyRenderer = rendererWave;
+            mMyRenderer = renderer;
 
-            rendererWave.setRotation((float) Math.PI / 2.0f);
+            renderer.setRotation((float) Math.PI / 2.0f);
 
             requestRender();
 
