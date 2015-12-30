@@ -132,7 +132,7 @@ public class DownloadDispatcher extends Thread {
          	
             final int responseCode = conn.getResponseCode();
             
-            Log.v(TAG, "Response code obtained for downloaded Id "+mRequest.getDownloadId()+" : httpResponse Code "+responseCode);
+            Log.v(TAG, "Response code obtained for downloaded Id " + mRequest.getDownloadId() + " : httpResponse Code " + responseCode);
             
             switch (responseCode) {
                 case HTTP_OK:
@@ -202,12 +202,12 @@ public class DownloadDispatcher extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-    		File destinationFile = new File(mRequest.getDestinationURI().getPath().toString());
     		
             try {
-                out = new FileOutputStream(destinationFile, true);
-                outFd = ((FileOutputStream) out).getFD();
+                out = mRequest.getDestination().getOutputStream();
+                if (out instanceof FileOutputStream) {
+                    outFd = ((FileOutputStream) out).getFD();
+                }
             } catch (IOException e) {
             	e.printStackTrace();
                 updateDownloadFailed(DownloadManager.ERROR_FILE_ERROR, "Error in writing download contents to the destination file");
@@ -340,10 +340,14 @@ public class DownloadDispatcher extends Thread {
      * the downloaded file.
      */
     private void cleanupDestination() {
-        Log.d(TAG, "cleanupDestination() deleting " + mRequest.getDestinationURI().toString());
-        File destinationFile = new File(mRequest.getDestinationURI().toString());
-        if(destinationFile.exists()) {
-            destinationFile.delete();
+        DownloadDestination destination = mRequest.getDestination();
+        if (destination instanceof DownloadDestination.FileDestination) {
+            DownloadDestination.FileDestination fileDestination = (DownloadDestination.FileDestination) destination;
+            Log.d(TAG, "cleanupDestination() deleting " + fileDestination.getFilePath());
+            File destinationFile = new File(fileDestination.getFilePath());
+            if (destinationFile.exists()) {
+                destinationFile.delete();
+            }
         }
     }
 

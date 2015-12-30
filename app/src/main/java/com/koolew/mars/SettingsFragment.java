@@ -24,13 +24,9 @@ import com.koolew.mars.preference.SwitchPreference;
 import com.koolew.mars.preference.TreePreference;
 import com.koolew.mars.update.Updater;
 import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.utils.FileUtil;
-import com.koolew.mars.utils.Utils;
+import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import java.io.File;
-import java.io.FileFilter;
 
 
 /**
@@ -141,17 +137,7 @@ public class SettingsFragment extends MainBaseFragment implements View.OnClickLi
             @Override
             protected Void doInBackground(Void... params) {
                 ImageLoader.getInstance().clearDiskCache();
-                FileUtil.deleteFilesFromDir(new File(Utils.getCacheDir(getActivity())),
-                        new FileFilter() {
-                            @Override
-                            public boolean accept(File pathname) {
-                                if (pathname.getAbsolutePath().endsWith(".mp4")) {
-                                    return true;
-                                } else {
-                                    return false;
-                                }
-                            }
-                        });
+                Downloader.getInstance().cleanCache();
                 return null;
             }
 

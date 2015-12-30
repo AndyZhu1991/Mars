@@ -667,7 +667,17 @@ public class MovieStudioActivity extends BaseActivity
 
         private String DownloadSynced(String url) {
             Downloader.DownloadFuture future = new Downloader.DownloadFuture();
-            Downloader.getInstance().download(future, url);
+            try {
+                Downloader.getInstance().download(future, url);
+            } catch (IOException e) {
+                if (MarsApplication.DEBUG) {
+                    throw new RuntimeException(e);
+                }
+                else {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
             return future.download();
         }
 

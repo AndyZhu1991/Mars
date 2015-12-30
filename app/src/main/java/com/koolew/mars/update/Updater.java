@@ -10,9 +10,7 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.koolew.mars.R;
-import com.koolew.mars.downloadmanager.DownloadRequest;
-import com.koolew.mars.downloadmanager.DownloadStatusListener;
-import com.koolew.mars.downloadmanager.ThinDownloadManager;
+import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 
@@ -20,11 +18,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by jinchangzhu on 10/20/15.
  */
-public class Updater implements DownloadStatusListener, Response.Listener<JSONObject> {
+public class Updater implements Downloader.LoadListener, Response.Listener<JSONObject> {
 
     private static final String KEY_UPDATE_PREFERENCE = "update";
     private static final String KEY_LAST_CHECK_TIME_MILLIS = "check_time";
@@ -37,7 +36,6 @@ public class Updater implements DownloadStatusListener, Response.Listener<JSONOb
     private Context mContext;
 
     private SharedPreferences sharedPreference;
-    private ThinDownloadManager downloadManager;
     private VersionInfo lastVersionInfo;
 
     public static Updater newInstance(Context context) {
@@ -51,7 +49,6 @@ public class Updater implements DownloadStatusListener, Response.Listener<JSONOb
     private Updater(Context context) {
         mContext = context;
         sharedPreference = mContext.getSharedPreferences(KEY_UPDATE_PREFERENCE, Context.MODE_APPEND);
-        downloadManager = new ThinDownloadManager(1);
     }
 
     public void checkUpdateAutomatic() {
@@ -126,36 +123,31 @@ public class Updater implements DownloadStatusListener, Response.Listener<JSONOb
 
     private void startDownload() {
         Toast.makeText(mContext, R.string.downloading_update_package, Toast.LENGTH_SHORT).show();
-        DownloadRequest request = new DownloadRequest(Uri.parse(lastVersionInfo.fileUrl))
-                .setDestinationURI(Uri.parse(getLocalPathFromUrl(lastVersionInfo.fileUrl)))
-                .setDownloadListener(this);
-
-        downloadManager.add(request);
-    }
-
-    private String getLocalPathFromUrl(String url) {
-        String fileName = url.substring(url.lastIndexOf("/") + 1);
-        return Utils.getCacheDir(mContext) + "/" + fileName;
+        try {
+            Downloader.getInstance().download(this, lastVersionInfo.fileUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Override
-    public void onDownloadComplete(int id) {
+    public void onDownloadComplete(String url, String filePath) {
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setAction(android.content.Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File(getLocalPathFromUrl(lastVersionInfo.fileUrl))),
+        intent.setDataAndType(Uri.fromFile(new File(filePath)),
                 "application/vnd.android.package-archive");
         mContext.startActivity(intent);
         instance = null;
     }
 
     @Override
-    public void onDownloadFailed(int id, int errorCode, String errorMessage) {
+    public void onDownloadProgress(long totalBytes, long downloadedBytes, int progress) {
     }
 
     @Override
-    public void onProgress(int id, long totalBytes, long downloadedBytes, int progress) {
+    public void onDownloadFailed(int errorCode, String errorMessage) {
     }
 
     @Override

@@ -5,11 +5,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
+import com.koolew.mars.copied.disklrucache.DiskLruCache;
+import com.koolew.mars.downloadmanager.DownloadDestination;
 import com.koolew.mars.downloadmanager.DownloadRequest;
 import com.koolew.mars.downloadmanager.DownloadStatusListener;
 import com.koolew.mars.downloadmanager.ThinDownloadManager;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -22,8 +25,12 @@ import java.util.Map;
 public class Downloader implements DownloadStatusListener {
 
     protected static final int MAX_DOWNLOAD_COUNT = 5;
+    private static final int JOURNAL_COUNT_PER_FLUSH = 10;
+    private static final int DISK_CACHE_VERSION = 1;
+    private static final int DISK_CACHE_SIZE = 100 * 1024 * 1024;
 
     protected ThinDownloadManager mDownloadManager;
+    protected DiskLruCache mDiskCache;
     protected Map<Integer, DownloadEvent> mDownloads;
     protected Handler mHandler;
 
@@ -40,28 +47,44 @@ public class Downloader implements DownloadStatusListener {
 
     private Downloader() {
         mDownloadManager = new ThinDownloadManager(MAX_DOWNLOAD_COUNT);
+        try {
+            mDiskCache = openDiskCache();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         mDownloads = new HashMap<>();
         if (Looper.myLooper() != null) {
             mHandler = new Handler();
         }
     }
 
-    public void download(LoadListener listener, String url) {
+    private DiskLruCache openDiskCache() throws IOException {
+        return DiskLruCache.open(new File(Utils.getCacheDir() + "lru/"),
+                DISK_CACHE_VERSION, 1, DISK_CACHE_SIZE);
+    }
+
+    public void download(LoadListener listener, String url) throws IOException {
         download(listener, url, null, false);
     }
 
-    public void download(LoadListener listener, String url, String filePath) {
+    public void download(LoadListener listener, String url, String filePath) throws IOException {
         download(listener, url, filePath, false);
     }
 
-    public void download(LoadListener listener, String url, String filePath, boolean forceRedownload) {
+    public void download(LoadListener listener, String url, String filePath, boolean forceRedownload) throws IOException {
         if (TextUtils.isEmpty(url)) {
             return;
         }
 
-        if (!forceRedownload && new File(url2LocalFile(url, filePath)).exists()) {
+        String cacheKey = getFileKey(url);
+        if (forceRedownload) {
+            mDiskCache.remove(cacheKey);
+        }
+
+        DiskLruCache.Snapshot snapshot = getSnapshot(cacheKey);
+        if (snapshot != null) {
             // File already downloaded
-            downloadComplete(listener, url, url2LocalFile(url, filePath));
+            downloadComplete(listener, url, snapshot.getFile(0).getAbsolutePath());
         }
         else {
             // If this url is downloading, update the listener only
@@ -86,8 +109,37 @@ public class Downloader implements DownloadStatusListener {
                 mDownloads.remove(minDownloadKey);
             }
 
-            DownloadEvent downloadEvent = startDownload(listener, url, filePath);
+            DownloadEvent downloadEvent = startDownload(listener, url);
             mDownloads.put(downloadEvent.id, downloadEvent);
+        }
+    }
+
+    public void download(LoadListener listener, String url, DownloadDestination destination) {
+        DownloadEvent downloadEvent = startDownload(listener, url, destination);
+        mDownloads.put(downloadEvent.id, downloadEvent);
+    }
+
+    public void cleanCache() {
+        DiskLruCache diskLruCache = mDiskCache;
+        mDiskCache = null;
+
+        cancelAllDownload();
+        try {
+            Thread.sleep(1000); // Waiting for cancel all downloads
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            diskLruCache.delete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            mDiskCache = openDiskCache();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -107,19 +159,31 @@ public class Downloader implements DownloadStatusListener {
         }
     }
 
-    private DownloadEvent startDownload(LoadListener listener, String url, String filePath) {
+    private DownloadEvent startDownload(LoadListener listener, String url) throws IOException {
+        return startDownload(listener, url, new DownloadDestination.DiskLruCacheEditorDestination(
+                mDiskCache.edit(getFileKey(url))));
+    }
+
+    private DownloadEvent startDownload(LoadListener listener, String url, DownloadDestination destination) {
         DownloadEvent event = new DownloadEvent();
         event.listener = listener;
         event.url = url;
-        event.localPath = url2LocalFile(url, filePath);
+        event.destination = destination;
 
         DownloadRequest request = new DownloadRequest(Uri.parse(event.url))
-                .setDestinationURI(Uri.parse(event.localPath))
+                .setDestination(event.destination)
                 .setDownloadListener(this);
 
         event.id = mDownloadManager.add(request);
 
         return event;
+    }
+
+    private void cancelAllDownload() {
+        for (int id: mDownloads.keySet()) {
+            mDownloadManager.cancel(id);
+        }
+        mDownloads.clear();
     }
 
     private void cancelDownload(DownloadEvent event) {
@@ -130,11 +194,32 @@ public class Downloader implements DownloadStatusListener {
         return mDownloads.get(id);
     }
 
-    private static String url2LocalFile(String url, String filePath) {
-        if (!TextUtils.isEmpty(filePath)) {
-            return filePath;
+    private DiskLruCache.Snapshot getSnapshot(String key) throws IOException {
+        DiskLruCache.Snapshot snapshot = mDiskCache.get(key);
+        if (snapshot != null) {
+            incDiskCacheJournal();
         }
-        return Utils.getCacheDir() + stringToMD5(url) + getUrlExtName(url);
+        return snapshot;
+    }
+
+    private int diskCacheJournal = 0;
+    private void incDiskCacheJournal() throws IOException {
+        diskCacheJournal++;
+        if (diskCacheJournal % JOURNAL_COUNT_PER_FLUSH == 0) {
+            diskCacheJournal = 0;
+            mDiskCache.flush();
+        }
+    }
+
+    private static String getFileKey(String url) {
+        String extName = getUrlExtName(url);
+        String md5String = stringToMD5(url);
+        if (TextUtils.isEmpty(extName)) {
+            return md5String;
+        }
+        else {
+            return md5String + extName;
+        }
     }
 
     private static String getUrlExtName(String url) {
@@ -183,7 +268,26 @@ public class Downloader implements DownloadStatusListener {
     public void onDownloadComplete(int id) {
         DownloadEvent downloadEvent = getDownloadEvent(id);
         if (downloadEvent != null) {
-            downloadEvent.listener.onDownloadComplete(downloadEvent.url, downloadEvent.localPath);
+            DownloadDestination destination = downloadEvent.destination;
+            String localPath = null;
+            if (destination instanceof DownloadDestination.FileDestination) {
+                localPath = ((DownloadDestination.FileDestination) destination).getFilePath();
+            }
+            else if (destination instanceof DownloadDestination.DiskLruCacheEditorDestination) {
+                try {
+                    ((DownloadDestination.DiskLruCacheEditorDestination) destination)
+                            .getEditor().commit();
+                    DiskLruCache.Snapshot snapshot = getSnapshot(getFileKey(downloadEvent.url));
+                    if (snapshot != null) {
+                        localPath = snapshot.getFile(0).getAbsolutePath();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (localPath != null) {
+                downloadEvent.listener.onDownloadComplete(downloadEvent.url, localPath);
+            }
         }
     }
 
@@ -191,6 +295,14 @@ public class Downloader implements DownloadStatusListener {
     public void onDownloadFailed(int id, int errorCode, String errorMessage) {
         DownloadEvent downloadEvent = getDownloadEvent(id);
         if (downloadEvent != null) {
+            if (downloadEvent.destination instanceof DownloadDestination.DiskLruCacheEditorDestination) {
+                try {
+                    ((DownloadDestination.DiskLruCacheEditorDestination) downloadEvent.destination)
+                            .getEditor().abort();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             downloadEvent.listener.onDownloadFailed(errorCode, errorMessage);
         }
     }
@@ -214,7 +326,7 @@ public class Downloader implements DownloadStatusListener {
     protected class DownloadEvent {
         public int id;
         public String url;
-        public String localPath;
+        public DownloadDestination destination;
         public long totalBytes;
         public long downloadsBytes;
         public LoadListener listener;

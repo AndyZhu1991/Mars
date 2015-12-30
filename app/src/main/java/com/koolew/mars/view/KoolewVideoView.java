@@ -27,6 +27,7 @@ import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.utils.Downloader;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -152,7 +153,11 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         if (mVideoInfo != null || mVideoUrl != null) {
             mProgressBar.setVisibility(VISIBLE);
             postPlaying = true;
-            Downloader.getInstance().download(this, mVideoUrl);
+            try {
+                Downloader.getInstance().download(this, mVideoUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

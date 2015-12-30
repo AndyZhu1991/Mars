@@ -22,7 +22,7 @@ public class DownloadRequest implements Comparable<DownloadRequest> {
      * For using external SDCard access, application should have
      * this permission android.permission.WRITE_EXTERNAL_STORAGE declared.
      */
-    private Uri mDestinationURI;
+    private DownloadDestination mDestination;
 
     private RetryPolicy mRetryPolicy;
 
@@ -144,12 +144,12 @@ public class DownloadRequest implements Comparable<DownloadRequest> {
         return this;
 	}
 
-	public Uri getDestinationURI() {
-		return mDestinationURI;
+	public DownloadDestination getDestination() {
+		return mDestination;
 	}
 
-	public DownloadRequest setDestinationURI(Uri destinationURI) {
-		this.mDestinationURI = destinationURI;
+	public DownloadRequest setDestination(DownloadDestination destination) {
+		this.mDestination = destination;
         return this;
 	}
 
