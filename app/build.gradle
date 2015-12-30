@@ -94,6 +94,10 @@ android {
             manifestPlaceholders = [TD_CHANNEL_VALUE: "HuaWei"]
         }
 
+        Smartisan {
+            manifestPlaceholders = [TD_CHANNEL_VALUE: "Smartisan"]
+        }
+
     }
 
     buildTypes {
