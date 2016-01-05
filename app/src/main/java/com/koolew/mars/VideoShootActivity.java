@@ -703,28 +703,8 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         }
     }
 
-    private class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterHolder> {
 
-        private RendererItem[] rendererItems = new RendererItem[] {
-                new RendererItem(getString(R.string.filter_face_beauty), new CameraPreviewFragment.RendererCreator() {
-                    @Override
-                    public FrameRenderer createRenderer() {
-                        FrameRendererToneCurve renderer = new FrameRendererToneCurve();
-                        try {
-                            renderer.setFromCurveFileInputStream(new BufferedInputStream(
-                                    getResources().getAssets().open("beauty001.acv")));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        if (renderer.init(true)) {
-                            return renderer;
-                        }
-                        else {
-                            return null;
-                        }
-                    }
-                })
-        };
+    private class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterHolder> {
 
         private int selectedPosition = -1;
 
@@ -736,7 +716,8 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
         @Override
         public void onBindViewHolder(FilterHolder holder, int position) {
-            holder.filter.setText(rendererItems[position].name);
+            holder.filter.setText(FrameRendererToneCurve.CURVE_FILTERS[position].briefNameResId);
+            holder.filter.setBackgroundResource(FrameRendererToneCurve.CURVE_FILTERS[position].thumbResId);
             if (position == selectedPosition) {
                 holder.filter.setAlpha(1.0f);
                 holder.foreground.setVisibility(View.VISIBLE);
@@ -749,7 +730,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
         @Override
         public int getItemCount() {
-            return rendererItems.length;
+            return FrameRendererToneCurve.CURVE_FILTERS.length;
         }
 
         private void refreshSelectPosition(int newPosition) {
@@ -785,19 +766,34 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
             public void onClick(View v) {
                 if (selectedPosition != getAdapterPosition()) {
                     refreshSelectPosition(getAdapterPosition());
-                    mCameraPreviewFragment.setFrameRenderer(
-                            rendererItems[getAdapterPosition()].rendererCreator);
+                    mCameraPreviewFragment.setFrameRenderer(new CurveFilterCreator(
+                            FrameRendererToneCurve.CURVE_FILTERS[getAdapterPosition()]));
                 }
             }
         }
 
-        class RendererItem {
-            private String name;
-            private CameraPreviewFragment.RendererCreator rendererCreator;
+        class CurveFilterCreator implements CameraPreviewFragment.RendererCreator {
+            private FrameRendererToneCurve.CurveFilter curveFilter;
 
-            public RendererItem(String name, CameraPreviewFragment.RendererCreator rendererCreator) {
-                this.name = name;
-                this.rendererCreator = rendererCreator;
+            public CurveFilterCreator(FrameRendererToneCurve.CurveFilter curveFilter) {
+                this.curveFilter = curveFilter;
+            }
+
+            @Override
+            public FrameRenderer createRenderer() {
+                FrameRendererToneCurve renderer = new FrameRendererToneCurve();
+                try {
+                    renderer.setFromCurveFileInputStream(new BufferedInputStream(
+                            getResources().getAssets().open(curveFilter.getAssertFileName())));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (renderer.init(true)) {
+                    return renderer;
+                }
+                else {
+                    return null;
+                }
             }
         }
     }

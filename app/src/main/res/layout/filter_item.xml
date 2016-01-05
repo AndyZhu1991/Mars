@@ -10,8 +10,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:textSize="16sp"
-        android:textColor="@android:color/white"
-        android:background="@mipmap/filter_item_bg"/>
+        android:textColor="@android:color/white"/>
 
     <View
         android:id="@+id/foreground"

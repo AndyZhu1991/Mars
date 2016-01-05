@@ -4,6 +4,8 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.opengl.GLES20;
 
+import com.koolew.mars.R;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -349,4 +351,38 @@ public class FrameRendererToneCurve extends FrameRendererDrawOrigin {
 
         return output;
     }
+
+
+    public static class CurveFilter {
+        public String curveId;
+        public int briefNameResId;
+        public int thumbResId;
+
+        public CurveFilter(String id, int name, int thumb) {
+            curveId = id;
+            briefNameResId = name;
+            thumbResId = thumb;
+        }
+
+        public String getAssertFileName() {
+            return "curve/" + curveId + ".acv";
+        }
+    }
+
+    public static final CurveFilter[] CURVE_FILTERS = new CurveFilter[] {
+            new CurveFilter("beauty001", R.string.filter_beauty001, R.mipmap.filter_beauty001),
+            new CurveFilter("1988",      R.string.filter_1988,      R.mipmap.filter_1988),
+            new CurveFilter("heart",     R.string.filter_heart,     R.mipmap.filter_heart),
+            new CurveFilter("06",        R.string.filter_06,        R.mipmap.filter_06),
+            new CurveFilter("beauty",    R.string.filter_beauty,    R.mipmap.filter_beauty),
+            new CurveFilter("blend",     R.string.filter_blend,     R.mipmap.filter_blend),
+            new CurveFilter("rise",      R.string.filter_rise,      R.mipmap.filter_rise),
+            new CurveFilter("whitecat",  R.string.filter_whitecat,  R.mipmap.filter_whitecat),
+            new CurveFilter("live",      R.string.filter_live,      R.mipmap.filter_live),
+            new CurveFilter("humming",   R.string.filter_humming,   R.mipmap.filter_humming),
+            new CurveFilter("cold",      R.string.filter_cold,      R.mipmap.filter_cold),
+            new CurveFilter("bnw",       R.string.filter_bnw,       R.mipmap.filter_bnw),
+            new CurveFilter("banana",    R.string.filter_banana,    R.mipmap.filter_banana),
+            new CurveFilter("17",        R.string.filter_17,        R.mipmap.filter_17),
+    };
 }
