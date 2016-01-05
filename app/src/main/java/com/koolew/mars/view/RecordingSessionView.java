@@ -103,6 +103,8 @@ public class RecordingSessionView extends LinearLayout {
                 return super.onInterceptTouchEvent(e);
             }
         };
+        recyclerView.setPadding(0, 0, 0, (int) Utils.dpToPixels(getContext(), 20));
+        recyclerView.setClipToPadding(false);
         frameLayout.addView(recyclerView, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         shader = new View(context);

@@ -37,7 +37,12 @@ public class FrameRendererDrawOrigin extends FrameRenderer{
 
     @Override
     public boolean init(boolean isExternalOES) {
-        return setProgramDefualt(getVertexShaderString(), getFragmentShaderString(), isExternalOES);
+        boolean ret = setProgramDefualt(getVertexShaderString(), getFragmentShaderString(), isExternalOES);
+        onInitialized();
+        return ret;
+    }
+
+    protected void onInitialized() {
     }
 
     @Override
@@ -63,8 +68,12 @@ public class FrameRendererDrawOrigin extends FrameRenderer{
         GLES20.glEnableVertexAttribArray(0);
         GLES20.glVertexAttribPointer(0, 2, GLES20.GL_FLOAT, false, 0, 0);
 
-        mProgram.bind();
+            mProgram.bind();
+        onDrawArraysPre();
         GLES20.glDrawArrays(DRAW_FUNCTION, 0, 4);
+    }
+
+    protected void onDrawArraysPre() {
     }
 
     @Override

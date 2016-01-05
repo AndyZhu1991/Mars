@@ -62,59 +62,33 @@ public class FrameRendererToneCurve extends FrameRendererDrawOrigin {
     }
 
     @Override
-    public boolean init(boolean isExternalOES) {
-        if (super.init(isExternalOES)) {
-            mProgram.bind();
-            mToneCurveTextureUniformLocation = mProgram.getUniformLoc("toneCurveTexture");
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE3);
-            GLES20.glGenTextures(1, mToneCurveTexture, 0);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mToneCurveTexture[0]);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
-            onInitialized();
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE3);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mToneCurveTexture[0]);
-            GLES20.glUniform1i(mToneCurveTextureUniformLocation, 3);
-            return true;
-        }
-        return false;
-    }
+    protected void onInitialized() {
+        mToneCurveTextureUniformLocation = mProgram.getUniformLoc("toneCurveTexture");
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE3);
+        GLES20.glGenTextures(1, mToneCurveTexture, 0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mToneCurveTexture[0]);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
 
-    public void onInitialized() {
         setRgbCompositeControlPoints(mRgbCompositeControlPoints);
         setRedControlPoints(mRedControlPoints);
         setGreenControlPoints(mGreenControlPoints);
         setBlueControlPoints(mBlueControlPoints);
+
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE3);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mToneCurveTexture[0]);
+        GLES20.glUniform1i(mToneCurveTextureUniformLocation, 3);
     }
 
-    @Override
-    public void renderTexture(int texID, Viewport viewport) {
-
-        if(viewport != null) {
-            GLES20.glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
-        }
-
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(TEXTURE_2D_BINDABLE, texID);
-
-        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, mVertexBuffer);
-        GLES20.glEnableVertexAttribArray(0);
-        GLES20.glVertexAttribPointer(0, 2, GLES20.GL_FLOAT, false, 0, 0);
-
-        mProgram.bind();
-        //onDrawArraysPre();
-        GLES20.glDrawArrays(DRAW_FUNCTION, 0, 4);
-    }
-
-    protected void onDrawArraysPre() {
-        if (mToneCurveTexture[0] != -1) {
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE3);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mToneCurveTexture[0]);
-            GLES20.glUniform1i(mToneCurveTextureUniformLocation, 3);
-        }
-    }
+//    protected void onDrawArraysPre() {
+//        if (mToneCurveTexture[0] != -1) {
+//            GLES20.glActiveTexture(GLES20.GL_TEXTURE3);
+//            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mToneCurveTexture[0]);
+//            GLES20.glUniform1i(mToneCurveTextureUniformLocation, 3);
+//        }
+//    }
 
     public void setFromCurveFileInputStream(InputStream input) {
         try {

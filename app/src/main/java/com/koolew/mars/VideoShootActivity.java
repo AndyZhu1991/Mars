@@ -1,5 +1,7 @@
 package com.koolew.mars;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -7,14 +9,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.animation.AnimationSet;
+import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,10 +31,12 @@ import android.widget.Toast;
 import com.koolew.mars.camerautils.CameraInstance;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.MyAccountInfo;
+import com.koolew.mars.opengl.filter.FrameRenderer;
+import com.koolew.mars.opengl.filter.FrameRendererDrawOrigin;
+import com.koolew.mars.opengl.filter.FrameRendererToneCurve;
 import com.koolew.mars.statistics.BaseActivity;
-import com.koolew.mars.utils.DeviceDetective;
-import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.AbsLongVideoSwitch;
+import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.PictureSelectUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.videotools.RealTimeRgbaRecorderWithAutoAudio;
@@ -36,16 +46,16 @@ import com.koolew.mars.view.RecordingSessionView;
 
 import org.bytedeco.javacpp.opencv_core;
 
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import at.aau.itec.android.mediaplayer.MediaPlayer;
 
 public class VideoShootActivity extends BaseActivity implements OnClickListener,
-        RecordingSessionView.Listener, CameraPreviewFragment.FrameListener {
+        RecordingSessionView.Listener, CameraPreviewFragment.FrameListener,
+        ViewTreeObserver.OnGlobalLayoutListener {
 
     private final static String TAG = "koolew-VideoShootA";
 
@@ -69,7 +79,15 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
     private ImageView mChangeCamera;
     private ImageView mImportVideo;
-    private ImageView mRecordComplete;
+    private TextView mRecordComplete;
+
+    private View mFilterSwitchBtn;
+    private View mFilterSwitchBar;
+    private View mFilterSwitchArrow;
+    private View mNoFilterBtn;
+    private View mFilterLayout;
+    private RecyclerView mFilterRecycler;
+    private FilterAdapter mFilterAdapter;
 
     private RecordButton mRecordButton;
     private TextView mCaptureText;
@@ -195,8 +213,23 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
         mCaptureText = (TextView) findViewById(R.id.capture_text);
 
-        mRecordComplete = (ImageView) findViewById(R.id.record_complete);
+        mRecordComplete = (TextView) findViewById(R.id.record_complete);
         mRecordComplete.setOnClickListener(this);
+
+        mFilterSwitchBtn = findViewById(R.id.filter_switch_btn);
+        mFilterSwitchBtn.setOnClickListener(this);
+        mFilterSwitchBar = findViewById(R.id.filter_switch_bar);
+        mFilterSwitchBar.setOnClickListener(this);
+        mFilterSwitchArrow = findViewById(R.id.filter_switch_arrow);
+        mNoFilterBtn = findViewById(R.id.no_filter_btn);
+        mNoFilterBtn.setOnClickListener(this);
+        mFilterLayout = findViewById(R.id.filter_layout);
+        mFilterLayout.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        mFilterRecycler = (RecyclerView) findViewById(R.id.filter_recycler);
+        mFilterRecycler.setLayoutManager(new LinearLayoutManager(
+                this, LinearLayoutManager.HORIZONTAL, false));
+        mFilterAdapter = new FilterAdapter();
+        mFilterRecycler.setAdapter(mFilterAdapter);
 
         mRecordButton = (RecordButton) findViewById(R.id.image_record);
         mRecordButton.setOnClickListener(this);
@@ -343,8 +376,11 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     private void enableCompleteBtn(boolean enable, String hint) {
         completeBtnEnable = enable;
         completeBtnDisableHint = hint;
-        mRecordComplete.setImageResource(enable ? R.mipmap.video_complete_enable
+        Utils.setTextViewDrawableTop(mRecordComplete, enable ? R.mipmap.video_complete_enable
                 : R.mipmap.video_complete_disable);
+        mRecordComplete.setVisibility(View.VISIBLE);
+        mFilterSwitchBtn.setVisibility(View.INVISIBLE);
+        closeFilterLayout();
     }
 
     private void enableImportBtn(boolean enable) {
@@ -380,6 +416,13 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
             case R.id.play:
                 recordingSessionView.play();
                 mPlayImage.setVisibility(View.INVISIBLE);
+                break;
+            case R.id.no_filter_btn:
+                setNoFilter();
+                break;
+            case R.id.filter_switch_btn:
+            case R.id.filter_switch_bar:
+                switchFilterLayout();
                 break;
         }
     }
@@ -495,6 +538,75 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         }
     }
 
+    private float filterLayoutOriginTop;
+
+    @Override
+    public void onGlobalLayout() {
+        filterLayoutOriginTop = mFilterLayout.getTop();
+    }
+
+    private void setNoFilter() {
+        if (mFilterAdapter.selectedPosition >= 0) {
+            mFilterAdapter.refreshSelectPosition(-1);
+            mCameraPreviewFragment.setFrameRenderer(new CameraPreviewFragment.RendererCreator() {
+                @Override
+                public FrameRenderer createRenderer() {
+                    return FrameRendererDrawOrigin.create(true);
+                }
+            });
+        }
+    }
+
+    private boolean isFilterLayoutOpened = true;
+
+    private void switchFilterLayout() {
+        if (isFilterLayoutOpened) {
+            closeFilterLayout();
+        }
+        else {
+            openFilterLayout();
+        }
+    }
+
+    private void closeFilterLayout() {
+        if (isFilterLayoutOpened) {
+            getCloseFilterLayoutAnimation().start();
+            isFilterLayoutOpened = false;
+        }
+    }
+
+    private void openFilterLayout() {
+        if (!isFilterLayoutOpened) {
+            AnimatorSet openAnimator = getCloseFilterLayoutAnimation();
+            openAnimator.setInterpolator(new Interpolator() {
+                @Override
+                public float getInterpolation(float input) {
+                    return Math.abs(input - 1f);
+                }
+            });
+            openAnimator.start();
+            isFilterLayoutOpened = true;
+        }
+    }
+
+    private static final long FILTER_LAYOUT_ANIMATOR_DURATION = 300;
+    private AnimatorSet getCloseFilterLayoutAnimation() {
+        AnimatorSet animatorSet = new AnimatorSet();
+
+        ObjectAnimator filterLayoutAnimator = ObjectAnimator
+                .ofFloat(mFilterLayout, "y", filterLayoutOriginTop,
+                        filterLayoutOriginTop + Utils.dpToPixels(this, 80))
+                .setDuration(FILTER_LAYOUT_ANIMATOR_DURATION);
+
+        ObjectAnimator arrowAnimator = ObjectAnimator
+                .ofFloat(mFilterSwitchArrow, "rotation", 270, 450)
+                .setDuration(FILTER_LAYOUT_ANIMATOR_DURATION);
+
+        animatorSet.playTogether(filterLayoutAnimator, arrowAnimator);
+
+        return animatorSet;
+    }
+
     class VideoTranscodeTask extends AsyncTask<Void, Void, Void> {
         private String filePath;
         private String transcodedFile;
@@ -588,6 +700,105 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
                     .setMessage(getString(R.string.long_video_enabled, newVideoLen))
                     .setPositiveButton(R.string.ok, null)
                     .show();
+        }
+    }
+
+    private class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterHolder> {
+
+        private RendererItem[] rendererItems = new RendererItem[] {
+                new RendererItem(getString(R.string.filter_face_beauty), new CameraPreviewFragment.RendererCreator() {
+                    @Override
+                    public FrameRenderer createRenderer() {
+                        FrameRendererToneCurve renderer = new FrameRendererToneCurve();
+                        try {
+                            renderer.setFromCurveFileInputStream(new BufferedInputStream(
+                                    getResources().getAssets().open("beauty001.acv")));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        if (renderer.init(true)) {
+                            return renderer;
+                        }
+                        else {
+                            return null;
+                        }
+                    }
+                })
+        };
+
+        private int selectedPosition = -1;
+
+        @Override
+        public FilterHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new FilterHolder(LayoutInflater.from(VideoShootActivity.this)
+                    .inflate(R.layout.filter_item, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(FilterHolder holder, int position) {
+            holder.filter.setText(rendererItems[position].name);
+            if (position == selectedPosition) {
+                holder.filter.setAlpha(1.0f);
+                holder.foreground.setVisibility(View.VISIBLE);
+            }
+            else {
+                holder.filter.setAlpha(0.5f);
+                holder.foreground.setVisibility(View.INVISIBLE);
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return rendererItems.length;
+        }
+
+        private void refreshSelectPosition(int newPosition) {
+            if (selectedPosition == newPosition) {
+                return;
+            }
+
+            int oldPosition = selectedPosition;
+            selectedPosition = newPosition;
+            notifyItemChangedWithPositionCheck(oldPosition);
+            notifyItemChangedWithPositionCheck(newPosition);
+        }
+
+        private void notifyItemChangedWithPositionCheck(int position) {
+            if (position >= 0 && position < getItemCount()) {
+                notifyItemChanged(position);
+            }
+        }
+
+        class FilterHolder extends RecyclerView.ViewHolder implements OnClickListener {
+            private TextView filter;
+            private View foreground;
+
+            public FilterHolder(View itemView) {
+                super(itemView);
+                itemView.setOnClickListener(this);
+
+                filter = (TextView) itemView.findViewById(R.id.filter);
+                foreground = itemView.findViewById(R.id.foreground);
+            }
+
+            @Override
+            public void onClick(View v) {
+                if (selectedPosition != getAdapterPosition()) {
+                    refreshSelectPosition(getAdapterPosition());
+                    mCameraPreviewFragment.setFrameRenderer(
+                            rendererItems[getAdapterPosition()].rendererCreator);
+                }
+            }
+        }
+
+        class RendererItem {
+            private String name;
+            private CameraPreviewFragment.RendererCreator rendererCreator;
+
+            public RendererItem(String name, CameraPreviewFragment.RendererCreator rendererCreator) {
+                this.name = name;
+                this.rendererCreator = rendererCreator;
+            }
         }
     }
 }

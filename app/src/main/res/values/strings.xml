@@ -168,6 +168,10 @@
     <string name="transcoding">正在转码视频</string>
     <string name="please_wait_a_moment">请稍等</string>
     <string name="long_video_enabled">开启%d秒拍摄界面</string>
+    <string name="filter">滤镜</string>
+
+    <!-- Filter names -->
+    <string name="filter_face_beauty">颜</string>
 
     <string name="sms_invitation_message" formatted="false">来「可见」和我一起玩视频点名吧，下载链接：%s</string>
 

@@ -21,19 +21,11 @@ import android.widget.FrameLayout;
 
 import com.koolew.mars.camerautils.CameraInstance;
 import com.koolew.mars.opengl.filter.FrameRenderer;
-import com.koolew.mars.opengl.filter.FrameRendererBlur;
-import com.koolew.mars.opengl.filter.FrameRendererEdge;
-import com.koolew.mars.opengl.filter.FrameRendererEmboss;
-import com.koolew.mars.opengl.filter.FrameRendererLerpBlur;
-import com.koolew.mars.opengl.filter.FrameRendererToneCurve;
-import com.koolew.mars.opengl.filter.FrameRendererWave;
+import com.koolew.mars.opengl.filter.FrameRendererDrawOrigin;
 import com.koolew.mars.opengl.render.GLTextureView;
 import com.koolew.mars.opengl.utils.Common;
 
 import org.bytedeco.javacpp.opencv_core;
-
-import java.io.BufferedInputStream;
-import java.io.IOException;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -131,6 +123,10 @@ public class CameraPreviewFragment extends Fragment {
         mFrameListener = frameListener;
     }
 
+    public void setFrameRenderer(RendererCreator rendererCreator) {
+        mPreviewGLTexture.setFrameRenderer(rendererCreator);
+    }
+
     public void clearFrameListener() {
         synchronized (mFrameListenerLock) {
             mFrameListener = null;
@@ -146,13 +142,8 @@ public class CameraPreviewFragment extends Fragment {
         void onNewFrame(opencv_core.IplImage frameImage, long timestamp);
     }
 
-
-    public enum FilterButtons {
-        Filter_Wave,
-        Filter_Blur,
-        Filter_Emboss,
-        Filter_Edge,
-        Filter_BlurLerp,
+    public interface RendererCreator {
+        FrameRenderer createRenderer();
     }
 
     private class FilterGLTextureView extends GLTextureView implements GLSurfaceView.Renderer,
@@ -179,54 +170,26 @@ public class CameraPreviewFragment extends Fragment {
 
         public ClearColor clearColor;
 
-        public synchronized void setFrameRenderer(final FilterButtons filterID) {
-            Log.i(LOG_TAG, "setFrameRenderer to " + filterID);
+        public synchronized void setFrameRenderer(final RendererCreator rendererCreator) {
             queueEvent(new Runnable() {
                 @Override
                 public void run() {
-                    FrameRenderer renderer = null;
-                    boolean isExternalOES = true;
-                    switch (filterID) {
-                        case Filter_Wave:
-                            renderer = FrameRendererWave.create(isExternalOES);
-                            if (renderer != null)
-                                ((FrameRendererWave) renderer).setAutoMotion(0.4f);
-                            break;
-                        case Filter_Blur:
-                            renderer = FrameRendererBlur.create(isExternalOES);
-                            if(renderer != null) {
-                                ((FrameRendererBlur) renderer).setSamplerRadius(50.0f);
-                            }
-                            break;
-                        case Filter_Edge:
-                            renderer = FrameRendererEdge.create(isExternalOES);
-                            break;
-                        case Filter_Emboss:
-                            renderer = FrameRendererEmboss.create(isExternalOES);
-                            break;
-                        case Filter_BlurLerp:
-                            renderer = FrameRendererLerpBlur.create(isExternalOES);
-                            if(renderer != null) {
-                                ((FrameRendererLerpBlur) renderer).setIntensity(3);
-                            }
-                            break;
-                        default:
-                            break;
+                    FrameRenderer renderer = rendererCreator.createRenderer();
+
+                    if (renderer == null) {
+                        return;
                     }
 
-                    if (renderer != null) {
-                        mMyRenderer.release();
-                        mMyRenderer = renderer;
-                        mMyRenderer.setTextureSize(viewWidth, viewHeight);
-                        mMyRenderer.setRotation((float) Math.PI / 2.0f);
-                    }
+                    mMyRenderer.release();
+                    mMyRenderer = renderer;
+                    mMyRenderer.setTextureSize(viewWidth, viewHeight);
+                    mMyRenderer.setRotation((float) Math.PI / 2.0f);
 
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
                     Common.checkGLError("setFrameRenderer...");
                 }
             });
-
         }
 
         public FilterGLTextureView(Context context, AttributeSet attrs) {
@@ -252,15 +215,10 @@ public class CameraPreviewFragment extends Fragment {
             mSurfaceTexture.setOnFrameAvailableListener(this);
 
             //FrameRendererDrawOrigin rendererWave = FrameRendererDrawOrigin.create(false);
-            FrameRendererToneCurve renderer = new FrameRendererToneCurve();
-            try {
-                renderer.setFromCurveFileInputStream(
-                        new BufferedInputStream(getResources().getAssets().open("beauty001.acv")));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if(!renderer.init(true)) {
-                Log.e(LOG_TAG, "init filter failed!\n");
+            FrameRenderer renderer = FrameRendererDrawOrigin.create(false);
+            if (!renderer.init(true)) {
+                renderer.release();
+                return;
             }
             mMyRenderer = renderer;
 
