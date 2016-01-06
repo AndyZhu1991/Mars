@@ -168,7 +168,7 @@ public class InputPasswordActivity extends BaseActivity implements View.OnClickL
                                 MyAccountInfo.setRegistrationId(registrationId);
                                 ApiWorker.getInstance().postRegistrationId(
                                         MyAccountInfo.getRegistrationId(),
-                                        ApiWorker.getInstance().emptyResponseListener, null);
+                                        postRegistrationIdListener, postRegistrationIdErrorListener);
                                 MyAccountInfo.setUid(result.getString("uid"));
                                 if (result.has("info")) {
                                     JSONObject info = result.getJSONObject("info");
@@ -224,6 +224,20 @@ public class InputPasswordActivity extends BaseActivity implements View.OnClickL
         };
         mRequestQueue.add(jsonRequest);
     }
+
+    private Response.Listener<JSONObject> postRegistrationIdListener = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            // TODO
+        }
+    };
+
+    private Response.ErrorListener postRegistrationIdErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            // TODO
+        }
+    };
 
     private void addSnsRegisterParams(int type, JSONObject requestJson) {
         try {

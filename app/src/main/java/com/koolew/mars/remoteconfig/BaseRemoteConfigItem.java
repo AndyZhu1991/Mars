@@ -38,7 +38,7 @@ abstract class BaseRemoteConfigItem<T> {
 
     void fetchConfig() {
         try {
-            JSONObject response = ApiWorker.getInstance().standardGetRequestSync(fetchUrl());
+            JSONObject response = ApiWorker.getInstance().doGetRequestSync(fetchUrl());
             int code = response.getInt("code");
             if (code == 0) {
                 JSONObject result = response.getJSONObject("result");

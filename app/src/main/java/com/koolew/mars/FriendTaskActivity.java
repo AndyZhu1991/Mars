@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.statistics.BaseActivity;
@@ -22,6 +23,7 @@ import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.view.LoadMoreFooter;
 import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -100,7 +102,8 @@ public class FriendTaskActivity extends BaseActivity
             mLoadMoreRequest.cancel();
             mLoadMoreRequest = null;
         }
-        mRefreshRequest = ApiWorker.getInstance().requestTaskDetail(mUid, mRefreshListener, null);
+        mRefreshRequest = ApiWorker.getInstance().queueGetRequest(
+                UrlHelper.getTaskDetailUrl(mUid), mRefreshListener, mErrorListener);
     }
 
     @Override
@@ -109,8 +112,9 @@ public class FriendTaskActivity extends BaseActivity
             mRefreshRequest.cancel();
             mRefreshRequest = null;
         }
-        mLoadMoreRequest = ApiWorker.getInstance().requestTaskDetail(
-                mUid, mAdapter.getLastTaskTime(), mLoadMoreListener, null);
+        mLoadMoreRequest = ApiWorker.getInstance().queueGetRequest(
+                UrlHelper.getTaskDetailUrl(mUid, mAdapter.getLastTaskTime()),
+                mLoadMoreListener, mErrorListener);
     }
 
     @Override
@@ -176,6 +180,13 @@ public class FriendTaskActivity extends BaseActivity
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    };
+
+    private Response.ErrorListener mErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            // TODO
         }
     };
 

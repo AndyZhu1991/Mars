@@ -8,12 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.redpoint.RedPointManager;
 import com.koolew.mars.utils.UriProcessor;
-import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -46,20 +45,19 @@ public class NotificationTabFragment
     }
 
     @Override
-    protected JsonObjectRequest doRefreshRequest() {
-        return ApiWorker.getInstance().requestNotification(mRefreshListener, null);
+    protected String getRefreshRequestUrl() {
+        return UrlHelper.NOTIFICATION_URL;
     }
 
     @Override
-    protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().requestNotification(mAdapter.getLastUpdateTime(),
-                mLoadMoreListener, null);
+    protected String getLoadMoreRequestUrl() {
+        return UrlHelper.getNotificationUrl(mAdapter.getLastUpdateTime());
     }
 
     @Override
-    protected boolean handleRefresh(JSONObject response) {
+    protected boolean handleRefreshResult(JSONObject result) {
         RedPointManager.clearRedPointByPath(RedPointManager.PATH_NOTIFICATION);
-        JSONArray activities = queryActivities(response);
+        JSONArray activities = queryActivities(result);
         if (activities == null || activities.length() == 0) {
             return false;
         }
@@ -71,8 +69,8 @@ public class NotificationTabFragment
     }
 
     @Override
-    protected boolean handleLoadMore(JSONObject response) {
-        JSONArray activities = queryActivities(response);
+    protected boolean handleLoadMoreResult(JSONObject result) {
+        JSONArray activities = queryActivities(result);
         int length = activities.length();
         if (activities == null || length == 0) {
             return false;
@@ -84,13 +82,11 @@ public class NotificationTabFragment
         }
     }
 
-    private JSONArray queryActivities(JSONObject response) {
+    private JSONArray queryActivities(JSONObject result) {
         try {
-            if (response.getInt("code") == 0) {
-                return response.getJSONObject("result").getJSONArray("activities");
-            }
+            return result.getJSONArray("activities");
         } catch (JSONException e) {
-            e.printStackTrace();
+            handleJsonException(result, e);
         }
         return null;
     }

@@ -3,7 +3,9 @@ package com.koolew.mars.redpoint;
 import android.text.TextUtils;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -158,7 +160,7 @@ public class RedPointManager {
     }
 
     public static void refreshRedPoint() {
-        ApiWorker.getInstance().requestNotificationBrief(
+        ApiWorker.getInstance().queueGetRequest(UrlHelper.NOTIFICATION_BRIEF_URL,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -171,7 +173,12 @@ public class RedPointManager {
                         }
                     }
                 },
-                null);
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO
+                    }
+                });
     }
 
     public static void refreshDelayed(final long time) {

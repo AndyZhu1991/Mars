@@ -9,10 +9,12 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.koolew.mars.R;
 import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +25,8 @@ import java.io.IOException;
 /**
  * Created by jinchangzhu on 10/20/15.
  */
-public class Updater implements Downloader.LoadListener, Response.Listener<JSONObject> {
+public class Updater implements Downloader.LoadListener, Response.Listener<JSONObject>,
+        Response.ErrorListener {
 
     private static final String KEY_UPDATE_PREFERENCE = "update";
     private static final String KEY_LAST_CHECK_TIME_MILLIS = "check_time";
@@ -79,7 +82,7 @@ public class Updater implements Downloader.LoadListener, Response.Listener<JSONO
     private boolean isAutoCheck = true;
     private void doCheckUpdateRequest(boolean isAutoCheck) {
         this.isAutoCheck = isAutoCheck;
-        ApiWorker.getInstance().checkVersion(this, null);
+        ApiWorker.getInstance().queueGetRequest(UrlHelper.CHECK_VERSION_URL, this, this);
     }
 
     private void onVersionInfoUpdate() {
@@ -163,6 +166,11 @@ public class Updater implements Downloader.LoadListener, Response.Listener<JSONO
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        // TODO
     }
 
     private static class VersionInfo {

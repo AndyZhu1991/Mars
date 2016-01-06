@@ -2,9 +2,8 @@ package com.koolew.mars;
 
 import android.os.Bundle;
 
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
-import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,26 +42,23 @@ public class FansFragment extends RecyclerListFragmentMould<FriendSimpleAdapter>
     }
 
     @Override
-    protected JsonObjectRequest doRefreshRequest() {
-        return ApiWorker.getInstance().getFans(mUid, mRefreshListener, null);
+    protected String getRefreshRequestUrl() {
+        return UrlHelper.getFriendFansUrl(mUid);
     }
 
     @Override
-    protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().getFans(mUid, mAdapter.getLastUpdateTime(),
-                mLoadMoreListener, null);
+    protected String getLoadMoreRequestUrl() {
+        return UrlHelper.getFriendFansUrl(mUid, mAdapter.getLastUpdateTime());
     }
 
     @Override
-    protected boolean handleRefresh(JSONObject response) {
+    protected boolean handleRefreshResult(JSONObject result) {
         try {
-            if (response.getInt("code") == 0) {
-                JSONArray users = response.getJSONObject("result").getJSONArray("users");
-                if (users != null && users.length() > 0) {
-                    mAdapter.setData(users);
-                    mAdapter.notifyDataSetChanged();
-                    return true;
-                }
+            JSONArray users = result.getJSONArray("users");
+            if (users != null && users.length() > 0) {
+                mAdapter.setData(users);
+                mAdapter.notifyDataSetChanged();
+                return true;
             }
             return false;
         } catch (JSONException e) {
@@ -72,15 +68,13 @@ public class FansFragment extends RecyclerListFragmentMould<FriendSimpleAdapter>
     }
 
     @Override
-    protected boolean handleLoadMore(JSONObject response) {
+    protected boolean handleLoadMoreResult(JSONObject result) {
         try {
-            if (response.getInt("code") == 0) {
-                JSONArray users = response.getJSONObject("result").getJSONArray("users");
-                if (users != null && users.length() > 0) {
-                    mAdapter.add(users);
-                    mAdapter.notifyDataSetChanged();
-                    return true;
-                }
+            JSONArray users = result.getJSONArray("users");
+            if (users != null && users.length() > 0) {
+                mAdapter.add(users);
+                mAdapter.notifyDataSetChanged();
+                return true;
             }
             return false;
         } catch (JSONException e) {

@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.blur.DisplayBlurImageAndPalette;
 import com.koolew.mars.infos.MyAccountInfo;
@@ -38,6 +39,7 @@ import com.koolew.mars.view.DrawerToggleView;
 import com.koolew.mars.view.PhoneNumberView;
 import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
@@ -261,9 +263,17 @@ public class MainActivity extends BaseV4FragmentActivity
         }
     }
 
+    class SelfInfoErrorListener implements Response.ErrorListener {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            // TODO
+        }
+    }
+
     private void doRequestSelfInfo() {
         mLeftDrawer.setRefreshing(true);
-        ApiWorker.getInstance().requestSelfInfo(new SelfInfoListener(), null);
+        ApiWorker.getInstance().queueGetRequest(UrlHelper.USER_INFO_URL,
+                new SelfInfoListener(), new SelfInfoErrorListener());
     }
 
     private void switchFragment(int position) {

@@ -7,13 +7,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.view.TitleBarView;
-import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 
 /**
  * Created by jinchangzhu on 12/8/15.
@@ -106,14 +105,13 @@ public class UserMediaActivity extends BaseV4FragmentActivity
         }
 
         @Override
-        protected JsonObjectRequest doRefreshRequest() {
-            return ApiWorker.getInstance().requestUserTopic(mUid, mTopicId, mRefreshListener, null);
+        protected String getRefreshRequestUrl() {
+            return UrlHelper.getUserTopicUrl(mUid, mTopicId);
         }
 
         @Override
-        protected JsonObjectRequest doLoadMoreRequest() {
-            return ApiWorker.getInstance().requestUserTopic(mUid, mTopicId,
-                    mAdapter.getLastUpdateTime(), mLoadMoreListener, null);
+        protected String getLoadMoreRequestUrl() {
+            return UrlHelper.getUserTopicUrl(mUid, mTopicId, mAdapter.getLastUpdateTime());
         }
     }
 

@@ -2,10 +2,9 @@ package com.koolew.mars;
 
 import android.content.Context;
 
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.topicmedia.MediaItem;
 import com.koolew.mars.topicmedia.VideoItem;
-import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 
 import org.json.JSONObject;
 
@@ -37,8 +36,8 @@ public class FeedsMediaFragment extends CommonMediaFragment<FeedsMediaFragment.F
     }
 
     @Override
-    protected boolean handleRefresh(JSONObject response) {
-        boolean ret = super.handleRefresh(response);
+    protected boolean handleRefreshResult(JSONObject result) {
+        boolean ret = super.handleRefreshResult(result);
         if (mTargetVideoId != null) {
             int targetPosition = mAdapter.findTargetVideoPosition(mTargetVideoId);
             if (targetPosition >= 0) {
@@ -50,14 +49,13 @@ public class FeedsMediaFragment extends CommonMediaFragment<FeedsMediaFragment.F
     }
 
     @Override
-    protected JsonObjectRequest doRefreshRequest() {
-        return ApiWorker.getInstance().requestFeedsTopicVideo(mTopicId, mRefreshListener, null);
+    protected String getRefreshRequestUrl() {
+        return UrlHelper.getTopicVideoFriendUrl(mTopicId);
     }
 
     @Override
-    protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().requestFeedsTopicVideo(
-                mTopicId, mAdapter.getLastUpdateTime(), mLoadMoreListener, null);
+    protected String getLoadMoreRequestUrl() {
+        return UrlHelper.getTopicVideoFriendUrl(mTopicId, mAdapter.getLastUpdateTime());
     }
 
 

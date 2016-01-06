@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseCommentInfo;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.BaseVideoInfo;
@@ -21,7 +20,7 @@ import com.koolew.mars.topicmedia.MovieItem;
 import com.koolew.mars.topicmedia.UniversalMediaAdapter;
 import com.koolew.mars.topicmedia.VideoItem;
 import com.koolew.mars.topicmedia.VideoKooBriefItem;
-import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,14 +71,13 @@ public class SingleMediaFragment extends BaseTopicMediaFragment<SingleMediaFragm
     }
 
     @Override
-    protected JsonObjectRequest doRefreshRequest() {
-        return ApiWorker.getInstance().requestSingleVideo(mVideoId, mRefreshListener, null);
+    protected String getRefreshRequestUrl() {
+        return UrlHelper.getSingleVideoUrl(mVideoId);
     }
 
     @Override
-    protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().getVideoComment(mVideoId, mAdapter.getLastUpdateTime(),
-                mLoadMoreListener, null);
+    protected String getLoadMoreRequestUrl() {
+        return UrlHelper.getVideoCommentUrl(mVideoId, mAdapter.getLastUpdateTime());
     }
 
     public static void startThisFragment(Context context, String videoId) {

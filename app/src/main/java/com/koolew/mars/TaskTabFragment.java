@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.BaseUserInfo;
@@ -19,7 +18,7 @@ import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.redpoint.RedPointManager;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.UserNameView;
-import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -58,41 +57,34 @@ public class TaskTabFragment extends RecyclerListFragmentMould<TaskTabFragment.T
     }
 
     @Override
-    protected JsonObjectRequest doRefreshRequest() {
-        return ApiWorker.getInstance().requestTask(mRefreshListener, null);
+    protected String getRefreshRequestUrl() {
+        return UrlHelper.TASK_URL;
     }
 
     @Override
-    protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().requestTask(mAdapter.getLastCardTime(),
-                mLoadMoreListener, null);
+    protected String getLoadMoreRequestUrl() {
+        return UrlHelper.getTaskUrl(mAdapter.getLastCardTime());
     }
 
     @Override
-    protected boolean handleRefresh(JSONObject response) {
+    protected boolean handleRefreshResult(JSONObject result) {
         RedPointManager.clearRedPointByPath(RedPointManager.PATH_TASK);
         try {
-            if (response.getInt("code") == 0) {
-                JSONObject result = response.getJSONObject("result");
-                JSONArray cards = result.getJSONArray("cards");
-                return mAdapter.setData(cards);
-            }
+            JSONArray cards = result.getJSONArray("cards");
+            return mAdapter.setData(cards);
         } catch (JSONException e) {
-            e.printStackTrace();
+            handleJsonException(result, e);
         }
         return false;
     }
 
     @Override
-    protected boolean handleLoadMore(JSONObject response) {
+    protected boolean handleLoadMoreResult(JSONObject result) {
         try {
-            if (response.getInt("code") == 0) {
-                JSONObject result = response.getJSONObject("result");
-                JSONArray cards = result.getJSONArray("cards");
-                return mAdapter.addData(cards);
-            }
+            JSONArray cards = result.getJSONArray("cards");
+            return mAdapter.addData(cards);
         } catch (JSONException e) {
-            e.printStackTrace();
+            handleJsonException(result, e);
         }
         return false;
     }

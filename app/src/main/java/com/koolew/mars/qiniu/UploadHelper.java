@@ -7,6 +7,7 @@ import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.qiniu.android.storage.UploadManager;
 import com.qiniu.android.storage.UploadOptions;
 import com.qiniu.android.utils.Etag;
@@ -62,7 +63,8 @@ public class UploadHelper {
                                                          boolean isMovie, String from,
                                                          String tagId) {
         try {
-            JSONObject thumbTokenJson = ApiWorker.getInstance().requestQiniuThumbTokenSync();
+            JSONObject thumbTokenJson = ApiWorker.getInstance()
+                    .doGetRequestSync(UrlHelper.REQUEST_QINIU_THUMB_TOKEN_URL);
             String thumbToken = null;
             if (thumbTokenJson.getInt("code") == 0) {
                 thumbToken = thumbTokenJson.getJSONObject("result").getString("thumbnail");
@@ -78,13 +80,15 @@ public class UploadHelper {
 
             String videoToken = null;
             if (!isMovie) {
-                JSONObject videoTokenJson = ApiWorker.getInstance().requestQiniuVideoTokenSync();
+                JSONObject videoTokenJson = ApiWorker.getInstance()
+                        .doGetRequestSync(UrlHelper.REQUEST_QINIU_VIDEO_TOKEN_URL);
                 if (videoTokenJson.getInt("code") == 0) {
                     videoToken = videoTokenJson.getJSONObject("result").getString("video");
                 }
             }
             else {
-                JSONObject videoTokenJson = ApiWorker.getInstance().requestQiniuMovieTokenSync();
+                JSONObject videoTokenJson = ApiWorker.getInstance()
+                        .doGetRequestSync(UrlHelper.REQUEST_QINIU_MOVIE_TOKEN_URL);
                 if (videoTokenJson.getInt("code") == 0) {
                     videoToken = videoTokenJson.getJSONObject("result").getString("movie");
                 }

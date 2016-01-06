@@ -2,7 +2,7 @@ package com.koolew.mars;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
-import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,25 +33,35 @@ public class KoolewInvolveFragment extends RecyclerListFragmentMould<TimelineAda
     }
 
     @Override
+    protected String getRefreshRequestUrl() {
+        return UrlHelper.getInvolveUrl(mCurrentPage);
+    }
+
+    @Override
     protected JsonObjectRequest doRefreshRequest() {
         mCurrentPage = 0;
-        return ApiWorker.getInstance().requestInvolve(mCurrentPage, mRefreshListener, null);
+        return super.doRefreshRequest();
+    }
+
+    @Override
+    protected String getLoadMoreRequestUrl() {
+        return UrlHelper.getInvolveUrl(mCurrentPage);
     }
 
     @Override
     protected JsonObjectRequest doLoadMoreRequest() {
         mCurrentPage++;
-        return ApiWorker.getInstance().requestInvolve(mCurrentPage, mLoadMoreListener, null);
+        return super.doLoadMoreRequest();
     }
 
     @Override
-    protected boolean handleRefresh(JSONObject response) {
-        return mAdapter.setItems(getInvolveTopics(response)) > 0;
+    protected boolean handleRefreshResult(JSONObject result) {
+        return mAdapter.setItems(getInvolveTopics(result)) > 0;
     }
 
     @Override
-    protected boolean handleLoadMore(JSONObject response) {
-        return mAdapter.addItems(getInvolveTopics(response)) > 0;
+    protected boolean handleLoadMoreResult(JSONObject result) {
+        return mAdapter.addItems(getInvolveTopics(result)) > 0;
     }
 
     @Override
@@ -59,11 +69,11 @@ public class KoolewInvolveFragment extends RecyclerListFragmentMould<TimelineAda
         return R.layout.involve_no_data;
     }
 
-    private JSONArray getInvolveTopics(JSONObject response) {
+    private JSONArray getInvolveTopics(JSONObject result) {
         try {
-            return response.getJSONObject("result").getJSONArray("topics");
+            return result.getJSONArray("topics");
         } catch (JSONException e) {
-            e.printStackTrace();
+            handleJsonException(result, e);
         }
         return new JSONArray();
     }

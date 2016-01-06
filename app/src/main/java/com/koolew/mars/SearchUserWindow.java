@@ -16,11 +16,13 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -36,7 +38,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by jinchangzhu on 7/29/15.
  */
 public class SearchUserWindow extends PopupWindow implements TextWatcher,
-        Response.Listener<JSONObject>, View.OnClickListener {
+        Response.Listener<JSONObject>, View.OnClickListener, Response.ErrorListener {
 
     private Context mContext;
 
@@ -94,7 +96,8 @@ public class SearchUserWindow extends PopupWindow implements TextWatcher,
             mUserSearchRequest = null;
         }
         if (keyWord.length() > 0) {
-            mUserSearchRequest = ApiWorker.getInstance().searchUser(keyWord, this, null);
+            mUserSearchRequest = ApiWorker.getInstance().queueGetRequest(
+                    UrlHelper.getSearchUserUrl(keyWord), this, this);
         }
         else {
             mAdapter.setData(new JSONArray());
@@ -113,6 +116,11 @@ public class SearchUserWindow extends PopupWindow implements TextWatcher,
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        // TODO
     }
 
     @Override

@@ -1,10 +1,7 @@
 package com.koolew.mars;
 
-import android.util.Log;
-
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
-import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,19 +28,18 @@ public class FriendCurrentFragment extends RecyclerListFragmentMould<FriendCurre
     }
 
     @Override
-    protected JsonObjectRequest doRefreshRequest() {
-        return ApiWorker.getInstance().getFriends(mRefreshListener, null);
+    protected String getRefreshRequestUrl() {
+        return UrlHelper.CURRENT_FRIEND_URL;
     }
 
     @Override
-    protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().getFriends(mAdapter.getLastUpdateTime(),
-                mLoadMoreListener, null);
+    protected String getLoadMoreRequestUrl() {
+        return UrlHelper.getCurrentFriendUrl(mAdapter.getLastUpdateTime());
     }
 
     @Override
-    protected boolean handleRefresh(JSONObject response) {
-        JSONArray users = queryUsers(response);
+    protected boolean handleRefreshResult(JSONObject result) {
+        JSONArray users = queryUsers(result);
         if (users != null && users.length() > 0) {
             mAdapter.setData(users);
             mAdapter.notifyDataSetChanged();
@@ -54,8 +50,8 @@ public class FriendCurrentFragment extends RecyclerListFragmentMould<FriendCurre
     }
 
     @Override
-    protected boolean handleLoadMore(JSONObject response) {
-        JSONArray users = queryUsers(response);
+    protected boolean handleLoadMoreResult(JSONObject result) {
+        JSONArray users = queryUsers(result);
         if (users != null && users.length() > 0) {
             mAdapter.add(users);
             mAdapter.notifyDataSetChanged();
@@ -65,20 +61,13 @@ public class FriendCurrentFragment extends RecyclerListFragmentMould<FriendCurre
         return false;
     }
 
-    public static JSONArray queryUsers(JSONObject response) {
+    public static JSONArray queryUsers(JSONObject result) {
         try {
-            if (response.getInt("code") != 0) {
-                Log.e(TAG, "Error response: " + response);
-                return null;
+            return result.getJSONArray("users");
+        } catch (JSONException e) {
+            if (MarsApplication.DEBUG) {
+                throw new RuntimeException(e);
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            return response.getJSONObject("result").getJSONArray("users");
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
         return null;
     }

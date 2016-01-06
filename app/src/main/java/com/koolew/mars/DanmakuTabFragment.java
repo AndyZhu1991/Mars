@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseCommentInfo;
 import com.koolew.mars.infos.BaseTopicInfo;
@@ -15,7 +14,7 @@ import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.redpoint.RedPointManager;
 import com.koolew.mars.redpoint.RedPointView;
-import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -53,51 +52,42 @@ public class DanmakuTabFragment extends
     }
 
     @Override
-    protected boolean handleRefresh(JSONObject jsonObject) {
+    protected boolean handleRefreshResult(JSONObject result) {
         RedPointManager.clearRedPointByPath(RedPointManager.PATH_DANMAKU);
         try {
-            if (jsonObject.getInt("code") == 0) {
-                JSONArray notifications = jsonObject.
-                        getJSONObject("result").getJSONArray("notifications");
-                mAdapter.setData(notifications);
-                mAdapter.notifyDataSetChanged();
-
-                return notifications.length() > 0;
-            }
+            JSONArray notifications = result.getJSONArray("notifications");
+            mAdapter.setData(notifications);
+            mAdapter.notifyDataSetChanged();
+            return notifications.length() > 0;
         } catch (JSONException e) {
-            e.printStackTrace();
+            handleJsonException(result, e);
         }
-
         return false;
     }
 
     @Override
-    protected boolean handleLoadMore(JSONObject jsonObject) {
+    protected boolean handleLoadMoreResult(JSONObject result) {
         try {
-            if (jsonObject.getInt("code") == 0) {
-                JSONArray notifications = jsonObject.
-                        getJSONObject("result").getJSONArray("notifications");
-                if (notifications != null && notifications.length() > 0) {
-                    mAdapter.addData(notifications);
-                    mAdapter.notifyDataSetChanged();
-                    return true;
-                }
+            JSONArray notifications = result.getJSONArray("notifications");
+            if (notifications != null && notifications.length() > 0) {
+                mAdapter.addData(notifications);
+                mAdapter.notifyDataSetChanged();
+                return true;
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            handleJsonException(result, e);
         }
         return false;
     }
 
     @Override
-    protected JsonObjectRequest doRefreshRequest() {
-        return ApiWorker.getInstance().requestDanmakuTab(mRefreshListener, null);
+    protected String getRefreshRequestUrl() {
+        return UrlHelper.DANMAKU_TAB_URL;
     }
 
     @Override
-    protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().requestDanmakuTab(
-                mAdapter.getLastUpdateTime(), mLoadMoreListener, null);
+    protected String getLoadMoreRequestUrl() {
+        return UrlHelper.getDanmakuTabUrl(mAdapter.getLastUpdateTime());
     }
 
 

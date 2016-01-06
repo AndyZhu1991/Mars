@@ -10,7 +10,7 @@ import com.koolew.mars.topicmedia.MediaItem;
 import com.koolew.mars.topicmedia.TopStarsItem;
 import com.koolew.mars.topicmedia.VideoDetailTitleItem;
 import com.koolew.mars.utils.JsonUtil;
-import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,17 +40,25 @@ public class WorldMediaFragment extends CommonMediaFragment<WorldMediaFragment.W
     }
 
     @Override
+    protected String getRefreshRequestUrl() {
+        return UrlHelper.getWorldTopicVideoUrl(mTopicId, mCurrentPage);
+    }
+
+    @Override
+    protected String getLoadMoreRequestUrl() {
+        return UrlHelper.getWorldTopicVideoUrl(mTopicId, mCurrentPage);
+    }
+
+    @Override
     protected JsonObjectRequest doLoadMoreRequest() {
         mCurrentPage++;
-        return ApiWorker.getInstance().requestWorldTopicVideo(
-                mTopicId, mCurrentPage, mLoadMoreListener, null);
+        return super.doLoadMoreRequest();
     }
 
     @Override
     protected JsonObjectRequest doRefreshRequest() {
         mCurrentPage = 0;
-        return ApiWorker.getInstance().requestWorldTopicVideo(
-                mTopicId, mCurrentPage, mRefreshListener, null);
+        return super.doRefreshRequest();
     }
 
     public static class WorldMediaAdapter extends CommonMediaFragment.CommonMediaAdapter {

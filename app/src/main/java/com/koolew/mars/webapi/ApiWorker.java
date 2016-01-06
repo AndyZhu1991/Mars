@@ -3,17 +3,21 @@ package com.koolew.mars.webapi;
 import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.android.volley.Cache;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
+import com.koolew.mars.MarsApplication;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.utils.ContactUtil;
 
@@ -21,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +47,6 @@ public class ApiWorker {
 
     private Context mContext;
     private RequestQueue mRequestQueue;
-    private Response.ErrorListener mErrorListener;
 
     public static void init(Context context) {
         sInstance = new ApiWorker(context);
@@ -51,89 +55,15 @@ public class ApiWorker {
     private ApiWorker(Context context) {
         mContext = context;
         mRequestQueue = Volley.newRequestQueue(mContext);
-        mErrorListener = new StdErrorListener();
     }
 
     public static ApiWorker getInstance() {
         return sInstance;
     }
 
-
-    public JsonObjectRequest requestSelfInfo(Response.Listener<JSONObject> listener,
-                                             Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.USER_INFO_URL, listener, errorListener);
-    }
-
-    public JsonObjectRequest requestInvolve(int page, Response.Listener<JSONObject> listener,
-                                            Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getInvolveUrl(page), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestUserInvolve(String uid, Response.Listener<JSONObject> listener,
-                                                Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getUserTimelineUrl(uid), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestUserInvolve(String uid, long before,
-                                                Response.Listener<JSONObject> listener,
-                                                Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getUserTimelineUrl(uid, before), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestFeedsTopicVideo(String topicId,
-                                                    Response.Listener<JSONObject> listener,
-                                                    Response.ErrorListener errorListener) {
-        if (errorListener == null) {
-            errorListener = mErrorListener;
-        }
-
-        String url = UrlHelper.getTopicVideoFriendUrl(topicId);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
-                listener, errorListener) {
-            @Override
-            public Map<String, String> getHeaders() {
-                return UrlHelper.getStandardPostHeaders();
-            }
-        };
-        mRequestQueue.add(jsonObjectRequest);
-
-        return jsonObjectRequest;
-    }
-
-    public JsonObjectRequest requestFeedsTopicVideo(String topicId, long beforeTime,
-                                                    Response.Listener<JSONObject> listener,
-                                                    Response.ErrorListener errorListener) {
-        if (errorListener == null) {
-            errorListener = mErrorListener;
-        }
-
-        String url = UrlHelper.getTopicVideoFriendUrl(topicId, beforeTime);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
-                listener, errorListener) {
-            @Override
-            public Map<String, String> getHeaders() {
-                return UrlHelper.getStandardPostHeaders();
-            }
-        };
-        mRequestQueue.add(jsonObjectRequest);
-
-        return jsonObjectRequest;
-    }
-
-    public JsonObjectRequest requestRecommendFriend(Response.Listener<JSONObject> listener,
-                                                    Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.FRIEND_RECOMMEND_URL, listener, errorListener);
-    }
-
-    public JsonObjectRequest requestPoiRecommendFriend(double min,
-                                                       Response.Listener<JSONObject> listener,
-                                                       Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getFriendRecommendUrl(min), listener, errorListener);
-    }
-
     public JsonObjectRequest requestContactFriend(List<ContactUtil.SimpleContactInfo> contacts,
             Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        return standardPostRequest(UrlHelper.CONTACT_FRIEND_RECOMMEND_URL,
+        return queuePostRequest(UrlHelper.CONTACT_FRIEND_RECOMMEND_URL,
                 buildContactFriendJson(contacts), listener, errorListener);
     }
 
@@ -162,26 +92,6 @@ public class ApiWorker {
         return contactJson;
     }
 
-    public JsonObjectRequest requestAllFriends(Response.Listener<JSONObject> listener,
-                                               Response.ErrorListener errorListener) {
-        RetryPolicy retryPolicy = new DefaultRetryPolicy(
-                10000,
-                0,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        return standardGetRequest(UrlHelper.CURRENT_FRIEND_URL, listener, errorListener, retryPolicy);
-    }
-
-    public JsonObjectRequest requestFeedsTopic(Response.Listener<JSONObject> listener,
-                                               Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.FEEDS_TOPIC_URL, listener, errorListener);
-    }
-
-    public JsonObjectRequest requestFeedsTopic(long before,
-                                               Response.Listener<JSONObject> listener,
-                                               Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getFeedsTopicUrl(before), listener, errorListener);
-    }
-
     public JsonObjectRequest updateNickname(String newNickname,
                                             Response.Listener<JSONObject> listener,
                                             Response.ErrorListener errorListener) {
@@ -191,7 +101,7 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.USER_INFO_URL, requestJson, listener, errorListener);
+        return queuePostRequest(UrlHelper.USER_INFO_URL, requestJson, listener, errorListener);
     }
 
     public JsonObjectRequest updatePhoneNumber(String newPhoneNumber, String code,
@@ -204,85 +114,7 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.USER_INFO_URL, requestJson, listener, errorListener);
-    }
-
-    public JsonObjectRequest requestPasswordMessage(String phoneNumber,
-                                                    Response.Listener<JSONObject> listener,
-                                                    Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getRequestPasswordMessageUrl(phoneNumber),
-                listener, errorListener);
-    }
-
-    public JsonObjectRequest requestPasswordCall(String phoneNumber,
-                                                 Response.Listener<JSONObject> listener,
-                                                 Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getRequestPasswordCallUrl(phoneNumber),
-                listener, errorListener);
-    }
-
-    public JsonObjectRequest requestKooRank(String uid,
-                                            Response.Listener<JSONObject> listener,
-                                            Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getKooRankUrl(uid), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestKooRank(Response.Listener<JSONObject> listener,
-                                            Response.ErrorListener errorListener) {
-        return requestKooRank(MyAccountInfo.getUid(), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestFriendProfile(String uid,
-                                                  Response.Listener<JSONObject> listener,
-                                                  Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getFriendProfileUrl(uid), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestFriendProfile(String uid, long before,
-                                                  Response.Listener<JSONObject> listener,
-                                                  Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getFriendProfileUrl(uid, before),
-                listener, errorListener);
-    }
-
-    public JsonObjectRequest requestCommonTopic(String uid,
-                                                Response.Listener<JSONObject> listener,
-                                                Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getCommonTopicUrl(uid), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestTask(Response.Listener<JSONObject> listener,
-                                         Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.TASK_URL, listener, errorListener);
-    }
-
-    public JsonObjectRequest requestTask(long before,
-                                         Response.Listener<JSONObject> listener,
-                                         Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getTaskUrl(before), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestTaskDetail(String uid,
-                                               Response.Listener<JSONObject> listener,
-                                               Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getTaskDetailUrl(uid), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestTaskDetail(String uid, long before,
-                                               Response.Listener<JSONObject> listener,
-                                               Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getTaskDetailUrl(uid, before), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestDanmakuTab(Response.Listener<JSONObject> listener,
-                                               Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.DANMAKU_TAB_URL, listener, errorListener);
-    }
-
-    public JsonObjectRequest requestDanmakuTab(long before,
-                                               Response.Listener<JSONObject> listener,
-                                               Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getDanmakuTabUrl(before), listener, errorListener);
+        return queuePostRequest(UrlHelper.USER_INFO_URL, requestJson, listener, errorListener);
     }
 
     public JsonObjectRequest sendDanmaku(String content, String videoId, float showTime,
@@ -301,33 +133,7 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.SEND_DANMAKU_URL, requestJson, listener, errorListener);
-    }
-
-    public JSONObject requestQiniuThumbTokenSync()
-            throws InterruptedException, ExecutionException, TimeoutException {
-        return standardGetRequestSync(UrlHelper.REQUEST_QINIU_THUMB_TOKEN_URL);
-    }
-
-    public JSONObject requestQiniuVideoTokenSync()
-            throws InterruptedException, ExecutionException, TimeoutException {
-        return standardGetRequestSync(UrlHelper.REQUEST_QINIU_VIDEO_TOKEN_URL);
-    }
-
-    public JSONObject requestQiniuMovieTokenSync()
-            throws InterruptedException, ExecutionException, TimeoutException {
-        return standardGetRequestSync(UrlHelper.REQUEST_QINIU_MOVIE_TOKEN_URL);
-    }
-
-    public JsonObjectRequest requestWorldHotTopic(Response.Listener<JSONObject> listener,
-                                                  Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.REQUEST_WORLD_HOT_URL, listener, errorListener);
-    }
-
-    public JsonObjectRequest searchTopic(String keyWord,
-                                         Response.Listener<JSONObject> listener,
-                                         Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getSearchTopicUrl(keyWord), listener, errorListener);
+        return queuePostRequest(UrlHelper.SEND_DANMAKU_URL, requestJson, listener, errorListener);
     }
 
     public JsonObjectRequest addTopic(String title, String desc,
@@ -340,7 +146,7 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.ADD_TOPIC_URL, requestJson, listener, errorListener);
+        return queuePostRequest(UrlHelper.ADD_TOPIC_URL, requestJson, listener, errorListener);
     }
 
     public JsonObjectRequest sendInvitation(String topicId, List<String> friendIds,
@@ -361,40 +167,8 @@ public class ApiWorker {
                 10000,
                 0,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        return standardPostRequest(UrlHelper.SEND_INVITATION_URL, requestObject,
+        return queuePostRequest(UrlHelper.SEND_INVITATION_URL, requestObject,
                 listener, errorListener, retryPolicy);
-    }
-
-    public JsonObjectRequest requestWorldTopicVideo(String topicId, int page,
-                                                    Response.Listener<JSONObject> listener,
-                                                    Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getWorldTopicVideoUrl(topicId, page),
-                listener, errorListener);
-    }
-
-    public JsonObjectRequest requestUserTopic(String uid, String topicId,
-                                              Response.Listener<JSONObject> listener,
-                                              Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getUserTopicUrl(uid, topicId), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestUserTopic(String uid, String topicId, long time,
-                                              Response.Listener<JSONObject> listener,
-                                              Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getUserTopicUrl(uid, topicId, time),
-                listener, errorListener);
-    }
-
-    public JsonObjectRequest searchUser(String keyWord,
-                                        Response.Listener<JSONObject> listener,
-                                        Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getSearchUserUrl(keyWord), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestSingleVideo(String videoId,
-                                                Response.Listener<JSONObject> listener,
-                                                Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getSingleVideoUrl(videoId), listener, errorListener);
     }
 
     public JsonObjectRequest kooVideo(String videoId, int count,
@@ -407,7 +181,7 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.KOO_URL, requestObject, listener, errorListener);
+        return queuePostRequest(UrlHelper.KOO_URL, requestObject, listener, errorListener);
     }
 
     public JsonObjectRequest ignoreInvitation(String topicId,
@@ -419,7 +193,7 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.IGNORE_INVITATION_URL, requestObject,
+        return queuePostRequest(UrlHelper.IGNORE_INVITATION_URL, requestObject,
                 listener, errorListener);
     }
 
@@ -433,7 +207,7 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.DEVICE_LOGIN_URL, requestObject, listener, errorListener);
+        return queuePostRequest(UrlHelper.DEVICE_LOGIN_URL, requestObject, listener, errorListener);
     }
 
     public JsonObjectRequest postPushBit(int pushBit,
@@ -445,7 +219,7 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.DEVICE_PUSH_URL, requestObject, listener, errorListener);
+        return queuePostRequest(UrlHelper.DEVICE_PUSH_URL, requestObject, listener, errorListener);
     }
 
     public JsonObjectRequest deleteVideo(String videoId,
@@ -457,7 +231,7 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.VIDEO_DELETE_URL, requestObject, listener, errorListener);
+        return queuePostRequest(UrlHelper.VIDEO_DELETE_URL, requestObject, listener, errorListener);
     }
 
     public JsonObjectRequest againstVideo(String videoId,
@@ -469,7 +243,7 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.VIDEO_AGAINST_URL, requestObject, listener, errorListener);
+        return queuePostRequest(UrlHelper.VIDEO_AGAINST_URL, requestObject, listener, errorListener);
     }
 
     public JsonObjectRequest loginBySns(MyAccountInfo.LOGIN_TYPE type, String openId,
@@ -491,11 +265,12 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.SNS_LOGIN_URL, requestJson, listener, errorListener);
+        return queuePostRequest(UrlHelper.SNS_LOGIN_URL, requestJson, listener, errorListener);
     }
 
-    public JsonObjectRequest logout() {
-        return logout(MyAccountInfo.getRegistrationId(), emptyResponseListener, null);
+    public JsonObjectRequest logout(Response.Listener<JSONObject> listener,
+                                    Response.ErrorListener errorListener) {
+        return logout(MyAccountInfo.getRegistrationId(), listener, errorListener);
     }
 
     public JsonObjectRequest logout(String registrationId,
@@ -508,12 +283,7 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.DEVICE_LOGOUT_URL, requestObject, listener, errorListener);
-    }
-
-    public JsonObjectRequest requestNotificationBrief(Response.Listener<JSONObject> listener,
-                                                      Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.NOTIFICATION_BRIEF_URL, listener, errorListener);
+        return queuePostRequest(UrlHelper.DEVICE_LOGOUT_URL, requestObject, listener, errorListener);
     }
 
     public JsonObjectRequest postLocation(double longitude, double latitude,
@@ -526,13 +296,7 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.USER_LOCATION_URL, requestObject, listener, errorListener);
-    }
-
-    public JsonObjectRequest requestVideoKooRank(String videoId, int page,
-                                                 Response.Listener<JSONObject> listener,
-                                                 Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getVideoKooRankUrl(videoId, page), listener, errorListener);
+        return queuePostRequest(UrlHelper.USER_LOCATION_URL, requestObject, listener, errorListener);
     }
 
     public JsonObjectRequest postTopicDesc(String topicId, String desc,
@@ -545,7 +309,7 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.EDIT_TOPIC_DESC_URL, requestObject,
+        return queuePostRequest(UrlHelper.EDIT_TOPIC_DESC_URL, requestObject,
                 listener, errorListener);
     }
 
@@ -570,7 +334,7 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.FRIEND_FOLLOW_URL, requestObject,
+        return queuePostRequest(UrlHelper.FRIEND_FOLLOW_URL, requestObject,
                 listener, errorListener);
     }
 
@@ -595,118 +359,8 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.FRIEND_UNFOLLOW_URL, requestObject,
+        return queuePostRequest(UrlHelper.FRIEND_UNFOLLOW_URL, requestObject,
                 listener, errorListener);
-    }
-
-    public JsonObjectRequest getFriends(Response.Listener<JSONObject> listener,
-                                        Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.CURRENT_FRIEND_URL, listener, errorListener);
-    }
-
-    public JsonObjectRequest getFriends(long before,
-                                        Response.Listener<JSONObject> listener,
-                                        Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getCurrentFriendUrl(before), listener, errorListener);
-    }
-
-    public JsonObjectRequest getFollows(Response.Listener<JSONObject> listener,
-                                        Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.FRIEND_FOLLOWS_URL, listener, errorListener);
-    }
-
-    public JsonObjectRequest getFollows(long before,
-                                        Response.Listener<JSONObject> listener,
-                                        Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getFriendFollowsUrl(before), listener, errorListener);
-    }
-
-    public JsonObjectRequest getFollows(String uid,
-                                        Response.Listener<JSONObject> listener,
-                                        Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getFriendFollowsUrl(uid), listener, errorListener);
-    }
-
-    public JsonObjectRequest getFollows(String uid, long before,
-                                        Response.Listener<JSONObject> listener,
-                                        Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getFriendFollowsUrl(uid, before),
-                listener, errorListener);
-    }
-
-    public JsonObjectRequest getFans(Response.Listener<JSONObject> listener,
-                                     Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.FRIEND_FANS_URL, listener, errorListener);
-    }
-
-    public JsonObjectRequest getFans(long before,
-                                     Response.Listener<JSONObject> listener,
-                                     Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getFriendFansUrl(before), listener, errorListener);
-    }
-
-    public JsonObjectRequest getFans(String uid,
-                                     Response.Listener<JSONObject> listener,
-                                     Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getFriendFansUrl(uid), listener, errorListener);
-    }
-
-    public JsonObjectRequest getFans(String uid, long before,
-                                     Response.Listener<JSONObject> listener,
-                                     Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getFriendFansUrl(uid, before), listener, errorListener);
-    }
-
-    public JsonObjectRequest getVideoComment(String videoId, long before,
-                                             Response.Listener<JSONObject> listener,
-                                             Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getVideoCommentUrl(videoId, before),
-                listener, errorListener);
-    }
-
-    public JsonObjectRequest requestDefaultPlayGroup(String squareId,
-                                                     Response.Listener<JSONObject> listener,
-                                                     Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getDefaultPlayGroupUrl(squareId), listener, errorListener);
-    }
-
-    public JsonObjectRequest judgeVideo(String squareId, String videoId,
-                                        Response.Listener<JSONObject> listener,
-                                        Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getJudgeUrl(squareId, videoId), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestPayPlayGroup(Response.Listener<JSONObject> listener,
-                                                 Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getPayPlayUrl(), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestFeedsHot(int page,
-                                             Response.Listener<JSONObject> listener,
-                                             Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getFeedsHotUrl(page), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestNotification(Response.Listener<JSONObject> listener,
-                                                 Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.NOTIFICATION_URL, listener, errorListener);
-    }
-
-    public JsonObjectRequest requestNotification(long before,
-                                                 Response.Listener<JSONObject> listener,
-                                                 Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getNotificationUrl(before), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestIncomeDesc(Response.Listener<JSONObject> listener,
-                                               Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.INCOME_DESC_URL, listener, errorListener);
-    }
-
-    public JsonObjectRequest requestIncomeAnalysis(int page,
-                                                   Response.Listener<JSONObject> listener,
-                                                   Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getIncomeAnalysisUrl(page), listener, errorListener);
     }
 
     public JsonObjectRequest bindAlipay(String alipay,
@@ -718,7 +372,7 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.BIND_ALIPAY_URL, requestObject,
+        return queuePostRequest(UrlHelper.BIND_ALIPAY_URL, requestObject,
                 listener, errorListener);
     }
 
@@ -732,74 +386,44 @@ public class ApiWorker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return standardPostRequest(UrlHelper.CASH_OUT_URL, requestObject,
+        return queuePostRequest(UrlHelper.CASH_OUT_URL, requestObject,
                 listener, errorListener);
     }
 
-    public JsonObjectRequest getCashOutRecord(Response.Listener<JSONObject> listener,
-                                              Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.CASH_OUT_RECORD_URL, listener, errorListener);
+    public JsonObjectRequest queueGetRequest(String url,
+                                             Response.Listener<JSONObject> listener,
+                                             Response.ErrorListener errorListener) {
+        return queueGetRequest(url, listener, errorListener, null);
     }
 
-    public JsonObjectRequest getCashOutRecord(long before,
-                                              Response.Listener<JSONObject> listener,
-                                              Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getCashOutRecordUrl(before), listener, errorListener);
-    }
-
-    public JsonObjectRequest requestSquare(Response.Listener<JSONObject> listener,
-                                           Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.SQUARE_URL, listener, errorListener);
-    }
-
-    public JsonObjectRequest checkVersion(Response.Listener<JSONObject> listener,
-                                          Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.CHECK_VERSION_URL, listener, errorListener);
-    }
-
-    public JsonObjectRequest getBanner(Response.Listener<JSONObject> listener,
-                                       Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.BANNER_URL, listener, errorListener);
-    }
-
-    public JsonObjectRequest getKooNotification(Response.Listener<JSONObject> listener,
-                                                Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.NOTIFICATION_KOO_URL, listener, errorListener);
-    }
-
-    public JsonObjectRequest getKooNotification(long before,
-                                                Response.Listener<JSONObject> listener,
-                                                Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getNotificationKooUrl(before), listener, errorListener);
-    }
-
-    public JsonObjectRequest getMovies(int page,
-                                       Response.Listener<JSONObject> listener,
-                                       Response.ErrorListener errorListener) {
-        return standardGetRequest(UrlHelper.getMovieUrl(page), listener, errorListener);
-    }
-
-
-    // Standard request here.
-    public JsonObjectRequest standardGetRequest(String url,
-                                                 Response.Listener<JSONObject> listener,
-                                                 Response.ErrorListener errorListener) {
-        return standardGetRequest(url, listener, errorListener, null);
-    }
-
-    private JsonObjectRequest standardGetRequest(String url,
-                                                 Response.Listener<JSONObject> listener,
-                                                 Response.ErrorListener errorListener,
-                                                 RetryPolicy retryPolicy) {
-        if (errorListener == null) {
-            errorListener = mErrorListener;
+    public JsonObjectRequest queueGetRequest(String url,
+                                             Response.Listener<JSONObject> listener,
+                                             Response.ErrorListener errorListener,
+                                             RetryPolicy retryPolicy) {
+        if (TextUtils.isEmpty(url) || listener == null || errorListener == null) {
+            if (MarsApplication.DEBUG) {
+                throw new IllegalArgumentException("Illegal argument in queueGetRequest!");
+            }
+            else {
+                if (!TextUtils.isEmpty(url)) {
+                    if (listener == null) {
+                        listener = emptyResponseListener;
+                    }
+                    if (errorListener == null) {
+                        errorListener = emptyErrorListener;
+                    }
+                }
+                else {
+                    return null;
+                }
+            }
         }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
+        JsonObjectRequest jsonObjectRequest = new CachedJsonObjectRequest(Request.Method.GET, url,
                 listener, errorListener) {
             @Override
             public Map<String, String> getHeaders() {
-                return UrlHelper.getStandardPostHeaders();
+                return UrlHelper.getStandardApiHeader();
             }
         };
         if (retryPolicy != null) {
@@ -810,25 +434,40 @@ public class ApiWorker {
         return jsonObjectRequest;
     }
 
-    private JsonObjectRequest standardPostRequest(String url, JSONObject requestJson,
-                                                  Response.Listener<JSONObject> listener,
-                                                  Response.ErrorListener errorListener) {
-        return standardPostRequest(url, requestJson, listener, errorListener, null);
+    public JsonObjectRequest queuePostRequest(String url, JSONObject requestJson,
+                                              Response.Listener<JSONObject> listener,
+                                              Response.ErrorListener errorListener) {
+        return queuePostRequest(url, requestJson, listener, errorListener, null);
     }
 
-    private JsonObjectRequest standardPostRequest(String url, JSONObject requestJson,
-                                                  Response.Listener<JSONObject> listener,
-                                                  Response.ErrorListener errorListener,
-                                                  RetryPolicy retryPolicy) {
-        if (errorListener == null) {
-            errorListener = mErrorListener;
+    public JsonObjectRequest queuePostRequest(String url, JSONObject requestJson,
+                                              Response.Listener<JSONObject> listener,
+                                              Response.ErrorListener errorListener,
+                                              RetryPolicy retryPolicy) {
+        if (TextUtils.isEmpty(url) || listener == null || errorListener == null) {
+            if (MarsApplication.DEBUG) {
+                throw new IllegalArgumentException("Illegal argument in queueGetRequest!");
+            }
+            else {
+                if (!TextUtils.isEmpty(url)) {
+                    if (listener == null) {
+                        listener = emptyResponseListener;
+                    }
+                    if (errorListener == null) {
+                        errorListener = emptyErrorListener;
+                    }
+                }
+                else {
+                    return null;
+                }
+            }
         }
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.POST, url, requestJson, listener, errorListener) {
             @Override
             public Map<String, String> getHeaders() {
-                return UrlHelper.getStandardPostHeaders();
+                return UrlHelper.getStandardApiHeader();
             }
         };
         if (retryPolicy != null) {
@@ -839,30 +478,80 @@ public class ApiWorker {
         return jsonObjectRequest;
     }
 
-    public JSONObject standardGetRequestSync(String url)
+    public JSONObject doGetRequestSync(String url)
             throws InterruptedException, ExecutionException, TimeoutException {
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
-        standardGetRequest(url, future, future);
+        queueGetRequest(url, future, future);
         return future.get(SYNC_REQUEST_TIMEOUT, SYNC_REQUEST_TIME_UNIT);
     }
 
-    private JSONObject standardPostRequestSync(String url, JSONObject requestObject)
+    private JSONObject doPostRequestSync(String url, JSONObject requestObject)
             throws InterruptedException, ExecutionException, TimeoutException {
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
-        standardPostRequest(url, requestObject, future, future);
+        queuePostRequest(url, requestObject, future, future);
         return future.get(SYNC_REQUEST_TIMEOUT, SYNC_REQUEST_TIME_UNIT);
     }
 
-    public Response.Listener<JSONObject> emptyResponseListener = new Response.Listener<JSONObject>() {
+//    int DEPRECATED_GET_OR_POST = -1;
+//    int GET = 0;
+//    int POST = 1;
+//    int PUT = 2;
+//    int DELETE = 3;
+//    int HEAD = 4;
+//    int OPTIONS = 5;
+//    int TRACE = 6;
+//    int PATCH = 7;
+    public Cache.Entry getApiCache(String url) {
+        return mRequestQueue.getCache().get("0:" + url); // A volley's bug
+    }
+
+    private Response.Listener<JSONObject> emptyResponseListener = new Response.Listener<JSONObject>() {
         @Override
         public void onResponse(JSONObject response) {
         }
     };
 
-    class StdErrorListener implements Response.ErrorListener {
+    private Response.ErrorListener emptyErrorListener = new Response.ErrorListener() {
         @Override
-        public void onErrorResponse(VolleyError volleyError) {
-            Log.d(TAG, "onErrorResponse");
+        public void onErrorResponse(VolleyError error) {
+        }
+    };
+
+
+    private static class CachedJsonObjectRequest extends JsonObjectRequest {
+        public CachedJsonObjectRequest(int method, String url, Response.Listener<JSONObject> listener,
+                                       Response.ErrorListener errorListener) {
+            super(method, url, listener, errorListener);
+        }
+
+        @Override
+        protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+            try {
+                String jsonString = new String(response.data,
+                        HttpHeaderParser.parseCharset(response.headers, PROTOCOL_CHARSET));
+                return Response.success(new JSONObject(jsonString),
+                        parseIgnoreCacheHeaders(response));
+            } catch (UnsupportedEncodingException e) {
+                return Response.error(new ParseError(e));
+            } catch (JSONException je) {
+                return Response.error(new ParseError(je));
+            }
+        }
+
+        /**
+         * Extracts a {@link Cache.Entry} from a {@link NetworkResponse}.
+         * Cache-control headers are ignored. SoftTtl == 3 mins, ttl == 24 hours.
+         * @param response The network response to parse headers from
+         * @return a cache entry for the given response, or null if the response is not cacheable.
+         */
+        public static Cache.Entry parseIgnoreCacheHeaders(NetworkResponse response) {
+            Cache.Entry entry = HttpHeaderParser.parseCacheHeaders(response);
+
+            if (entry.softTtl == 0) {
+                entry.softTtl = System.currentTimeMillis();
+            }
+
+            return entry;
         }
     }
 }

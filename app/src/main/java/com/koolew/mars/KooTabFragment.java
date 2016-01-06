@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.BaseUserInfo;
@@ -18,7 +17,7 @@ import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.redpoint.RedPointManager;
-import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -56,39 +55,32 @@ public class KooTabFragment extends RecyclerListFragmentMould<KooTabFragment.Koo
     }
 
     @Override
-    protected JsonObjectRequest doRefreshRequest() {
-        return ApiWorker.getInstance().getKooNotification(mRefreshListener, null);
+    protected String getRefreshRequestUrl() {
+        return UrlHelper.NOTIFICATION_KOO_URL;
     }
 
     @Override
-    protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().getKooNotification(mAdapter.getLastUpdateTime(),
-                mLoadMoreListener, null);
+    protected String getLoadMoreRequestUrl() {
+        return UrlHelper.getNotificationKooUrl(mAdapter.getLastUpdateTime());
     }
 
     @Override
-    protected boolean handleRefresh(JSONObject response) {
+    protected boolean handleRefreshResult(JSONObject result) {
         RedPointManager.clearRedPointByPath(RedPointManager.PATH_KOO);
         try {
-            if (response.getInt("code") == 0) {
-                return mAdapter.setData(response.getJSONObject("result")
-                        .getJSONArray("notifications"));
-            }
+            return mAdapter.setData(result.getJSONArray("notifications"));
         } catch (JSONException e) {
-            e.printStackTrace();
+            handleJsonException(result, e);
         }
         return false;
     }
 
     @Override
-    protected boolean handleLoadMore(JSONObject response) {
+    protected boolean handleLoadMoreResult(JSONObject result) {
         try {
-            if (response.getInt("code") == 0) {
-                return mAdapter.addData(response.getJSONObject("result")
-                        .getJSONArray("notifications"));
-            }
+            return mAdapter.addData(result.getJSONArray("notifications"));
         } catch (JSONException e) {
-            e.printStackTrace();
+            handleJsonException(result, e);
         }
         return false;
     }

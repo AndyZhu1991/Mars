@@ -33,6 +33,7 @@ import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -121,8 +122,8 @@ public class FriendInfoActivity extends BaseV4FragmentActivity implements View.O
     private void refreshUserInfo() {
         if (mUserInfoRequest == null) {
             mAppBar.getViewTreeObserver().addOnGlobalLayoutListener(this);
-            mUserInfoRequest = ApiWorker.getInstance().requestFriendProfile(
-                    mUid, userInfoListener, null);
+            mUserInfoRequest = ApiWorker.getInstance().queueGetRequest(
+                    UrlHelper.getFriendProfileUrl(mUid), userInfoListener, userInfoErrorListener);
         }
     }
 
@@ -157,6 +158,13 @@ public class FriendInfoActivity extends BaseV4FragmentActivity implements View.O
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    };
+
+    private Response.ErrorListener userInfoErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            // TODO
         }
     };
 
@@ -247,7 +255,7 @@ public class FriendInfoActivity extends BaseV4FragmentActivity implements View.O
         switch (type) {
             case TypedUserInfo.TYPE_STRANGER:
             case TypedUserInfo.TYPE_FAN:
-                ApiWorker.getInstance().followUser(mUid, mFriendOpListener, null);
+                ApiWorker.getInstance().followUser(mUid, mFriendOpListener, mFriendOpListener);
                 break;
             case TypedUserInfo.TYPE_FOLLOWED:
             case TypedUserInfo.TYPE_FRIEND:
@@ -263,14 +271,14 @@ public class FriendInfoActivity extends BaseV4FragmentActivity implements View.O
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ApiWorker.getInstance().unfollowUser(uid, mFriendOpListener, null);
+                        ApiWorker.getInstance().unfollowUser(uid, mFriendOpListener, mFriendOpListener);
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
     }
 
-    private Response.Listener<JSONObject> mFriendOpListener = new FriendOpListener();
+    private FriendOpListener mFriendOpListener = new FriendOpListener();
 
     class FriendOpListener implements Response.Listener<JSONObject>, Response.ErrorListener {
         @Override
@@ -363,25 +371,29 @@ public class FriendInfoActivity extends BaseV4FragmentActivity implements View.O
         }
 
         @Override
+        protected String getRefreshRequestUrl() {
+            return UrlHelper.getUserTimelineUrl(mUid);
+        }
+
+        @Override
         protected JsonObjectRequest doRefreshRequest() {
             refreshUserInfo();
-            return ApiWorker.getInstance().requestUserInvolve(mUid, mRefreshListener, null);
+            return super.doRefreshRequest();
         }
 
         @Override
-        protected JsonObjectRequest doLoadMoreRequest() {
-            return ApiWorker.getInstance().requestUserInvolve(mUid, mAdapter.getLastUpdateTime(),
-                    mLoadMoreListener, null);
+        protected String getLoadMoreRequestUrl() {
+            return UrlHelper.getUserTimelineUrl(mUid, mAdapter.getLastUpdateTime());
         }
 
         @Override
-        protected boolean handleRefresh(JSONObject response) {
-            return mAdapter.setItems(getInvolveTopics(response)) > 0;
+        protected boolean handleRefreshResult(JSONObject result) {
+            return mAdapter.setItems(getInvolveTopics(result)) > 0;
         }
 
         @Override
-        protected boolean handleLoadMore(JSONObject response) {
-            return mAdapter.addItems(getInvolveTopics(response)) > 0;
+        protected boolean handleLoadMoreResult(JSONObject result) {
+            return mAdapter.addItems(getInvolveTopics(result)) > 0;
         }
 
         @Override
@@ -389,11 +401,11 @@ public class FriendInfoActivity extends BaseV4FragmentActivity implements View.O
             return R.layout.timeline_no_data;
         }
 
-        private JSONArray getInvolveTopics(JSONObject response) {
+        private JSONArray getInvolveTopics(JSONObject result) {
             try {
-                return response.getJSONObject("result").getJSONArray("topics");
+                return result.getJSONArray("topics");
             } catch (JSONException e) {
-                e.printStackTrace();
+                handleJsonException(result, e);
             }
             return new JSONArray();
         }

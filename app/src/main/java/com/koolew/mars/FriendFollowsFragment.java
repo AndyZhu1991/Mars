@@ -1,8 +1,7 @@
 package com.koolew.mars;
 
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
-import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -41,19 +40,18 @@ public class FriendFollowsFragment extends RecyclerListFragmentMould<FriendSimpl
     }
 
     @Override
-    protected JsonObjectRequest doRefreshRequest() {
-        return ApiWorker.getInstance().getFollows(mRefreshListener, null);
+    protected String getRefreshRequestUrl() {
+        return UrlHelper.FRIEND_FOLLOWS_URL;
     }
 
     @Override
-    protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().getFollows(mAdapter.getLastUpdateTime(),
-                mLoadMoreListener, null);
+    protected String getLoadMoreRequestUrl() {
+        return UrlHelper.getFriendFollowsUrl(mAdapter.getLastUpdateTime());
     }
 
     @Override
-    protected boolean handleRefresh(JSONObject response) {
-        JSONArray users = FriendCurrentFragment.queryUsers(response);
+    protected boolean handleRefreshResult(JSONObject result) {
+        JSONArray users = FriendCurrentFragment.queryUsers(result);
         if (users != null && users.length() > 0) {
             mAdapter.setData(users);
             mAdapter.notifyDataSetChanged();
@@ -64,8 +62,8 @@ public class FriendFollowsFragment extends RecyclerListFragmentMould<FriendSimpl
     }
 
     @Override
-    protected boolean handleLoadMore(JSONObject response) {
-        JSONArray users = FriendCurrentFragment.queryUsers(response);
+    protected boolean handleLoadMoreResult(JSONObject result) {
+        JSONArray users = FriendCurrentFragment.queryUsers(result);
         if (users != null && users.length() > 0) {
             mAdapter.add(users);
             mAdapter.notifyDataSetChanged();

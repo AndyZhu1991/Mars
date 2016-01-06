@@ -25,7 +25,6 @@ import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.remoteconfig.RemoteConfigManager;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.view.TitleBarView;
-import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -183,64 +182,60 @@ public class JoinVideoActivity extends BaseV4FragmentActivity
         }
 
         @Override
-        protected JsonObjectRequest doRefreshRequest() {
-            page = 0;
+        protected String getRefreshRequestUrl() {
             if (mTag == null) {
-                return ApiWorker.getInstance().standardGetRequest(
-                        UrlHelper.getRecommendTopicUrl(BaseTopicInfo.CATEGORY_VIDEO, page),
-                        mRefreshListener, null);
+                return UrlHelper.getRecommendTopicUrl(BaseTopicInfo.CATEGORY_VIDEO, page);
             }
             else {
-                return ApiWorker.getInstance().standardGetRequest(
-                        UrlHelper.getTopicUrl(BaseTopicInfo.CATEGORY_VIDEO, mTag.getId(), page),
-                        mRefreshListener, null);
+                return UrlHelper.getTopicUrl(BaseTopicInfo.CATEGORY_VIDEO, mTag.getId(), page);
+            }
+        }
+
+        @Override
+        protected JsonObjectRequest doRefreshRequest() {
+            page = 0;
+            return super.doRefreshRequest();
+        }
+
+        @Override
+        protected String getLoadMoreRequestUrl() {
+            if (mTag == null) {
+                return UrlHelper.getRecommendTopicUrl(BaseTopicInfo.CATEGORY_VIDEO, page);
+            }
+            else {
+                return UrlHelper.getTopicUrl(BaseTopicInfo.CATEGORY_VIDEO, mTag.getId(), page);
             }
         }
 
         @Override
         protected JsonObjectRequest doLoadMoreRequest() {
             page++;
-            if (mTag == null) {
-                return ApiWorker.getInstance().standardGetRequest(
-                        UrlHelper.getRecommendTopicUrl(BaseTopicInfo.CATEGORY_VIDEO, page),
-                        mLoadMoreListener, null);
-            }
-            else {
-                return ApiWorker.getInstance().standardGetRequest(
-                        UrlHelper.getTopicUrl(BaseTopicInfo.CATEGORY_VIDEO, mTag.getId(), page),
-                        mLoadMoreListener, null);
-            }
+            return super.doLoadMoreRequest();
         }
 
         @Override
-        protected boolean handleRefresh(JSONObject response) {
+        protected boolean handleRefreshResult(JSONObject result) {
             try {
-                int code = response.getInt("code");
-                if (code == 0) {
-                    JSONArray topics = response.getJSONObject("result").getJSONArray("topics");
-                    mAdapter.topicInfos.clear();
-                    int addedCount = mAdapter.addTopics(topics);
-                    mAdapter.notifyDataSetChanged();
-                    return addedCount > 0;
-                }
+                JSONArray topics = result.getJSONArray("topics");
+                mAdapter.topicInfos.clear();
+                int addedCount = mAdapter.addTopics(topics);
+                mAdapter.notifyDataSetChanged();
+                return addedCount > 0;
             } catch (JSONException e) {
-                e.printStackTrace();
+                handleJsonException(result, e);
             }
             return false;
         }
 
         @Override
-        protected boolean handleLoadMore(JSONObject response) {
+        protected boolean handleLoadMoreResult(JSONObject result) {
             try {
-                int code = response.getInt("code");
-                if (code == 0) {
-                    JSONArray topics = response.getJSONObject("result").getJSONArray("topics");
-                    int originCount = mAdapter.topicInfos.size();
-                    int addedCount = mAdapter.addTopics(topics);
-                    if (addedCount > 0) {
-                        mAdapter.notifyItemRangeInserted(originCount, addedCount);
-                        return true;
-                    }
+                JSONArray topics = result.getJSONArray("topics");
+                int originCount = mAdapter.topicInfos.size();
+                int addedCount = mAdapter.addTopics(topics);
+                if (addedCount > 0) {
+                    mAdapter.notifyItemRangeInserted(originCount, addedCount);
+                    return true;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

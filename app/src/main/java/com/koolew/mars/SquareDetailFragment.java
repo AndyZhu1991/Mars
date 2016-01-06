@@ -99,20 +99,23 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
     }
 
     @Override
+    protected String getRefreshRequestUrl() {
+        return UrlHelper.getSquareDetailUrl(mSquareId, mNextPage, mNextBefore);
+    }
+
+    @Override
     protected JsonObjectRequest doRefreshRequest() {
         mNextPage = 0;
         mNextBefore = 0;
         requestTopThumbs();
-        return ApiWorker.getInstance().standardGetRequest(
-                UrlHelper.getSquareDetailUrl(mSquareId, mNextPage, mNextBefore),
-                mRefreshListener, null);
+        return super.doRefreshRequest();
     }
 
     private Request<JSONObject> mTopThumbsRequest = null;
     private void requestTopThumbs() {
         if (mTopThumbsRequest == null) {
-            mTopThumbsRequest = ApiWorker.getInstance()
-                    .requestDefaultPlayGroup(mSquareId, mThumbListener, mThumbErrorListener);
+            mTopThumbsRequest = ApiWorker.getInstance().queueGetRequest(
+                    UrlHelper.getDefaultPlayGroupUrl(mSquareId), mThumbListener, mThumbErrorListener);
         }
     }
 
@@ -150,16 +153,14 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
     };
 
     @Override
-    protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().standardGetRequest(
-                UrlHelper.getSquareDetailUrl(mSquareId, mNextPage, mNextBefore),
-                mLoadMoreListener, null);
+    protected String getLoadMoreRequestUrl() {
+        return UrlHelper.getSquareDetailUrl(mSquareId, mNextPage, mNextBefore);
     }
 
     @Override
-    protected boolean handleRefresh(JSONObject response) {
-        JSONArray cards = retrieveSquareCards(response);
-        updateNextPageAndBefore(response);
+    protected boolean handleRefreshResult(JSONObject result) {
+        JSONArray cards = retrieveSquareCards(result);
+        updateNextPageAndBefore(result);
         if (cards.length() > 0) {
             return mAdapter.setItems(cards) > 0;
         }
@@ -167,34 +168,30 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
     }
 
     @Override
-    protected boolean handleLoadMore(JSONObject response) {
-        JSONArray cards = retrieveSquareCards(response);
-        updateNextPageAndBefore(response);
+    protected boolean handleLoadMoreResult(JSONObject result) {
+        JSONArray cards = retrieveSquareCards(result);
+        updateNextPageAndBefore(result);
         if (cards.length() > 0) {
             return mAdapter.addItems(cards) > 0;
         }
         return false;
     }
 
-    private void updateNextPageAndBefore(JSONObject response) {
+    private void updateNextPageAndBefore(JSONObject result) {
         try {
-            JSONObject next = response.getJSONObject("result").getJSONObject("next");
+            JSONObject next = result.getJSONObject("next");
             mNextPage = next.getInt("page");
             mNextBefore = next.getInt("before");
         } catch (JSONException e) {
-            e.printStackTrace();
+            handleJsonException(result, e);
         }
     }
 
-    private JSONArray retrieveSquareCards(JSONObject response) {
+    private JSONArray retrieveSquareCards(JSONObject result) {
         try {
-            int code = response.getInt("code");
-            if (code == 0) {
-                JSONObject result = response.getJSONObject("result");
-                return result.getJSONArray("videos");
-            }
+            return result.getJSONArray("videos");
         } catch (JSONException e) {
-            e.printStackTrace();
+            handleJsonException(result, e);
         }
         return new JSONArray();
     }

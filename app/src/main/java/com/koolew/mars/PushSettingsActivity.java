@@ -3,6 +3,8 @@ package com.koolew.mars;
 import android.os.Bundle;
 import android.widget.ListView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.koolew.mars.preference.PreferenceAdapter;
 import com.koolew.mars.preference.PreferenceGroupTitle;
 import com.koolew.mars.preference.PreferenceHelper;
@@ -10,8 +12,11 @@ import com.koolew.mars.preference.SwitchPreference;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.webapi.ApiWorker;
 
+import org.json.JSONObject;
 
-public class PushSettingsActivity extends BaseActivity {
+
+public class PushSettingsActivity extends BaseActivity implements Response.ErrorListener,
+        Response.Listener<JSONObject> {
 
     private ListView mListView;
     private PreferenceAdapter mAdapter;
@@ -30,7 +35,7 @@ public class PushSettingsActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         ApiWorker.getInstance().postPushBit(new PreferenceHelper(this).getPushBit(),
-                ApiWorker.getInstance().emptyResponseListener, null);
+                this, this);
     }
 
     private void setupAdapter() {
@@ -47,5 +52,15 @@ public class PushSettingsActivity extends BaseActivity {
                 PreferenceHelper.KEY_INVITED, PreferenceHelper.DEFAULT_INVITED));
         mAdapter.add(new SwitchPreference(this, R.string.invitation_accepted,
                 PreferenceHelper.KEY_INVITATION_ACCEPTED, PreferenceHelper.DEFAULT_INVITATION_ACCEPTED));
+    }
+
+    @Override
+    public void onResponse(JSONObject response) {
+        // TODO
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        // TODO
     }
 }

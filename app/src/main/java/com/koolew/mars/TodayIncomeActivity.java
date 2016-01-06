@@ -15,6 +15,7 @@ import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,7 +66,7 @@ public class TodayIncomeActivity extends BaseActivity
 
     private void requestIncomeData() {
         mConnectingDialog.show();
-        ApiWorker.getInstance().requestIncomeDesc(this, this);
+        ApiWorker.getInstance().queueGetRequest(UrlHelper.INCOME_DESC_URL, this, this);
     }
 
     public void onIncomeAnalysis(View v) {

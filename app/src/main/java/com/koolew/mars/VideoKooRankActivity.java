@@ -16,7 +16,7 @@ import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.view.UserNameView;
-import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -75,39 +75,45 @@ public class VideoKooRankActivity extends BaseV4FragmentActivity {
         }
 
         @Override
+        protected String getRefreshRequestUrl() {
+            return UrlHelper.getVideoKooRankUrl(videoId, page);
+        }
+
+        @Override
         protected JsonObjectRequest doRefreshRequest() {
             page = 0;
-            return ApiWorker.getInstance().requestVideoKooRank(videoId, page, mRefreshListener, null);
+            return super.doRefreshRequest();
+        }
+
+        @Override
+        protected String getLoadMoreRequestUrl() {
+            return UrlHelper.getVideoKooRankUrl(videoId, page);
         }
 
         @Override
         protected JsonObjectRequest doLoadMoreRequest() {
             page++;
-            return ApiWorker.getInstance().requestVideoKooRank(videoId, page, mLoadMoreListener, null);
+            return super.doLoadMoreRequest();
         }
 
         @Override
-        protected boolean handleRefresh(JSONObject response) {
+        protected boolean handleRefreshResult(JSONObject result) {
             try {
-                if (response.getInt("code") == 0) {
-                    JSONArray rank = response.getJSONObject("result").getJSONArray("rank");
-                    return mAdapter.setData(rank) > 0;
-                }
+                JSONArray rank = result.getJSONArray("rank");
+                return mAdapter.setData(rank) > 0;
             } catch (JSONException e) {
-                e.printStackTrace();
+                handleJsonException(result, e);
             }
             return false;
         }
 
         @Override
-        protected boolean handleLoadMore(JSONObject response) {
+        protected boolean handleLoadMoreResult(JSONObject result) {
             try {
-                if (response.getInt("code") == 0) {
-                    JSONArray rank = response.getJSONObject("result").getJSONArray("rank");
-                    return mAdapter.addData(rank) > 0;
-                }
+                JSONArray rank = result.getJSONArray("rank");
+                return mAdapter.addData(rank) > 0;
             } catch (JSONException e) {
-                e.printStackTrace();
+                handleJsonException(result, e);
             }
             return false;
         }

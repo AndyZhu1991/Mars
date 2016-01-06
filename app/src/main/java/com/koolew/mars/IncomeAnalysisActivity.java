@@ -18,7 +18,7 @@ import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.utils.JsonUtil;
-import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -66,38 +66,46 @@ public class IncomeAnalysisActivity extends BaseV4FragmentActivity {
         }
 
         @Override
+        protected String getRefreshRequestUrl() {
+            return UrlHelper.getIncomeAnalysisUrl(mPage);
+        }
+
+        @Override
         protected JsonObjectRequest doRefreshRequest() {
             mPage = 0;
-            return ApiWorker.getInstance().requestIncomeAnalysis(mPage, mRefreshListener, null);
+            return super.doRefreshRequest();
+        }
+
+        @Override
+        protected String getLoadMoreRequestUrl() {
+            return UrlHelper.getIncomeAnalysisUrl(mPage);
         }
 
         @Override
         protected JsonObjectRequest doLoadMoreRequest() {
             mPage++;
-            return ApiWorker.getInstance().requestIncomeAnalysis(mPage, mLoadMoreListener, null);
+            return super.doLoadMoreRequest();
         }
 
         @Override
-        protected boolean handleRefresh(JSONObject response) {
-            JSONArray videos = getVideos(response);
+        protected boolean handleRefreshResult(JSONObject result) {
+            JSONArray videos = getVideos(result);
             mAdapter.setData(videos);
             return videos.length() > 0;
         }
 
         @Override
-        protected boolean handleLoadMore(JSONObject response) {
-            JSONArray videos = getVideos(response);
+        protected boolean handleLoadMoreResult(JSONObject result) {
+            JSONArray videos = getVideos(result);
             mAdapter.addData(videos);
             return videos.length() > 0;
         }
 
-        private JSONArray getVideos(JSONObject response) {
+        private JSONArray getVideos(JSONObject result) {
             try {
-                if (response.getInt("code") == 0) {
-                    return response.getJSONObject("result").getJSONArray("videos");
-                }
+                return result.getJSONArray("videos");
             } catch (JSONException e) {
-                e.printStackTrace();
+                handleJsonException(result, e);
             }
             return new JSONArray();
         }
