@@ -10,12 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.utils.JsonUtil;
-import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,35 +56,34 @@ public class CashOutRecordActivity extends BaseV4FragmentActivity {
         }
 
         @Override
-        protected JsonObjectRequest doRefreshRequest() {
-            return ApiWorker.getInstance().getCashOutRecord(mRefreshListener, null);
+        protected String getRefreshRequestUrl() {
+            return UrlHelper.CASH_OUT_RECORD_URL;
         }
 
         @Override
-        protected JsonObjectRequest doLoadMoreRequest() {
-            return ApiWorker.getInstance().getCashOutRecord(mAdapter.getLastRecordDate(),
-                    mLoadMoreListener, null);
+        protected String getLoadMoreRequestUrl() {
+            return UrlHelper.getCashOutRecordUrl(mAdapter.getLastRecordDate());
         }
 
         @Override
-        protected boolean handleRefresh(JSONObject response) {
-            JSONArray withdrawals = getWithdrawals(response);
+        protected boolean handleRefreshResult(JSONObject result) {
+            JSONArray withdrawals = getWithdrawals(result);
             mAdapter.setData(withdrawals);
             return withdrawals.length() > 0;
         }
 
         @Override
-        protected boolean handleLoadMore(JSONObject response) {
-            JSONArray withdrawals = getWithdrawals(response);
+        protected boolean handleLoadMoreResult(JSONObject result) {
+            JSONArray withdrawals = getWithdrawals(result);
             mAdapter.addData(withdrawals);
             return withdrawals.length() > 0;
         }
 
-        private JSONArray getWithdrawals(JSONObject response) {
+        private JSONArray getWithdrawals(JSONObject result) {
             try {
-                return response.getJSONObject("result").getJSONArray("withdrawals");
+                return result.getJSONArray("withdrawals");
             } catch (JSONException e) {
-                e.printStackTrace();
+                handleJsonException(result, e);
             }
             return new JSONArray();
         }

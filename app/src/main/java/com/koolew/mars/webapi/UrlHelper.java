@@ -443,7 +443,7 @@ public class UrlHelper {
     }
 
 
-    public static Map<String, String> getStandardPostHeaders() {
+    public static Map<String, String> getStandardApiHeader() {
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/json");
         headers.put("Authorization", MyAccountInfo.getToken());

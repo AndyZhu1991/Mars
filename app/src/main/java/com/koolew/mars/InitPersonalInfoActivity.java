@@ -138,7 +138,7 @@ public class InitPersonalInfoActivity extends BaseActivity {
         ) {
             @Override
             public Map<String, String> getHeaders() {
-                return UrlHelper.getStandardPostHeaders();
+                return UrlHelper.getStandardApiHeader();
             }
         };
         mRequestQueue.add(jsonRequest);

@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseTopicInfo;
@@ -20,7 +19,7 @@ import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.utils.JsonUtil;
 import com.koolew.mars.view.RatioFrameLayout;
-import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -38,6 +37,7 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
     private static final int MAX_VIDEO_COUNT_PER_TOPIC = 3;
 
     public KoolewFeedsFragment() {
+        isNeedApiCache = true;
         isNeedLoadMore = true;
         isLazyLoad = true;
     }
@@ -58,23 +58,23 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
     }
 
     @Override
-    protected boolean handleRefresh(JSONObject response) {
+    protected boolean handleRefreshResult(JSONObject result) {
         mAdapter.mData.clear();
         try {
-            JSONArray cards = response.getJSONObject("result").getJSONArray("cards");
+            JSONArray cards = result.getJSONArray("cards");
             int addedCount = addFeedsCards(cards);
             mAdapter.notifyDataSetChanged();
             return addedCount > 0;
         } catch (JSONException e) {
-            e.printStackTrace();
+            handleJsonException(result, e);
         }
         return false;
     }
 
     @Override
-    protected boolean handleLoadMore(JSONObject response) {
+    protected boolean handleLoadMoreResult(JSONObject result) {
         try {
-            JSONArray cards = response.getJSONObject("result").getJSONArray("cards");
+            JSONArray cards = result.getJSONArray("cards");
             int originCount = mAdapter.mData.size();
             int addedCount = addFeedsCards(cards);
             if (addedCount > 0) {
@@ -82,7 +82,7 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
                 return true;
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            handleJsonException(result, e);
         }
         return false;
     }
@@ -105,14 +105,13 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
     }
 
     @Override
-    protected JsonObjectRequest doRefreshRequest() {
-        return ApiWorker.getInstance().requestFeedsTopic(mRefreshListener, null);
+    protected String getRefreshRequestUrl() {
+        return UrlHelper.FEEDS_TOPIC_URL;
     }
 
     @Override
-    protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().requestFeedsTopic(
-                mAdapter.mData.getOldestCardTime(), mLoadMoreListener, null);
+    protected String getLoadMoreRequestUrl() {
+        return UrlHelper.getFeedsTopicUrl(mAdapter.mData.getOldestCardTime());
     }
 
 

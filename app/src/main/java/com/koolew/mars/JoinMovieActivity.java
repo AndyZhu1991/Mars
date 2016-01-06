@@ -25,7 +25,6 @@ import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.remoteconfig.RemoteConfigManager;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.view.TitleBarView;
-import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -175,53 +174,45 @@ public class JoinMovieActivity extends BaseV4FragmentActivity
         }
 
         @Override
-        protected JsonObjectRequest doRefreshRequest() {
-            page = 0;
+        protected String getRefreshRequestUrl() {
             if (mTag == null) {
-                return ApiWorker.getInstance().standardGetRequest(
-                        UrlHelper.getRecommendTopicUrl(BaseTopicInfo.CATEGORY_MOVIE, page),
-                        mRefreshListener, null);
+                return UrlHelper.getRecommendTopicUrl(BaseTopicInfo.CATEGORY_MOVIE, page);
             }
             else {
-                return ApiWorker.getInstance().standardGetRequest(
-                        UrlHelper.getTopicUrl(BaseTopicInfo.CATEGORY_MOVIE, mTag.getId(), page),
-                        mRefreshListener, null);
+                return UrlHelper.getTopicUrl(BaseTopicInfo.CATEGORY_MOVIE, mTag.getId(), page);
+            }
+        }
+
+        @Override
+        protected JsonObjectRequest doRefreshRequest() {
+            page = 0;
+            return super.doRefreshRequest();
+        }
+
+        @Override
+        protected String getLoadMoreRequestUrl() {
+            if (mTag == null) {
+                return UrlHelper.getRecommendTopicUrl(BaseTopicInfo.CATEGORY_MOVIE, page);
+            }
+            else {
+                return UrlHelper.getTopicUrl(BaseTopicInfo.CATEGORY_MOVIE, mTag.getId(), page);
             }
         }
 
         @Override
         protected JsonObjectRequest doLoadMoreRequest() {
             page++;
-            if (mTag == null) {
-                return ApiWorker.getInstance().standardGetRequest(
-                        UrlHelper.getRecommendTopicUrl(BaseTopicInfo.CATEGORY_MOVIE, page),
-                        mLoadMoreListener, null);
-            }
-            else {
-                return ApiWorker.getInstance().standardGetRequest(
-                        UrlHelper.getTopicUrl(BaseTopicInfo.CATEGORY_MOVIE, mTag.getId(), page),
-                        mLoadMoreListener, null);
-            }
+            return super.doLoadMoreRequest();
         }
 
         @Override
-        protected boolean handleRefresh(JSONObject response) {
-            try {
-                return mAdapter.set(response.getJSONObject("result"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return false;
+        protected boolean handleRefreshResult(JSONObject result) {
+            return mAdapter.set(result);
         }
 
         @Override
-        protected boolean handleLoadMore(JSONObject response) {
-            try {
-                return mAdapter.add(response.getJSONObject("result"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return false;
+        protected boolean handleLoadMoreResult(JSONObject result) {
+            return mAdapter.add(result);
         }
     }
 

@@ -8,12 +8,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
+import com.android.volley.Cache;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.koolew.mars.MarsApplication;
 import com.koolew.mars.R;
 import com.koolew.mars.statistics.BaseLazyV4Fragment;
+import com.koolew.mars.webapi.ApiWorker;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -22,12 +28,16 @@ import org.json.JSONObject;
 public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> extends BaseLazyV4Fragment
         implements SwipeRefreshLayout.OnRefreshListener, LoadMoreAdapter.LoadMoreListener {
 
+    //                                                         millis   second   minute
+    protected static final long MAX_API_CACHE_AVALIABLE_TIME =  1000  *   60   *   3   ; // 1 minute
+
     protected static final int DEFAULT_LAYOUT = R.layout.general_refresh_recycler_layout;
 
     protected int mLayoutResId;
 
     protected A mAdapter;
 
+    protected boolean isNeedApiCache;
     protected boolean isNeedLoadMore;
 
     protected SwipeRefreshLayout mRefreshLayout;
@@ -41,6 +51,7 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
 
     public RecyclerListFragmentMould() {
         mLayoutResId = DEFAULT_LAYOUT;
+        isNeedApiCache = false;
         isNeedLoadMore = false;
         isLazyLoad = false;
     }
@@ -56,22 +67,45 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
     public void onCreateViewLazy(Bundle savedInstanceState) {
         setContentView(mLayoutResId);
 
+        initViews();
+
+        setupAdapter();
+
+        initApiData();
+    }
+
+    protected void initViews() {
         mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         mRefreshLayout.setOnRefreshListener(this);
         mRefreshLayout.setColorSchemeColors(getThemeColor());
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mSpecialContainer = (FrameLayout) findViewById(R.id.special_container);
+    }
 
-        setupAdapter();
-
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                mRefreshLayout.setRefreshing(true);
-                onRefresh();
+    protected void initApiData() {
+        Cache.Entry apiCache = null;
+        if (isNeedApiCache) {
+            apiCache = ApiWorker.getInstance().getApiCache(getRefreshRequestUrl());
+            if (apiCache != null) {
+                try {
+                    mRefreshListener.onResponse(new JSONObject(new String(apiCache.data)));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-        });
+        }
+
+        if (apiCache == null ||
+                System.currentTimeMillis() - apiCache.softTtl > MAX_API_CACHE_AVALIABLE_TIME) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    mRefreshLayout.setRefreshing(true);
+                    onRefresh();
+                }
+            });
+        }
     }
 
     @Override
@@ -141,6 +175,16 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
         }
     };
 
+    protected Response.ErrorListener mRefreshErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            mRefreshLayout.setRefreshing(false);
+            mRefreshRequest = null;
+
+            handleVolleyError(error);
+        }
+    };
+
     protected Response.Listener<JSONObject> mLoadMoreListener = new Response.Listener<JSONObject>() {
         @Override
         public void onResponse(JSONObject jsonObject) {
@@ -149,6 +193,19 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
             mAdapter.afterLoad(handleLoadMore(jsonObject));
         }
     };
+
+    protected Response.ErrorListener mLoadMoreErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            mLoadMoreRequest = null;
+
+            handleVolleyError(error);
+        }
+    };
+
+    protected void handleVolleyError(VolleyError error) {
+        Toast.makeText(getActivity(), R.string.network_error, Toast.LENGTH_SHORT).show();
+    }
 
     protected View createNoDataView() {
         int noDataViewResId = getNoDataViewResId();
@@ -167,21 +224,85 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
 
     protected abstract int getThemeColor();
 
-    protected abstract JsonObjectRequest doRefreshRequest();
+    protected JsonObjectRequest doRefreshRequest() {
+        return ApiWorker.getInstance().queueGetRequest(
+                getRefreshRequestUrl(), mRefreshListener, mRefreshErrorListener);
+    }
 
-    protected abstract JsonObjectRequest doLoadMoreRequest();
+    protected abstract String getRefreshRequestUrl();
+
+    protected JsonObjectRequest doLoadMoreRequest() {
+        return ApiWorker.getInstance().queueGetRequest(
+                getLoadMoreRequestUrl(), mLoadMoreListener, mLoadMoreErrorListener);
+    }
+
+    protected abstract String getLoadMoreRequestUrl();
+
 
     /**
      *
      * @param response
      * @return is something loaded
      */
-    protected abstract boolean handleRefresh(JSONObject response);
+    protected final boolean handleRefresh(JSONObject response) {
+        try {
+            int code = response.getInt("code");
+            if (code == 0) {
+                JSONObject result = response.getJSONObject("result");
+                return handleRefreshResult(result);
+            }
+            else {
+                String msg = response.getString("msg");
+                handleRefreshFailed(code, msg);
+            }
+        } catch (JSONException e) {
+            handleJsonException(response, e);
+        }
+        return false;
+    }
+
+    protected abstract boolean handleRefreshResult(JSONObject result);
+
+    protected void handleRefreshFailed(int code, String msg) {
+        defaultHandleException("Api: " + getRefreshRequestUrl() + "\ncode: " + code + "\n msg: " + msg);
+    }
 
     /**
      *
      * @param response
      * @return is something loaded
      */
-    protected abstract boolean handleLoadMore(JSONObject response);
+    protected final boolean handleLoadMore(JSONObject response) {
+        try {
+            int code = response.getInt("code");
+            if (code == 0) {
+                JSONObject result = response.getJSONObject("result");
+                return handleLoadMoreResult(result);
+            }
+            else {
+                String msg = response.getString("msg");
+                handleLoadMoreFailed(code, msg);
+            }
+        } catch (JSONException e) {
+            handleJsonException(response, e);
+        }
+        return false;
+    }
+
+    protected abstract boolean handleLoadMoreResult(JSONObject result);
+
+    protected void handleLoadMoreFailed(int code, String msg) {
+        defaultHandleException("Api: " + getLoadMoreRequestUrl() + "\ncode: " + code + "\n msg: " + msg);
+    }
+
+
+    protected void handleJsonException(JSONObject jsonObject, JSONException exception) {
+        defaultHandleException("Exception: " + exception + "\njsonObject: " + jsonObject);
+    }
+
+    protected void defaultHandleException(String message) {
+        if (MarsApplication.DEBUG) {
+            throw new RuntimeException("Should process this exception: " + message);
+        }
+    }
 }

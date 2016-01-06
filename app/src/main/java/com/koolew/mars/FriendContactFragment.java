@@ -3,7 +3,6 @@ package com.koolew.mars;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
@@ -60,48 +59,45 @@ public class FriendContactFragment
     }
 
     @Override
+    protected String getRefreshRequestUrl() {
+        return null;
+    }
+
+    @Override
     protected JsonObjectRequest doRefreshRequest() {
         if (mContacts == null || mContacts.size() == 0) {
             new GetContactsTask().execute();
             return null;
         }
         else {
-            return ApiWorker.getInstance().requestContactFriend(mContacts, mRefreshListener, null);
+            return ApiWorker.getInstance().requestContactFriend(
+                    mContacts, mRefreshListener, mRefreshErrorListener);
         }
     }
 
     @Override
-    protected JsonObjectRequest doLoadMoreRequest() {
+    protected String getLoadMoreRequestUrl() {
         return null;
     }
 
     @Override
-    protected boolean handleRefresh(JSONObject response) {
-        try {
-            if (response.getInt("code") != 0) {
-                Log.e(TAG, "Error response: " + response);
-                return false;
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+    protected boolean handleRefreshResult(JSONObject result) {
         if (getActivity() == null) {
             return false;
         }
 
         try {
-            JSONArray relations = response.getJSONObject("result").getJSONArray("relations");
+            JSONArray relations = result.getJSONArray("relations");
             mAdapter.setData(relations);
             mAdapter.notifyDataSetChanged();
         } catch (JSONException e) {
-            e.printStackTrace();
+            handleJsonException(result, e);
         }
         return false;
     }
 
     @Override
-    protected boolean handleLoadMore(JSONObject response) {
+    protected boolean handleLoadMoreResult(JSONObject result) {
         return false;
     }
 

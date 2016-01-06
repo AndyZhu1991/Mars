@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.koolew.mars.MainActivity;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.redpoint.RedPointManager;
@@ -48,7 +50,7 @@ public class JpushReceiver extends BroadcastReceiver {
             Log.d(TAG, "JPush用户注册成功: " + registrationId);
             if (!TextUtils.isEmpty(MyAccountInfo.getToken())) {
                 ApiWorker.getInstance().postRegistrationId(
-                        registrationId, ApiWorker.getInstance().emptyResponseListener, null);
+                        registrationId, postRegistrationIdListener, postRegistrationIdErrorListener);
             }
         } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
             Log.d(TAG, "接受到推送下来的自定义消息");
@@ -77,6 +79,20 @@ public class JpushReceiver extends BroadcastReceiver {
             Log.d(TAG, "Unhandled intent - " + intent.getAction());
         }
     }
+
+    private Response.Listener<JSONObject> postRegistrationIdListener = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            // TODO
+        }
+    };
+
+    private Response.ErrorListener postRegistrationIdErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            // TODO
+        }
+    };
 
     private void startMainActivityPushed(Context context, String uri) {
         Intent intent = new Intent(context, MainActivity.class);

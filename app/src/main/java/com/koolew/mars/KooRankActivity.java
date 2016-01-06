@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.infos.MyAccountInfo;
@@ -20,6 +21,7 @@ import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -33,7 +35,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class KooRankActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener,
-        Response.Listener<JSONObject>, AdapterView.OnItemClickListener {
+        Response.Listener<JSONObject>, AdapterView.OnItemClickListener, Response.ErrorListener {
 
     public static final String KEY_UID = "uid";
     public static final String KEY_KOO_COUNT = "koo count";
@@ -112,16 +114,22 @@ public class KooRankActivity extends BaseActivity implements SwipeRefreshLayout.
     }
 
     @Override
+    public void onErrorResponse(VolleyError error) {
+        // TODO
+    }
+
+    @Override
     public void onRefresh() {
         doRefresh();
     }
 
     private void doRefresh() {
         if (TextUtils.isEmpty(mUid)) {
-            ApiWorker.getInstance().requestKooRank(this, null);
+            ApiWorker.getInstance().queueGetRequest(
+                    UrlHelper.getKooRankUrl(MyAccountInfo.getUid()), this, this);
         }
         else {
-            ApiWorker.getInstance().requestKooRank(mUid, this, null);
+            ApiWorker.getInstance().queueGetRequest(UrlHelper.getKooRankUrl(mUid), this, this);
         }
     }
 

@@ -16,7 +16,7 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.android.volley.Response;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.VolleyError;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
@@ -26,6 +26,7 @@ import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.view.BigCountView;
 import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -71,30 +72,23 @@ public class FriendMeetFragment
     }
 
     @Override
-    protected JsonObjectRequest doRefreshRequest() {
-        return ApiWorker.getInstance().requestRecommendFriend(mRefreshListener, null);
+    protected String getRefreshRequestUrl() {
+        return UrlHelper.FRIEND_RECOMMEND_URL;
     }
 
     @Override
-    protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().requestPoiRecommendFriend(mAdapter.getMaxNearbyDistance(),
-                mLoadMoreListener, null);
+    protected String getLoadMoreRequestUrl() {
+        return UrlHelper.getFriendRecommendUrl(mAdapter.getMaxNearbyDistance());
     }
 
     @Override
-    protected boolean handleRefresh(JSONObject response) {
+    protected boolean handleRefreshResult(JSONObject result) {
         RedPointManager.clearRedPointByPath(RedPointManager.PATH_FRIENDS);
-        JSONObject result = null;
-        try {
-            result = response.getJSONObject("result");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
         JSONArray poiRecommends;
         try {
             poiRecommends = result.getJSONArray("poi_recommends");
         } catch (JSONException e) {
-            e.printStackTrace();
+            handleJsonException(result, e);
             poiRecommends = new JSONArray();
         }
         mAdapter.setData(poiRecommends);
@@ -103,9 +97,8 @@ public class FriendMeetFragment
     }
 
     @Override
-    protected boolean handleLoadMore(JSONObject response) {
+    protected boolean handleLoadMoreResult(JSONObject result) {
         try {
-            JSONObject result = response.getJSONObject("result");
             JSONArray poiRecommends = result.getJSONArray("poi_recommends");
             if (poiRecommends.length() > 0) {
                 int itemCountBeforeAdd = mAdapter.getCustomItemCount();
@@ -116,7 +109,7 @@ public class FriendMeetFragment
                 }
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            handleJsonException(result, e);
         }
         return false;
     }
@@ -129,7 +122,7 @@ public class FriendMeetFragment
                 double longitude = aMapLocation.getLongitude();
                 double latitude = aMapLocation.getLatitude();
                 ApiWorker.getInstance().postLocation(longitude, latitude,
-                        ApiWorker.getInstance().emptyResponseListener, null);
+                        postLocationListener, postLocationErrorListener);
             }
         }
 
@@ -147,6 +140,20 @@ public class FriendMeetFragment
 
         @Override
         public void onProviderDisabled(String provider) {
+        }
+    };
+
+    private Response.Listener<JSONObject> postLocationListener = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            // TODO
+        }
+    };
+
+    private Response.ErrorListener postLocationErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            // TODO
         }
     };
 

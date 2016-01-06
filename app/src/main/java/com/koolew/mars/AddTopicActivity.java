@@ -11,13 +11,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.MaxLengthWatcher;
 import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -90,8 +93,8 @@ public class AddTopicActivity extends BaseActivity implements SwipeRefreshLayout
     }
 
     private void refreshRecommendation() {
-        mRecommendationRequest = ApiWorker.getInstance()
-                .requestWorldHotTopic(mRecommendationListener, null);
+        mRecommendationRequest = ApiWorker.getInstance().queueGetRequest(
+                UrlHelper.REQUEST_WORLD_HOT_URL, mRecommendationListener, mRecommendationErrorListener);
     }
 
     private void refreshAssociation(String keyWord) {
@@ -99,8 +102,8 @@ public class AddTopicActivity extends BaseActivity implements SwipeRefreshLayout
             mAssociationRequest.cancel();
             mAssociationRequest = null;
         }
-        mAssociationRequest = ApiWorker.getInstance()
-                .searchTopic(keyWord, mAssociationListener, null);
+        mAssociationRequest = ApiWorker.getInstance().queueGetRequest(
+                UrlHelper.getSearchTopicUrl(keyWord), mAssociationListener, mAssociationErrorListener);
     }
 
     public void onClearEditText(View v) {
@@ -144,6 +147,13 @@ public class AddTopicActivity extends BaseActivity implements SwipeRefreshLayout
         }
     };
 
+    private Response.ErrorListener mRecommendationErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Toast.makeText(AddTopicActivity.this, R.string.network_error, Toast.LENGTH_SHORT).show();
+        }
+    };
+
     private Response.Listener<JSONObject> mAssociationListener = new Response.Listener<JSONObject>() {
         @Override
         public void onResponse(JSONObject response) {
@@ -156,6 +166,13 @@ public class AddTopicActivity extends BaseActivity implements SwipeRefreshLayout
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    };
+
+    private Response.ErrorListener mAssociationErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Toast.makeText(AddTopicActivity.this, R.string.network_error, Toast.LENGTH_SHORT).show();
         }
     };
 

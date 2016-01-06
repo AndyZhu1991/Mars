@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.infos.BaseVideoInfo;
@@ -23,6 +24,7 @@ import com.koolew.mars.utils.JsonUtil;
 import com.koolew.mars.utils.UriProcessor;
 import com.koolew.mars.view.BannerPagerIndicator;
 import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -46,6 +48,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
     public KoolewSquareFragment() {
         super();
         isLazyLoad = true;
+        isNeedApiCache = true;
         mLayoutResId = R.layout.fragment_square;
     }
 
@@ -109,52 +112,41 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
         return getResources().getColor(R.color.koolew_black);
     }
 
-    @Override
-    protected JsonObjectRequest doRefreshRequest() {
-        return ApiWorker.getInstance().requestSquare(mRefreshListener, null);
-    }
-
     private JsonObjectRequest mBannerRequest;
     private void requestBanner() {
         if (mBannerRequest == null) {
-            mBannerRequest = ApiWorker.getInstance().getBanner(mBannerListener, null);
+            mBannerRequest = ApiWorker.getInstance().queueGetRequest(
+                    UrlHelper.BANNER_URL, mBannerListener, mBannerErrorListener);
         }
     }
 
     @Override
-    protected JsonObjectRequest doLoadMoreRequest() {
-        return ApiWorker.getInstance().requestSquare(mLoadMoreListener, null);
+    protected String getRefreshRequestUrl() {
+        return UrlHelper.SQUARE_URL;
     }
 
     @Override
-    protected boolean handleRefresh(JSONObject response) {
-        JSONArray cards = retrieveSquareCards(response);
-        if (cards.length() > 0) {
+    protected String getLoadMoreRequestUrl() {
+        return null;
+    }
+
+    @Override
+    protected boolean handleRefreshResult(JSONObject result) {
+        JSONArray cards = null;
+        try {
+            cards = result.getJSONArray("cards");
+        } catch (JSONException e) {
+            handleJsonException(result, e);
+        }
+        if (cards != null && cards.length() > 0) {
             mAdapter.setItems(cards);
         }
         return true;
     }
 
     @Override
-    protected boolean handleLoadMore(JSONObject response) {
-        JSONArray cards = retrieveSquareCards(response);
-        if (cards.length() > 0) {
-            mAdapter.addItems(cards);
-        }
-        return true;
-    }
-
-    private JSONArray retrieveSquareCards(JSONObject response) {
-        try {
-            int code = response.getInt("code");
-            if (code == 0) {
-                JSONObject result = response.getJSONObject("result");
-                return result.getJSONArray("cards");
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new JSONArray();
+    protected boolean handleLoadMoreResult(JSONObject result) {
+        return false;
     }
 
     private Response.Listener<JSONObject> mBannerListener = new Response.Listener<JSONObject>() {
@@ -174,6 +166,13 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    };
+
+    private Response.ErrorListener mBannerErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            mBannerRequest = null;
         }
     };
 

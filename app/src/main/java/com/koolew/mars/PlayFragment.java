@@ -25,6 +25,7 @@ import com.koolew.mars.view.KoolewVideoView;
 import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiErrorCode;
 import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -204,7 +205,7 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
 
     private void onLeftFollowClick() {
         ApiWorker.getInstance().followUser(mCurrentLeftVideoInfo.getUserInfo().getUid(),
-                new FollowUserListener(mLeftFollowBtn), null);
+                new FollowUserListener(mLeftFollowBtn), new FollowUserErrorListener());
     }
 
     private void onBottomLeftLayoutClick() {
@@ -223,7 +224,7 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
 
     private void onRightFollowClick() {
         ApiWorker.getInstance().followUser(mCurrentLeftVideoInfo.getUserInfo().getUid(),
-                new FollowUserListener(mRightFollowBtn), null);
+                new FollowUserListener(mRightFollowBtn), new FollowUserErrorListener());
     }
 
     private void onBottomRightLayoutClick() {
@@ -255,9 +256,17 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
         }
     }
 
+    class FollowUserErrorListener implements Response.ErrorListener {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            // TODO
+        }
+    }
+
     private void requestDefaultGroup() {
         mBlockTouchFrame.setVisibility(View.VISIBLE);
-        ApiWorker.getInstance().requestDefaultPlayGroup(mSquareId, mJudgeListener, mJudgeErrorListener);
+        ApiWorker.getInstance().queueGetRequest(UrlHelper.getDefaultPlayGroupUrl(mSquareId),
+                mJudgeListener, mJudgeErrorListener);
     }
 
     private Response.Listener<JSONObject> mJudgeListener = new Response.Listener<JSONObject>() {
@@ -292,7 +301,8 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
         mJudgedVideoId = videoId;
         stopPlayGroup();
         mBlockTouchFrame.setVisibility(View.VISIBLE);
-        ApiWorker.getInstance().judgeVideo(mSquareId, videoId, mJudgeListener, mJudgeErrorListener);
+        ApiWorker.getInstance().queueGetRequest(UrlHelper.getJudgeUrl(mSquareId, videoId),
+                mJudgeListener, mJudgeErrorListener);
     }
 
     private Response.ErrorListener mJudgeErrorListener = new Response.ErrorListener() {

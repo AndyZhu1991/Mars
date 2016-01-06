@@ -37,8 +37,8 @@ public abstract class CommonMediaFragment<CMA extends CommonMediaFragment.Common
     }
 
     @Override
-    protected boolean handleRefresh(JSONObject response) {
-        boolean ret = super.handleRefresh(response);
+    protected boolean handleRefreshResult(JSONObject result) {
+        boolean ret = super.handleRefreshResult(result);
         onTopicInfoUpdateListener.onCategoryDetermined(mAdapter.getTopicInfo());
         return ret;
     }

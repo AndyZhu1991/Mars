@@ -14,7 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseTopicInfo;
@@ -25,6 +27,7 @@ import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -120,7 +123,12 @@ public class InviteActivity extends BaseActivity implements SwipeRefreshLayout.O
     }
 
     private void refreshFriendList() {
-        ApiWorker.getInstance().requestAllFriends(mRefreshListener, null);
+        RetryPolicy retryPolicy = new DefaultRetryPolicy(
+                10000,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        ApiWorker.getInstance().queueGetRequest(UrlHelper.CURRENT_FRIEND_URL,
+                mRefreshListener, mRefreshErrorListener, retryPolicy);
     }
 
     private Response.Listener<JSONObject> mRefreshListener = new Response.Listener<JSONObject>() {
@@ -136,6 +144,13 @@ public class InviteActivity extends BaseActivity implements SwipeRefreshLayout.O
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    };
+
+    private Response.ErrorListener mRefreshErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            // TODO
         }
     };
 
@@ -161,6 +176,7 @@ public class InviteActivity extends BaseActivity implements SwipeRefreshLayout.O
         @Override
         public void onErrorResponse(VolleyError error) {
             mConnectingDialog.dismiss();
+            Toast.makeText(InviteActivity.this, R.string.network_error, Toast.LENGTH_SHORT).show();
         }
     };
 

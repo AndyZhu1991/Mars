@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.preference.OperationPreference;
 import com.koolew.mars.preference.PreferenceAdapter;
@@ -28,6 +30,8 @@ import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.json.JSONObject;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,7 +41,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * Use the {@link SettingsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SettingsFragment extends MainBaseFragment implements View.OnClickListener {
+public class SettingsFragment extends MainBaseFragment implements View.OnClickListener,
+        Response.ErrorListener, Response.Listener<JSONObject> {
 
     private ListView mListView;
     private PreferenceAdapter mAdapter;
@@ -186,7 +191,7 @@ public class SettingsFragment extends MainBaseFragment implements View.OnClickLi
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ApiWorker.getInstance().logout();
+                ApiWorker.getInstance().logout(SettingsFragment.this, SettingsFragment.this);
                 MyAccountInfo.clear();
                 Intent intent = new Intent(getActivity(), LaunchActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -201,5 +206,15 @@ public class SettingsFragment extends MainBaseFragment implements View.OnClickLi
         });
 
         builder.show();
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        // TODO
+    }
+
+    @Override
+    public void onResponse(JSONObject response) {
+        // TODO
     }
 }

@@ -11,6 +11,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.infos.MyAccountInfo.LOGIN_TYPE;
 import com.koolew.mars.statistics.BaseActivity;
@@ -176,7 +177,7 @@ public class FirstLoginActivity extends BaseActivity implements PlatformActionLi
                     String registrationId = JPushInterface.getRegistrationID(FirstLoginActivity.this);
                     MyAccountInfo.setRegistrationId(registrationId);
                     ApiWorker.getInstance().postRegistrationId(MyAccountInfo.getRegistrationId(),
-                            ApiWorker.getInstance().emptyResponseListener, null);
+                            postRegistrationIdListener, postRegistrationIdErrorListener);
 
                     if (result.getInt("fresh") == 1) {
                         startActivity(new Intent(FirstLoginActivity.this, InitPersonalInfoActivity.class));
@@ -200,6 +201,20 @@ public class FirstLoginActivity extends BaseActivity implements PlatformActionLi
             }
         }
     }
+
+    private Response.Listener<JSONObject> postRegistrationIdListener = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            // TODO
+        }
+    };
+
+    private Response.ErrorListener postRegistrationIdErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            // TODO
+        }
+    };
 
     // From cn.sharesdk.framework.PlatformActionListener
     @Override

@@ -11,8 +11,10 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
+import com.koolew.mars.webapi.UrlHelper;
 
 import org.json.JSONObject;
 
@@ -99,8 +101,8 @@ public class RequestPasswordFragment extends Fragment implements View.OnClickLis
             return;
         }
 
-        ApiWorker.getInstance().requestPasswordMessage(
-                mListener.getPhoneNumber(), mResponseListener, null);
+        ApiWorker.getInstance().queueGetRequest(UrlHelper.getRequestPasswordMessageUrl(
+                mListener.getPhoneNumber()), mResponseListener, mErrorListener);
 
         showResendFrame();
         startResendTimer();
@@ -111,8 +113,8 @@ public class RequestPasswordFragment extends Fragment implements View.OnClickLis
             return;
         }
 
-        ApiWorker.getInstance().requestPasswordCall(
-                mListener.getPhoneNumber(), mResponseListener, null);
+        ApiWorker.getInstance().queueGetRequest(UrlHelper.getRequestPasswordCallUrl(
+                mListener.getPhoneNumber()), mResponseListener, mErrorListener);
 
         showResendFrame();
         startResendTimer();
@@ -132,6 +134,14 @@ public class RequestPasswordFragment extends Fragment implements View.OnClickLis
     private Response.Listener<JSONObject> mResponseListener = new Response.Listener<JSONObject>() {
         @Override
         public void onResponse(JSONObject jsonObject) {
+            // TODO
+        }
+    };
+
+    private Response.ErrorListener mErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            // TODO
         }
     };
 

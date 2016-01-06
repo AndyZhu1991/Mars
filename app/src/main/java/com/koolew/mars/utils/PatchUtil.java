@@ -67,7 +67,7 @@ public class PatchUtil {
         // 同步拉取最新patch信息
         JSONObject response;
         try {
-            response = ApiWorker.getInstance().standardGetRequestSync(UrlHelper.CHECK_PATCH_URL);
+            response = ApiWorker.getInstance().doGetRequestSync(UrlHelper.CHECK_PATCH_URL);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             return;
         }

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.koolew.mars.FirstKooExplainWindow;
 import com.koolew.mars.FriendInfoActivity;
 import com.koolew.mars.R;
@@ -265,7 +266,8 @@ public class VideoItem extends MediaItem {
                 followIndicator.setImageResource(R.mipmap.user_follow_indicator_followed);
                 followIndicator.setEnabled(false);
                 BaseUserInfo userInfo = mItem.videoInfo.getUserInfo();
-                ApiWorker.getInstance().followUser(userInfo.getUid(), new FollowListener(userInfo), null);
+                ApiWorker.getInstance().followUser(userInfo.getUid(),
+                        new FollowListener(userInfo), new FollowErrorListener());
             }
             else {
                 onUserClick();
@@ -355,6 +357,13 @@ public class VideoItem extends MediaItem {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+
+        class FollowErrorListener implements Response.ErrorListener {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // TODO
             }
         }
     }
