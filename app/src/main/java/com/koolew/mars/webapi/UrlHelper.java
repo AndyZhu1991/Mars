@@ -80,7 +80,7 @@ public class UrlHelper {
     // Public
     public static final String REQUEST_WORLD_HOT_URL = V4_URL + "discovery/recommend";
     public static final String BANNER_URL = V4_URL + "discovery/banner";
-    public static final String SQUARE_URL = V5_URL + "discovery/square";
+    private static final String SQUARE_URL = V5_URL + "discovery/square";
     private static final String FEEDS_HOT_URL = V4_URL + "discovery/hot";
     private static final String GUESS_JUDGE_URL = V5_URL + "discovery/judge";
     private static final String SQUARE_DETAIL_URL = V5_URL + "discovery/square/detail";
@@ -439,6 +439,13 @@ public class UrlHelper {
                 .appendQueryParameter("square_id", squareId)
                 .appendQueryParameter("page", String.valueOf(page))
                 .appendQueryParameter("before", String.valueOf(before))
+                .build().toString();
+    }
+
+    public static String getSquareUrl(int page) {
+        return Uri.parse(SQUARE_URL)
+                .buildUpon()
+                .appendQueryParameter("page", String.valueOf(page))
                 .build().toString();
     }
 

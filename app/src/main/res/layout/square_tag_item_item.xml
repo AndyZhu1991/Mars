@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.koolew.mars.view.RatioFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:widthRatio="4.0"
+    app:heightRatio="3.0">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/thumb"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:riv_corner_radius="4dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/feeds_thumb_shader"/>
+
+    <ImageView
+        android:layout_width="14dp"
+        android:layout_height="18dp"
+        android:layout_gravity="center"
+        android:src="@mipmap/ic_play"/>
+</com.koolew.mars.view.RatioFrameLayout>

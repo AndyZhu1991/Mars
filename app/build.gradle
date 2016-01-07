@@ -180,6 +180,7 @@ dependencies {
     compile 'com.tencent.bugly:crashreport:1.2.3.6'
     compile 'com.7heaven.ioswidget:iosswitch:0.5'
     compile 'cn.jiajixin.nuwa:nuwa:1.0.0'
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.11'
 }
 
 bugly {

@@ -84,6 +84,14 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
     }
 
     protected void initApiData() {
+        Cache.Entry loadedCache = loadApiFromCache();
+        if (loadedCache == null ||
+                System.currentTimeMillis() - loadedCache.softTtl > MAX_API_CACHE_AVALIABLE_TIME) {
+            requestInitApiFromNetwork();
+        }
+    }
+
+    protected Cache.Entry loadApiFromCache() {
         Cache.Entry apiCache = null;
         if (isNeedApiCache) {
             apiCache = ApiWorker.getInstance().getApiCache(getRefreshRequestUrl());
@@ -95,17 +103,17 @@ public abstract class RecyclerListFragmentMould<A extends LoadMoreAdapter> exten
                 }
             }
         }
+        return apiCache;
+    }
 
-        if (apiCache == null ||
-                System.currentTimeMillis() - apiCache.softTtl > MAX_API_CACHE_AVALIABLE_TIME) {
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    mRefreshLayout.setRefreshing(true);
-                    onRefresh();
-                }
-            });
-        }
+    protected void requestInitApiFromNetwork() {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                mRefreshLayout.setRefreshing(true);
+                onRefresh();
+            }
+        });
     }
 
     @Override

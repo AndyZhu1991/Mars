@@ -16,12 +16,13 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
+import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.utils.JsonUtil;
 import com.koolew.mars.utils.UriProcessor;
+import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.BannerPagerIndicator;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
@@ -31,10 +32,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 
 /**
  * Created by jinchangzhu on 12/14/15.
@@ -44,6 +50,8 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
     private UriProcessor mUriProcessor;
     private ViewPager mViewPager;
     private BannerPagerIndicator mIndicator;
+
+    private int mPage;
 
     public KoolewSquareFragment() {
         super();
@@ -60,6 +68,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
 
     @Override
     public void onCreateViewLazy(Bundle savedInstanceState) {
+        mPage = 0;
         super.onCreateViewLazy(savedInstanceState);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mViewPager.setOnTouchListener(new View.OnTouchListener() {
@@ -82,6 +91,12 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
         });
         mIndicator = (BannerPagerIndicator) findViewById(R.id.indicator);
         requestBanner();
+    }
+
+    @Override
+    protected void requestInitApiFromNetwork() {
+        mPage = 0;
+        super.requestInitApiFromNetwork();
     }
 
     @Override
@@ -122,7 +137,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
 
     @Override
     protected String getRefreshRequestUrl() {
-        return UrlHelper.SQUARE_URL;
+        return UrlHelper.getSquareUrl(mPage);
     }
 
     @Override
@@ -135,6 +150,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
         JSONArray cards = null;
         try {
             cards = result.getJSONArray("cards");
+            mPage = result.getJSONObject("next").getInt("page");
         } catch (JSONException e) {
             handleJsonException(result, e);
         }
@@ -220,17 +236,28 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
             ImageLoader.getInstance().displayImage(item.icon, holder.tagIcon);
             holder.tagName.setText(item.name);
             holder.tagName.setTextColor(item.color);
-            if (item.videoInfos.length > 0) {
-                ImageLoader.getInstance().displayImage(item.videoInfos[0].getVideoThumb(), holder.thumbs[0]);
+
+            for (int i = 0; i < holder.thumbs.length; i++) {
+                if (item.videoInfos.length > i && item.videoInfos[i] != null) {
+                    ImageLoader.getInstance().displayImage(
+                            item.videoInfos[i].getVideoThumb(), holder.thumbs[i]);
+                }
+                else {
+                    holder.thumbs[i].setImageResource(R.mipmap.topic_default_thumb);
+                }
             }
-            if (item.videoInfos.length > 1) {
-                ImageLoader.getInstance().displayImage(item.videoInfos[1].getVideoThumb(), holder.thumbs[1]);
+
+            File localGifFile = new File("/sdcard/test.gif"); //Downloader.getInstance().tryToGetLocalFile(item.gifUrl);
+            if (localGifFile == null) {
+                try {
+                    Downloader.getInstance().download(holder, item.gifUrl);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                holder.gifImageView.setImageResource(R.mipmap.default_pk_entry);
             }
-            if (item.videoInfos.length > 2) {
-                DisplayBlurImage displayBlurImageTask = new DisplayBlurImage(
-                        holder.thumbs[2], item.videoInfos[2].getVideoThumb());
-                displayBlurImageTask.setScaleBeforeBlur(15);
-                displayBlurImageTask.execute();
+            else {
+                holder.setGifFile(localGifFile);
             }
         }
 
@@ -239,10 +266,12 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
             return mData.size();
         }
 
-        class SquareTagHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        class SquareTagHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
+                Downloader.LoadListener {
             ImageView tagIcon;
             TextView tagName;
-            ImageView[] thumbs = new ImageView[3];
+            ImageView[] thumbs = new ImageView[SUB_ITEM_IDS.length];
+            GifImageView gifImageView;
 
             public SquareTagHolder(View itemView) {
                 super(itemView);
@@ -250,30 +279,70 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
 
                 tagIcon = (ImageView) itemView.findViewById(R.id.tag_icon);
                 tagName = (TextView) itemView.findViewById(R.id.tag_name);
-                thumbs[0] = (ImageView) itemView.findViewById(R.id.first_thumb);
-                thumbs[0].setOnClickListener(this);
-                thumbs[1] = (ImageView) itemView.findViewById(R.id.second_thumb);
-                thumbs[1].setOnClickListener(this);
-                thumbs[2] = (ImageView) itemView.findViewById(R.id.third_thumb);
-                thumbs[2].setOnClickListener(this);
+
+                for (int i = 0; i < SUB_ITEM_IDS.length; i++) {
+                    thumbs[i] = (ImageView) itemView.findViewById(SUB_ITEM_IDS[i])
+                            .findViewById(R.id.thumb);
+                    thumbs[i].setOnClickListener(this);
+                }
+
+                gifImageView = (GifImageView) itemView.findViewById(R.id.gif_image);
+            }
+
+            public void setGifFile(File gifFile) {
+                try {
+                    GifDrawable gifDrawable = new GifDrawable(gifFile);
+                    gifDrawable.setCornerRadius(Utils.dpToPixels(getContext(), 4));
+                    gifImageView.setImageDrawable(gifDrawable);
+                } catch (IOException e) {
+                    gifImageView.setImageResource(R.mipmap.default_pk_entry);
+                }
             }
 
             @Override
             public void onClick(View v) {
                 SquareItem item = mData.get(getAdapterPosition());
-                if (v == thumbs[0] && item.videoInfos.length > 0) {
-                    SingleMediaFragment.startThisFragment(getActivity(), item.videoInfos[0].getVideoId());
-                }
-                else if (v == thumbs[1] && item.videoInfos.length > 1) {
-                    SingleMediaFragment.startThisFragment(getActivity(), item.videoInfos[1].getVideoId());
-                }
-                else if (v == thumbs[2] || v == itemView) {
+                if (v == itemView) {
                     // Go to square tab activity
                     SquareDetailFragment.startThisFragment(getActivity(), item.name, item.id);
                 }
+                else {
+                    for (int i = 0; i < SUB_ITEM_IDS.length; i++) {
+                        if (v == thumbs[i]) {
+                            if (item.videoInfos.length > i && item.videoInfos[i] != null) {
+                                SingleMediaFragment.startThisFragment(getActivity(),
+                                        item.videoInfos[i].getVideoId());
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onDownloadComplete(String url, String filePath) {
+                if (mData.get(getAdapterPosition()).gifUrl.equals(url)) {
+                    setGifFile(new File(filePath));
+                }
+            }
+
+            @Override
+            public void onDownloadProgress(long totalBytes, long downloadedBytes, int progress) {
+            }
+
+            @Override
+            public void onDownloadFailed(int errorCode, String errorMessage) {
             }
         }
     }
+
+    private static final int[] SUB_ITEM_IDS = new int[] {
+            R.id.item0,
+            R.id.item1,
+            R.id.item2,
+            R.id.item3,
+            R.id.item4,
+    };
 
     private Timer mBannerAutoChangeTask;
     private boolean bannerPressed = false;
@@ -305,6 +374,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
         String name;
         String icon;
         int color;
+        String gifUrl;
         BaseVideoInfo[] videoInfos;
 
         public SquareItem(JSONObject itemObject) {

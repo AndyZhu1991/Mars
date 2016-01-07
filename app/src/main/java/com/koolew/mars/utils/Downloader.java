@@ -63,6 +63,22 @@ public class Downloader implements DownloadStatusListener {
                 DISK_CACHE_VERSION, 1, DISK_CACHE_SIZE);
     }
 
+    public File tryToGetLocalFile(String url) {
+        String cacheKey = getFileKey(url);
+
+        DiskLruCache.Snapshot snapshot;
+        try {
+            snapshot = getSnapshot(cacheKey);
+        } catch (IOException e) {
+            return null;
+        }
+        if (snapshot != null) {
+            // File already downloaded
+            return snapshot.getFile(0);
+        }
+        return null;
+    }
+
     public void download(LoadListener listener, String url) throws IOException {
         download(listener, url, null, false);
     }

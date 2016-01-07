@@ -36,93 +36,68 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
+        android:paddingLeft="2.5dp"
+        android:paddingTop="2.5dp"
+        android:paddingRight="2.5dp"
         android:orientation="horizontal">
 
-        <com.koolew.mars.view.RatioFrameLayout
-            android:id="@+id/thumb_frame0"
+        <include layout="@layout/square_tag_item_item"
+            android:id="@+id/item0"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginRight="2.5dp"
-            app:widthRatio="4.0"
-            app:heightRatio="3.0">
+            android:layout_margin="2.5dp"/>
 
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/first_thumb"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                app:riv_corner_radius="4dp"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/feeds_thumb_shader"/>
-
-            <ImageView
-                android:layout_width="14dp"
-                android:layout_height="18dp"
-                android:layout_gravity="center"
-                android:src="@mipmap/ic_play"/>
-        </com.koolew.mars.view.RatioFrameLayout>
-
-        <com.koolew.mars.view.RatioFrameLayout
-            android:id="@+id/thumb_frame1"
+        <include layout="@layout/square_tag_item_item"
+            android:id="@+id/item1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginLeft="2.5dp"
-            android:layout_marginRight="2.5dp"
-            app:widthRatio="4.0"
-            app:heightRatio="3.0">
+            android:layout_margin="2.5dp"/>
 
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/second_thumb"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:riv_corner_radius="4dp" />
+        <include layout="@layout/square_tag_item_item"
+            android:id="@+id/item2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="2.5dp"/>
+    </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/feeds_thumb_shader"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="2.5dp"
+        android:paddingRight="2.5dp"
+        android:paddingBottom="2.5dp"
+        android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="14dp"
-                android:layout_height="18dp"
-                android:layout_gravity="center"
-                android:src="@mipmap/ic_play"/>
-        </com.koolew.mars.view.RatioFrameLayout>
+        <include layout="@layout/square_tag_item_item"
+            android:id="@+id/item3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="2.5dp"/>
+
+        <include layout="@layout/square_tag_item_item"
+            android:id="@+id/item4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="2.5dp"/>
 
         <com.koolew.mars.view.RatioFrameLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginLeft="2.5dp"
+            android:layout_margin="2.5dp"
             app:widthRatio="4.0"
             app:heightRatio="3.0">
 
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/third_thumb"
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/gif_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                app:riv_corner_radius="4dp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/feeds_last_thumb_shader"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/see_more"
-                android:textSize="12sp"
-                android:textColor="@android:color/white"
-                android:drawableTop="@mipmap/ic_feeds_item_go"/>
+                android:src="@mipmap/default_pk_entry"/>
         </com.koolew.mars.view.RatioFrameLayout>
     </LinearLayout>
 </LinearLayout>
