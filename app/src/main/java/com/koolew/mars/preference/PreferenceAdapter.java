@@ -4,8 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
@@ -16,7 +14,7 @@ import java.util.Map;
 /**
  * Created by jinchangzhu on 7/2/15.
  */
-public class PreferenceAdapter extends BaseAdapter implements AbsListView.OnItemClickListener {
+public class PreferenceAdapter extends BaseAdapter {
 
     private Context mContext;
     private LayoutInflater mInflater;
@@ -73,10 +71,5 @@ public class PreferenceAdapter extends BaseAdapter implements AbsListView.OnItem
         item.onBindView(convertView);
 
         return convertView;
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        ((BasePreference) getItem(position)).onClick(view);
     }
 }

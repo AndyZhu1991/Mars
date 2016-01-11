@@ -84,7 +84,6 @@ public class SettingsFragment extends MainBaseFragment implements View.OnClickLi
             setupAdapter();
         }
         mListView.setAdapter(mAdapter);
-        mListView.setOnItemClickListener(mAdapter);
 
         mLogoutBtn = (Button) root.findViewById(R.id.logout);
         mLogoutBtn.setOnClickListener(this);

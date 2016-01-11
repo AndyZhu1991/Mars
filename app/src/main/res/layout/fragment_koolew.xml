@@ -9,11 +9,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.koolew.mars.view.KoolewViewPagerIndicator
+        <com.shizhefei.view.indicator.ScrollIndicatorView
             android:id="@+id/indicator"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:orientation="horizontal" />
+            android:layout_height="48dp"/>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/view_pager"
@@ -22,16 +21,10 @@
             android:layout_weight="1" />
     </LinearLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/btn_add_topic"
-            android:layout_width="73dp"
-            android:layout_height="73dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:src="@mipmap/bt_add_topic" />
-    </RelativeLayout>
+    <ImageView
+        android:id="@+id/btn_add_topic"
+        android:layout_width="73dp"
+        android:layout_height="73dp"
+        android:layout_gravity="right|bottom"
+        android:src="@mipmap/bt_add_topic" />
 </FrameLayout>
