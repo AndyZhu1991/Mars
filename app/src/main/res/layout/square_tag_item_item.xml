@@ -23,4 +23,14 @@
         android:layout_height="18dp"
         android:layout_gravity="center"
         android:src="@mipmap/ic_play"/>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:layout_gravity="bottom"
+        android:singleLine="true"
+        android:textSize="12sp"
+        android:textColor="@android:color/white"/>
 </com.koolew.mars.view.RatioFrameLayout>

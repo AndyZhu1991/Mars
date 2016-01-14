@@ -55,12 +55,6 @@
             android:layout_weight="1"
             android:layout_margin="2.5dp"/>
 
-        <include layout="@layout/square_tag_item_item"
-            android:id="@+id/item2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_margin="2.5dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -71,15 +65,9 @@
         android:paddingBottom="2.5dp"
         android:orientation="horizontal">
 
-        <include layout="@layout/square_tag_item_item"
-            android:id="@+id/item3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_margin="2.5dp"/>
 
         <include layout="@layout/square_tag_item_item"
-            android:id="@+id/item4"
+            android:id="@+id/item2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -98,6 +86,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@mipmap/default_pk_entry"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:textSize="14sp"
+                android:textColor="@android:color/white"
+                android:text="@string/go_to_vote"/>
         </com.koolew.mars.view.RatioFrameLayout>
     </LinearLayout>
 </LinearLayout>

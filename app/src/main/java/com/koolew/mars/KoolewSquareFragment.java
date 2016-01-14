@@ -241,6 +241,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
                 if (item.videoInfos.length > i && item.videoInfos[i] != null) {
                     ImageLoader.getInstance().displayImage(
                             item.videoInfos[i].getVideoThumb(), holder.thumbs[i]);
+                    holder.titles[i].setText(item.videoInfos[i].getTopicInfo().getTitle());
                 }
                 else {
                     holder.thumbs[i].setImageResource(R.mipmap.topic_default_thumb);
@@ -271,6 +272,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
             ImageView tagIcon;
             TextView tagName;
             ImageView[] thumbs = new ImageView[SUB_ITEM_IDS.length];
+            TextView[] titles = new TextView[SUB_ITEM_IDS.length];
             GifImageView gifImageView;
 
             public SquareTagHolder(View itemView) {
@@ -284,6 +286,8 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
                     thumbs[i] = (ImageView) itemView.findViewById(SUB_ITEM_IDS[i])
                             .findViewById(R.id.thumb);
                     thumbs[i].setOnClickListener(this);
+                    titles[i] = (TextView) itemView.findViewById(SUB_ITEM_IDS[i])
+                            .findViewById(R.id.title);
                 }
 
                 gifImageView = (GifImageView) itemView.findViewById(R.id.gif_image);
@@ -340,8 +344,6 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
             R.id.item0,
             R.id.item1,
             R.id.item2,
-            R.id.item3,
-            R.id.item4,
     };
 
     private Timer mBannerAutoChangeTask;
