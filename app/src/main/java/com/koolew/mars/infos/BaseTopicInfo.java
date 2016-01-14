@@ -1,7 +1,13 @@
 package com.koolew.mars.infos;
 
+import android.content.Context;
 import android.text.TextUtils;
+import android.widget.Toast;
 
+import com.koolew.mars.MarsApplication;
+import com.koolew.mars.MovieStudioActivity;
+import com.koolew.mars.R;
+import com.koolew.mars.VideoShootActivity;
 import com.koolew.mars.utils.JsonUtil;
 
 import org.json.JSONException;
@@ -93,6 +99,38 @@ public class BaseTopicInfo implements Serializable {
 
     public String getTagId() {
         return tagId;
+    }
+
+    public void gotoCapture(Context context) {
+        if (BaseTopicInfo.CATEGORY_MOVIE.equals(category)) {
+            startMovieStudioActivity(context);
+        }
+        else if (BaseTopicInfo.CATEGORY_VIDEO.equals(category)) {
+            startVideoShootActivity(context);
+        }
+        else {
+            if (MarsApplication.DEBUG) {
+                throw new RuntimeException("Shen me gui: " + category);
+            }
+        }
+    }
+
+    private void startVideoShootActivity(Context context) {
+        VideoShootActivity.startThisActivity(context, this);
+    }
+
+    private void startMovieStudioActivity(Context context) {
+        if (this instanceof MovieTopicInfo) {
+            MovieStudioActivity.startThisActivity(context, (MovieTopicInfo) this);
+        }
+        else {
+            if (MarsApplication.DEBUG) {
+                throw new RuntimeException("No MovieTopicInfo");
+            }
+            else {
+                Toast.makeText(context, R.string.there_is_an_error, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public static BaseTopicInfo dynamicTopicInfo(JSONObject jsonObject) {

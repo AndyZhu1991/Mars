@@ -326,7 +326,7 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
 
         @Override
         public void onClick(View v) {
-            getActivity().startActivity(new Intent(getActivity(), AddTopicActivity.class));
+            getActivity().startActivity(new Intent(getActivity(), GlobalSearchActivity.class));
         }
     }
 

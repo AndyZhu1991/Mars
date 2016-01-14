@@ -246,7 +246,12 @@
             android:name=".VideoShareActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
-        <activity android:name=".JoinVideoActivity"
+        <activity
+            android:name=".JoinVideoActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".GlobalSearchActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
 
@@ -385,8 +390,12 @@
         <!-- JiFeng: 机锋市场 -->
         <!-- XiaoMi: 小米市场 -->
         <!-- HuaWei: 华为应用汇 -->
-        <meta-data android:name="TD_APP_ID" android:value="05766CB5DFA5745AC0BF76A13B1AFC31" />
-        <meta-data android:name="TD_CHANNEL_ID" android:value="${TD_CHANNEL_VALUE}" />
+        <meta-data
+            android:name="TD_APP_ID"
+            android:value="05766CB5DFA5745AC0BF76A13B1AFC31" />
+        <meta-data
+            android:name="TD_CHANNEL_ID"
+            android:value="${TD_CHANNEL_VALUE}" />
 
     </application>
 

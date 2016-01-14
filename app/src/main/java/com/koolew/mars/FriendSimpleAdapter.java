@@ -49,9 +49,9 @@ public class FriendSimpleAdapter extends LoadMoreAdapter {
 
     private static final int[] OPERATE_BTN_BG = new int[] {
             0, // Not used
-            R.drawable.btn_bg_follow,
+            R.drawable.btn_bg_add_follow,
             R.drawable.btn_bg_followed,
-            R.drawable.btn_bg_follow,
+            R.drawable.btn_bg_add_follow,
             R.drawable.btn_bg_followed_each_other,
             R.drawable.btn_bg_invite,
     };
@@ -65,9 +65,9 @@ public class FriendSimpleAdapter extends LoadMoreAdapter {
     };
     private static final int[] OPERATE_BTN_TEXT_RES = new int[] {
             0, // Not used
-            R.string.follow,
+            R.string.add_follow,
             R.string.followed,
-            R.string.follow,
+            R.string.add_follow,
             R.string.followed_each_other,
             R.string.invite,
     };
@@ -354,7 +354,13 @@ public class FriendSimpleAdapter extends LoadMoreAdapter {
             else {
                 operateBtn.setBackgroundResource(OPERATE_BTN_BG[itemType]);
                 operateBtn.setText(OPERATE_BTN_TEXT_RES[itemType]);
-                operateBtn.setTextColor(OPERATE_BTN_COLOR[itemType]);
+                if (itemType == 1 || itemType == 3) {
+                    operateBtn.setTextColor(mContext.getResources()
+                            .getColorStateList(R.color.btn_add_follow_text_color));
+                }
+                else {
+                    operateBtn.setTextColor(OPERATE_BTN_COLOR[itemType]);
+                }
             }
 
             if (itemType == TYPE_FRIEND) {

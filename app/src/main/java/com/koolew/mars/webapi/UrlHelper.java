@@ -44,8 +44,9 @@ public class UrlHelper {
     public static final String REQUEST_QINIU_MOVIE_TOKEN_URL = V4_URL + "upload/token/qiniu?type=movie";
 
     // Search
-    private static final String SEARCH_USER_URL = V4_URL + "search/user";
-    private static final String SEARCH_TOPIC_URL = V4_URL + "search/topic";
+    private static final String SEARCH_USER_URL = V5_URL + "search/user";
+    private static final String SEARCH_TOPIC_URL = V5_URL + "search/topic";
+    private static final String GLOBAL_SEARCH_URL = V5_URL + "search";
 
     // Users
     public static final String FRIEND_PROFILE_URL = V4_URL + "users/show";
@@ -161,16 +162,26 @@ public class UrlHelper {
     }
 
     public static String getSearchTopicUrl(String keyWord) {
+        return getSearchTopicUrl(keyWord, 0);
+    }
+
+    public static String getSearchTopicUrl(String keyWord, int page) {
         return Uri.parse(SEARCH_TOPIC_URL)
                 .buildUpon()
                 .appendQueryParameter("query", keyWord)
+                .appendQueryParameter("page", String.valueOf(page))
                 .build().toString();
     }
 
     public static String getSearchUserUrl(String keyWord) {
+        return getSearchUserUrl(keyWord, 0);
+    }
+
+    public static String getSearchUserUrl(String keyWord, int page) {
         return Uri.parse(SEARCH_USER_URL)
                 .buildUpon()
                 .appendQueryParameter("query", keyWord)
+                .appendQueryParameter("page", String.valueOf(page))
                 .build().toString();
     }
 
@@ -446,6 +457,13 @@ public class UrlHelper {
         return Uri.parse(SQUARE_URL)
                 .buildUpon()
                 .appendQueryParameter("page", String.valueOf(page))
+                .build().toString();
+    }
+
+    public static String getGlobalSearchUrl(String keyword) {
+        return Uri.parse(GLOBAL_SEARCH_URL)
+                .buildUpon()
+                .appendQueryParameter("query", keyword)
                 .build().toString();
     }
 

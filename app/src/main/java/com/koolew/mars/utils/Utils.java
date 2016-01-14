@@ -110,6 +110,13 @@ public class Utils {
         }, delay);
     }
 
+    public static void hideSoftKey(TextView textView) {
+        InputMethodManager in = (InputMethodManager) textView.getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        in.hideSoftInputFromWindow(textView.getApplicationWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
     public static boolean isChinaPhoneNumber(String num) {
 
         if (num.length() != 11) {

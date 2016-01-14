@@ -13,6 +13,7 @@ import com.koolew.mars.view.TitleBarView;
 public class TitleFragmentActivity extends BaseV4FragmentActivity {
 
     public static final String KEY_FRAGMENT_CLASS = "fragment_class";
+    public static final String KEY_ARGUMENTS = "arguments";
 
     protected TitleBarView mTitleBar;
     protected Fragment mFragment;
@@ -28,9 +29,8 @@ public class TitleFragmentActivity extends BaseV4FragmentActivity {
         Class<Fragment> fragmentClass = (Class) extras.getSerializable(KEY_FRAGMENT_CLASS);
         try {
             mFragment = fragmentClass.newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+            mFragment.setArguments(extras.<Bundle>getParcelable(KEY_ARGUMENTS));
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
 
@@ -54,6 +54,7 @@ public class TitleFragmentActivity extends BaseV4FragmentActivity {
     public static void launchFragment(Context context, Class fragmentClass, Bundle extras) {
         Intent intent = new Intent(context, TitleFragmentActivity.class);
         intent.putExtra(KEY_FRAGMENT_CLASS, fragmentClass);
+        intent.putExtra(KEY_ARGUMENTS, extras);
         intent.putExtras(extras);
         context.startActivity(intent);
     }

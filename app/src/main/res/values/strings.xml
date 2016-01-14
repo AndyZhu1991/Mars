@@ -227,6 +227,7 @@
     <string name="follow">关注</string>
     <string name="followed">已关注</string>
     <string name="followed_each_other">互相关注</string>
+    <string name="add_follow">"+ 关注"</string>
 
     <!-- For settings -->
     <string name="intelligent">智能</string>
@@ -488,6 +489,17 @@
     <!-- For square -->
     <string name="square_video_desc">最近热门视频</string>
     <string name="top_fans">粉丝团</string>
+    <string name="go_to_vote">去投票</string>
+
+    <!-- For global search -->
+    <string name="global_search_hint">搜索手机号、昵称、感兴趣的话题</string>
+    <string name="clear_search_history">清空搜索记录</string>
+    <string name="user">用户</string>
+    <string name="see_all">查看全部</string>
+    <string name="fan_count_global_search" formatted="false">%d个粉丝</string>
+    <string name="follow_count_global_search" formatted="false">%d个关注的人</string>
+    <string name="search_user">搜索用户</string>
+    <string name="search_topic">搜索话题</string>
 
     <!-- For tag square -->
     <string name="square_detail_left_text">选中冠军可以分奖金哦～</string>
