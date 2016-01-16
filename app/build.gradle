@@ -161,12 +161,13 @@ dependencies {
     compile files('libs/ShareSDK-QQ-2.6.5.jar')
     compile files('libs/ShareSDK-QZone-2.6.5.jar')
     compile files('libs/ShareSDK-ShortMessage-2.6.5.jar')
-    compile files('libs/ShareSDK-SinaWeibo-2.6.5.jar')
+    compile files('libs/ShareSDK-SinaWeibo-2.6.5-no-sina.jar')
     compile files('libs/ShareSDK-Wechat-2.6.5.jar')
     compile files('libs/ShareSDK-Wechat-Core-2.6.5.jar')
     compile files('libs/ShareSDK-Wechat-Favorite-2.6.5.jar')
     compile files('libs/ShareSDK-Wechat-Moments-2.6.5.jar')
     compile files('libs/TalkingDataAnalytics_V2.1.37.jar')
+    compile files('libs/weiboSDKCore_3.1.2.jar')
 }
 
 dependencies {
