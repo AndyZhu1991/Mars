@@ -46,13 +46,18 @@
                 app:textColor="@color/koolew_dark_gray"
                 app:textSize="16sp" />
 
-            <ImageView
+            <TextView
                 android:id="@+id/btn_act"
                 android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_height="24dp"
                 android:layout_alignParentRight="true"
-                android:padding="10dp"
-                android:src="@mipmap/ic_btn_capture_movie"
+                android:layout_marginRight="10dp"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="@string/act_together"
+                android:textSize="12sp"
+                android:textColor="@android:color/white"
+                android:background="@mipmap/btn_bg_act_together"
                 android:visibility="invisible"/>
         </RelativeLayout>
 
