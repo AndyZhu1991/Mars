@@ -289,7 +289,6 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
                 }
             }
 
-            holder.title.setText(item.topicInfo.getTitle());
             int newVideoCount = 0;
             for (int i = 0; i < item.videoInfos.length; i++) {
                 if (item.videoInfos[i] != null && item.videoInfos[i].isNew) {
@@ -299,10 +298,15 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
             if (newVideoCount > 0) {
                 holder.newVideoCount.setText(getString(R.string.absolutely_new, newVideoCount));
                 holder.newVideoCount.setVisibility(View.VISIBLE);
+                holder.title.setPadding(0, 0,
+                        getResources().getDimensionPixelSize(R.dimen.new_video_view_width), 0);
             }
             else {
-                holder.newVideoCount.setVisibility(View.GONE);
+                holder.newVideoCount.setVisibility(View.INVISIBLE);
+                holder.title.setPadding(0, 0, 0, 0);
             }
+            holder.title.setText(item.topicInfo.getTitle());
+
             if (item.topicInfo.getCategory().equals(BaseTopicInfo.CATEGORY_VIDEO)) {
                 holder.captureButton.setImageResource(R.mipmap.ic_btn_capture_video);
             }
@@ -465,7 +469,8 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
                         avatar.setBorderColor(getResources().getColor(R.color.avatar_gray_border));
                     }
                 }
-                newVideoCount.setVisibility(View.GONE);
+                newVideoCount.setVisibility(View.INVISIBLE);
+                title.setPadding(0, 0, 0, 0);
             }
         }
     }

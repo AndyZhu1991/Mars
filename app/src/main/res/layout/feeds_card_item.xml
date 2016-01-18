@@ -27,44 +27,28 @@
                 android:layout_alignParentRight="true"
                 android:padding="5dp"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_toLeftOf="@+id/capture_btn"
-                android:orientation="horizontal">
+            <!-- marginRight = capture_btn's width + marginRight + 5dp -->
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="50dp"
+                android:layout_centerVertical="true"
+                android:singleLine="true"
+                android:textSize="18sp"
+                android:textColor="#4A4A4A" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:id="@+id/title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginLeft="10dp"
-                        android:singleLine="true"
-                        android:textSize="18sp"
-                        android:textColor="#4A4A4A"/>
-
-                    <TextView
-                        android:id="@+id/new_video_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="1dp"
-                        android:gravity="center"
-                        android:textSize="12sp"
-                        android:textColor="@android:color/white"
-                        android:background="@drawable/feeds_new_bg"/>
-                </LinearLayout>
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
-            </LinearLayout>
+            <TextView
+                android:id="@+id/new_video_count"
+                android:layout_width="@dimen/new_video_view_width"
+                android:layout_height="17dp"
+                android:layout_centerVertical="true"
+                android:layout_alignRight="@+id/title"
+                android:gravity="center"
+                android:textSize="12sp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/feeds_new_bg"/>
         </RelativeLayout>
 
         <View

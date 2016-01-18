@@ -98,6 +98,9 @@
     <!-- For square -->
     <dimen name="square_item_padding_half">5dp</dimen>
 
+    <!-- For KoolewFeedsFragment -->
+    <dimen name="new_video_view_width">45dp</dimen>
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
