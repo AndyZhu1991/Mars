@@ -3,11 +3,9 @@ package com.koolew.mars;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -23,7 +21,6 @@ import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.utils.JsonUtil;
 import com.koolew.mars.utils.UriProcessor;
 import com.koolew.mars.utils.Utils;
-import com.koolew.mars.view.BannerPagerIndicator;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -36,8 +33,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
@@ -48,8 +43,7 @@ import pl.droidsonroids.gif.GifImageView;
 public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquareFragment.SquareAdapter> {
 
     private UriProcessor mUriProcessor;
-    private ViewPager mViewPager;
-    private BannerPagerIndicator mIndicator;
+    private RecyclerView mBannerRecycler;
 
     private int mPage;
 
@@ -70,26 +64,9 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
     public void onCreateViewLazy(Bundle savedInstanceState) {
         mPage = 0;
         super.onCreateViewLazy(savedInstanceState);
-        mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mViewPager.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_MOVE:
-                        bannerPressed = true;
-                        mRefreshLayout.setEnabled(false);
-                        break;
-                    case MotionEvent.ACTION_UP:
-                    case MotionEvent.ACTION_CANCEL:
-                        bannerPressed = false;
-                        bannerChangePassedSecond = 0;
-                        mRefreshLayout.setEnabled(true);
-                        break;
-                }
-                return false;
-            }
-        });
-        mIndicator = (BannerPagerIndicator) findViewById(R.id.indicator);
+        mBannerRecycler = (RecyclerView) findViewById(R.id.banner);
+        mBannerRecycler.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL, false));
         requestBanner();
     }
 
@@ -97,24 +74,6 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
     protected void requestInitApiFromNetwork() {
         mPage = 0;
         super.requestInitApiFromNetwork();
-    }
-
-    @Override
-    protected void onPageEnd() {
-        super.onPageEnd();
-        if (mBannerAutoChangeTask != null) {
-            mBannerAutoChangeTask.cancel();
-            mBannerAutoChangeTask = null;
-        }
-    }
-
-    @Override
-    protected void onPageStart() {
-        super.onPageStart();
-        if (mBannerAutoChangeTask == null) {
-            mBannerAutoChangeTask = new Timer();
-            mBannerAutoChangeTask.schedule(new BannerAutoChangeTask(), 1000, 1000);
-        }
     }
 
     @Override
@@ -176,8 +135,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
                     JSONArray banners = result.getJSONArray("banners");
                     BannerAdapter adapter = new BannerAdapter();
                     adapter.setData(banners);
-                    mViewPager.setAdapter(adapter);
-                    mIndicator.setViewPager(mViewPager);
+                    mBannerRecycler.setAdapter(adapter);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -248,7 +206,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
                 }
             }
 
-            File localGifFile = new File("/sdcard/test.gif"); //Downloader.getInstance().tryToGetLocalFile(item.gifUrl);
+            File localGifFile = Downloader.getInstance().tryToGetLocalFile(item.gifUrl);
             if (localGifFile == null) {
                 try {
                     Downloader.getInstance().download(holder, item.gifUrl);
@@ -346,31 +304,6 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
             R.id.item2,
     };
 
-    private Timer mBannerAutoChangeTask;
-    private boolean bannerPressed = false;
-    private static final int BANNER_AUTO_CHANGE_SECONDS = 3;
-    private int bannerChangePassedSecond = 0;
-
-    class BannerAutoChangeTask extends TimerTask {
-        @Override
-        public void run() {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (!bannerPressed && mViewPager.getAdapter() != null
-                            && mViewPager.getAdapter().getCount() != 0) {
-                        bannerChangePassedSecond++;
-                        if (bannerChangePassedSecond == BANNER_AUTO_CHANGE_SECONDS) {
-                            bannerChangePassedSecond = 0;
-                            mViewPager.setCurrentItem((mViewPager.getCurrentItem() + 1)
-                                    % mViewPager.getAdapter().getCount(), true);
-                        }
-                    }
-                }
-            });
-        }
-    }
-
     static class SquareItem {
         String id;
         String name;
@@ -384,6 +317,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
             name = JsonUtil.getStringIfHas(itemObject, "name");
             icon = JsonUtil.getStringIfHas(itemObject, "icon");
             color = JsonUtil.getIntIfHas(itemObject, "color", Color.BLACK);
+            gifUrl = JsonUtil.getStringIfHas(itemObject, "brand_url", "");
 
             JSONArray videosJson = JsonUtil.getJSONArrayIfHas(itemObject, "videos", new JSONArray());
             int videoCount = videosJson.length();
@@ -398,16 +332,9 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
         }
     }
 
-    private View.OnClickListener mOnBannerClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            mUriProcessor.process(v.getTag().toString());
-        }
-    };
+    class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerHolder> {
 
-    class BannerAdapter extends PagerAdapter {
-
-        private ImageView[] mImageViews;
+        private List<BannerItem> banners = new ArrayList<>();
 
         public void setData(JSONArray jsonArray) {
             Activity activity = getActivity();
@@ -415,19 +342,10 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
                 return;
             }
             int count = jsonArray.length();
-            mImageViews = new ImageView[count];
             for (int i = 0; i < count; i++) {
-                mImageViews[i] = new ImageView(activity);
-                mImageViews[i].setOnClickListener(mOnBannerClickListener);
-                mImageViews[i].setScaleType(ImageView.ScaleType.CENTER_CROP);
-                ViewPager.LayoutParams lp = new ViewPager.LayoutParams();
-                mImageViews[i].setLayoutParams(lp);
-
                 try {
                     JSONObject banner = jsonArray.getJSONObject(i);
-                    ImageLoader.getInstance().displayImage(banner.getString("image_url"),
-                            mImageViews[i]);
-                    mImageViews[i].setTag(banner.getString("content_url"));
+                    banners.add(new BannerItem(banner));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -435,29 +353,44 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
         }
 
         @Override
-        public int getCount() {
-            if (mImageViews == null) {
-                return 0;
+        public BannerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new BannerHolder(LayoutInflater.from(getContext())
+                    .inflate(R.layout.banner_item, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(BannerAdapter.BannerHolder holder, int position) {
+            ImageLoader.getInstance().displayImage(banners.get(position).imageUrl, holder.bannerImage);
+        }
+
+        @Override
+        public int getItemCount() {
+            return banners.size();
+        }
+
+        class BannerHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+            private ImageView bannerImage;
+
+            public BannerHolder(View itemView) {
+                super(itemView);
+                bannerImage = (ImageView) itemView;
+                bannerImage.setOnClickListener(this);
             }
-            else {
-                return mImageViews.length;
+
+            @Override
+            public void onClick(View v) {
+                mUriProcessor.process(banners.get(getAdapterPosition()).contentUri);
             }
         }
+    }
 
-        @Override
-        public boolean isViewFromObject(View view, Object o) {
-            return view == o;
-        }
+    static class BannerItem {
+        private String imageUrl;
+        private String contentUri;
 
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView(mImageViews[position]);
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            container.addView(mImageViews[position]);
-            return mImageViews[position];
+        public BannerItem(JSONObject jsonObject) {
+            imageUrl = JsonUtil.getStringIfHas(jsonObject, "image_url", "");
+            contentUri = JsonUtil.getStringIfHas(jsonObject, "content_url", "");
         }
     }
 }
