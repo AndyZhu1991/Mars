@@ -3,6 +3,7 @@ package com.koolew.mars.webapi;
 import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.android.volley.Cache;
 import com.android.volley.DefaultRetryPolicy;
@@ -18,6 +19,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 import com.koolew.mars.MarsApplication;
+import com.koolew.mars.R;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.utils.ContactUtil;
 
@@ -552,6 +554,31 @@ public class ApiWorker {
             }
 
             return entry;
+        }
+    }
+
+    public static class ToastErrorListener implements Response.ErrorListener {
+        private Context context;
+        private String message;
+
+        public ToastErrorListener(Context context) {
+            this.context = context;
+            message = context.getString(R.string.network_error);
+        }
+
+        public ToastErrorListener(Context context, String message) {
+            this.context = context;
+            this.message = message;
+        }
+
+        public ToastErrorListener(Context context, int messageStringId) {
+            this.context = context;
+            message = context.getString(messageStringId);
+        }
+
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
     }
 }

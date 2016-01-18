@@ -208,7 +208,8 @@ public class FriendSimpleAdapter extends LoadMoreAdapter {
 
     protected void followUser(String uid) {
         mProgressDialog.show();
-        ApiWorker.getInstance().followUser(uid, new FollowResponseListener(uid), null);
+        ApiWorker.getInstance().followUser(uid, new FollowResponseListener(uid),
+                new ApiWorker.ToastErrorListener(mContext));
     }
 
     protected void unfollowUser(final String uid) {
@@ -218,7 +219,8 @@ public class FriendSimpleAdapter extends LoadMoreAdapter {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mProgressDialog.show();
-                        ApiWorker.getInstance().unfollowUser(uid, new UnfollowResponseListener(uid), null);
+                        ApiWorker.getInstance().unfollowUser(uid, new UnfollowResponseListener(uid),
+                                new ApiWorker.ToastErrorListener(mContext));
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, null)

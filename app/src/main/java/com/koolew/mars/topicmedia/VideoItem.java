@@ -225,7 +225,8 @@ public class VideoItem extends MediaItem {
 
             // Do api request
             lastKooListener = new KooListener(mItem.videoInfo.getVideoId());
-            ApiWorker.getInstance().kooVideo(mItem.videoInfo.getVideoId(), 1, lastKooListener, null);
+            ApiWorker.getInstance().kooVideo(mItem.videoInfo.getVideoId(), 1, lastKooListener,
+                    new ApiWorker.ToastErrorListener(mContext));
 
             showFirstKooWindowIfdNeed();
         }

@@ -150,7 +150,8 @@ public class FirstLoginActivity extends BaseActivity implements PlatformActionLi
             }
         });
         ApiWorker.getInstance().loginBySns(type, openId, accessToken, refreshToken, expiresIn,
-                unionId, new SnsLoginListener(type), null);
+                unionId, new SnsLoginListener(type),
+                new ApiWorker.ToastErrorListener(FirstLoginActivity.this));
     }
 
     class SnsLoginListener implements Response.Listener<JSONObject> {

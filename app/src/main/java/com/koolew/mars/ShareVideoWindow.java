@@ -48,10 +48,12 @@ public class ShareVideoWindow extends ShareWindow {
     @Override
     protected void onOperate() {
         if (MyAccountInfo.getUid().equals(mUid)) {
-            ApiWorker.getInstance().deleteVideo(mId, mVideoDeletedListener, null);
+            ApiWorker.getInstance().deleteVideo(mId, mVideoDeletedListener,
+                    new ApiWorker.ToastErrorListener(mActivity));
         }
         else {
-            ApiWorker.getInstance().againstVideo(mId, mVideoAgainstListener, null);
+            ApiWorker.getInstance().againstVideo(mId, mVideoAgainstListener,
+                    new ApiWorker.ToastErrorListener(mActivity));
         }
         this.dismiss();
         mProgressDialog.show();
