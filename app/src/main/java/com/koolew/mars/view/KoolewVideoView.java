@@ -49,6 +49,7 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     protected MediaPlayer mMediaPlayer;
 
     protected boolean isNeedLooping;
+    protected boolean isNeedSound;
 
     private boolean isPaused = false;
     private boolean postPlaying = false;
@@ -81,6 +82,7 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.KoolewVideoView, 0, 0);
         isNeedLooping = a.getBoolean(R.styleable.KoolewVideoView_looping, true);
+        isNeedSound = a.getBoolean(R.styleable.KoolewVideoView_needSound, true);
     }
 
     @Override
@@ -216,6 +218,9 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         mMediaPlayer = generateMediaPlayer();
         if (mMediaPlayer != null) {
             mMediaPlayer.setLooping(isNeedLooping);
+            if (!isNeedSound) {
+                mMediaPlayer.setVolume(0, 0);
+            }
             if (mSurface != null) {
                 mMediaPlayer.setSurface(mSurface);
             }

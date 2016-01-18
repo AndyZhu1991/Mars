@@ -126,7 +126,9 @@ public class Downloader implements DownloadStatusListener {
             }
 
             DownloadEvent downloadEvent = startDownload(listener, url);
-            mDownloads.put(downloadEvent.id, downloadEvent);
+            if (downloadEvent != null) {
+                mDownloads.put(downloadEvent.id, downloadEvent);
+            }
         }
     }
 
@@ -176,8 +178,14 @@ public class Downloader implements DownloadStatusListener {
     }
 
     private DownloadEvent startDownload(LoadListener listener, String url) throws IOException {
-        return startDownload(listener, url, new DownloadDestination.DiskLruCacheEditorDestination(
-                mDiskCache.edit(getFileKey(url))));
+        DiskLruCache.Editor editor = mDiskCache.edit(getFileKey(url));
+        if (editor != null) {
+            return startDownload(listener, url, new DownloadDestination.
+                    DiskLruCacheEditorDestination(editor));
+        }
+        else {
+            return null;
+        }
     }
 
     private DownloadEvent startDownload(LoadListener listener, String url, DownloadDestination destination) {

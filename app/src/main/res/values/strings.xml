@@ -115,6 +115,10 @@
     <string name="see_more">查看更多</string>
     <string name="search_topic_label">搜索你想拍摄的话题</string>
     <string name="koolew_feeds_no_data_text">你还没有关注任何人，\n快去竞技场认识新朋友吧！</string>
+    <string name="feeds_recommend_user_title">可能认识的人</string>
+    <string name="feeds_add_recommend_user_text">"+ 添加"</string>
+    <string name="absolutely_new" formatted="false">%d最新</string>
+    <string name="more_video">更多视频</string>
 
     <!-- For UserInvolveFragment -->
     <string name="joined_video">参与视频</string>

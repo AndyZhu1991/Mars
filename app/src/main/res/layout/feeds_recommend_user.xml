@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="5dp"
+    android:layout_marginTop="2.5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginBottom="2.5dp"
+    android:background="@drawable/feeds_card_item_bg">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:text="@string/feeds_recommend_user_title"
+        android:textSize="16sp"
+        android:textColor="@color/koolew_cyan"
+        android:gravity="center"/>
+    
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@mipmap/horizontal_dash_line"/>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="57dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="12dp"
+            app:border_width="2dp"
+            app:border_color="@color/avatar_gray_border"/>
+        
+        <com.koolew.mars.view.UserNameView
+            android:id="@+id/name_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            app:textSize="14sp"
+            app:textColor="#4A4A4A"/>
+        
+        <TextView
+            android:id="@+id/add_user"
+            android:layout_width="50dp"
+            android:layout_height="28dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:text="@string/feeds_add_recommend_user_text"
+            android:textColor="@color/btn_feeds_add_recommends_text_color"
+            android:background="@drawable/btn_bg_feeds_add_recommend"/>
+
+        <ImageView
+            android:id="@+id/clear_recommend"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="10dp"
+            android:src="@mipmap/ic_x_feeds_recommend_user"/>
+    </LinearLayout>
+</LinearLayout>

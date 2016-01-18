@@ -116,4 +116,21 @@ public class JsonUtil {
         }
         return defaultValue;
     }
+
+    public static boolean getBooleanIfHas(JSONObject jsonObject, String key) {
+        return getBooleanIfHas(jsonObject, key, false);
+    }
+
+    public static boolean getBooleanIfHas(JSONObject jsonObject, String key, boolean defaultValue) {
+        try {
+            if (jsonObject.has(key)) {
+                return jsonObject.getBoolean(key);
+            }
+        }
+        catch (JSONException jse) {
+            // Here should never arrive
+            throw new RuntimeException("Here should never arrive");
+        }
+        return defaultValue;
+    }
 }

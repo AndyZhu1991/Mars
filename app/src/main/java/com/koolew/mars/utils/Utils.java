@@ -255,6 +255,22 @@ public class Utils {
         }
     }
 
+    public interface TypeCounter {
+        int getCount();
+    }
+
+    public static int getRecyclerType(TypeCounter[] counters, int[] types, int position) {
+        int count = 0;
+        for (int i = 0; i < counters.length; i++) {
+            count += counters[i].getCount();
+            if (position < count) {
+                return types[i];
+            }
+        }
+
+        throw new RuntimeException("Error position!");
+    }
+
     public static void setStatusBarColorBurn(Activity activity, int color) {
         setStatusBarColor(activity, ColorUtil.burnColorForStatusBar(color));
     }
