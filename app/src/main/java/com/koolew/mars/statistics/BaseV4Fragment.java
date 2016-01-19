@@ -39,13 +39,13 @@ public abstract class BaseV4Fragment extends Fragment {
     }
 
     protected void onPageStart() {
-        if (isNeedPageStatistics) {
+        if (isNeedPageStatistics && StatisticsUtil.NEED_STATISTICS) {
             TCAgent.onPageStart(getActivity(), getClass().getSimpleName());
         }
     }
 
     protected void onPageEnd() {
-        if (isNeedPageStatistics) {
+        if (isNeedPageStatistics && StatisticsUtil.NEED_STATISTICS) {
             TCAgent.onPageEnd(getActivity(), getClass().getSimpleName());
         }
     }

@@ -9,6 +9,7 @@ import android.util.Log;
 import com.koolew.mars.imageloader.VideoThumbDecoder;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.remoteconfig.RemoteConfigManager;
+import com.koolew.mars.statistics.StatisticsUtil;
 import com.koolew.mars.utils.BgmUtil;
 import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.utils.FirstHintUtil;
@@ -52,7 +53,9 @@ public class MarsApplication extends Application {
         initJpush(getApplicationContext());
         ShareSDK.initSDK(getApplicationContext());
         initBugly();
-        TCAgent.init(this);
+        if (StatisticsUtil.NEED_STATISTICS) {
+            TCAgent.init(this);
+        }
         com.koolew.mars.videotools.Utils.preloadRecorder(this);
         FirstHintUtil.init(this);
         Downloader.init();

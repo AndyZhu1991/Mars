@@ -14,7 +14,7 @@ public abstract class BaseV4FragmentActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (isNeedPageStatistics) {
+        if (isNeedPageStatistics && StatisticsUtil.NEED_STATISTICS) {
             TCAgent.onResume(this);
         }
     }
@@ -22,7 +22,7 @@ public abstract class BaseV4FragmentActivity extends FragmentActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (isNeedPageStatistics) {
+        if (isNeedPageStatistics && StatisticsUtil.NEED_STATISTICS) {
             TCAgent.onPause(this);
         }
     }

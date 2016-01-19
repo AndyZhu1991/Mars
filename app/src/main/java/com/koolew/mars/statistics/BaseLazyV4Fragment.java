@@ -186,15 +186,19 @@ public class BaseLazyV4Fragment extends com.shizhefei.fragment.BaseFragment {
 
     protected void onPageStart() {
         if (isNeedPageStatistics && !isPageStarted) {
-            isPageStarted = true;
-            TCAgent.onPageStart(getActivity(), getClass().getSimpleName());
+            if (StatisticsUtil.NEED_STATISTICS) {
+                isPageStarted = true;
+                TCAgent.onPageStart(getActivity(), getClass().getSimpleName());
+            }
         }
     }
 
     protected void onPageEnd() {
         if (isNeedPageStatistics && isPageStarted) {
-            isPageStarted = false;
-            TCAgent.onPageEnd(getActivity(), getClass().getSimpleName());
+            if (StatisticsUtil.NEED_STATISTICS) {
+                isPageStarted = false;
+                TCAgent.onPageEnd(getActivity(), getClass().getSimpleName());
+            }
         }
     }
 }

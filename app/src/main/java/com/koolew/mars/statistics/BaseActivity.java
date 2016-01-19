@@ -12,12 +12,16 @@ public abstract class BaseActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        TCAgent.onResume(this);
+        if (StatisticsUtil.NEED_STATISTICS) {
+            TCAgent.onResume(this);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        TCAgent.onPause(this);
+        if (StatisticsUtil.NEED_STATISTICS) {
+            TCAgent.onPause(this);
+        }
     }
 }
