@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.support.multidex.MultiDex;
 import android.util.Log;
 
+import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.imageloader.VideoThumbDecoder;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.remoteconfig.RemoteConfigManager;
@@ -47,6 +48,7 @@ public class MarsApplication extends Application {
         PatchUtil.tryToLoadPatch(this);
         Utils.init(this);
         ApiWorker.init(getApplicationContext());
+        ImageLoaderHelper.init(this);
         initImageLoader(getApplicationContext());
         MyAccountInfo.init(getApplicationContext());
         initBgm(this);
