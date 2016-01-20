@@ -2,6 +2,7 @@ package com.koolew.mars;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -252,13 +253,28 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
             }
 
             public void setGifFile(File gifFile) {
-                try {
-                    GifDrawable gifDrawable = new GifDrawable(gifFile);
-                    gifDrawable.setCornerRadius(Utils.dpToPixels(getContext(), 4));
-                    gifImageView.setImageDrawable(gifDrawable);
-                } catch (IOException e) {
-                    gifImageView.setImageResource(R.mipmap.default_pk_entry);
-                }
+                new AsyncTask<File, Void, GifDrawable>() {
+                    @Override
+                    protected GifDrawable doInBackground(File... gifFiles) {
+                        try {
+                            GifDrawable gifDrawable = new GifDrawable(gifFiles[0]);
+                            gifDrawable.setCornerRadius(Utils.dpToPixels(getContext(), 4));
+                            return gifDrawable;
+                        } catch (IOException e) {
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    protected void onPostExecute(GifDrawable gifDrawable) {
+                        if (gifDrawable != null) {
+                            gifImageView.setImageDrawable(gifDrawable);
+                        }
+                        else {
+                            gifImageView.setImageResource(R.mipmap.default_pk_entry);
+                        }
+                    }
+                }.execute(gifFile);
             }
 
             @Override
