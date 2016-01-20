@@ -7,6 +7,9 @@ import android.content.res.TypedArray;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -40,6 +43,15 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     private static final int VIDEO_HEIGHT_RATIO = 3;
 
     private static final int THUMB_HIDE_DURATION = 200; // ms
+
+    private static final int MAX_WAIT_TIME_IN_MS = 2000;
+    private static Handler mediaPlayerWorkHandler;
+    static {
+        HandlerThread handlerThread = new HandlerThread(KoolewVideoView.class.getSimpleName());
+        handlerThread.start();
+        Looper looper = handlerThread.getLooper();
+        mediaPlayerWorkHandler = new Handler(looper);
+    }
 
     private TextureView mPlaybackTexture;
     private FrameLayout mDanmakuContainer;
@@ -151,6 +163,10 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         }
     }
 
+    protected void postOnPlayerThread(Runnable runnable) {
+        mediaPlayerWorkHandler.post(runnable);
+    }
+
     public void startPlay() {
         if (mVideoInfo != null || mVideoUrl != null) {
             mProgressBar.setVisibility(VISIBLE);
@@ -173,11 +189,42 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         }
     }
 
-    class InvisibleThumbThread extends Thread {
+    protected MediaPlayer generateMediaPlayer() {
+        MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), Uri.parse("file://" + mVideoPath));
+        if (mediaPlayer != null && mCompletionListener != null) {
+            mediaPlayer.setOnCompletionListener(this);
+        }
+        return mediaPlayer;
+    }
+
+    protected void start() {
+        mediaPlayerWorkHandler.post(startPlayerRunnable);
+    }
+
+    private Runnable startPlayerRunnable = new Runnable() {
         @Override
         public void run() {
+            if (mMediaPlayer != null || TextUtils.isEmpty(mVideoPath) || isPaused) {
+                return;
+            }
+
+            mMediaPlayer = generateMediaPlayer();
+            if (mMediaPlayer == null) {
+                return;
+            }
+            mMediaPlayer.setLooping(isNeedLooping);
+            if (!isNeedSound) {
+                mMediaPlayer.setVolume(0, 0);
+            }
+            if (mSurface != null) {
+                mMediaPlayer.setSurface(mSurface);
+            }
+            mMediaPlayer.start();
+
             try {
-                while (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                //         max try times
+                //                  ⬇️
+                for (int i = 0; i < 50; i++) {
                     if (mMediaPlayer.getCurrentPosition() > 40) {
                         post(new Runnable() {
                             @Override
@@ -189,115 +236,103 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
                         });
                         break;
                     }
-                    sleep(40);
+                    Thread.sleep(40);
                 }
             } catch (Exception e) {
                 if (MarsApplication.DEBUG) {
                     throw new RuntimeException(e);
-                }
-                else {
+                } else {
                     // Do nothing
                 }
             }
-        }
-    }
 
-    protected MediaPlayer generateMediaPlayer() {
-        MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), Uri.parse("file://" + mVideoPath));
-        if (mediaPlayer != null && mCompletionListener != null) {
-            mediaPlayer.setOnCompletionListener(this);
-        }
-        return mediaPlayer;
-    }
-
-    protected synchronized void start() {
-        if (mMediaPlayer != null || TextUtils.isEmpty(mVideoPath) || isPaused) {
-            return;
-        }
-
-        mMediaPlayer = generateMediaPlayer();
-        if (mMediaPlayer != null) {
-            mMediaPlayer.setLooping(isNeedLooping);
-            if (!isNeedSound) {
-                mMediaPlayer.setVolume(0, 0);
-            }
-            if (mSurface != null) {
-                mMediaPlayer.setSurface(mSurface);
-            }
-            mMediaPlayer.start();
             if (mDanmakuManager != null) {
                 mDanmakuThread = new DanmakuThread((Activity) getContext(), mDanmakuManager,
                         new DanmakuThread.PlayerWrapper() {
                             @Override
                             public long getCurrentPosition() {
-                                if (mMediaPlayer == null) {
-                                    return 0;
-                                }
                                 return mMediaPlayer.getCurrentPosition();
                             }
 
                             @Override
                             public boolean isPlaying() {
-                                if (mMediaPlayer == null) {
-                                    return false;
-                                }
                                 return mMediaPlayer.isPlaying();
                             }
                         });
                 mDanmakuThread.start();
             }
-            new InvisibleThumbThread().start();
+        }
+    };
+
+    public long getCurrentPosition() {
+        getCurrentPositionRunnable.currentPosition = 0;
+        mediaPlayerWorkHandler.post(getCurrentPositionRunnable);
+        try {
+            getCurrentPositionRunnable.wait(MAX_WAIT_TIME_IN_MS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return getCurrentPositionRunnable.currentPosition;
+    }
+
+    private GetCurrentPositionRunnable getCurrentPositionRunnable = new GetCurrentPositionRunnable();
+    private class GetCurrentPositionRunnable implements Runnable {
+        private long currentPosition;
+
+        @Override
+        public void run() {
+            currentPosition = null == mMediaPlayer ? 0 : mMediaPlayer.getCurrentPosition();
+            notify();
         }
     }
 
-    private void startAsync() {
-        new Thread() {
-            @Override
-            public void run() {
-                KoolewVideoView.this.start();
-            }
-        }.start();
+    public boolean isPlaying() {
+        try {
+            return null != mMediaPlayer && mMediaPlayer.isPlaying();
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    private void pause() {
+    private void onPause() {
         isPaused = true;
         stop();
     }
 
-    private void resume() {
+    private void onResume() {
         isPaused = false;
-        startAsync();
+        start();
     }
 
     public void stop() {
-        final MediaPlayer mediaPlayer = mMediaPlayer;
-        mMediaPlayer = null;
-        postPlaying = false;
-        if (mediaPlayer != null) {
-            new Thread() {
+        mediaPlayerWorkHandler.post(stopPlayRunnable);
+    }
+
+    private Runnable stopPlayRunnable = new Runnable() {
+        @Override
+        public void run() {
+            postPlaying = false;
+            if (mMediaPlayer != null) {
+                if (mDanmakuThread != null) {
+                    mDanmakuThread.stopDanmaku();
+                    mDanmakuThread = null;
+                }
+
+                if (mMediaPlayer.isPlaying()) {
+                    mMediaPlayer.stop();
+                }
+                mMediaPlayer.release();
+                mMediaPlayer = null;
+            }
+            //mVideoThumb.setVisibility(VISIBLE);
+            post(new Runnable() {
                 @Override
                 public void run() {
-                    doStopMediaPlayer(mediaPlayer);
+                    mVideoThumb.setAlpha(1.0f);
                 }
-            }.start();
+            });
         }
-        //mVideoThumb.setVisibility(VISIBLE);
-        mVideoThumb.setAlpha(1.0f);
-    }
-
-    private synchronized void doStopMediaPlayer(MediaPlayer mediaPlayer) {
-        if (mediaPlayer != null) {
-            if (mDanmakuThread != null) {
-                mDanmakuThread.stopDanmaku();
-                mDanmakuThread = null;
-            }
-
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
-            }
-            mediaPlayer.release();
-        }
-    }
+    };
 
     public void setCompletionListener(MediaPlayer.OnCompletionListener listener) {
         mCompletionListener = listener;
@@ -306,10 +341,17 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         mSurface = new Surface(surface);
-        if (mMediaPlayer != null) {
-            mMediaPlayer.setSurface(mSurface);
-        }
+        mediaPlayerWorkHandler.post(setSurfaceRunnable);
     }
+
+    private Runnable setSurfaceRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mMediaPlayer != null && mSurface != null) {
+                mMediaPlayer.setSurface(mSurface);
+            }
+        }
+    };
 
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
@@ -363,13 +405,13 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
         public void onResume() {
             if (currentPlayHolder() != null) {
-                getVideoView(currentPlayHolder()).resume();
+                getVideoView(currentPlayHolder()).onResume();
             }
         }
 
         public void onPause() {
             if (currentPlayHolder() != null) {
-                getVideoView(currentPlayHolder()).pause();
+                getVideoView(currentPlayHolder()).onPause();
             }
         }
 

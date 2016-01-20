@@ -2,7 +2,6 @@ package com.koolew.mars;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -104,7 +103,7 @@ public class SendDanmakuActivity extends BaseActivity
         if (v == mSendingDanmakuLayout) {
             moveDanmakuTo((int) event.getX(), (int) event.getY());
             if (event.getAction() == MotionEvent.ACTION_UP) {
-                pauseVideoPlay();
+                mVideoView.pause();
             }
             return true;
         }
@@ -112,20 +111,14 @@ public class SendDanmakuActivity extends BaseActivity
         return false;
     }
 
-    private void pauseVideoPlay() {
-        if (mVideoView.getMediaPlayer().isPlaying()) {
-            mVideoView.getMediaPlayer().pause();
-        }
-    }
-
     public void onSendClick(View v) {
-        if (mVideoView.getMediaPlayer().isPlaying()) {
+        if (mVideoView.isPlaying()) {
             Toast.makeText(this, R.string.danmaku_no_time_hint, Toast.LENGTH_LONG).show();
         }
         else {
             String content = mDanmakuEdit.getText().toString();
             String videoId = mVideoInfo.getVideoId();
-            float showTime = mVideoView.getMediaPlayer().getCurrentPosition() / 1000.0f;
+            float showTime = mVideoView.getCurrentPosition() / 1000.0f;
             float x = 1.0f * mSendingDanmaku.getX() / mSendingDanmakuLayout.getWidth();
             float y = 1.0f * mSendingDanmaku.getY() / mSendingDanmakuLayout.getHeight();
             ApiWorker.getInstance().sendDanmaku(content, videoId, showTime, x, y,
@@ -241,8 +234,20 @@ public class SendDanmakuActivity extends BaseActivity
             }
         }
 
-        public MediaPlayer getMediaPlayer() {
-            return mMediaPlayer;
+        private void pause() {
+            postOnPlayerThread(pauseRunnable);
         }
+
+        private Runnable pauseRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                    try {
+                        mMediaPlayer.pause();
+                    } catch (Exception e) {
+                    }
+                }
+            }
+        };
     }
 }
