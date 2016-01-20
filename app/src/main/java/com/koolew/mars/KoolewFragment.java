@@ -1,5 +1,6 @@
 package com.koolew.mars;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -88,7 +89,8 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
 
         mToolbarInterface.setToolbarColor(subPageColors[mViewPager.getCurrentItem()]);
 
-        mToolbarInterface.setTopIconCount(0);
+        mToolbarInterface.setTopIconCount(1);
+        mToolbarInterface.setTopIconImageResource(0, R.mipmap.ic_search);
 
         mBtnAddTopic = root.findViewById(R.id.btn_add_topic);
         mBtnAddTopic.setOnClickListener(this);
@@ -119,6 +121,11 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
                 window.showAtLocation(getView(), Gravity.TOP, 0, 0);
                 break;
         }
+    }
+
+    @Override
+    public void onTopIconClick(int position) {
+        getContext().startActivity(new Intent(getContext(), GlobalSearchActivity.class));
     }
 
     class KoolewFragmentPagerAdapter extends FragmentPagerAdapter {
