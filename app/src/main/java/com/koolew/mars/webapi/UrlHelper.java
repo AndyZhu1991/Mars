@@ -52,6 +52,7 @@ public class UrlHelper {
     public static final String FRIEND_PROFILE_URL = V4_URL + "users/show";
     private static final String TIMELINE_URL = V4_URL + "users/timeline";
     private static final String USER_TOPIC_URL = V4_URL + "users/media";
+    public static final String USER_SIGN = V3_URL + "user/sign/add";
 
     // Friendships
     public static final String CURRENT_FRIEND_URL = V4_URL + "friendships/friends/bilateral";

@@ -2,6 +2,7 @@ package com.koolew.mars;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -34,6 +36,7 @@ import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.update.Updater;
 import com.koolew.mars.utils.ColorUtil;
 import com.koolew.mars.utils.PatchUtil;
+import com.koolew.mars.utils.ThreadUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.DrawerToggleView;
 import com.koolew.mars.view.PhoneNumberView;
@@ -44,6 +47,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Date;
 
 
 public class MainActivity extends BaseV4FragmentActivity
@@ -173,6 +178,54 @@ public class MainActivity extends BaseV4FragmentActivity
     // Some init ops, DO NOT take a long time!
     private void init() {
         RemoteConfigManager.getInstance().tryFetchAsync();
+        ThreadUtil.executeOnCommonThread(new SignRunnable());
+    }
+
+    private static final String KEY_LAST_SIGN = "last_sign";
+
+    class SignRunnable implements Runnable {
+        @Override
+        public void run() {
+            SharedPreferences lastSignSp = getSharedPreferences(KEY_LAST_SIGN, MODE_PRIVATE);
+            long lastSignTime = lastSignSp.getLong(KEY_LAST_SIGN, 0);
+            Date lastSignDate = new Date(lastSignTime);
+            Date currentDate = new Date();
+            if (lastSignDate.getDay() != currentDate.getDay()
+                    || lastSignDate.getMonth() != currentDate.getMonth()
+                    || lastSignDate.getYear() != currentDate.getYear()) {
+                SignListener signListener = new SignListener();
+                ApiWorker.getInstance().queuePostRequest(UrlHelper.USER_SIGN, new JSONObject(),
+                        signListener, signListener);
+            }
+        }
+    }
+
+    class SignListener implements Response.Listener<JSONObject>, Response.ErrorListener {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            // TODO nothing todo
+        }
+
+        @Override
+        public void onResponse(JSONObject response) {
+            try {
+                int code = response.getInt("code");
+                if (code == 0) {
+                    SharedPreferences lastSignSp = getSharedPreferences(KEY_LAST_SIGN, MODE_APPEND);
+                    SharedPreferences.Editor editor = lastSignSp.edit();
+                    editor.putLong(KEY_LAST_SIGN, System.currentTimeMillis());
+                    editor.apply();
+
+                    JSONObject result = response.getJSONObject("result");
+                    int days = result.getInt("days");
+                    int coins = result.getInt("coins");
+                    String message = "days: " + days + ", coins: " + coins;
+                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private boolean wasLaunchedFromRecents() {
