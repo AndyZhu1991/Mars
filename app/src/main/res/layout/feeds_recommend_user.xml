@@ -15,7 +15,7 @@
         android:layout_height="32dp"
         android:text="@string/feeds_recommend_user_title"
         android:textSize="16sp"
-        android:textColor="@color/koolew_cyan"
+        android:textColor="@color/koolew_gray"
         android:gravity="center"/>
     
     <View
@@ -36,15 +36,29 @@
             android:layout_marginLeft="12dp"
             app:border_width="2dp"
             app:border_color="@color/avatar_gray_border"/>
-        
-        <com.koolew.mars.view.UserNameView
-            android:id="@+id/name_view"
+
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginLeft="10dp"
-            app:textSize="14sp"
-            app:textColor="#4A4A4A"/>
+            android:orientation="vertical">
+
+            <com.koolew.mars.view.UserNameView
+                android:id="@+id/name_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:textColor="#4A4A4A"
+                app:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/summary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textSize="12sp"
+                android:textColor="@color/koolew_gray"/>
+        </LinearLayout>
         
         <TextView
             android:id="@+id/add_user"
@@ -54,8 +68,8 @@
             android:gravity="center"
             android:textSize="12sp"
             android:text="@string/feeds_add_recommend_user_text"
-            android:textColor="@color/btn_feeds_add_recommends_text_color"
-            android:background="@drawable/btn_bg_feeds_add_recommend"/>
+            android:textColor="@color/btn_add_follow_text_color"
+            android:background="@drawable/btn_bg_add_follow"/>
 
         <ImageView
             android:id="@+id/clear_recommend"

@@ -21,7 +21,6 @@ import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.utils.JsonUtil;
 import com.koolew.mars.utils.UriProcessor;
-import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -257,9 +256,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
                     @Override
                     protected GifDrawable doInBackground(File... gifFiles) {
                         try {
-                            GifDrawable gifDrawable = new GifDrawable(gifFiles[0]);
-                            gifDrawable.setCornerRadius(Utils.dpToPixels(getContext(), 4));
-                            return gifDrawable;
+                            return new GifDrawable(gifFiles[0]);
                         } catch (IOException e) {
                             return null;
                         }

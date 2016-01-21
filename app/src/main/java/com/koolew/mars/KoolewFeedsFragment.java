@@ -274,6 +274,8 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
             ImageLoader.getInstance().displayImage(userInfo.getAvatar(), holder.avatar,
                     ImageLoaderHelper.avatarLoadOptions);
             holder.nameView.setUser(userInfo);
+            holder.summary.setText(getString(R.string.recommend_user_summary,
+                    userInfo.getFollowsCount(), userInfo.getFansCount()));
         }
 
         private void bindFeedsItemHolder(FeedsItemViewHolder holder, int position) {
@@ -320,13 +322,13 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
                 ImageLoader.getInstance().displayImage(item.videoInfos[2].getVideoThumb(),
                         holder.thumbImages[2], ImageLoaderHelper.topicThumbLoadOptions);
             }
+            holder.firstUserName.setText(item.videoInfos[0].getUserInfo().getNickname());
 
             for (int i = 0; i < item.videoInfos.length && item.videoInfos[i] != null; i++) {
                 ImageLoader.getInstance().displayImage(item.videoInfos[i].getUserInfo().getAvatar(),
                         holder.avatars[i], ImageLoaderHelper.avatarLoadOptions);
                 holder.avatars[i].setBorderColor(getResources().getColor(item.videoInfos[i].isNew ?
                         R.color.koolew_light_green : R.color.avatar_gray_border));
-                holder.userNames[i].setText(item.videoInfos[i].getUserInfo().getNickname());
             }
         }
 
@@ -386,9 +388,6 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
     private static final int[] AVATAR_IDS = new int[] {
             R.id.avatar0, R.id.avatar1, R.id.avatar2
     };
-    private static final int[] NAME_VIEW_IDS = new int[] {
-            R.id.name0, R.id.name1, R.id.name2
-    };
 
     class FeedsItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView title;
@@ -402,7 +401,7 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
         private FrameLayout thirdVideoLayout;
         private ImageView[] thumbImages = new ImageView[MAX_VIDEO_COUNT_PER_TOPIC];
         private CircleImageView[] avatars = new CircleImageView[MAX_VIDEO_COUNT_PER_TOPIC];
-        private TextView[] userNames = new TextView[MAX_VIDEO_COUNT_PER_TOPIC];
+        private TextView firstUserName;
 
         public FeedsItemViewHolder(View itemView) {
             super(itemView);
@@ -422,9 +421,10 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
             thumbImages[1] = (ImageView) itemView.findViewById(R.id.second_thumb);
             thumbImages[2] = (ImageView) itemView.findViewById(R.id.third_thumb);
 
+            firstUserName = (TextView) itemView.findViewById(R.id.name0);
+
             for (int i = 0; i < MAX_VIDEO_COUNT_PER_TOPIC; i++) {
                 avatars[i] = (CircleImageView) itemView.findViewById(AVATAR_IDS[i]);
-                userNames[i] = (TextView) itemView.findViewById(NAME_VIEW_IDS[i]);
             }
         }
 
@@ -433,7 +433,6 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
             thirdVideoLayout = null;
             thumbImages[2] = null;
             avatars[2] = null;
-            userNames[2] = null;
         }
 
         private void transformTo1VideoLayout() {
@@ -444,7 +443,6 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
             for (int i = 1; i <= 2; i++) {
                 thumbImages[i] = null;
                 avatars[i] = null;
-                userNames[i] = null;
             }
         }
 
@@ -472,6 +470,7 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
     class RecommendUserHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView avatar;
         private UserNameView nameView;
+        private TextView summary;
         private View addUserView;
         private View clearRecommendView;
 
@@ -483,6 +482,7 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
 
             avatar = (ImageView) itemView.findViewById(R.id.avatar);
             nameView = (UserNameView) itemView.findViewById(R.id.name_view);
+            summary = (TextView) itemView.findViewById(R.id.summary);
             addUserView = itemView.findViewById(R.id.add_user);
             addUserView.setOnClickListener(this);
             clearRecommendView = itemView.findViewById(R.id.clear_recommend);

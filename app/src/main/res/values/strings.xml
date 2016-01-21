@@ -117,8 +117,9 @@
     <string name="koolew_feeds_no_data_text">你还没有关注任何人，\n快去竞技场认识新朋友吧！</string>
     <string name="feeds_recommend_user_title">可能认识的人</string>
     <string name="feeds_add_recommend_user_text">"+ 添加"</string>
-    <string name="absolutely_new" formatted="false">%d最新</string>
+    <string name="absolutely_new" formatted="false">%d new</string>
     <string name="more_video">更多视频</string>
+    <string name="recommend_user_summary" formatted="false">%d个关注｜%d个粉丝</string>
 
     <!-- For UserInvolveFragment -->
     <string name="joined_video">参与视频</string>
@@ -493,7 +494,7 @@
     <!-- For square -->
     <string name="square_video_desc">最近热门视频</string>
     <string name="top_fans">粉丝团</string>
-    <string name="go_to_vote">去投票</string>
+    <string name="go_to_vote">有奖竞猜</string>
 
     <!-- For global search -->
     <string name="global_search_hint">搜索手机号、昵称、感兴趣的话题</string>
