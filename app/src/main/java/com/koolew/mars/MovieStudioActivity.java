@@ -363,7 +363,6 @@ public class MovieStudioActivity extends BaseActivity
         mRecorder = new ImageOnlyRecorder(generateVideoPath(),
                 AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
         mRecorder.start();
-        mAdapter.selectedHolder.startPlayOriginal();
         mCameraPreviewFragment.setFrameListener(this);
     }
 
@@ -404,6 +403,14 @@ public class MovieStudioActivity extends BaseActivity
                         mCountDownLayout.setVisibility(View.INVISIBLE);
                     }
                     else {
+                        if (second == 1) {
+                            mCountDownText.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mAdapter.selectedHolder.startPlayOriginal();
+                                }
+                            }, 500);
+                        }
                         mCountDownText.setText(String.valueOf(second));
                     }
                     second--;
