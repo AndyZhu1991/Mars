@@ -457,7 +457,7 @@ public class RecordingSessionView extends LinearLayout {
 
     public void generateThumb() {
         com.koolew.mars.videotools.Utils.saveVideoFrame(
-                recordedItems.get(0).fileName, getThumbName());
+                getConcatedVideoName(), getThumbName());
     }
 
     public String getThumbName() {
