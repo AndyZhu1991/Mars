@@ -289,14 +289,8 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
                 }
             }
 
-            int newVideoCount = 0;
-            for (int i = 0; i < item.videoInfos.length; i++) {
-                if (item.videoInfos[i] != null && item.videoInfos[i].isNew) {
-                    newVideoCount++;
-                }
-            }
-            if (newVideoCount > 0) {
-                holder.newVideoCount.setText(getString(R.string.absolutely_new, newVideoCount));
+            if (item.unread > 0) {
+                holder.newVideoCount.setText(getString(R.string.absolutely_new, item.unread));
                 holder.newVideoCount.setVisibility(View.VISIBLE);
                 holder.title.setPadding(0, 0,
                         getResources().getDimensionPixelSize(R.dimen.new_video_view_width), 0);
@@ -560,10 +554,12 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
     }
 
     static class FeedsItem {
+        private int unread;
         private BaseTopicInfo topicInfo;
         private VideoInfo[] videoInfos = new VideoInfo[MAX_VIDEO_COUNT_PER_TOPIC];
 
         public FeedsItem(JSONObject jsonObject) {
+            unread = JsonUtil.getIntIfHas(jsonObject, "unread");
             topicInfo = BaseTopicInfo.dynamicTopicInfo(JsonUtil.getJSONObjectIfHas(jsonObject, "topic"));
             JSONArray videosJson = JsonUtil.getJSONArrayIfHas(jsonObject, "videos");
             int videoCount = videosJson == null ? 0 : videosJson.length();
