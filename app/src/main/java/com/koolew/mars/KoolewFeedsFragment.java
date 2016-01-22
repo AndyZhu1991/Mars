@@ -294,7 +294,7 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
             if (item.unread > 0) {
                 holder.newVideoCount.setText(getString(R.string.absolutely_new, item.unread));
                 holder.newVideoCount.setVisibility(View.VISIBLE);
-                holder.title.setPadding(0, 0,
+                holder.title.setPadding(0, 0, (int) Utils.dpToPixels(getContext(), 5) +
                         getResources().getDimensionPixelSize(R.dimen.new_video_view_width), 0);
             }
             else {
