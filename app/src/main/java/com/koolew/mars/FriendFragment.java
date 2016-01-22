@@ -71,7 +71,7 @@ public class FriendFragment extends MainBaseFragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_friend, container, false);
 
-        mToolbarInterface.setToolbarColor(getResources().getColor(R.color.koolew_light_blue));
+        mToolbarInterface.setToolbarColor(getResources().getColor(R.color.koolew_deep_blue));
 
         mToolbarInterface.setTopIconCount(1);
         mToolbarInterface.setTopIconImageResource(0, R.mipmap.ic_search);
