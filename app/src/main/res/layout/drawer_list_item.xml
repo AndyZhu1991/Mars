@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.koolew.mars.view.ForegroundLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    app:foreground="@drawable/general_bg">
 
     <ImageView
         android:id="@+id/icon"
@@ -33,4 +35,4 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
         android:src="@mipmap/into_arrow"/>
-</LinearLayout>
+</com.koolew.mars.view.ForegroundLinearLayout>

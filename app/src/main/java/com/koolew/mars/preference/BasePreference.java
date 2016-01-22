@@ -10,7 +10,7 @@ import com.koolew.mars.R;
 /**
  * Created by jinchangzhu on 7/2/15.
  */
-public abstract class BasePreference {
+public abstract class BasePreference implements View.OnClickListener {
 
     protected Context mContext;
 
@@ -25,11 +25,10 @@ public abstract class BasePreference {
                 PreferenceHelper.KEY_PREFERENCE, Context.MODE_APPEND);
     }
 
-    public abstract void onClick(View view);
-
     public abstract int getLayoutResourceId();
 
     public void onBindView(View view) {
         ((TextView) view.findViewById(R.id.title)).setText(mTitleResId);
+        view.setOnClickListener(this);
     }
 }

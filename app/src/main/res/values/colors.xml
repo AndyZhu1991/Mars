@@ -22,6 +22,9 @@
     <color name="divider_color">#6F7D8B90</color>
     <color name="koolew_deep_half_transparent_white">#B7FFFFFF</color>
 
+    <!-- For press effect -->
+    <color name="pressed_gray">#40808080</color>
+
     <!-- For InputPasswordActivity -->
     <color name="password_color">#7D8B97</color>
 

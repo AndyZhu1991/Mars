@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <com.koolew.mars.view.ForegroundLinearLayout
         android:id="@+id/back_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="70dp"
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:paddingLeft="17dp"
         android:clickable="true"
-        android:layout_alignParentLeft="true">
+        android:background="@drawable/general_bg">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -26,24 +26,26 @@
             android:textSize="16sp"
             android:textColor="@android:color/white"
             android:layout_gravity="center_vertical"/>
-    </LinearLayout>
+    </com.koolew.mars.view.ForegroundLinearLayout>
 
     <TextView
         android:id="@+id/title_text"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         android:gravity="center"/>
 
-    <LinearLayout
+    <com.koolew.mars.view.ForegroundLinearLayout
         android:id="@+id/right_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="70dp"
         android:layout_height="match_parent"
         android:orientation="horizontal"
+        android:gravity="right"
         android:paddingRight="17dp"
         android:clickable="true"
-        android:layout_alignParentRight="true">
+        android:background="@drawable/general_bg">
 
         <ImageView
             android:id="@+id/right_image"
@@ -58,5 +60,5 @@
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:layout_gravity="center_vertical"/>
-    </LinearLayout>
-</RelativeLayout>
+    </com.koolew.mars.view.ForegroundLinearLayout>
+</LinearLayout>
