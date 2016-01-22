@@ -82,6 +82,7 @@ public class VideoKooBriefItem extends MediaItem {
         private TextView[] userKoos = new TextView[2];
 
         private View dashLine;
+        private View noKooView;
 
         public ItemViewHolder(UniversalMediaAdapter adapter, View itemView) {
             super(adapter, itemView);
@@ -105,6 +106,7 @@ public class VideoKooBriefItem extends MediaItem {
             userKoos[1] = (TextView) itemView.findViewById(R.id.koo_count1);
 
             dashLine = itemView.findViewById(R.id.dash_line);
+            noKooView = itemView.findViewById(R.id.no_koo);
         }
 
         @Override
@@ -116,6 +118,10 @@ public class VideoKooBriefItem extends MediaItem {
                         avatars[i], ImageLoaderHelper.avatarLoadOptions);
                 nicknames[i].setText(mItem.userKooInfos[i].userInfo.getNickname());
                 userKoos[i].setText(String.valueOf(mItem.userKooInfos[i].kooNum));
+            }
+            if (mItem.userKooInfos[0] == null) {
+                userViews[0].setVisibility(View.GONE);
+                noKooView.setVisibility(View.VISIBLE);
             }
             if (mItem.userKooInfos[1] == null) {
                 userViews[1].setVisibility(View.GONE);

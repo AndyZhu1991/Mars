@@ -126,4 +126,14 @@
             android:drawableLeft="@mipmap/ic_count_koo"
             android:drawablePadding="3dp"/>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/no_koo"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:textColor="@color/koolew_gray"
+        android:text="@string/no_koo_maimeng"
+        android:visibility="gone"/>
 </LinearLayout>

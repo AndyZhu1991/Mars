@@ -20,6 +20,7 @@ import com.koolew.mars.topicmedia.MovieItem;
 import com.koolew.mars.topicmedia.UniversalMediaAdapter;
 import com.koolew.mars.topicmedia.VideoItem;
 import com.koolew.mars.topicmedia.VideoKooBriefItem;
+import com.koolew.mars.utils.JsonUtil;
 import com.koolew.mars.webapi.UrlHelper;
 
 import org.json.JSONArray;
@@ -173,11 +174,10 @@ public class SingleMediaFragment extends BaseTopicMediaFragment<SingleMediaFragm
         @Override
         protected void onRefreshResult(JSONObject result, List<MediaItem> data) {
             try {
+                JSONObject video = result.getJSONObject("video");
                 VideoKooBriefItem videoKooBriefItem = new VideoKooBriefItem(mVideoInfo,
-                        result.getJSONObject("video").getJSONArray("koo_ranks"));
-                if (videoKooBriefItem.hasKooRankUser()) {
-                    data.add(videoKooBriefItem);
-                }
+                        JsonUtil.getJSONArrayIfHas(video, "koo_ranks", new JSONArray()));
+                data.add(videoKooBriefItem);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
