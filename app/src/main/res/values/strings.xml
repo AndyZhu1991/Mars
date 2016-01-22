@@ -540,6 +540,10 @@
     <string name="purple_danmaku_explain">5 个打赏 = 紫色弹幕</string>
     <string name="master_danmaku_explain">25 个打赏 = 橙色弹幕</string>
 
+    <!-- Others -->
+    <string name="sign_continuous" formatted="false">"已连续登陆 %d天"</string>
+    <string name="coin_got" formatted="false">获得连续登陆奖励 %d金币</string>
+
     <!-- ShareSDK -->
     <string name="weibo_oauth_regiseter">应用授权</string>
     <string name="website">http://www.mob.com</string>

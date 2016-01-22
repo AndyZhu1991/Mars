@@ -53,7 +53,12 @@ public class MovieTitleVideoView extends KoolewVideoView implements MediaPlayer.
 
     @Override
     public void stop() {
-        mPlayImage.setVisibility(VISIBLE);
+        post(new Runnable() {
+            @Override
+            public void run() {
+                mPlayImage.setVisibility(VISIBLE);
+            }
+        });
         super.stop();
     }
 

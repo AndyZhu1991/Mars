@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -219,8 +218,9 @@ public class MainActivity extends BaseV4FragmentActivity
                     JSONObject result = response.getJSONObject("result");
                     int days = result.getInt("days");
                     int coins = result.getInt("coins");
-                    String message = "days: " + days + ", coins: " + coins;
-                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                    if (mCurFragment != null && mCurFragment instanceof KoolewFragment) {
+                        ((KoolewFragment) mCurFragment).showSignMessage(days, coins);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

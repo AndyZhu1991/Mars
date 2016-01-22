@@ -1,15 +1,23 @@
 package com.koolew.mars;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.koolew.mars.view.KoolewViewPagerIndicator;
 
@@ -39,7 +47,7 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
     private KoolewFragmentPagerAdapter mAdapter;
     private KoolewViewPagerIndicator mViewPagerIndicator;
 
-    private View mBtnAddTopic;
+    private FloatingActionButton mFab;
 
     /**
      * Use this factory method to create a new instance of
@@ -92,8 +100,8 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
         mToolbarInterface.setTopIconCount(1);
         mToolbarInterface.setTopIconImageResource(0, R.mipmap.ic_search);
 
-        mBtnAddTopic = root.findViewById(R.id.btn_add_topic);
-        mBtnAddTopic.setOnClickListener(this);
+        mFab = (FloatingActionButton) root.findViewById(R.id.fab);
+        mFab.setOnClickListener(this);
 
         return root;
     }
@@ -113,10 +121,43 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
         }
     }
 
+    public void showSignMessage(int signContinuous, int coinGot) {
+        Snackbar snackbar = Snackbar.make(mFab, "", Snackbar.LENGTH_LONG);
+        View contentLayout = LayoutInflater.from(getContext()).inflate(R.layout.sign_success_layout, null);
+
+        // Spans
+        ForegroundColorSpan whiteSpan = new ForegroundColorSpan(Color.WHITE);
+        ForegroundColorSpan signContinuousSpan = new ForegroundColorSpan(0xFF414141);
+        ForegroundColorSpan coinGotSpan = new ForegroundColorSpan(0xFFFFF358);
+
+        // sign continuous spannable
+        String signContinuousStr = getString(R.string.sign_continuous, signContinuous);
+        SpannableStringBuilder signContinuousBuilder = new SpannableStringBuilder(signContinuousStr);
+        int daysPosition = signContinuousStr.indexOf(String.valueOf(signContinuous));
+        signContinuousBuilder.setSpan(whiteSpan, 0, daysPosition, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        signContinuousBuilder.setSpan(signContinuousSpan, daysPosition, signContinuousStr.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ((TextView) contentLayout.findViewById(R.id.sign_continuous)).setText(signContinuousBuilder);
+
+        // coin got spannable
+        String coinGotStr = getString(R.string.coin_got, coinGot);
+        SpannableStringBuilder coinGotBuilder = new SpannableStringBuilder(coinGotStr);
+        int coinsPosition = coinGotStr.indexOf(String.valueOf(coinGot));
+        coinGotBuilder.setSpan(whiteSpan, 0, coinsPosition, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        coinGotBuilder.setSpan(coinGotSpan, coinsPosition, coinGotStr.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ((TextView) contentLayout.findViewById(R.id.coin_got)).setText(coinGotBuilder);
+
+        LinearLayout snackView = ((LinearLayout) snackbar.getView());
+        snackView.setBackgroundColor(0xFF5FD4E6);
+        snackView.addView(contentLayout, 0);
+        snackbar.show();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_add_topic:
+            case R.id.fab:
                 SelectCategoryWindow window = new SelectCategoryWindow(getActivity());
                 window.showAtLocation(getView(), Gravity.TOP, 0, 0);
                 break;
