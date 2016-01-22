@@ -251,12 +251,12 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
                         new DanmakuThread.PlayerWrapper() {
                             @Override
                             public long getCurrentPosition() {
-                                return mMediaPlayer.getCurrentPosition();
+                                return KoolewVideoView.this.getCurrentPosition();
                             }
 
                             @Override
                             public boolean isPlaying() {
-                                return mMediaPlayer.isPlaying();
+                                return KoolewVideoView.this.isPlaying();
                             }
                         });
                 mDanmakuThread.start();
@@ -266,21 +266,23 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
     public long getCurrentPosition() {
         getCurrentPositionRunnable.currentPosition = 0;
-        mediaPlayerWorkHandler.post(getCurrentPositionRunnable);
         try {
-            getCurrentPositionRunnable.wait(MAX_WAIT_TIME_IN_MS);
+            synchronized (getCurrentPositionRunnable) {
+                mediaPlayerWorkHandler.post(getCurrentPositionRunnable);
+                getCurrentPositionRunnable.wait(MAX_WAIT_TIME_IN_MS);
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return getCurrentPositionRunnable.currentPosition;
     }
 
-    private GetCurrentPositionRunnable getCurrentPositionRunnable = new GetCurrentPositionRunnable();
+    private final GetCurrentPositionRunnable getCurrentPositionRunnable = new GetCurrentPositionRunnable();
     private class GetCurrentPositionRunnable implements Runnable {
         private long currentPosition;
 
         @Override
-        public void run() {
+        public synchronized void run() {
             currentPosition = null == mMediaPlayer ? 0 : mMediaPlayer.getCurrentPosition();
             notify();
         }

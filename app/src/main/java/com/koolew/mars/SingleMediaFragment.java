@@ -156,10 +156,14 @@ public class SingleMediaFragment extends BaseTopicMediaFragment<SingleMediaFragm
                 mVideoInfo.setTopicInfo(mTopicInfo);
             }
             if (mTopicInfo.getCategory().equals(BaseTopicInfo.CATEGORY_VIDEO)) {
-                return new VideoItem(mVideoInfo);
+                VideoItem videoItem = new VideoItem(mVideoInfo);
+                videoItem.setNeedGotoSingleMedia(false);
+                return videoItem;
             }
             else if (mTopicInfo.getCategory().equals(BaseTopicInfo.CATEGORY_MOVIE)) {
-                return new MovieItem(mVideoInfo);
+                MovieItem movieItem = new MovieItem(mVideoInfo);
+                movieItem.setNeedGotoSingleMedia(false);
+                return movieItem;
             }
             else {
                 throw new RuntimeException("Unknown category");

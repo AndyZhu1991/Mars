@@ -57,6 +57,7 @@ public class VideoItem extends MediaItem {
 
 
     protected BaseVideoInfo videoInfo;
+    protected boolean needGotoSingleMedia = true;
 
 
     public VideoItem(BaseVideoInfo videoInfo) {
@@ -90,6 +91,10 @@ public class VideoItem extends MediaItem {
         }
     }
 
+    public void setNeedGotoSingleMedia(boolean needGotoSingleMedia) {
+        this.needGotoSingleMedia = needGotoSingleMedia;
+    }
+
     public static class ItemViewHolder extends MediaHolder<VideoItem> implements View.OnClickListener,
             ShareVideoWindow.OnVideoOperatedListener {
         protected ImageView avatar;
@@ -119,6 +124,7 @@ public class VideoItem extends MediaItem {
             userName.setOnClickListener(this);
             videoDate = (TextView) itemView.findViewById(R.id.video_date);
             videoView = (KoolewVideoView) itemView.findViewById(R.id.video_view);
+            videoView.setOnClickListener(this);
             kooAndComment = (TextView) itemView.findViewById(R.id.koo_and_comment_count);
             kooAndComment.setOnClickListener(this);
 
@@ -199,8 +205,8 @@ public class VideoItem extends MediaItem {
             else if (v == userName) {
                 onUserClick();
             }
-            else if (v == kooAndComment) {
-                onKooAndDanmakuClick();
+            else if (v == kooAndComment || v == videoView) {
+                gotoSingleMedia();
             }
         }
 
@@ -279,8 +285,10 @@ public class VideoItem extends MediaItem {
             FriendInfoActivity.startThisActivity(mContext, mItem.videoInfo.getUserInfo().getUid());
         }
 
-        protected void onKooAndDanmakuClick() {
-            SingleMediaFragment.startThisFragment(mContext, mItem.videoInfo.getVideoId());
+        protected void gotoSingleMedia() {
+            if (mItem.needGotoSingleMedia) {
+                SingleMediaFragment.startThisFragment(mContext, mItem.videoInfo.getVideoId());
+            }
         }
 
         public void disableKooAndComment() {
