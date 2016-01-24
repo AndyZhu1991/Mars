@@ -65,6 +65,8 @@ public class GlobalSearchActivity extends BaseActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_global_search);
 
+        Utils.setStatusBarColorBurn(this, 0xFF373737);
+
         initMembers();
         initViews();
     }
