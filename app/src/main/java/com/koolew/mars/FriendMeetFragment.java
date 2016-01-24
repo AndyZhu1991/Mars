@@ -68,7 +68,7 @@ public class FriendMeetFragment
 
     @Override
     protected int getThemeColor() {
-        return getResources().getColor(R.color.koolew_light_blue);
+        return getResources().getColor(R.color.koolew_deep_blue);
     }
 
     @Override

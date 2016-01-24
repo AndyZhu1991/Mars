@@ -55,7 +55,7 @@ public class FriendContactFragment
 
     @Override
     protected int getThemeColor() {
-        return getActivity().getResources().getColor(R.color.koolew_light_blue);
+        return getActivity().getResources().getColor(R.color.koolew_deep_blue);
     }
 
     @Override
