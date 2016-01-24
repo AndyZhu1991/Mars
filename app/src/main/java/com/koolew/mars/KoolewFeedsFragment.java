@@ -2,6 +2,7 @@ package com.koolew.mars;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,10 +53,20 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
 
     private KoolewVideoView.ScrollPlayer mScrollPlayer;
 
+    private int grayBorderColor;
+    private int greenBorderColor;
+
     public KoolewFeedsFragment() {
         isNeedApiCache = true;
         isNeedLoadMore = true;
         isLazyLoad = true;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        grayBorderColor = getResources().getColor(R.color.avatar_gray_border);
+        greenBorderColor = getResources().getColor(R.color.koolew_light_green);
     }
 
     @Override
@@ -327,8 +338,8 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
             for (int i = 0; i < item.videoInfos.length && item.videoInfos[i] != null; i++) {
                 ImageLoader.getInstance().displayImage(item.videoInfos[i].getUserInfo().getAvatar(),
                         holder.avatars[i], ImageLoaderHelper.avatarLoadOptions);
-                holder.avatars[i].setBorderColor(getResources().getColor(item.videoInfos[i].isNew ?
-                        R.color.koolew_light_green : R.color.avatar_gray_border));
+                holder.avatars[i].setBorderColor(item.videoInfos[i].isNew ?
+                        greenBorderColor : grayBorderColor);
             }
         }
 
@@ -456,13 +467,21 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
             else {
                 TopicMediaActivity.startThisActivity(getActivity(), topicInfo.getTopicId(),
                         TopicMediaActivity.TYPE_FEEDS);
-                for (CircleImageView avatar: avatars) {
-                    if (avatar != null) {
-                        avatar.setBorderColor(getResources().getColor(R.color.avatar_gray_border));
+                if (feedsItem.unread > 0) {
+                    feedsItem.unread = 0;
+                    for (CircleImageView avatar : avatars) {
+                        if (avatar != null) {
+                            avatar.setBorderColor(grayBorderColor);
+                        }
                     }
+                    for (VideoInfo videoInfo: feedsItem.videoInfos) {
+                        if (videoInfo != null) {
+                            videoInfo.isNew = false;
+                        }
+                    }
+                    newVideoCount.setVisibility(View.INVISIBLE);
+                    title.setPadding(0, 0, 0, 0);
                 }
-                newVideoCount.setVisibility(View.INVISIBLE);
-                title.setPadding(0, 0, 0, 0);
             }
         }
     }
