@@ -177,7 +177,7 @@ dependencies {
     compile 'com.makeramen:roundedimageview:2.1.0'
     compile 'com.googlecode.mp4parser:isoparser:1.0.6+'
     compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.7.2'
-    compile 'com.tencent.bugly:crashreport:1.2.3.6'
+    compile 'com.tencent.bugly:crashreport:1.2.8'
     compile 'com.7heaven.ioswidget:iosswitch:0.5'
     compile 'cn.jiajixin.nuwa:nuwa:1.0.0'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.11'
