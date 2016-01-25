@@ -370,6 +370,7 @@ public class FrameRendererToneCurve extends FrameRendererDrawOrigin {
     }
 
     public static final CurveFilter[] CURVE_FILTERS = new CurveFilter[] {
+            new CurveFilter("origin",    R.string.empty_string,     R.mipmap.filter_origin),
             new CurveFilter("beauty001", R.string.filter_beauty001, R.mipmap.filter_beauty001),
             new CurveFilter("1988",      R.string.filter_1988,      R.mipmap.filter_1988),
             new CurveFilter("heart",     R.string.filter_heart,     R.mipmap.filter_heart),

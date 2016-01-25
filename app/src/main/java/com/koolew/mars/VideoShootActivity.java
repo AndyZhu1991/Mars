@@ -84,7 +84,6 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     private View mFilterSwitchBtn;
     private View mFilterSwitchBar;
     private View mFilterSwitchArrow;
-    private View mNoFilterBtn;
     private View mFilterLayout;
     private RecyclerView mFilterRecycler;
     private FilterAdapter mFilterAdapter;
@@ -221,8 +220,6 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
         mFilterSwitchBar = findViewById(R.id.filter_switch_bar);
         mFilterSwitchBar.setOnClickListener(this);
         mFilterSwitchArrow = findViewById(R.id.filter_switch_arrow);
-        mNoFilterBtn = findViewById(R.id.no_filter_btn);
-        mNoFilterBtn.setOnClickListener(this);
         mFilterLayout = findViewById(R.id.filter_layout);
         mFilterLayout.getViewTreeObserver().addOnGlobalLayoutListener(this);
         mFilterRecycler = (RecyclerView) findViewById(R.id.filter_recycler);
@@ -417,9 +414,6 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
                 recordingSessionView.play();
                 mPlayImage.setVisibility(View.INVISIBLE);
                 break;
-            case R.id.no_filter_btn:
-                setNoFilter();
-                break;
             case R.id.filter_switch_btn:
             case R.id.filter_switch_bar:
                 switchFilterLayout();
@@ -543,18 +537,6 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     @Override
     public void onGlobalLayout() {
         filterLayoutOriginTop = mFilterLayout.getTop();
-    }
-
-    private void setNoFilter() {
-        if (mFilterAdapter.selectedPosition >= 0) {
-            mFilterAdapter.refreshSelectPosition(-1);
-            mCameraPreviewFragment.setFrameRenderer(new CameraPreviewFragment.RendererCreator() {
-                @Override
-                public FrameRenderer createRenderer() {
-                    return FrameRendererDrawOrigin.create(true);
-                }
-            });
-        }
     }
 
     private boolean isFilterLayoutOpened = true;
@@ -706,7 +688,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
     private class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterHolder> {
 
-        private int selectedPosition = -1;
+        private int selectedPosition = 0;
 
         @Override
         public FilterHolder onCreateViewHolder(ViewGroup parent, int viewType) {
