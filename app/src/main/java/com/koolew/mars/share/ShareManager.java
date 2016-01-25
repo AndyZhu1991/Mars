@@ -273,7 +273,7 @@ public class ShareManager {
     }
 
     public static boolean isAuthValid(ShareChanel shareChanel) {
-        return ShareSDK.getPlatform(sharePlatformName[shareChanel.ordinal()]).isAuthValid();
+        return !TextUtils.isEmpty(ShareSDK.getPlatform(sharePlatformName[shareChanel.ordinal()]).getDb().getToken());
     }
 
     public static void authorize(ShareChanel shareChanel, ShareListener shareListener) {
