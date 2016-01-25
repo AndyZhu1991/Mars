@@ -243,7 +243,12 @@ public class VideoItem extends MediaItem {
             }
 
             FirstKooExplainWindow window = new FirstKooExplainWindow(mContext);
-            window.getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            try {
+                window.getContentView().measure(View.MeasureSpec.UNSPECIFIED,
+                        View.MeasureSpec.UNSPECIFIED);
+            } catch (Exception e) {
+                return;
+            }
             int windowHeight = window.getContentView().getMeasuredHeight();
             window.showAsDropDown(kooIcon, 0, -windowHeight);
             window.setOnDismissListener(new PopupWindow.OnDismissListener() {
