@@ -381,12 +381,16 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
 
         @Override
         public void onBindViewHolder(BannerAdapter.BannerHolder holder, int position) {
-            ImageLoader.getInstance().displayImage(banners.get(position).imageUrl, holder.bannerImage);
+            ImageLoader.getInstance().displayImage(getBannerItem(position).imageUrl, holder.bannerImage);
         }
 
         @Override
         public int getItemCount() {
-            return banners.size();
+            return 998; // For loop
+        }
+
+        private BannerItem getBannerItem(int position) {
+            return banners.get(position % banners.size());
         }
 
         class BannerHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -400,7 +404,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
 
             @Override
             public void onClick(View v) {
-                mUriProcessor.process(banners.get(getAdapterPosition()).contentUri);
+                mUriProcessor.process(getBannerItem(getAdapterPosition()).contentUri);
             }
         }
     }
