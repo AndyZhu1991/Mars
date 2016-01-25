@@ -28,6 +28,7 @@ import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchAct
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.koolew.mars.AppProperty;
+import com.koolew.mars.MarsApplication;
 import com.koolew.mars.R;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.FileUtil;
@@ -267,7 +268,13 @@ public class RecordingSessionView extends LinearLayout {
             mAdapter.notifyItemInserted(recordedItems.size() - 1);
             updateNextStepBtnStatus();
             shader.setVisibility(INVISIBLE);
-            waitDialog.dismiss();
+            try {
+                waitDialog.dismiss();
+            } catch (Exception e) { // Why?
+                if (MarsApplication.DEBUG) {
+                    throw e;
+                }
+            }
         }
     }
 
