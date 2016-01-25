@@ -107,6 +107,7 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
         View root = inflater.inflate(R.layout.fragment_play, container, false);
 
         mTitle = (TextView) root.findViewById(R.id.title);
+        mTitle.setOnClickListener(this);
 
         int screenWidthPix = Utils.getScreenWidthPixel(getActivity());
         int displayAreaPadding = getResources().getDimensionPixelSize(R.dimen.display_area_padding);
@@ -169,6 +170,9 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.title:
+                onTitleClick();
+                break;
             case R.id.left_avatar:
                 onLeftAvatarClick();
                 break;
@@ -193,6 +197,20 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
             case R.id.bottom_right_layout:
                 onBottomRightLayoutClick();
                 break;
+        }
+    }
+
+    private void onTitleClick() {
+        BaseVideoInfo videoInfo;
+        if (mCurrentPlayPosition == POSITION_LEFT) {
+            videoInfo = mCurrentLeftVideoInfo;
+        }
+        else {
+            videoInfo = mCurrentRightVideoInfo;
+        }
+        if (videoInfo != null) {
+            TopicMediaActivity.startThisActivity(getContext(), videoInfo.getTopicInfo().getTopicId(),
+                    TopicMediaActivity.TYPE_WORLD);
         }
     }
 
