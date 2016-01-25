@@ -292,8 +292,13 @@ public class VideoShareActivity extends AppCompatActivity implements View.OnClic
                         saveAndRegisterVideo();
                     }
                     catch (Exception e) {
-                        Toast.makeText(VideoShareActivity.this, R.string.save_to_local_failed,
-                                Toast.LENGTH_SHORT).show();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(VideoShareActivity.this, R.string.save_to_local_failed,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                     shareVideoIfNeed();
                     return true;
