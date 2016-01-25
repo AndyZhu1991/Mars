@@ -135,6 +135,7 @@
     <string name="friend_fans_title">我的粉丝</string>
 
     <!-- For friend sub fragments -->
+    <string name="no_friends_text">多发弹幕多打赏，就能交到新朋友</string>
     <string name="no_follow_text">去竞技场关注有趣的人\n会有意外惊喜～</string>
     <string name="no_fans_text">多关注别人，\n别人也会来回粉！</string>
 

@@ -18,6 +18,11 @@ public class FriendCurrentFragment extends RecyclerListFragmentMould<FriendCurre
     }
 
     @Override
+    protected int getNoDataViewResId() {
+        return R.layout.no_friends_layout;
+    }
+
+    @Override
     protected FriendCurrentAdapter useThisAdapter() {
         return new FriendCurrentAdapter(getActivity());
     }
