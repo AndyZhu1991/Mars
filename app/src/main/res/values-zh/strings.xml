@@ -136,6 +136,7 @@
     <string name="no_friends_text">多发弹幕多打赏，就能交到新朋友</string>
     <string name="no_follow_text">去竞技场关注有趣的人\n会有意外惊喜～</string>
     <string name="no_fans_text">多关注别人，\n别人也会来回粉！</string>
+    <string name="no_contact_text">您关闭了通讯录权限，无法查看好友\n（开启方法：手机设置/第三方管理软件 - 应用/安全中心 - 允许可见读取联系人）</string>
 
     <!-- For TopicInvitationList -->
     <string name="video_count_label" formatted="false">视频总数：%d个</string>

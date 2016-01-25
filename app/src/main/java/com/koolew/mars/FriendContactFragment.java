@@ -49,6 +49,11 @@ public class FriendContactFragment
     }
 
     @Override
+    protected int getNoDataViewResId() {
+        return super.getNoDataViewResId();
+    }
+
+    @Override
     protected FriendContactAdapter useThisAdapter() {
         return new FriendContactAdapter(getActivity());
     }
