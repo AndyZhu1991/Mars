@@ -1,6 +1,5 @@
 package com.koolew.mars;
 
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.webapi.UrlHelper;
 
@@ -10,9 +9,6 @@ import org.json.JSONObject;
 
 
 public class KoolewInvolveFragment extends RecyclerListFragmentMould<TimelineAdapter> {
-
-    private int mCurrentPage = 0;
-
 
     public KoolewInvolveFragment() {
         super();
@@ -34,24 +30,12 @@ public class KoolewInvolveFragment extends RecyclerListFragmentMould<TimelineAda
 
     @Override
     protected String getRefreshRequestUrl() {
-        return UrlHelper.getInvolveUrl(mCurrentPage);
-    }
-
-    @Override
-    protected JsonObjectRequest doRefreshRequest() {
-        mCurrentPage = 0;
-        return super.doRefreshRequest();
+        return UrlHelper.getInvolveUrl();
     }
 
     @Override
     protected String getLoadMoreRequestUrl() {
-        return UrlHelper.getInvolveUrl(mCurrentPage);
-    }
-
-    @Override
-    protected JsonObjectRequest doLoadMoreRequest() {
-        mCurrentPage++;
-        return super.doLoadMoreRequest();
+        return UrlHelper.getInvolveUrl(mAdapter.getLastUpdateTime());
     }
 
     @Override

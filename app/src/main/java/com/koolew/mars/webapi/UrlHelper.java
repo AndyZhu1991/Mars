@@ -208,11 +208,18 @@ public class UrlHelper {
                 .build().toString();
     }
 
-    public static String getInvolveUrl(int page) {
+    public static String getInvolveUrl() {
         return Uri.parse(TIMELINE_URL)
                 .buildUpon()
-                .appendQueryParameter("page", String.valueOf(page))
-                .appendQueryParameter("sort_by", "count")
+                .appendQueryParameter("sort_by", "time")
+                .build().toString();
+    }
+
+    public static String getInvolveUrl(long before) {
+        return Uri.parse(TIMELINE_URL)
+                .buildUpon()
+                .appendQueryParameter("before", String.valueOf(before))
+                .appendQueryParameter("sort_by", "time")
                 .build().toString();
     }
 
