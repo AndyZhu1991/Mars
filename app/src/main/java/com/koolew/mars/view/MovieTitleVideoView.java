@@ -40,7 +40,9 @@ public class MovieTitleVideoView extends KoolewVideoView implements MediaPlayer.
     @Override
     protected MediaPlayer generateMediaPlayer() {
         MediaPlayer mediaPlayer = super.generateMediaPlayer();
-        mediaPlayer.setOnCompletionListener(this);
+        if (mediaPlayer != null) {
+            mediaPlayer.setOnCompletionListener(this);
+        }
         return mediaPlayer;
     }
 
