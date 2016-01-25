@@ -303,7 +303,8 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
 
             @Override
             public void onDownloadComplete(String url, String filePath) {
-                if (mData.get(getAdapterPosition()).gifUrl.equals(url)) {
+                int position = getAdapterPosition();
+                if (position > 0 && mData.get(position).gifUrl.equals(url)) {
                     setGifFile(new File(filePath));
                 }
             }
