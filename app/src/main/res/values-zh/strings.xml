@@ -58,7 +58,7 @@
     <string name="title_clock_in">打卡领金币</string>
     <string name="title_settings">设置</string>
     <string name="title_add">新建话题</string>
-    <string name="got_support_num" formatted="false">获得支持：%d</string>
+    <string name="got_support_num" formatted="false">获得打赏：%d</string>
     <string name="got_koo">获得打赏</string>
     <string name="coin_count">金币数量</string>
     <string name="fans_count" formatted="false">"%d 粉丝"</string>
