@@ -1,6 +1,7 @@
 package com.koolew.mars.statistics;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
@@ -25,6 +26,9 @@ public class BaseLazyV4Fragment extends com.shizhefei.fragment.BaseFragment {
     @Deprecated
     protected final void onCreateView(Bundle savedInstanceState) {
         super.onCreateView(savedInstanceState);
+        if (inflater == null) {
+            inflater = LayoutInflater.from(getContext());
+        }
         Bundle bundle = getArguments();
         if (bundle != null) {
             isLazyLoad = bundle.getBoolean(INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
