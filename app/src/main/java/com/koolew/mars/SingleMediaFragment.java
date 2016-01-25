@@ -50,7 +50,7 @@ public class SingleMediaFragment extends BaseTopicMediaFragment<SingleMediaFragm
         mVideoId = getActivity().getIntent().getStringExtra(KEY_VIDEO_ID);
 
         TitleFragmentActivity activity =(TitleFragmentActivity) getActivity();
-        if (activity != null) { // 奇葩的锤子手机，这个地方也会NPE
+        if (activity != null && activity.getTitleBar() != null) { // 奇葩的锤子手机，这个地方也会NPE
             activity.getTitleBar().setBackgroundColor(getThemeColor());
         }
     }
