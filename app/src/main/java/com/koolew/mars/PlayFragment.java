@@ -20,6 +20,7 @@ import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.TypedUserInfo;
 import com.koolew.mars.statistics.BaseV4Fragment;
+import com.koolew.mars.utils.ThreadUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.KoolewVideoView;
 import com.koolew.mars.view.TitleBarView;
@@ -361,7 +362,12 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
 
     @Override
     public void onCompletion(MediaPlayer iMediaPlayer) {
-        switchVideo();
+        ThreadUtil.executeOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                switchVideo();
+            }
+        });
     }
 
     private void switchVideo() {

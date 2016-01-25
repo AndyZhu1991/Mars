@@ -170,17 +170,29 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     public void startPlay() {
         if (mVideoInfo != null || mVideoUrl != null) {
             mProgressBar.setVisibility(VISIBLE);
+            mediaPlayerWorkHandler.post(startPlayRunnable);
+        }
+    }
+
+    private Runnable startPlayRunnable = new Runnable() {
+        @Override
+        public void run() {
             postPlaying = true;
             try {
-                Downloader.getInstance().download(this, mVideoUrl);
+                Downloader.getInstance().download(KoolewVideoView.this, mVideoUrl);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-    }
+    };
 
     public void onComplete(String url, String filePath) {
-        mProgressBar.setVisibility(INVISIBLE);
+        mProgressBar.post(new Runnable() {
+            @Override
+            public void run() {
+                mProgressBar.setVisibility(INVISIBLE);
+            }
+        });
         if (url.equals(mVideoUrl)) {
             mVideoPath = filePath;
             if (postPlaying) {
