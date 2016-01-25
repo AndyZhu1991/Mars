@@ -13,9 +13,11 @@ import com.koolew.mars.remoteconfig.RemoteConfigManager;
 import com.koolew.mars.statistics.StatisticsUtil;
 import com.koolew.mars.utils.BgmUtil;
 import com.koolew.mars.utils.Downloader;
+import com.koolew.mars.utils.FileUtil;
 import com.koolew.mars.utils.FirstHintUtil;
 import com.koolew.mars.utils.KooSoundUtil;
 import com.koolew.mars.utils.PatchUtil;
+import com.koolew.mars.utils.ThreadUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -25,6 +27,9 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tendcloud.tenddata.TCAgent;
+
+import java.io.File;
+import java.io.FileFilter;
 
 import cn.jiajixin.nuwa.Nuwa;
 import cn.jpush.android.api.JPushInterface;
@@ -64,6 +69,7 @@ public class MarsApplication extends Application {
         KooSoundUtil.init(this);
         RemoteConfigManager.init(this);
         PatchUtil.checkAndUpdatePatchAsync(this);
+        clearOldVideoCache(); // TODO: delete this line & this method when versionCode >= 22
 
         Log.d(TAG, "Is debug: " + DEBUG);
         Log.d(TAG, "Init in MarsApplication takes: " + (System.currentTimeMillis() - start));
@@ -119,6 +125,28 @@ public class MarsApplication extends Application {
     private void initBugly() {
         if (!DEBUG) {
             CrashReport.initCrashReport(getApplicationContext(), "900006713", false);
+        }
+    }
+
+    private void clearOldVideoCache() {
+        // 从19版本开始采用新的缓存目录，清理三个版本的老的视频缓存
+        if (Utils.getCurrentVersionCode() <= 21) {
+            ThreadUtil.executeOnCommonThread(new Runnable() {
+                @Override
+                public void run() {
+                    FileUtil.deleteFilesFromDir(new File(Utils.getCacheDir(MarsApplication.this)),
+                            new FileFilter() {
+                                @Override
+                                public boolean accept(File pathname) {
+                                    if (pathname.getAbsolutePath().endsWith(".mp4")) {
+                                        return true;
+                                    } else {
+                                        return false;
+                                    }
+                                }
+                            });
+                }
+            });
         }
     }
 }
