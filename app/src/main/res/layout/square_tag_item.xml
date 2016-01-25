@@ -8,6 +8,7 @@
     android:background="@drawable/feeds_card_item_bg">
 
     <LinearLayout
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="34dp"
         android:orientation="horizontal"

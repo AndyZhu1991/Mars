@@ -227,6 +227,7 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
 
         class SquareTagHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
                 Downloader.LoadListener {
+            View title;
             ImageView tagIcon;
             TextView tagName;
             ImageView[] thumbs = new ImageView[SUB_ITEM_IDS.length];
@@ -236,6 +237,9 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
             public SquareTagHolder(View itemView) {
                 super(itemView);
                 itemView.setOnClickListener(this);
+
+                title = itemView.findViewById(R.id.title);
+                title.setOnClickListener(this);
 
                 tagIcon = (ImageView) itemView.findViewById(R.id.tag_icon);
                 tagName = (TextView) itemView.findViewById(R.id.tag_name);
@@ -278,6 +282,9 @@ public class KoolewSquareFragment extends RecyclerListFragmentMould<KoolewSquare
             public void onClick(View v) {
                 SquareItem item = mData.get(getAdapterPosition());
                 if (v == itemView) {
+                    PlayFragment.startThisFragment(getActivity(), item.id);
+                }
+                else if (v == title) {
                     // Go to square tab activity
                     SquareDetailFragment.startThisFragment(getActivity(), item.name, item.id);
                 }
