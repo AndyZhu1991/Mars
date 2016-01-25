@@ -105,7 +105,13 @@ public class FriendContactFragment
 
         @Override
         protected List<ContactUtil.SimpleContactInfo> doInBackground(Void... params) {
-            return ContactUtil.getPhoneContacts(getActivity());
+            Context context = getContext();
+            if (context != null) {
+                return ContactUtil.getPhoneContacts(getActivity());
+            }
+            else {
+                return null;
+            }
         }
 
         @Override
