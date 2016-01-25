@@ -149,7 +149,7 @@ public class MainActivity extends BaseV4FragmentActivity
 
         switchFragment(0);
 
-        mLeftDrawer.post(new Runnable() {
+        ThreadUtil.executeOnMainThread(new Runnable() {
             @Override
             public void run() {
                 doRequestSelfInfo();
