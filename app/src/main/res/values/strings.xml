@@ -448,7 +448,7 @@
     <!-- For SingleMediaActivity -->
     <string name="kooed_count" formatted="false">被打赏%d次</string>
     <string name="support_comment_count" formatted="false">%d支持·%d评论</string>
-    <string name="video_koo_brief_title_count" formatted="false">支持(%d)</string>
+    <string name="video_koo_brief_title_count" formatted="false">打赏(%d)</string>
     <string name="item_count" formatted="false">%d条</string>
     <string name="no_danmaku_footer_text">快来做第一个弹幕的人吧！</string>
     <string name="no_koo_maimeng">讨厌啦，看了都不打赏~</string>
