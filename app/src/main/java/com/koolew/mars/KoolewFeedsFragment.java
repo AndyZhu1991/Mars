@@ -57,7 +57,7 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
     private int greenBorderColor;
 
     public KoolewFeedsFragment() {
-        isNeedApiCache = true;
+        isNeedApiCache = false;
         isNeedLoadMore = true;
         isLazyLoad = true;
     }
