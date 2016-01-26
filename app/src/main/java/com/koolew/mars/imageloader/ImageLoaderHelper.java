@@ -17,7 +17,7 @@ public class ImageLoaderHelper {
 
     public static void init(Context context) {
         topicThumbLoadOptions = new DisplayImageOptions.Builder()
-                .showImageOnLoading(context.getDrawable(R.mipmap.topic_default_thumb))
+                .showImageOnLoading(context.getResources().getDrawable(R.mipmap.topic_default_thumb))
                         //.showImageForEmptyUri(R.mipmap.topic_default_thumb)
                         //.showImageOnFail(R.mipmap.topic_default_thumb)
                 .cacheInMemory(true)
@@ -26,7 +26,7 @@ public class ImageLoaderHelper {
                 .build();
 
         avatarLoadOptions = new DisplayImageOptions.Builder()
-                .showImageOnLoading(context.getDrawable(R.mipmap.default_avatar))
+                .showImageOnLoading(context.getResources().getDrawable(R.mipmap.default_avatar))
                         //.showImageForEmptyUri(R.mipmap.topic_default_thumb)
                         //.showImageOnFail(R.mipmap.topic_default_thumb)
                 .cacheInMemory(true)
