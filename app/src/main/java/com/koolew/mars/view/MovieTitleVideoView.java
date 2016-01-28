@@ -18,6 +18,8 @@ public class MovieTitleVideoView extends KoolewVideoView implements MediaPlayer.
 
     private ImageView mPlayImage;
 
+    private boolean mPostedPlay = false;
+
     public MovieTitleVideoView(Context context) {
         super(context);
     }
@@ -47,14 +49,13 @@ public class MovieTitleVideoView extends KoolewVideoView implements MediaPlayer.
     }
 
     @Override
-    protected void start() {
-        if (mPlayImage.getVisibility() == INVISIBLE) {
-            super.start();
-        }
+    public void startPlay() {
+        mPostedPlay = true;
     }
 
     @Override
     public void stop() {
+        mPostedPlay = false;
         post(new Runnable() {
             @Override
             public void run() {
@@ -67,9 +68,9 @@ public class MovieTitleVideoView extends KoolewVideoView implements MediaPlayer.
     private View.OnClickListener mClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (mPlayImage.getVisibility() == VISIBLE) {
+            if (mPostedPlay) {
                 mPlayImage.setVisibility(INVISIBLE);
-                startPlay();
+                MovieTitleVideoView.super.startPlay();
             }
             else {
                 mPlayImage.setVisibility(VISIBLE);
