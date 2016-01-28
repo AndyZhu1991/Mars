@@ -13,7 +13,7 @@ public abstract class BaseActivity extends Activity {
     protected void onResume() {
         super.onResume();
         if (StatisticsUtil.NEED_STATISTICS) {
-            TCAgent.onResume(this);
+            TCAgent.onPageStart(this, getClass().getSimpleName());
         }
     }
 
@@ -21,7 +21,7 @@ public abstract class BaseActivity extends Activity {
     protected void onPause() {
         super.onPause();
         if (StatisticsUtil.NEED_STATISTICS) {
-            TCAgent.onPause(this);
+            TCAgent.onPageEnd(this, getClass().getSimpleName());
         }
     }
 }

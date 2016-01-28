@@ -15,7 +15,7 @@ public abstract class BaseV4FragmentActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         if (isNeedPageStatistics && StatisticsUtil.NEED_STATISTICS) {
-            TCAgent.onResume(this);
+            TCAgent.onPageStart(this, getClass().getSimpleName());
         }
     }
 
@@ -23,7 +23,7 @@ public abstract class BaseV4FragmentActivity extends FragmentActivity {
     protected void onPause() {
         super.onPause();
         if (isNeedPageStatistics && StatisticsUtil.NEED_STATISTICS) {
-            TCAgent.onPause(this);
+            TCAgent.onPageEnd(this, getClass().getSimpleName());
         }
     }
 }
