@@ -13,7 +13,6 @@ import com.koolew.mars.remoteconfig.RemoteConfigManager;
 import com.koolew.mars.statistics.StatisticsUtil;
 import com.koolew.mars.utils.BgmUtil;
 import com.koolew.mars.utils.Downloader;
-import com.koolew.mars.utils.FileUtil;
 import com.koolew.mars.utils.FirstHintUtil;
 import com.koolew.mars.utils.KooSoundUtil;
 import com.koolew.mars.utils.PatchUtil;
@@ -29,7 +28,6 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.tendcloud.tenddata.TCAgent;
 
 import java.io.File;
-import java.io.FileFilter;
 
 import cn.jiajixin.nuwa.Nuwa;
 import cn.jpush.android.api.JPushInterface;
@@ -134,17 +132,13 @@ public class MarsApplication extends Application {
             ThreadUtil.executeOnCommonThread(new Runnable() {
                 @Override
                 public void run() {
-                    FileUtil.deleteFilesFromDir(new File(Utils.getCacheDir(MarsApplication.this)),
-                            new FileFilter() {
-                                @Override
-                                public boolean accept(File pathname) {
-                                    if (pathname.getAbsolutePath().endsWith(".mp4")) {
-                                        return true;
-                                    } else {
-                                        return false;
-                                    }
-                                }
-                            });
+                    File oldCacheDir = new File(Utils.getCacheDir(MarsApplication.this));
+                    File[] files = oldCacheDir.listFiles();
+                    for (File file: files) {
+                        if (file.isFile() && file.getAbsolutePath().endsWith(".mp4")) {
+                            file.delete();
+                        }
+                    }
                 }
             });
         }
