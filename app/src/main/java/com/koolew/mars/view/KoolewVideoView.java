@@ -315,7 +315,7 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
 
     private void onResume() {
         isPaused = false;
-        start();
+        startPlay();
     }
 
     public void stop() {
