@@ -3,8 +3,8 @@ apply plugin: 'bugly'   //添加Bugly符号表插件
 apply plugin: "cn.jiajixin.nuwa"
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion COMPILE_SDK
+    buildToolsVersion BUILD_TOOLS
     sourceSets.main.jni.srcDirs = []
 
     defaultConfig {
@@ -143,6 +143,7 @@ dependencies {
     compile supportDependencies.cardView
     compile supportDependencies.palette
     compile supportDependencies.support13
+    compile supportDependencies.design
     compile 'com.android.support:multidex:1.0.1'
     compile files('libs/universal-image-loader-1.9.3.jar')
     compile files('libs/jpush-sdk-release1.8.0.jar')
@@ -186,7 +187,4 @@ dependencies {
 bugly {
     appId = "900006713"
     appKey = "Pd8PQjX2x1LUDaLV"
-}
-dependencies {
-    compile 'com.android.support:design:23.1.1'
 }
