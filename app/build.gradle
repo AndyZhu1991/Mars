@@ -184,6 +184,10 @@ dependencies {
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.11'
 }
 
+dependencies {
+    compile project(':ratiolayout')
+}
+
 bugly {
     appId = "900006713"
     appKey = "Pd8PQjX2x1LUDaLV"

@@ -6,7 +6,7 @@
     android:background="@drawable/send_danmaku_bg"
     tools:context="com.koolew.mars.SendDanmakuActivity">
 
-    <com.koolew.mars.view.RatioFrameLayout
+    <com.koolew.android.ratiolayout.RatioFrameLayout
         android:id="@+id/play_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                     android:onClick="onDanmakuConfirm"/>
             </LinearLayout>
         </RelativeLayout>
-    </com.koolew.mars.view.RatioFrameLayout>
+    </com.koolew.android.ratiolayout.RatioFrameLayout>
 
     <RelativeLayout
         android:id="@+id/bottom_layout"

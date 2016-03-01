@@ -1,24 +1,21 @@
-package com.koolew.mars.view;
+package com.koolew.android.ratiolayout;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
-
-import com.koolew.mars.R;
+import android.widget.LinearLayout;
 
 /**
- * Created by jinchangzhu on 12/3/15.
+ * Created by jinchangzhu on 12/11/15.
  */
-public class RatioFrameLayout extends FrameLayout {
-
+public class RatioLinearLayout extends LinearLayout {
     private RatioMeasure measure;
 
-    public RatioFrameLayout(Context context) {
+    public RatioLinearLayout(Context context) {
         this(context, null);
     }
 
-    public RatioFrameLayout(Context context, AttributeSet attrs) {
+    public RatioLinearLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.RatioLayout, 0, 0);

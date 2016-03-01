@@ -6,7 +6,7 @@
     tools:context="com.koolew.mars.VideoShootActivity"
     android:orientation="vertical">
 
-    <com.koolew.mars.view.RatioFrameLayout
+    <com.koolew.android.ratiolayout.RatioFrameLayout
         android:id="@+id/preview_frame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
             android:id="@+id/long_video_switch"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
-    </com.koolew.mars.view.RatioFrameLayout>
+    </com.koolew.android.ratiolayout.RatioFrameLayout>
 
     <LinearLayout
         android:id="@+id/bottom_layout"

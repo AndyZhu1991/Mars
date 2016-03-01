@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.koolew.android.ratiolayout.RatioFrameLayout;
+import com.koolew.android.ratiolayout.RatioLinearLayout;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.BaseUserInfo;
@@ -26,8 +28,6 @@ import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.JsonUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.view.KoolewVideoView;
-import com.koolew.mars.view.RatioFrameLayout;
-import com.koolew.mars.view.RatioLinearLayout;
 import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;

@@ -1,9 +1,7 @@
-package com.koolew.mars.view;
+package com.koolew.android.ratiolayout;
 
 import android.content.res.TypedArray;
 import android.view.View;
-
-import com.koolew.mars.R;
 
 /**
  * Created by jinchangzhu on 12/11/15.
