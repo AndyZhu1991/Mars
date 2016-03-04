@@ -1,1 +1,1 @@
-include ':app', ':ratiolayout'
+include ':app', ':ratiolayout', ':javacv'
