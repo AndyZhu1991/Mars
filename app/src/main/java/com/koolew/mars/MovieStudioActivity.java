@@ -29,11 +29,11 @@ import android.widget.Toast;
 
 import com.koolew.android.camerapreview.CameraInstance;
 import com.koolew.android.camerapreview.CameraPreviewFragment;
+import com.koolew.android.utils.FileUtil;
 import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Downloader;
-import com.koolew.mars.utils.FileUtil;
 import com.koolew.mars.utils.FirstHintUtil;
 import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.Utils;

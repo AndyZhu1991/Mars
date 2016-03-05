@@ -2,6 +2,7 @@ package com.koolew.mars.utils;
 
 import android.content.Context;
 
+import com.koolew.android.utils.FileUtil;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
 

@@ -27,11 +27,11 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropM
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
+import com.koolew.android.utils.FileUtil;
 import com.koolew.mars.AppProperty;
 import com.koolew.mars.MarsApplication;
 import com.koolew.mars.R;
 import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.utils.FileUtil;
 import com.koolew.mars.utils.Mp4ParserUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.utils.ViewUtil;

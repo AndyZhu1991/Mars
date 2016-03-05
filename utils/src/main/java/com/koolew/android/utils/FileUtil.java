@@ -1,4 +1,4 @@
-package com.koolew.mars.utils;
+package com.koolew.android.utils;
 
 import android.content.Context;
 

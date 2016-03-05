@@ -2,6 +2,7 @@ package com.koolew.mars.utils;
 
 import android.content.Context;
 
+import com.koolew.android.utils.FileUtil;
 import com.koolew.mars.R;
 
 import java.io.File;

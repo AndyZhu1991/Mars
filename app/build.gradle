@@ -188,6 +188,7 @@ dependencies {
     compile project(':ratiolayout')
     compile project(':javacv')
     compile project(':camerapreview')
+    compile project(':utils')
 }
 
 bugly {
