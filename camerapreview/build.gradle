@@ -16,19 +16,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ['libs']
-        }
-    }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile files('libs/ffmpeg.jar')
-    compile files('libs/javacpp.jar')
-    compile files('libs/javacv.jar')
-    compile files('libs/opencv.jar')
+    compile supportDependencies.supportAnnotation
+}
+
+dependencies {
+    compile project(':javacv')
 }

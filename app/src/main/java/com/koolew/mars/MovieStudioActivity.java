@@ -27,7 +27,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.koolew.mars.camerautils.CameraInstance;
+import com.koolew.android.camerapreview.CameraInstance;
+import com.koolew.android.camerapreview.CameraPreviewFragment;
 import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;

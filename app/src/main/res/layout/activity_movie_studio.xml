@@ -20,7 +20,7 @@
 
             <fragment
                 android:id="@+id/camera_preview"
-                class="com.koolew.mars.CameraPreviewFragment"
+                class="com.koolew.android.camerapreview.CameraPreviewFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </FrameLayout>
