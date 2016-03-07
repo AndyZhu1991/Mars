@@ -16,16 +16,13 @@
         android:layout_marginLeft="@dimen/setting_item_left_margin"
         android:layout_centerVertical="true"
         android:textSize="14sp"
-        android:textColor="@color/settings_item_text_color"/>
-
-    <com.sevenheaven.iosswitch.ShSwitchView
-        xmlns:shSwitch="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/switcher"
-        android:layout_width="50dp"
-        android:layout_height="35dp"
+        android:textColor="#9B9B9B"/>
+    
+    <ImageView
+        android:layout_width="8dp"
+        android:layout_height="13dp"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="@dimen/setting_item_right_margin"
         android:layout_centerVertical="true"
-        shSwitch:tintColor="@color/koolew_light_green"
-        shSwitch:shadowSpace="6dp"/>
+        android:src="@mipmap/into_arrow"/>
 </com.koolew.android.foregroundview.ForegroundRelativeLayout>

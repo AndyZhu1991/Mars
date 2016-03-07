@@ -6,9 +6,7 @@ import android.content.SharedPreferences;
 /**
  * Created by jinchangzhu on 7/2/15.
  */
-public class PreferenceHelper {
-
-    public static final String KEY_PREFERENCE = "koolew-preference";
+public class PreferenceHelper extends com.koolew.android.preference.PreferenceHelper {
 
     public static final String KEY_INTEL_SAVE_DATA = "intelligent save data";
     public static final String KEY_NEW_FRIEND_APPLY = "new friend apply";
@@ -33,10 +31,8 @@ public class PreferenceHelper {
     public static final int INVITED_BIT             = 0x10;
     public static final int INVITATION_ACCEPTED_BIT = 0x20;
 
-    private SharedPreferences mSharedPreference;
-
     public PreferenceHelper(Context context) {
-        mSharedPreference = context.getSharedPreferences(KEY_PREFERENCE, Context.MODE_APPEND);
+        super(context);
     }
 
     public boolean getIntelligentSaveData() {

@@ -1,4 +1,4 @@
-package com.koolew.mars.preference;
+package com.koolew.android.preference;
 
 import android.content.Context;
 import android.view.LayoutInflater;

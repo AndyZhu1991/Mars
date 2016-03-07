@@ -1,10 +1,9 @@
-package com.koolew.mars.preference;
+package com.koolew.android.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.View;
 
-import com.koolew.mars.R;
 import com.sevenheaven.iosswitch.ShSwitchView;
 
 /**
@@ -48,6 +47,6 @@ public class SwitchPreference extends BasePreference
     public void onSwitchStateChange(boolean on) {
         SharedPreferences.Editor editor = mSharedPreference.edit();
         editor.putBoolean(mItemKey, on);
-        editor.commit();
+        editor.apply();
     }
 }

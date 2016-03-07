@@ -194,6 +194,7 @@ dependencies {
     compile project(':videotools')
     compile project(':downloadmanager')
     compile project(':foregroundview')
+    compile project(':preference')
 }
 
 bugly {

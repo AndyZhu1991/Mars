@@ -62,12 +62,6 @@
     <dimen name="ldrawer_gapBetweenBars">3dp</dimen>
     <dimen name="ldrawer_middleBarArrowSize">16dp</dimen>
 
-    <!-- For settings -->
-    <dimen name="settings_group_title_height">35dp</dimen>
-    <dimen name="settings_item_height">45dp</dimen>
-    <dimen name="setting_item_left_margin">17dp</dimen>
-    <dimen name="setting_item_right_margin">16dp</dimen>
-
     <!-- For RequestPasswordFragment -->
     <dimen name="request_password_button_height">40dp</dimen>
     <dimen name="request_password_button_corner_radius">20dp</dimen>

@@ -1,11 +1,9 @@
-package com.koolew.mars.preference;
+package com.koolew.android.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.View;
 import android.widget.TextView;
-
-import com.koolew.mars.R;
 
 /**
  * Created by jinchangzhu on 7/2/15.

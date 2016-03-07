@@ -22,3 +22,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
 }
+
+dependencies {
+    compile 'com.7heaven.ioswidget:iosswitch:0.5'
+    compile project(':foregroundview')
+}
