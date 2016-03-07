@@ -3,6 +3,7 @@ package com.koolew.mars.utils;
 import android.content.Context;
 
 import com.koolew.android.utils.FileUtil;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
 
@@ -39,7 +40,7 @@ public class PatchUtil {
         if (files != null && files.length > 0) {
             // 这个目录下应该只有一个jar文件
             File patchFile = files[0];
-            if (getAppVersionCodeByPatchName(patchFile.getName()) == Utils.getCurrentVersionCode(context)) {
+            if (getAppVersionCodeByPatchName(patchFile.getName()) == Utils.getCurrentVersionCode()) {
                 Nuwa.loadPatch(context, patchFile.getAbsolutePath());
                 loadedPatchCode = getPatchVersionCodeByPatchName(patchFile.getName());
             }
@@ -90,7 +91,7 @@ public class PatchUtil {
             return;
         }
 
-        if (lastAppCode != Utils.getCurrentVersionCode(context)) {
+        if (lastAppCode != Utils.getCurrentVersionCode()) {
             return;
         }
 
@@ -182,7 +183,7 @@ public class PatchUtil {
     }
 
     private static String getExternalTempPath(Context context) {
-        return Utils.getCacheDir(context) + "/temp.jar";
+        return Utils.getCacheDir() + "/temp.jar";
     }
 
     private static File getInternalPatchDir(Context context) {

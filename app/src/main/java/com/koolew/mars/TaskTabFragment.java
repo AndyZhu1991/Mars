@@ -16,7 +16,7 @@ import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.redpoint.RedPointManager;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -198,7 +198,7 @@ public class TaskTabFragment extends RecyclerListFragmentMould<TaskTabFragment.T
         }
 
         private int getTopicContainerWidth() {
-            return Utils.getScreenWidthPixel(getActivity())
+            return Utils.getScreenWidthPixel()
                     - getResources().getDimensionPixelSize(R.dimen.task_item_margin) * 2
                     - getResources().getDimensionPixelSize(R.dimen.task_item_bottom_left_padding)
                     - getResources().getDimensionPixelSize(R.dimen.task_item_bottom_right_padding);
@@ -211,7 +211,7 @@ public class TaskTabFragment extends RecyclerListFragmentMould<TaskTabFragment.T
             textView.setBackgroundResource(R.drawable.task_item_topic_item_bg);
             textView.setSingleLine();
 
-            textView.setTextSize(Utils.pixelsToSp(getActivity(),
+            textView.setTextSize(Utils.pixelsToSp(
                     getResources().getDimension(R.dimen.task_item_topic_item_text_size)));
             textView.setTextColor(0xFF9B9B9B);
 

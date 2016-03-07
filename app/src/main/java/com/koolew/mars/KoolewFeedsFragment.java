@@ -26,7 +26,7 @@ import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.JsonUtil;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.view.KoolewVideoView;
 import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
@@ -305,7 +305,7 @@ public class KoolewFeedsFragment extends RecyclerListFragmentMould<KoolewFeedsFr
             if (item.unread > 0) {
                 holder.newVideoCount.setText(getString(R.string.absolutely_new, item.unread));
                 holder.newVideoCount.setVisibility(View.VISIBLE);
-                holder.title.setPadding(0, 0, (int) Utils.dpToPixels(getContext(), 5) +
+                holder.title.setPadding(0, 0, (int) Utils.dpToPixels(5) +
                         getResources().getDimensionPixelSize(R.dimen.new_video_view_width), 0);
             }
             else {

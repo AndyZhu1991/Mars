@@ -9,7 +9,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 
 /**
  * Created by jinchangzhu on 11/24/15.
@@ -57,7 +57,7 @@ public class RecordButton extends View {
 
         float drawRangeRectSize = Math.min(width, height);
 
-        float strokeWidth = Utils.dpToPixels(getContext(), 2) * (1 - mAnimationProgress * 0.5f);
+        float strokeWidth = Utils.dpToPixels(2) * (1 - mAnimationProgress * 0.5f);
         mRingPaint.setStrokeWidth(strokeWidth);
         float ringRadius = drawRangeRectSize / 2;
         canvas.drawCircle(centerX, centerY, ringRadius - strokeWidth / 2, mRingPaint);

@@ -18,7 +18,7 @@ import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.statistics.BaseActivity;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;

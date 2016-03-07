@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.shizhefei.view.indicator.IndicatorViewPager;
 import com.shizhefei.view.indicator.ScrollIndicatorView;
 import com.shizhefei.view.indicator.slidebar.ColorBar;
@@ -147,7 +147,7 @@ public class FriendFragment extends MainBaseFragment {
             }
             TextView textView = (TextView) convertView;
             textView.setText(fragmentTitles.get(position));
-            int paddingLR = (int) Utils.dpToPixels(getActivity(), 10);
+            int paddingLR = (int) Utils.dpToPixels(10);
             textView.setPadding(paddingLR, 0, paddingLR, 0);
             return convertView;
         }

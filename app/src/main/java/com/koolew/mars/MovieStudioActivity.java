@@ -36,7 +36,7 @@ import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.utils.FirstHintUtil;
 import com.koolew.android.mp4parserutil.Mp4ParserUtil;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.videotools.BlockingRecycleQueue;
 import com.koolew.mars.videotools.CachedRecorder;
 import com.koolew.mars.videotools.SamplesFrame;
@@ -139,7 +139,7 @@ public class MovieStudioActivity extends BaseActivity
 
     private void initViews() {
         mFragmentContainer = findViewById(R.id.fragment_container);
-        int screenWidth = Utils.getScreenWidthPixel(this);
+        int screenWidth = Utils.getScreenWidthPixel();
         mFragmentContainer.getLayoutParams().height = screenWidth * 9 / 16;
         mCameraPreviewFragment =
                 (CameraPreviewFragment) getFragmentManager().findFragmentById(R.id.camera_preview);
@@ -163,7 +163,7 @@ public class MovieStudioActivity extends BaseActivity
                     @Override
                     public void onGlobalLayout() {
                         int recyclerWidth = mRecyclerView.getMeasuredWidth();
-                        int recyclerItemWidth = (int) Utils.dpToPixels(MovieStudioActivity.this, 126);
+                        int recyclerItemWidth = (int) Utils.dpToPixels(126);
                         int paddingLR = (recyclerWidth - recyclerItemWidth) / 2;
                         mRecyclerView.setPadding(paddingLR, 0, paddingLR, 0);
                     }
@@ -460,7 +460,7 @@ public class MovieStudioActivity extends BaseActivity
     }
 
     private void initWorkDir() {
-        mWorkDir = Utils.getCacheDir(this) + System.currentTimeMillis() + "/";
+        mWorkDir = Utils.getCacheDir() + System.currentTimeMillis() + "/";
         new Thread() {
             @Override
             public void run() {

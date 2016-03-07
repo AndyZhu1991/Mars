@@ -9,7 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.koolew.mars.R;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 
 /**
  * Created by jinchangzhu on 12/9/15.
@@ -32,7 +32,7 @@ public class MovieTitleVideoView extends KoolewVideoView implements MediaPlayer.
         mPlayImage = new ImageView(context);
         mPlayImage.setImageResource(R.mipmap.ic_play);
         FrameLayout.LayoutParams lp = new LayoutParams(
-                (int) Utils.dpToPixels(context, 21), (int) Utils.dpToPixels(context, 28));
+                (int) Utils.dpToPixels(21), (int) Utils.dpToPixels(28));
         lp.gravity = Gravity.CENTER;
         addView(mPlayImage, lp);
 

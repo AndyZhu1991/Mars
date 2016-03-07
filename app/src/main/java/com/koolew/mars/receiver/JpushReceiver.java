@@ -14,7 +14,7 @@ import com.koolew.mars.MainActivity;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.redpoint.RedPointManager;
 import com.koolew.mars.utils.UriProcessor;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONException;
@@ -64,7 +64,7 @@ public class JpushReceiver extends BroadcastReceiver {
             try {
                 String extra = bundle.getString(JPushInterface.EXTRA_EXTRA);
                 String url = new JSONObject(extra).getString("url");
-                if (Utils.isAppBackground(context)) {
+                if (Utils.isAppBackground()) {
                     startMainActivityPushed(context, url);
                 }
                 else {

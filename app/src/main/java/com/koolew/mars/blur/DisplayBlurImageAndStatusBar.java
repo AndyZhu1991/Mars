@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.support.v7.graphics.Palette;
 import android.widget.ImageView;
 
-import com.koolew.mars.utils.ColorUtil;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.ColorUtil;
+import com.koolew.android.utils.Utils;
 
 /**
  * Created by jinchangzhu on 8/22/15.

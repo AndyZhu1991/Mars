@@ -19,7 +19,7 @@ import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.Tag;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.BgmUtil;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.view.TitleBarView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -112,7 +112,7 @@ public class VideoEditActivity extends BaseActivity implements View.OnClickListe
         mVideoFrame = (FrameLayout) findViewById(R.id.video_frame);
         mVideoFrame.setOnClickListener(this);
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mVideoFrame.getLayoutParams();
-        lp.height = Utils.getScreenWidthPixel(this) / 4 * 3;
+        lp.height = Utils.getScreenWidthPixel() / 4 * 3;
         mVideoFrame.setLayoutParams(lp);
 
         mPlaySurface = (SurfaceView) findViewById(R.id.play_surface);

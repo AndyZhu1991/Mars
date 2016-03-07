@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 
 /**
  * Created by jinchangzhu on 7/18/15.
@@ -57,7 +57,7 @@ public class VideoPieceView extends View {
         clipEnd = 1;
         isSelected = false;
 
-        sliderWidthPix = (int) Utils.dpToPixels(context, SLIDER_WIDTH_DP);
+        sliderWidthPix = (int) Utils.dpToPixels(SLIDER_WIDTH_DP);
     }
 
     @Override

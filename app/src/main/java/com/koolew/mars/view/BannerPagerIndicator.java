@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.koolew.mars.R;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 
 /**
  * Created by jinchangzhu on 7/15/15.
@@ -40,7 +40,7 @@ public class BannerPagerIndicator extends FrameLayout
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BannerPagerIndicator, 0, 0);
         mIndicatorSize = a.getDimensionPixelSize(R.styleable.BannerPagerIndicator_indicator_size,
-                (int) Utils.dpToPixels(getContext(), DEFAULT_INDICATOR_SIZE));
+                (int) Utils.dpToPixels(DEFAULT_INDICATOR_SIZE));
 
         mUncheckLayout = new LinearLayout(getContext());
         mUncheckLayout.setOrientation(LinearLayout.HORIZONTAL);

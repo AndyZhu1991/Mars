@@ -5,7 +5,7 @@ import android.widget.TextView;
 
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.statistics.BaseActivity;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 
 
 public class CoinRuleActivity extends BaseActivity {

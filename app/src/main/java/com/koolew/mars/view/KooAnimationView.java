@@ -10,7 +10,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 
 import java.util.Random;
 
@@ -50,7 +50,7 @@ public class KooAnimationView extends View {
 
         mParticleCount = DEFAULT_PARTICLE_COUNT;
         mParticleColor = DEFAULT_PARTICLE_COLOR;
-        mParticleRadius = Utils.dpToPixels(context, DEFAULT_PARTICLE_RADIUS_DP);
+        mParticleRadius = Utils.dpToPixels(DEFAULT_PARTICLE_RADIUS_DP);
         mStartRatio = DEFAULT_START_RATIO;
         generateParticles();
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);

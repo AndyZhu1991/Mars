@@ -25,7 +25,8 @@ import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.utils.FirstHintUtil;
 import com.koolew.mars.utils.KooSoundUtil;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
+import com.koolew.mars.utils.TimeSummaryBuilder;
 import com.koolew.mars.view.KooAnimationView;
 import com.koolew.mars.view.KoolewVideoView;
 import com.koolew.mars.view.UserNameView;
@@ -144,7 +145,7 @@ public class VideoItem extends MediaItem {
             ImageLoader.getInstance().displayImage(mItem.videoInfo.getUserInfo().getAvatar(),
                     avatar, ImageLoaderHelper.avatarLoadOptions);
             userName.setUser(mItem.videoInfo.getUserInfo());
-            videoDate.setText(Utils.buildTimeSummary(mContext,
+            videoDate.setText(TimeSummaryBuilder.buildTimeSummary(mContext,
                     mItem.videoInfo.getCreateTime() * 1000));
             videoView.setVideoInfo(mItem.videoInfo);
             setKooAndComment(mItem.videoInfo);

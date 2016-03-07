@@ -20,7 +20,7 @@ import com.koolew.mars.infos.TypedUserInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.utils.ContactUtil;
 import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -368,7 +368,7 @@ public class FriendSimpleAdapter extends LoadMoreAdapter {
             if (itemType == TYPE_FRIEND) {
                 LinearLayout.LayoutParams lp =
                         (LinearLayout.LayoutParams) operateBtn.getLayoutParams();
-                lp.width = (int) Utils.dpToPixels(mContext, 70);
+                lp.width = (int) Utils.dpToPixels(70);
                 operateBtn.setLayoutParams(lp);
             }
             else if (itemType == TYPE_NO_REGISTER) {

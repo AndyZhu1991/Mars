@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.copied.disklrucache.DiskLruCache;
 import com.koolew.mars.downloadmanager.DownloadDestination;
 import com.koolew.mars.downloadmanager.DownloadRequest;

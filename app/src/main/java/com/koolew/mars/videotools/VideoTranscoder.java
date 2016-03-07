@@ -163,7 +163,7 @@ public class VideoTranscoder {
                 else if (grabedFrame.samples != null) {
                     Buffer[] samples = new Buffer[grabedFrame.samples.length];
                     for (int i = 0; i < samples.length; i++) {
-                        samples[i] = com.koolew.mars.utils.Utils.bufferCopy(grabedFrame.samples[i]);
+                        samples[i] = com.koolew.android.utils.Utils.bufferCopy(grabedFrame.samples[i]);
                     }
                     imageQueue.put(new SamplesFrame(grabedFrame.sampleRate,
                             grabedFrame.audioChannels, samples));

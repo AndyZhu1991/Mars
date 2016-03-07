@@ -2,6 +2,8 @@ package com.koolew.mars.utils;
 
 import android.support.v4.view.ViewPager;
 
+import com.koolew.android.utils.ColorUtil;
+
 /**
  * Created by jinchangzhu on 9/21/15.
  */

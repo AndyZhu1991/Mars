@@ -21,7 +21,7 @@ import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.infos.MyAccountInfo.LOGIN_TYPE;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.MaxLengthWatcher;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.webapi.ApiErrorCode;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;

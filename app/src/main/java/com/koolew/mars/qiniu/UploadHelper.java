@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.android.mp4parserutil.Mp4ParserUtil;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
 import com.qiniu.android.storage.UploadManager;

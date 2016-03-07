@@ -30,7 +30,7 @@ public class Utils {
         new Thread() {
             @Override
             public void run() {
-                File temp = new File(com.koolew.mars.utils.Utils.getCacheDir(context)
+                File temp = new File(com.koolew.android.utils.Utils.getCacheDir()
                         + File.separator + "init.mp4");
                 MyFFmpegFrameRecorder recorder = new MyFFmpegFrameRecorder(temp, 480, 360, 1);
                 try {

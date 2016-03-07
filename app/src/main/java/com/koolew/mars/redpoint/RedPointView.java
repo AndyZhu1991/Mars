@@ -10,7 +10,7 @@ import android.view.Gravity;
 import android.widget.TextView;
 
 import com.koolew.mars.R;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 
 /**
  * Created by jinchangzhu on 10/7/15.
@@ -53,7 +53,7 @@ public class RedPointView extends TextView {
 
         mBgSquare = Utils.getMaxCenterSquare(new Rect(0, 0, getMeasuredWidth(), getMeasuredHeight()));
 
-        setTextSize(Utils.pixelsToSp(getContext(), mBgSquare.width() * 2 / 3));
+        setTextSize(Utils.pixelsToSp(mBgSquare.width() * 2 / 3));
     }
 
     @Override

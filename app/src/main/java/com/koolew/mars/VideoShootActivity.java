@@ -37,7 +37,7 @@ import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.AbsLongVideoSwitch;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.PictureSelectUtil;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.videotools.RealTimeRgbaRecorderWithAutoAudio;
 import com.koolew.mars.videotools.VideoTranscoder;
 import com.koolew.mars.view.RecordButton;
@@ -189,17 +189,17 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
         mVideoThumb = (ImageView) findViewById(R.id.video_thumb);
         FrameLayout.LayoutParams vtlp = (FrameLayout.LayoutParams) mVideoThumb.getLayoutParams();
-        vtlp.height = Utils.getScreenWidthPixel(this) / 4 * 3;
+        vtlp.height = Utils.getScreenWidthPixel() / 4 * 3;
         mVideoThumb.setLayoutParams(vtlp);
 
         mPlayImage = (ImageView) findViewById(R.id.play);
         FrameLayout.LayoutParams pilp = (FrameLayout.LayoutParams) mPlayImage.getLayoutParams();
-        pilp.topMargin = (int) ((Utils.getScreenWidthPixel(this) / 4 * 3 - Utils.dpToPixels(this, 39)) / 2);
+        pilp.topMargin = (int) ((Utils.getScreenWidthPixel() / 4 * 3 - Utils.dpToPixels(39)) / 2);
         mPlayImage.setLayoutParams(pilp);
 
         mPlaybackSurface = (SurfaceView) findViewById(R.id.playback_surface);
         FrameLayout.LayoutParams pvlp = (FrameLayout.LayoutParams) mPlaybackSurface.getLayoutParams();
-        pvlp.height = Utils.getScreenWidthPixel(this) / 4 * 3;
+        pvlp.height = Utils.getScreenWidthPixel() / 4 * 3;
         mPlaybackSurface.setLayoutParams(pvlp);
         mPlaybackSurface.getHolder().addCallback(mPlaybackSurfaceCallback);
 
@@ -576,7 +576,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
         ObjectAnimator filterLayoutAnimator = ObjectAnimator
                 .ofFloat(mFilterLayout, "y", filterLayoutOriginTop,
-                        filterLayoutOriginTop + Utils.dpToPixels(this, 80))
+                        filterLayoutOriginTop + Utils.dpToPixels(80))
                 .setDuration(FILTER_LAYOUT_ANIMATOR_DURATION);
 
         ObjectAnimator arrowAnimator = ObjectAnimator

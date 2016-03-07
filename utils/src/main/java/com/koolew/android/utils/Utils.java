@@ -1,4 +1,4 @@
-package com.koolew.mars.utils;
+package com.koolew.android.utils;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -23,8 +23,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.koolew.mars.R;
-
 import java.io.File;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
@@ -32,8 +30,6 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -49,19 +45,19 @@ public class Utils {
         Utils.context = context;
     }
 
-    public static float getScreenWidthDp(Context context) {
-        return pixelsToDp(context, getScreenWidthPixel(context));
+    public static float getScreenWidthDp() {
+        return pixelsToDp(getScreenWidthPixel());
     }
 
-    public static int getScreenWidthPixel(Context context) {
-        return getDisplayMetrics(context).widthPixels;
+    public static int getScreenWidthPixel() {
+        return getDisplayMetrics().widthPixels;
     }
 
-    public static int getScreenHeightPixel(Context context) {
-        return getDisplayMetrics(context).heightPixels;
+    public static int getScreenHeightPixel() {
+        return getDisplayMetrics().heightPixels;
     }
 
-    private static DisplayMetrics getDisplayMetrics(Context context) {
+    private static DisplayMetrics getDisplayMetrics() {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics ();
@@ -69,34 +65,30 @@ public class Utils {
         return outMetrics;
     }
 
-    public static float pixelsToSp(Context context, float px) {
+    public static float pixelsToSp(float px) {
         float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
         return px / scaledDensity;
     }
 
-    public static float spToPixels(Context context, float sp) {
+    public static float spToPixels(float sp) {
         float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
         return sp * scaledDensity;
     }
 
-    public static float pixelsToDp(final Context context, final float px) {
+    public static float pixelsToDp(final float px) {
         return px / context.getResources().getDisplayMetrics().density;
     }
 
-    public static float dpToPixels(final Context context, final float dp) {
+    public static float dpToPixels(final float dp) {
         return dp * context.getResources().getDisplayMetrics().density;
     }
 
-    public static String getCacheDir(Context context) {
+    public static String getCacheDir() {
         File cacheDir = context.getExternalCacheDir();
         if (cacheDir == null) {
             cacheDir = context.getCacheDir();
         }
         return cacheDir.getAbsolutePath() + "/";
-    }
-
-    public static String getCacheDir() {
-        return getCacheDir(context);
     }
 
     public static void showSoftKeyInput(final EditText editText, int delay) {
@@ -159,7 +151,7 @@ public class Utils {
         return paint.measureText(text);
     }
 
-    public static int getStatusBarHeightPixel(Context context) {
+    public static int getStatusBarHeightPixel() {
         Resources resources = context.getResources();
         int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
@@ -168,7 +160,7 @@ public class Utils {
         return 0;
     }
 
-    public static int getActionBarHeightPixel(Context context) {
+    public static int getActionBarHeightPixel() {
         TypedValue tv = new TypedValue();
         if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
             return TypedValue.complexToDimensionPixelSize(
@@ -177,7 +169,7 @@ public class Utils {
         return 0;
     }
 
-    public static int getNavigationBarHeightPixel(Context context) {
+    public static int getNavigationBarHeightPixel() {
         Resources resources = context.getResources();
         int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
         if (resourceId > 0) {
@@ -199,7 +191,7 @@ public class Utils {
         }
     }
 
-    public static boolean isAppBackground(final Context context) {
+    public static boolean isAppBackground() {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
         if (!tasks.isEmpty()) {
@@ -299,30 +291,6 @@ public class Utils {
                 });
     }
 
-
-    private static long MILLIS_IN_SECOND = 1000;
-    private static long MILLIS_IN_MINUTE = MILLIS_IN_SECOND * 60;
-    private static long MILLIS_IN_HOUR   = MILLIS_IN_MINUTE * 60;
-    private static long MILLIS_IN_DAY    = MILLIS_IN_HOUR   * 24;
-    public static String buildTimeSummary(Context context, long millis) {
-        long millisDiff = System.currentTimeMillis() - millis;
-        if (millisDiff < 0) {
-            millisDiff = 0;
-        }
-
-        if (millisDiff < MILLIS_IN_MINUTE) {
-            return context.getString(R.string.before_n_seconds, millisDiff / MILLIS_IN_SECOND);
-        }
-        else if (millisDiff < MILLIS_IN_HOUR) {
-            return context.getString(R.string.before_n_minutes, millisDiff / MILLIS_IN_MINUTE);
-        }
-        else if (millisDiff < MILLIS_IN_DAY) {
-            return context.getString(R.string.before_n_hours, millisDiff / MILLIS_IN_HOUR);
-        }
-
-        return new SimpleDateFormat("yyyy-MM-dd").format(new Date(millis));
-    }
-
     public static Buffer bufferCopy(Buffer original) {
         if (original instanceof ByteBuffer) {
             return byteBufferCopy((ByteBuffer) original);
@@ -389,7 +357,7 @@ public class Utils {
         return clone;
     }
 
-    public static int getCurrentVersionCode(Context context) {
+    public static int getCurrentVersionCode() {
         PackageManager manager = context.getPackageManager();
         PackageInfo info = null;
         try {
@@ -398,10 +366,6 @@ public class Utils {
             e.printStackTrace();
         }
         return info.versionCode;
-    }
-
-    public static int getCurrentVersionCode() {
-        return getCurrentVersionCode(context);
     }
 
     public static void setWindowAlpha(Activity activity, float alpha) {

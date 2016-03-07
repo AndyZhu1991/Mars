@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.koolew.mars.R;
-import com.koolew.mars.utils.ColorUtil;
+import com.koolew.android.utils.ColorUtil;
 
 /**
  * Created by jinchangzhu on 6/3/15.
