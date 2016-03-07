@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.koolew.mars.view;
+package com.koolew.android.foregroundview;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -26,11 +25,9 @@ import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 
-import com.koolew.mars.R;
-
-public class ForegroundLinearLayout extends LinearLayout {
+public class ForegroundImageView extends ImageView {
 
   // UI
   private Drawable foreground;
@@ -42,15 +39,15 @@ public class ForegroundLinearLayout extends LinearLayout {
   private boolean backgroundAsForeground = false;
 
   // Constructors
-  public ForegroundLinearLayout(Context context) {
+  public ForegroundImageView(Context context) {
     super(context);
   }
 
-  public ForegroundLinearLayout(Context context, AttributeSet attrs) {
+  public ForegroundImageView(Context context, AttributeSet attrs) {
     this(context, attrs, 0);
   }
 
-  public ForegroundLinearLayout(Context context, AttributeSet attrs, int defStyle) {
+  public ForegroundImageView(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
 
     final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ForegroundLayout, defStyle, 0);
@@ -76,6 +73,10 @@ public class ForegroundLinearLayout extends LinearLayout {
     }
 
     a.recycle();
+  }
+
+  @TargetApi(Build.VERSION_CODES.LOLLIPOP) public ForegroundImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    super(context, attrs, defStyleAttr, defStyleRes);
   }
 
   /**
@@ -179,3 +180,4 @@ public class ForegroundLinearLayout extends LinearLayout {
   }
   
 }
+

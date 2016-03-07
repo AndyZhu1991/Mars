@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.koolew.mars.view;
+
+package com.koolew.android.foregroundview;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -25,11 +26,9 @@ import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.koolew.mars.R;
-
-public class ForegroundImageView extends ImageView {
+public class ForegroundTextView extends TextView {
 
   // UI
   private Drawable foreground;
@@ -41,15 +40,15 @@ public class ForegroundImageView extends ImageView {
   private boolean backgroundAsForeground = false;
 
   // Constructors
-  public ForegroundImageView(Context context) {
+  public ForegroundTextView(Context context) {
     super(context);
   }
 
-  public ForegroundImageView(Context context, AttributeSet attrs) {
+  public ForegroundTextView(Context context, AttributeSet attrs) {
     this(context, attrs, 0);
   }
 
-  public ForegroundImageView(Context context, AttributeSet attrs, int defStyle) {
+  public ForegroundTextView(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
 
     final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ForegroundLayout, defStyle, 0);
@@ -75,10 +74,6 @@ public class ForegroundImageView extends ImageView {
     }
 
     a.recycle();
-  }
-
-  @TargetApi(Build.VERSION_CODES.LOLLIPOP) public ForegroundImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-    super(context, attrs, defStyleAttr, defStyleRes);
   }
 
   /**
@@ -180,6 +175,4 @@ public class ForegroundImageView extends ImageView {
     }
     return super.onTouchEvent(e);
   }
-  
 }
-

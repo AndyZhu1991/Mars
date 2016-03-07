@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.koolew.mars.view.ForegroundRelativeLayout
+<com.koolew.android.foregroundview.ForegroundRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -25,4 +25,4 @@
         android:layout_marginRight="@dimen/setting_item_right_margin"
         android:layout_centerVertical="true"
         android:src="@mipmap/into_arrow"/>
-</com.koolew.mars.view.ForegroundRelativeLayout>
+</com.koolew.android.foregroundview.ForegroundRelativeLayout>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.koolew.mars.view;
+package com.koolew.android.foregroundview;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -27,8 +27,6 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
-
-import com.koolew.mars.R;
 
 public class ForegroundRelativeLayout extends RelativeLayout {
 

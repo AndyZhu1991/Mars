@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.koolew.mars.view;
+package com.koolew.android.foregroundview;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -26,11 +26,9 @@ import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
-import com.koolew.mars.R;
-
-public class ForegroundTextView extends TextView {
+public class ForegroundLinearLayout extends LinearLayout {
 
   // UI
   private Drawable foreground;
@@ -42,15 +40,15 @@ public class ForegroundTextView extends TextView {
   private boolean backgroundAsForeground = false;
 
   // Constructors
-  public ForegroundTextView(Context context) {
+  public ForegroundLinearLayout(Context context) {
     super(context);
   }
 
-  public ForegroundTextView(Context context, AttributeSet attrs) {
+  public ForegroundLinearLayout(Context context, AttributeSet attrs) {
     this(context, attrs, 0);
   }
 
-  public ForegroundTextView(Context context, AttributeSet attrs, int defStyle) {
+  public ForegroundLinearLayout(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
 
     final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ForegroundLayout, defStyle, 0);
@@ -177,4 +175,5 @@ public class ForegroundTextView extends TextView {
     }
     return super.onTouchEvent(e);
   }
+  
 }
