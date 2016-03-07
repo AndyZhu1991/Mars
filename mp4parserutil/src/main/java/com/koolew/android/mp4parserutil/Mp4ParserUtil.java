@@ -8,6 +8,7 @@ import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
 import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
 import com.googlecode.mp4parser.authoring.tracks.AppendTrack;
 import com.googlecode.mp4parser.authoring.tracks.CroppedTrack;
+import com.googlecode.mp4parser.util.Matrix;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -317,5 +318,35 @@ public class Mp4ParserUtil {
         }
 
         return new long[] {startSample1, endSample1};
+    }
+
+    private static Track findTrack(List<Track> tracks, String trackHandlerKey) {
+        for (Track track: tracks) {
+            if (track.getHandler().equals(trackHandlerKey)) {
+                return track;
+            }
+        }
+        return null;
+    }
+
+    public static int getVideoRotation(String filePath) throws IOException {
+        Matrix matrix = findTrack(MovieCreator.build(filePath).getTracks(), VIDEO_TRACK_HANDLER_KEY)
+                .getTrackMetaData()
+                .getMatrix();
+        if (matrix.equals(Matrix.ROTATE_0)) {
+            return 0;
+        }
+        else if (matrix.equals(Matrix.ROTATE_90)) {
+            return 90;
+        }
+        else if (matrix.equals(Matrix.ROTATE_180)) {
+            return 180;
+        }
+        else if (matrix.equals(Matrix.ROTATE_270)) {
+            return 270;
+        }
+        else {
+            return 0;
+        }
     }
 }

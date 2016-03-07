@@ -29,17 +29,17 @@ import android.widget.Toast;
 
 import com.koolew.android.camerapreview.CameraInstance;
 import com.koolew.android.camerapreview.CameraPreviewFragment;
+import com.koolew.android.mp4parserutil.Mp4ParserUtil;
 import com.koolew.android.utils.FileUtil;
+import com.koolew.android.utils.Utils;
+import com.koolew.android.videotools.BlockingRecycleQueue;
+import com.koolew.android.videotools.CachedRecorder;
+import com.koolew.android.videotools.SamplesFrame;
 import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.utils.FirstHintUtil;
-import com.koolew.android.mp4parserutil.Mp4ParserUtil;
-import com.koolew.android.utils.Utils;
-import com.koolew.mars.videotools.BlockingRecycleQueue;
-import com.koolew.mars.videotools.CachedRecorder;
-import com.koolew.mars.videotools.SamplesFrame;
 import com.koolew.mars.view.ProgressView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -568,7 +568,7 @@ public class MovieStudioActivity extends BaseActivity
         }
 
         public String generateThumb() {
-            com.koolew.mars.videotools.Utils.saveVideoFrame(
+            com.koolew.android.videotools.Utils.saveVideoFrame(
                     mAdapter.items.get(0).getVideoPath(), getThumbPath());
             return new File(getThumbPath()).exists() ? getThumbPath() : null;
         }
@@ -634,7 +634,7 @@ public class MovieStudioActivity extends BaseActivity
             for (int i = 0; i < endFramePoints.length; i++) {
                 endFramePoints[i] = mMovieTopicInfo.getFragments()[i].getEnd();
             }
-            com.koolew.mars.videotools.Utils.
+            com.koolew.android.videotools.Utils.
                     splitVideoByFrame(originVideoPath, endFramePoints, tempFiles);
 
             List<String> splitedAudioFiles = new ArrayList<>();

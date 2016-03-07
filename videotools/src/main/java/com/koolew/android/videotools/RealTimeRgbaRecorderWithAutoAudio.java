@@ -1,22 +1,19 @@
-package com.koolew.mars.videotools;
+package com.koolew.android.videotools;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.util.Log;
 
-import com.koolew.mars.view.RecordingSessionView;
-
 import java.nio.Buffer;
 import java.nio.ShortBuffer;
 
-import static com.koolew.mars.videotools.Params.AUDIO_SAMPLE_RATE;
+import static com.koolew.android.videotools.Params.AUDIO_SAMPLE_RATE;
 
 /**
  * Created by jinchangzhu on 9/10/15.
  */
-public class RealTimeRgbaRecorderWithAutoAudio extends CachedRecorder
-        implements RecordingSessionView.RecordingItem {
+public class RealTimeRgbaRecorderWithAutoAudio extends CachedRecorder {
 
     private boolean isEncoding = false;
 
@@ -45,18 +42,6 @@ public class RealTimeRgbaRecorderWithAutoAudio extends CachedRecorder
     public void stopSynced() {
         isEncoding = false;
         super.stopSynced();
-    }
-
-    @Override
-    public long getCurrentLength() {
-        return (lastFrameTimeStamp - firstFrameTimeStamp) / 1000;
-    }
-
-    @Override
-    public RecordingSessionView.VideoPieceItem completeSynced() {
-        stopSynced();
-        return new RecordingSessionView.VideoPieceItem(
-                System.currentTimeMillis(), filePath, getCurrentLength());
     }
 
     public static int audioBufferSize = AudioRecord.getMinBufferSize(AUDIO_SAMPLE_RATE,

@@ -38,8 +38,8 @@ import com.koolew.mars.utils.AbsLongVideoSwitch;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.PictureSelectUtil;
 import com.koolew.android.utils.Utils;
-import com.koolew.mars.videotools.RealTimeRgbaRecorderWithAutoAudio;
-import com.koolew.mars.videotools.VideoTranscoder;
+import com.koolew.android.videotools.RealTimeRgbaRecorderWithAutoAudio;
+import com.koolew.android.videotools.VideoTranscoder;
 import com.koolew.mars.view.RecordButton;
 import com.koolew.mars.view.RecordingSessionView;
 
@@ -94,7 +94,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
     private boolean isRecording = false;
 
-    private RealTimeRgbaRecorderWithAutoAudio mRecorder;
+    private RecordingSessionView.RealTimeRecorderItem mRecorder;
 
     // MODE_PREVIEW or MODE_PLAYBACK
     private int mCurrentSurfaceMode;
@@ -335,7 +335,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     }
 
     private void startRecord() {
-        mRecorder = new RealTimeRgbaRecorderWithAutoAudio(
+        mRecorder = new RecordingSessionView.RealTimeRecorderItem(
                 recordingSessionView.generateAVideoFilePath(),
                 AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
         recordingSessionView.startOneRecording(mRecorder);

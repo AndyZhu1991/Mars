@@ -1,17 +1,9 @@
-package com.koolew.mars.videotools;
+package com.koolew.android.videotools;
 
 import android.util.Log;
 
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacv.FrameRecorder;
-
-import static com.koolew.mars.videotools.Params.AUDIO_BIT_RATE;
-import static com.koolew.mars.videotools.Params.AUDIO_CODEC;
-import static com.koolew.mars.videotools.Params.AUDIO_SAMPLE_RATE;
-import static com.koolew.mars.videotools.Params.OUTPUT_FORMAT;
-import static com.koolew.mars.videotools.Params.VIDEO_BIT_RATE;
-import static com.koolew.mars.videotools.Params.VIDEO_CODEC;
-import static com.koolew.mars.videotools.Params.VIDEO_FRAME_RATE;
 
 /**
  * Created by jinchangzhu on 9/10/15.
@@ -50,13 +42,13 @@ public abstract class CachedRecorder {
 
     protected void initRecorder() {
         //mFFmpegFrameRecorder.setInterleaved(true);
-        recorder.setFormat(OUTPUT_FORMAT);
-        recorder.setSampleRate(AUDIO_SAMPLE_RATE);
-        recorder.setFrameRate(VIDEO_FRAME_RATE);
-        recorder.setVideoCodec(VIDEO_CODEC);
-        recorder.setAudioCodec(AUDIO_CODEC);
-        recorder.setVideoBitrate(VIDEO_BIT_RATE);
-        recorder.setAudioBitrate(AUDIO_BIT_RATE);
+        recorder.setFormat(Params.OUTPUT_FORMAT);
+        recorder.setSampleRate(Params.AUDIO_SAMPLE_RATE);
+        recorder.setFrameRate(Params.VIDEO_FRAME_RATE);
+        recorder.setVideoCodec(Params.VIDEO_CODEC);
+        recorder.setAudioCodec(Params.AUDIO_CODEC);
+        recorder.setVideoBitrate(Params.VIDEO_BIT_RATE);
+        recorder.setAudioBitrate(Params.AUDIO_BIT_RATE);
 
         // tradeoff between quality and encode speed
         // possible values are ultrafast,superfast, veryfast, faster, fast,
@@ -149,11 +141,11 @@ public abstract class CachedRecorder {
     }
 
     private long adjustTimeStamp(long timeStamp) {
-        long framePerUsec = 1000000 / VIDEO_FRAME_RATE;
+        long framePerUsec = 1000000 / Params.VIDEO_FRAME_RATE;
         return timeStamp / framePerUsec * framePerUsec;
     }
 
-    public static final long FRAME_PER_USEC = 1000000 / VIDEO_FRAME_RATE;
+    public static final long FRAME_PER_USEC = 1000000 / Params.VIDEO_FRAME_RATE;
     private static long adjustTimestamp(long timestamp) {
         return timestamp / FRAME_PER_USEC * FRAME_PER_USEC;
     }

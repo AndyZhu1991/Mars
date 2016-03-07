@@ -61,7 +61,7 @@ public class MarsApplication extends Application {
         if (StatisticsUtil.NEED_STATISTICS) {
             TCAgent.init(this);
         }
-        com.koolew.mars.videotools.Utils.preloadRecorder(this);
+        com.koolew.android.videotools.Utils.preloadRecorder(this);
         FirstHintUtil.init(this);
         Downloader.init();
         KooSoundUtil.init(this);

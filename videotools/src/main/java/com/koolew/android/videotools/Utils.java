@@ -1,4 +1,4 @@
-package com.koolew.mars.videotools;
+package com.koolew.android.videotools;
 
 import android.content.Context;
 import android.util.Log;
@@ -11,15 +11,13 @@ import org.bytedeco.javacv.FrameRecorder;
 
 import java.io.File;
 
-import wseemann.media.FFmpegMediaMetadataRetriever;
-
-import static com.koolew.mars.videotools.Params.AUDIO_BIT_RATE;
-import static com.koolew.mars.videotools.Params.AUDIO_CODEC;
-import static com.koolew.mars.videotools.Params.AUDIO_SAMPLE_RATE;
-import static com.koolew.mars.videotools.Params.OUTPUT_FORMAT;
-import static com.koolew.mars.videotools.Params.VIDEO_BIT_RATE;
-import static com.koolew.mars.videotools.Params.VIDEO_CODEC;
-import static com.koolew.mars.videotools.Params.VIDEO_FRAME_RATE;
+import static com.koolew.android.videotools.Params.AUDIO_BIT_RATE;
+import static com.koolew.android.videotools.Params.AUDIO_CODEC;
+import static com.koolew.android.videotools.Params.AUDIO_SAMPLE_RATE;
+import static com.koolew.android.videotools.Params.OUTPUT_FORMAT;
+import static com.koolew.android.videotools.Params.VIDEO_BIT_RATE;
+import static com.koolew.android.videotools.Params.VIDEO_CODEC;
+import static com.koolew.android.videotools.Params.VIDEO_FRAME_RATE;
 
 /**
  * Created by jinchangzhu on 9/10/15.
@@ -197,23 +195,6 @@ public class Utils {
         } catch (FrameGrabber.Exception e) {
             e.printStackTrace();
         }
-    }
-
-
-    public static int getVideoDegree(String videoPath) {
-        FFmpegMediaMetadataRetriever fmmr = new FFmpegMediaMetadataRetriever();
-        fmmr.setDataSource(videoPath);
-        String rotation = fmmr.extractMetadata(
-                FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
-        fmmr.release();
-        int degree;
-        try {
-            degree = Integer.valueOf(rotation);
-        }
-        catch (NumberFormatException nfe) {
-            degree = 0;
-        }
-        return degree;
     }
 
     /**

@@ -1,4 +1,6 @@
-package com.koolew.mars.videotools;
+package com.koolew.android.videotools;
+
+import com.koolew.android.mp4parserutil.Mp4ParserUtil;
 
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_core.IplImage;
@@ -7,6 +9,7 @@ import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.FrameRecorder;
 
+import java.io.IOException;
 import java.nio.Buffer;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -43,7 +46,12 @@ public class VideoTranscoder {
     }
 
     public void start() {
-        int degree = Utils.getVideoDegree(srcFile);
+        int degree = 0;
+        try {
+            degree = Mp4ParserUtil.getVideoRotation(srcFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (degree != 90 && degree != 180 && degree != 270) {
             degree = 0;
         }

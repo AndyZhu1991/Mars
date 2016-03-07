@@ -1,4 +1,4 @@
-package com.koolew.mars.videotools;
+package com.koolew.android.videotools;
 
 /**
  * Created by jinchangzhu on 9/16/15.

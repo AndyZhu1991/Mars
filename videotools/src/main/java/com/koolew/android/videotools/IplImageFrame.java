@@ -1,4 +1,4 @@
-package com.koolew.mars.videotools;
+package com.koolew.android.videotools;
 
 import org.bytedeco.javacpp.opencv_core;
 

@@ -28,6 +28,7 @@ import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchAct
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.koolew.android.utils.FileUtil;
+import com.koolew.android.videotools.RealTimeRgbaRecorderWithAutoAudio;
 import com.koolew.mars.AppProperty;
 import com.koolew.mars.MarsApplication;
 import com.koolew.mars.R;
@@ -428,7 +429,7 @@ public class RecordingSessionView extends LinearLayout {
             String cutted;
             if (videoItem.clipStart != 0 || videoItem.clipEnd != videoItem.videoLen || isMi3()) {
                 cutted = videoItem.fileName + ".mp4";
-                com.koolew.mars.videotools.Utils.cutVideo(videoItem.fileName, cutted,
+                com.koolew.android.videotools.Utils.cutVideo(videoItem.fileName, cutted,
                         videoItem.clipStart, videoItem.clipEnd);
             }
             else {
@@ -463,7 +464,7 @@ public class RecordingSessionView extends LinearLayout {
     }
 
     public void generateThumb() {
-        com.koolew.mars.videotools.Utils.saveVideoFrame(
+        com.koolew.android.videotools.Utils.saveVideoFrame(
                 getConcatedVideoName(), getThumbName());
     }
 
@@ -808,6 +809,25 @@ public class RecordingSessionView extends LinearLayout {
         private int millis2Pixels(long millis) {
             long totalLength = (long) (AppProperty.getRecordVideoMaxLen() * 1000);
             return (int) (getWidth() * (1.0f * millis / totalLength));
+        }
+    }
+
+    public static class RealTimeRecorderItem extends RealTimeRgbaRecorderWithAutoAudio implements RecordingItem {
+
+        public RealTimeRecorderItem(String filePath, int width, int height) {
+            super(filePath, width, height);
+        }
+
+        @Override
+        public long getCurrentLength() {
+            return (lastFrameTimeStamp - firstFrameTimeStamp) / 1000;
+        }
+
+        @Override
+        public VideoPieceItem completeSynced() {
+            stopSynced();
+            return new RecordingSessionView.VideoPieceItem(
+                    System.currentTimeMillis(), filePath, getCurrentLength());
         }
     }
 }
