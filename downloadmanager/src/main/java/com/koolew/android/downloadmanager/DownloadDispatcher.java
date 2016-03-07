@@ -1,4 +1,4 @@
-package com.koolew.mars.downloadmanager;
+package com.koolew.android.downloadmanager;
 
 import android.os.Process;
 import android.util.Log;

@@ -38,7 +38,7 @@ import com.koolew.android.videotools.SamplesFrame;
 import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.utils.Downloader;
+import com.koolew.android.downloadmanager.Downloader;
 import com.koolew.mars.utils.FirstHintUtil;
 import com.koolew.mars.view.ProgressView;
 import com.nostra13.universalimageloader.core.ImageLoader;

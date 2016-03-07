@@ -1,6 +1,6 @@
-package com.koolew.mars.downloadmanager;
+package com.koolew.android.downloadmanager;
 
-import com.koolew.mars.copied.disklrucache.DiskLruCache;
+import com.koolew.android.downloadmanager.disklrucache.DiskLruCache;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

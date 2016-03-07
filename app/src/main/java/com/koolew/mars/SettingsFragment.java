@@ -26,7 +26,7 @@ import com.koolew.mars.preference.SwitchPreference;
 import com.koolew.mars.preference.TreePreference;
 import com.koolew.mars.update.Updater;
 import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.utils.Downloader;
+import com.koolew.android.downloadmanager.Downloader;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 

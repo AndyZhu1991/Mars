@@ -12,7 +12,7 @@ import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.remoteconfig.RemoteConfigManager;
 import com.koolew.mars.statistics.StatisticsUtil;
 import com.koolew.mars.utils.BgmUtil;
-import com.koolew.mars.utils.Downloader;
+import com.koolew.android.downloadmanager.Downloader;
 import com.koolew.mars.utils.FirstHintUtil;
 import com.koolew.mars.utils.KooSoundUtil;
 import com.koolew.mars.utils.PatchUtil;

@@ -1,1 +1,1 @@
-include ':app', ':ratiolayout', ':javacv', ':camerapreview', ':utils', ':mp4parserutil', ':videotools'
+include ':app', ':ratiolayout', ':javacv', ':camerapreview', ':utils', ':mp4parserutil', ':videotools', ':downloadmanager'

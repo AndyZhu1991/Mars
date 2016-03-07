@@ -1,16 +1,12 @@
-package com.koolew.mars.utils;
+package com.koolew.android.downloadmanager;
 
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
+import com.koolew.android.downloadmanager.disklrucache.DiskLruCache;
 import com.koolew.android.utils.Utils;
-import com.koolew.mars.copied.disklrucache.DiskLruCache;
-import com.koolew.mars.downloadmanager.DownloadDestination;
-import com.koolew.mars.downloadmanager.DownloadRequest;
-import com.koolew.mars.downloadmanager.DownloadStatusListener;
-import com.koolew.mars.downloadmanager.ThinDownloadManager;
 
 import java.io.File;
 import java.io.IOException;

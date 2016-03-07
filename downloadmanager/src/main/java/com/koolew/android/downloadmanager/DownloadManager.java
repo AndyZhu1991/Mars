@@ -1,4 +1,4 @@
-package com.koolew.mars.downloadmanager;
+package com.koolew.android.downloadmanager;
 
 public interface DownloadManager {
 

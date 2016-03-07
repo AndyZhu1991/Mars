@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.koolew.mars.copied.disklrucache;
+package com.koolew.android.downloadmanager.disklrucache;
 
 import java.io.BufferedWriter;
 import java.io.Closeable;
