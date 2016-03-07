@@ -32,7 +32,7 @@ import com.koolew.mars.AppProperty;
 import com.koolew.mars.MarsApplication;
 import com.koolew.mars.R;
 import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.utils.Mp4ParserUtil;
+import com.koolew.android.mp4parserutil.Mp4ParserUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.utils.ViewUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;

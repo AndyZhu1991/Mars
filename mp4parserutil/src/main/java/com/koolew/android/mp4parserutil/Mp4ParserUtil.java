@@ -1,4 +1,4 @@
-package com.koolew.mars.utils;
+package com.koolew.android.mp4parserutil;
 
 import com.coremedia.iso.IsoFile;
 import com.coremedia.iso.boxes.Container;

@@ -35,7 +35,7 @@ import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.Downloader;
 import com.koolew.mars.utils.FirstHintUtil;
-import com.koolew.mars.utils.Mp4ParserUtil;
+import com.koolew.android.mp4parserutil.Mp4ParserUtil;
 import com.koolew.mars.utils.Utils;
 import com.koolew.mars.videotools.BlockingRecycleQueue;
 import com.koolew.mars.videotools.CachedRecorder;

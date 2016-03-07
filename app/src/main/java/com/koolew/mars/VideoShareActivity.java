@@ -23,7 +23,7 @@ import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.qiniu.UploadHelper;
 import com.koolew.mars.share.ShareManager;
 import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.utils.Mp4ParserUtil;
+import com.koolew.android.mp4parserutil.Mp4ParserUtil;
 import com.koolew.mars.view.TitleBarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
