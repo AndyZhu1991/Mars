@@ -439,7 +439,12 @@ public class RecordingSessionView extends LinearLayout {
 
         String concatedFilePath = getConcatedVideoName();
         try {
-            Mp4ParserUtil.mp4Cat(videos, concatedFilePath);
+            if (videos.size() == 1) {
+                FileUtil.copyFile(videos.get(0), concatedFilePath);
+            }
+            else {
+                Mp4ParserUtil.mp4Cat(videos, concatedFilePath);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
