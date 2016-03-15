@@ -65,7 +65,7 @@ public class FirstLoginActivity extends BaseActivity implements PlatformActionLi
 
         mProgressDialog = new ProgressDialog(this);
 
-        mAuthInfo = new AuthInfo(this, "3515609297", "http://www.koolew.com/auth/weibo", SCOPE);
+        mAuthInfo = new AuthInfo(this, WeiboConstants.APP_KEY, "http://www.koolew.com/auth/weibo", SCOPE);
         mSsoHandler = new SsoHandler(this, mAuthInfo);
     }
 
