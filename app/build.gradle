@@ -171,7 +171,7 @@ dependencies {
     compile files('libs/ShareSDK-Wechat-Favorite-2.6.5.jar')
     compile files('libs/ShareSDK-Wechat-Moments-2.6.5.jar')
     compile files('libs/TalkingData_Analytics_Android_SDK_v2.2.4.jar')
-    compile files('libs/weiboSDKCore_3.1.2.jar')
+    compile files('libs/weiboSDKCore_3.1.4.jar')
 }
 
 dependencies {
