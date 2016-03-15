@@ -24,7 +24,7 @@ import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.share.ShareManager;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
@@ -117,7 +117,7 @@ public class InviteActivity extends BaseActivity implements SwipeRefreshLayout.O
     }
 
     private int calcInviteItemCountHorizontal() {
-        int screenWidth = Utils.getScreenWidthPixel(this);
+        int screenWidth = Utils.getScreenWidthPixel();
         int itemWidth = getResources().getDimensionPixelSize(R.dimen.invite_friend_item_width);
         return screenWidth / itemWidth;
     }

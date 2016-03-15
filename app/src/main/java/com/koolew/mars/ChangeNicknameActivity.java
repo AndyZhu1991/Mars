@@ -12,8 +12,8 @@ import com.android.volley.VolleyError;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.utils.MaxLengthWatcher;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.MaxLengthWatcher;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiWorker;
 
@@ -47,7 +47,14 @@ public class ChangeNicknameActivity extends BaseActivity implements View.OnClick
         mNewNickname = (EditText) editNickname.findViewById(R.id.edit_text);
         mNewNickname.setHint(R.string.input_new_nickname_hint);
         mNewNickname.addTextChangedListener(
-                new MaxLengthWatcher(AppProperty.getNicknameMaxLen(), mNewNickname));
+                new MaxLengthWatcher(AppProperty.getNicknameMaxLen(), mNewNickname) {
+                    @Override
+                    public void onTextOverInput() {
+                        Toast.makeText(ChangeNicknameActivity.this,
+                                getString(R.string.nickname_over_input_message, maxLen),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
         editNickname.findViewById(R.id.x).setOnClickListener(this);
     }
 

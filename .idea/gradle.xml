@@ -11,6 +11,30 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/camerapreview" />
+            <option value="$PROJECT_DIR$/downloadmanager" />
+            <option value="$PROJECT_DIR$/foregroundview" />
+            <option value="$PROJECT_DIR$/javacv" />
+            <option value="$PROJECT_DIR$/mp4parserutil" />
+            <option value="$PROJECT_DIR$/preference" />
+            <option value="$PROJECT_DIR$/ratiolayout" />
+            <option value="$PROJECT_DIR$/utils" />
+            <option value="$PROJECT_DIR$/videotools" />
+          </set>
+        </option>
+        <option name="myModules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/camerapreview" />
+            <option value="$PROJECT_DIR$/downloadmanager" />
+            <option value="$PROJECT_DIR$/foregroundview" />
+            <option value="$PROJECT_DIR$/javacv" />
+            <option value="$PROJECT_DIR$/mp4parserutil" />
+            <option value="$PROJECT_DIR$/preference" />
+            <option value="$PROJECT_DIR$/ratiolayout" />
+            <option value="$PROJECT_DIR$/utils" />
+            <option value="$PROJECT_DIR$/videotools" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -61,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.koolew.mars.view.RatioLinearLayout
+        <com.koolew.android.ratiolayout.RatioLinearLayout
             android:id="@+id/video_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
             app:widthRatio="2"
             app:heightRatio="1">
             
-            <com.koolew.mars.view.RatioFrameLayout
+            <com.koolew.android.ratiolayout.RatioFrameLayout
                 android:id="@+id/first_video_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -109,7 +109,7 @@
                         android:textSize="12sp"
                         android:textColor="@android:color/white"/>
                 </LinearLayout>
-            </com.koolew.mars.view.RatioFrameLayout>
+            </com.koolew.android.ratiolayout.RatioFrameLayout>
 
             <LinearLayout
                 android:id="@+id/right_video_layout"
@@ -170,7 +170,7 @@
                         app:border_width="2dp" />
                 </FrameLayout>
             </LinearLayout>
-        </com.koolew.mars.view.RatioLinearLayout>
+        </com.koolew.android.ratiolayout.RatioLinearLayout>
 
         <TextView
             android:layout_width="wrap_content"

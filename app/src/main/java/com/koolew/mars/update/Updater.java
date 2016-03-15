@@ -11,8 +11,8 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.koolew.mars.R;
-import com.koolew.mars.utils.Downloader;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.downloadmanager.Downloader;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
 
@@ -87,7 +87,7 @@ public class Updater implements Downloader.LoadListener, Response.Listener<JSONO
 
     private void onVersionInfoUpdate() {
         if (lastVersionInfo.versionCode > Utils.getCurrentVersionCode()
-                && !Utils.isAppBackground(mContext)) {
+                && !Utils.isAppBackground()) {
             onNewVersionAvailable();
         }
         else {

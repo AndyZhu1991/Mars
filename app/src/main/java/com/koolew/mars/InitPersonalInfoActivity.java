@@ -20,9 +20,9 @@ import com.android.volley.toolbox.Volley;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.services.UploadAvatarService;
 import com.koolew.mars.statistics.BaseActivity;
-import com.koolew.mars.utils.MaxLengthWatcher;
+import com.koolew.android.utils.MaxLengthWatcher;
 import com.koolew.mars.utils.PictureSelectUtil;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 

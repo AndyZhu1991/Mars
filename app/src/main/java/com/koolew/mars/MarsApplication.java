@@ -12,12 +12,12 @@ import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.remoteconfig.RemoteConfigManager;
 import com.koolew.mars.statistics.StatisticsUtil;
 import com.koolew.mars.utils.BgmUtil;
-import com.koolew.mars.utils.Downloader;
+import com.koolew.android.downloadmanager.Downloader;
 import com.koolew.mars.utils.FirstHintUtil;
 import com.koolew.mars.utils.KooSoundUtil;
 import com.koolew.mars.utils.PatchUtil;
 import com.koolew.mars.utils.ThreadUtil;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -48,8 +48,8 @@ public class MarsApplication extends Application {
 
         long start = System.currentTimeMillis();
 
-        PatchUtil.tryToLoadPatch(this);
         Utils.init(this);
+        PatchUtil.tryToLoadPatch(this);
         ApiWorker.init(getApplicationContext());
         ImageLoaderHelper.init(this);
         initImageLoader(getApplicationContext());
@@ -61,7 +61,7 @@ public class MarsApplication extends Application {
         if (StatisticsUtil.NEED_STATISTICS) {
             TCAgent.init(this);
         }
-        com.koolew.mars.videotools.Utils.preloadRecorder(this);
+        com.koolew.android.videotools.Utils.preloadRecorder(this);
         FirstHintUtil.init(this);
         Downloader.init();
         KooSoundUtil.init(this);
@@ -132,7 +132,7 @@ public class MarsApplication extends Application {
             ThreadUtil.executeOnCommonThread(new Runnable() {
                 @Override
                 public void run() {
-                    File oldCacheDir = new File(Utils.getCacheDir(MarsApplication.this));
+                    File oldCacheDir = new File(Utils.getCacheDir());
                     File[] files = oldCacheDir.listFiles();
                     for (File file: files) {
                         if (file.isFile() && file.getAbsolutePath().endsWith(".mp4")) {

@@ -21,7 +21,7 @@ import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.TypedUserInfo;
 import com.koolew.mars.statistics.BaseV4Fragment;
 import com.koolew.mars.utils.ThreadUtil;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.view.KoolewVideoView;
 import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiErrorCode;
@@ -109,7 +109,7 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
         mTitle = (TextView) root.findViewById(R.id.title);
         mTitle.setOnClickListener(this);
 
-        int screenWidthPix = Utils.getScreenWidthPixel(getActivity());
+        int screenWidthPix = Utils.getScreenWidthPixel();
         int displayAreaPadding = getResources().getDimensionPixelSize(R.dimen.display_area_padding);
         int displayAreaHeight = (screenWidthPix - displayAreaPadding * 2) / 4 * 3
                 + displayAreaPadding * 2;
@@ -442,7 +442,7 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
     private int arrowLeftOffsetX = 0;
     private int getArrowLeftOffsetX() {
         if (arrowLeftOffsetX == 0) {
-            int screenWidth = Utils.getScreenWidthPixel(getActivity());
+            int screenWidth = Utils.getScreenWidthPixel();
             int arrowWidth = mArrow.getWidth();
             arrowLeftOffsetX = screenWidth / 4 - arrowWidth / 2;
         }
@@ -452,7 +452,7 @@ public class PlayFragment extends BaseV4Fragment implements View.OnClickListener
     private int arrowRightOffsetX = 0;
     private int getArrowRightOffsetX() {
         if (arrowRightOffsetX == 0) {
-            int screenWidth = Utils.getScreenWidthPixel(getActivity());
+            int screenWidth = Utils.getScreenWidthPixel();
             int arrowWidth = mArrow.getWidth();
             arrowRightOffsetX = screenWidth / 4 * 3 - arrowWidth / 2;
         }

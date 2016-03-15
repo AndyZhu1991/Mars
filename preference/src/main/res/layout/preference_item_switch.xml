@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.koolew.android.foregroundview.ForegroundRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/settings_item_height"
+    android:minHeight="@dimen/settings_item_height"
+    android:clickable="true"
+    android:background="@android:color/white"
+    app:foreground="@drawable/general_bg">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/setting_item_left_margin"
+        android:layout_centerVertical="true"
+        android:textSize="14sp"
+        android:textColor="#9B9B9B"/>
+
+    <com.sevenheaven.iosswitch.ShSwitchView
+        xmlns:shSwitch="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/switcher"
+        android:layout_width="57dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"
+        shSwitch:tintColor="#4CD864"
+        shSwitch:shadowSpace="6dp"/>
+</com.koolew.android.foregroundview.ForegroundRelativeLayout>

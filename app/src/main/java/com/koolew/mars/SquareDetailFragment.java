@@ -22,7 +22,7 @@ import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
 import com.koolew.mars.utils.JsonUtil;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.view.TitleBarView;
 import com.koolew.mars.webapi.ApiErrorCode;
 import com.koolew.mars.webapi.ApiWorker;
@@ -323,7 +323,7 @@ public class SquareDetailFragment extends RecyclerListFragmentMould<SquareDetail
                 }
 
                 private int calcThumbHeight() {
-                    int screenWidth = Utils.getScreenWidthPixel(getActivity());
+                    int screenWidth = Utils.getScreenWidthPixel();
                     int itemGap = getResources().getDimensionPixelSize(
                             R.dimen.square_item_padding_half) * 2;
                     int thumbWidth = (screenWidth - itemGap * 3) / 2;

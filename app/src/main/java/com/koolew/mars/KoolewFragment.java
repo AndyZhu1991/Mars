@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.koolew.mars.utils.PagerScrollSmoothColorListener;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.shizhefei.view.indicator.IndicatorViewPager;
 import com.shizhefei.view.indicator.ScrollIndicatorView;
 import com.shizhefei.view.indicator.slidebar.ColorBar;
@@ -174,7 +174,7 @@ public class KoolewFragment extends MainBaseFragment implements View.OnClickList
             }
             TextView textView = (TextView) convertView;
             textView.setText(titleList.get(position));
-            int paddingLR = (int) Utils.dpToPixels(getActivity(), 10);
+            int paddingLR = (int) Utils.dpToPixels(10);
             textView.setPadding(paddingLR, 0, paddingLR, 0);
             return convertView;
         }

@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.statistics.BaseActivity;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 
 import java.util.Timer;
 import java.util.TimerTask;

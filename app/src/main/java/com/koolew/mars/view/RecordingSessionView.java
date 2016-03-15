@@ -27,13 +27,14 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropM
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
+import com.koolew.android.utils.FileUtil;
+import com.koolew.android.videotools.RealTimeRgbaRecorderWithAutoAudio;
 import com.koolew.mars.AppProperty;
 import com.koolew.mars.MarsApplication;
 import com.koolew.mars.R;
 import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.utils.FileUtil;
-import com.koolew.mars.utils.Mp4ParserUtil;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.mp4parserutil.Mp4ParserUtil;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.utils.ViewUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -92,7 +93,7 @@ public class RecordingSessionView extends LinearLayout {
 
         videosProgressView = new VideosProgressView(context);
         addView(videosProgressView, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, (int) Utils.dpToPixels(context, 16)));
+                ViewGroup.LayoutParams.MATCH_PARENT, (int) Utils.dpToPixels(16)));
 
         FrameLayout frameLayout = new FrameLayout(context);
         recyclerView = new RecyclerView(context) {
@@ -104,7 +105,7 @@ public class RecordingSessionView extends LinearLayout {
                 return super.onInterceptTouchEvent(e);
             }
         };
-        recyclerView.setPadding(0, 0, 0, (int) Utils.dpToPixels(getContext(), 20));
+        recyclerView.setPadding(0, 0, 0, (int) Utils.dpToPixels(20));
         recyclerView.setClipToPadding(false);
         frameLayout.addView(recyclerView, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -155,7 +156,7 @@ public class RecordingSessionView extends LinearLayout {
     }
 
     private void initWorkingDir() {
-        workingDir = Utils.getCacheDir(getContext()) + File.separator + System.currentTimeMillis();
+        workingDir = Utils.getCacheDir() + File.separator + System.currentTimeMillis();
         new Thread() {
             @Override
             public void run() {
@@ -428,7 +429,7 @@ public class RecordingSessionView extends LinearLayout {
             String cutted;
             if (videoItem.clipStart != 0 || videoItem.clipEnd != videoItem.videoLen || isMi3()) {
                 cutted = videoItem.fileName + ".mp4";
-                com.koolew.mars.videotools.Utils.cutVideo(videoItem.fileName, cutted,
+                com.koolew.android.videotools.Utils.cutVideo(videoItem.fileName, cutted,
                         videoItem.clipStart, videoItem.clipEnd);
             }
             else {
@@ -468,7 +469,7 @@ public class RecordingSessionView extends LinearLayout {
     }
 
     public void generateThumb() {
-        com.koolew.mars.videotools.Utils.saveVideoFrame(
+        com.koolew.android.videotools.Utils.saveVideoFrame(
                 getConcatedVideoName(), getThumbName());
     }
 
@@ -758,9 +759,9 @@ public class RecordingSessionView extends LinearLayout {
             mDividerPaint.setColor(getResources().getColor(android.R.color.black));
             mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             mTextPaint.setColor(getResources().getColor(android.R.color.white));
-            mTextPaint.setTextSize(Utils.spToPixels(getContext(), 12));
+            mTextPaint.setTextSize(Utils.spToPixels(12));
 
-            dividerWidth = (int) Utils.dpToPixels(context, 1);
+            dividerWidth = (int) Utils.dpToPixels(1);
         }
 
         @Override
@@ -788,7 +789,7 @@ public class RecordingSessionView extends LinearLayout {
                         recordedItems.get(i).isSelected ? mSelectedPaint : progressBarPaint);
                 canvas.drawRect(right - dividerWidth, top, right, bottom, mDividerPaint);
 
-                if (right >= Utils.getScreenWidthPixel(getContext())) {
+                if (right >= Utils.getScreenWidthPixel()) {
                     break;
                 }
             }
@@ -806,13 +807,32 @@ public class RecordingSessionView extends LinearLayout {
                     AppProperty.getRecordVideoMaxLen());
             Rect textRect = new Rect();
             mTextPaint.getTextBounds(timeString, 0, timeString.length(), textRect);
-            canvas.drawText(timeString, getWidth() - Utils.spToPixels(getContext(), 10) - textRect.width(),
+            canvas.drawText(timeString, getWidth() - Utils.spToPixels(10) - textRect.width(),
                     (getHeight() + textRect.height()) / 2, mTextPaint);
         }
 
         private int millis2Pixels(long millis) {
             long totalLength = (long) (AppProperty.getRecordVideoMaxLen() * 1000);
             return (int) (getWidth() * (1.0f * millis / totalLength));
+        }
+    }
+
+    public static class RealTimeRecorderItem extends RealTimeRgbaRecorderWithAutoAudio implements RecordingItem {
+
+        public RealTimeRecorderItem(String filePath, int width, int height) {
+            super(filePath, width, height);
+        }
+
+        @Override
+        public long getCurrentLength() {
+            return (lastFrameTimeStamp - firstFrameTimeStamp) / 1000;
+        }
+
+        @Override
+        public VideoPieceItem completeSynced() {
+            stopSynced();
+            return new RecordingSessionView.VideoPieceItem(
+                    System.currentTimeMillis(), filePath, getCurrentLength());
         }
     }
 }

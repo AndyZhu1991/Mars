@@ -21,26 +21,25 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.AnimationSet;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.koolew.mars.camerautils.CameraInstance;
+import com.koolew.android.camerapreview.CameraInstance;
+import com.koolew.android.camerapreview.CameraPreviewFragment;
+import com.koolew.android.camerapreview.opengl.filter.FrameRenderer;
+import com.koolew.android.camerapreview.opengl.filter.FrameRendererToneCurve;
 import com.koolew.mars.infos.BaseTopicInfo;
 import com.koolew.mars.infos.MyAccountInfo;
-import com.koolew.mars.opengl.filter.FrameRenderer;
-import com.koolew.mars.opengl.filter.FrameRendererDrawOrigin;
-import com.koolew.mars.opengl.filter.FrameRendererToneCurve;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.AbsLongVideoSwitch;
 import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.utils.PictureSelectUtil;
-import com.koolew.mars.utils.Utils;
-import com.koolew.mars.videotools.RealTimeRgbaRecorderWithAutoAudio;
-import com.koolew.mars.videotools.VideoTranscoder;
+import com.koolew.android.utils.Utils;
+import com.koolew.android.videotools.RealTimeRgbaRecorderWithAutoAudio;
+import com.koolew.android.videotools.VideoTranscoder;
 import com.koolew.mars.view.RecordButton;
 import com.koolew.mars.view.RecordingSessionView;
 
@@ -95,7 +94,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
     private boolean isRecording = false;
 
-    private RealTimeRgbaRecorderWithAutoAudio mRecorder;
+    private RecordingSessionView.RealTimeRecorderItem mRecorder;
 
     // MODE_PREVIEW or MODE_PLAYBACK
     private int mCurrentSurfaceMode;
@@ -190,17 +189,17 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
         mVideoThumb = (ImageView) findViewById(R.id.video_thumb);
         FrameLayout.LayoutParams vtlp = (FrameLayout.LayoutParams) mVideoThumb.getLayoutParams();
-        vtlp.height = Utils.getScreenWidthPixel(this) / 4 * 3;
+        vtlp.height = Utils.getScreenWidthPixel() / 4 * 3;
         mVideoThumb.setLayoutParams(vtlp);
 
         mPlayImage = (ImageView) findViewById(R.id.play);
         FrameLayout.LayoutParams pilp = (FrameLayout.LayoutParams) mPlayImage.getLayoutParams();
-        pilp.topMargin = (int) ((Utils.getScreenWidthPixel(this) / 4 * 3 - Utils.dpToPixels(this, 39)) / 2);
+        pilp.topMargin = (int) ((Utils.getScreenWidthPixel() / 4 * 3 - Utils.dpToPixels(39)) / 2);
         mPlayImage.setLayoutParams(pilp);
 
         mPlaybackSurface = (SurfaceView) findViewById(R.id.playback_surface);
         FrameLayout.LayoutParams pvlp = (FrameLayout.LayoutParams) mPlaybackSurface.getLayoutParams();
-        pvlp.height = Utils.getScreenWidthPixel(this) / 4 * 3;
+        pvlp.height = Utils.getScreenWidthPixel() / 4 * 3;
         mPlaybackSurface.setLayoutParams(pvlp);
         mPlaybackSurface.getHolder().addCallback(mPlaybackSurfaceCallback);
 
@@ -336,7 +335,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
     }
 
     private void startRecord() {
-        mRecorder = new RealTimeRgbaRecorderWithAutoAudio(
+        mRecorder = new RecordingSessionView.RealTimeRecorderItem(
                 recordingSessionView.generateAVideoFilePath(),
                 AppProperty.RECORD_VIDEO_WIDTH, AppProperty.RECORD_VIDEO_HEIGHT);
         recordingSessionView.startOneRecording(mRecorder);
@@ -577,7 +576,7 @@ public class VideoShootActivity extends BaseActivity implements OnClickListener,
 
         ObjectAnimator filterLayoutAnimator = ObjectAnimator
                 .ofFloat(mFilterLayout, "y", filterLayoutOriginTop,
-                        filterLayoutOriginTop + Utils.dpToPixels(this, 80))
+                        filterLayoutOriginTop + Utils.dpToPixels(80))
                 .setDuration(FILTER_LAYOUT_ANIMATOR_DURATION);
 
         ObjectAnimator arrowAnimator = ObjectAnimator

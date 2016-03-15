@@ -11,7 +11,7 @@ import com.koolew.mars.FriendInfoActivity;
 import com.koolew.mars.R;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseCommentInfo;
-import com.koolew.mars.utils.Utils;
+import com.koolew.mars.utils.TimeSummaryBuilder;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
@@ -70,7 +70,7 @@ public class CommentItem extends MediaItem {
         protected void onBindItem() {
             ImageLoader.getInstance().displayImage(mItem.commentInfo.getUserInfo().getAvatar(),
                     avatar, ImageLoaderHelper.avatarLoadOptions);
-            date.setText(Utils.buildTimeSummary(mContext, mItem.commentInfo.getCreateTime() * 1000));
+            date.setText(TimeSummaryBuilder.buildTimeSummary(mContext, mItem.commentInfo.getCreateTime() * 1000));
 
             ForegroundColorSpan nicknameSpan = new ForegroundColorSpan(0xFFDB5E5F);
             ForegroundColorSpan remainSpan = new ForegroundColorSpan(0xFF4E677A);

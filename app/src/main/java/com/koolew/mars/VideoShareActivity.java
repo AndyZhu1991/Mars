@@ -5,10 +5,10 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,14 +16,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.koolew.android.utils.FileUtil;
 import com.koolew.mars.infos.BaseUserInfo;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.qiniu.UploadHelper;
 import com.koolew.mars.share.ShareManager;
 import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.utils.FileUtil;
-import com.koolew.mars.utils.Mp4ParserUtil;
+import com.koolew.android.mp4parserutil.Mp4ParserUtil;
 import com.koolew.mars.view.TitleBarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 

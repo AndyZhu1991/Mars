@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import com.koolew.mars.R;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseUserInfo;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONObject;
@@ -49,7 +49,7 @@ public class AvatarLinearContainer extends LinearLayout implements View.OnClickL
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AvatarLinearContainer, 0, 0);
         mAvatarMarginLr = a.getDimensionPixelSize(R.styleable.AvatarLinearContainer_avatar_margin_lr, 0);
         mAvatarBorderWidth = a.getDimensionPixelSize(R.styleable.AvatarLinearContainer_avatar_border_width,
-                (int) Utils.dpToPixels(getContext(), 2));
+                (int) Utils.dpToPixels(2));
         mAvatarBorderColor = a.getColor(R.styleable.AvatarLinearContainer_avatar_border_color,
                 getResources().getColor(R.color.avatar_gray_border));
         mAvatarBorderSpecialColor = a.getColor(R.styleable.AvatarLinearContainer_avatar_border_special_color,

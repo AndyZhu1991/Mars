@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.koolew.mars.R;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 
 /**
  * Created by jinchangzhu on 7/9/15.
@@ -62,6 +62,6 @@ public class BigCountView extends RelativeLayout {
     }
 
     public void setStrokeColor(int color) {
-        mBackground.setStroke((int) Utils.dpToPixels(getContext(), 1), color);
+        mBackground.setStroke((int) Utils.dpToPixels(1), color);
     }
 }

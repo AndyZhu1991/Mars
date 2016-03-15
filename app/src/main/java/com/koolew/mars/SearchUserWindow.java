@@ -19,7 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseUserInfo;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
@@ -61,10 +61,10 @@ public class SearchUserWindow extends PopupWindow implements TextWatcher,
 
         View editFrame = mContentView.findViewById(R.id.edit_frame);
         LinearLayout.LayoutParams eflp = (LinearLayout.LayoutParams) editFrame.getLayoutParams();
-        eflp.topMargin = Utils.getStatusBarHeightPixel(mContext) +
+        eflp.topMargin = Utils.getStatusBarHeightPixel() +
                 resources.getDimensionPixelSize(R.dimen.search_user_window_search_margin);
-        eflp.bottomMargin = (int) (Utils.getActionBarHeightPixel(mContext)
-                        + Utils.dpToPixels(mContext, 48) // PageIndicator height: 48dp
+        eflp.bottomMargin = (int) (Utils.getActionBarHeightPixel()
+                        + Utils.dpToPixels(48) // PageIndicator height: 48dp
                         - resources.getDimensionPixelSize(R.dimen.search_user_window_search_margin)
                         - resources.getDimensionPixelSize(R.dimen.search_user_window_search_height));
 
@@ -75,7 +75,7 @@ public class SearchUserWindow extends PopupWindow implements TextWatcher,
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mAdapter = new UserAdapter();
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setPadding(0, 0, 0, Utils.getNavigationBarHeightPixel(mContext));
+        mRecyclerView.setPadding(0, 0, 0, Utils.getNavigationBarHeightPixel());
 
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(ViewGroup.LayoutParams.MATCH_PARENT);

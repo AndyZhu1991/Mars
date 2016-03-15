@@ -27,18 +27,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.koolew.mars.camerautils.CameraInstance;
+import com.koolew.android.camerapreview.CameraInstance;
+import com.koolew.android.camerapreview.CameraPreviewFragment;
+import com.koolew.android.mp4parserutil.Mp4ParserUtil;
+import com.koolew.android.utils.FileUtil;
+import com.koolew.android.utils.Utils;
+import com.koolew.android.videotools.BlockingRecycleQueue;
+import com.koolew.android.videotools.CachedRecorder;
+import com.koolew.android.videotools.SamplesFrame;
 import com.koolew.mars.infos.MovieTopicInfo;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.utils.DialogUtil;
-import com.koolew.mars.utils.Downloader;
-import com.koolew.mars.utils.FileUtil;
+import com.koolew.android.downloadmanager.Downloader;
 import com.koolew.mars.utils.FirstHintUtil;
-import com.koolew.mars.utils.Mp4ParserUtil;
-import com.koolew.mars.utils.Utils;
-import com.koolew.mars.videotools.BlockingRecycleQueue;
-import com.koolew.mars.videotools.CachedRecorder;
-import com.koolew.mars.videotools.SamplesFrame;
 import com.koolew.mars.view.ProgressView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -138,7 +139,7 @@ public class MovieStudioActivity extends BaseActivity
 
     private void initViews() {
         mFragmentContainer = findViewById(R.id.fragment_container);
-        int screenWidth = Utils.getScreenWidthPixel(this);
+        int screenWidth = Utils.getScreenWidthPixel();
         mFragmentContainer.getLayoutParams().height = screenWidth * 9 / 16;
         mCameraPreviewFragment =
                 (CameraPreviewFragment) getFragmentManager().findFragmentById(R.id.camera_preview);
@@ -162,7 +163,7 @@ public class MovieStudioActivity extends BaseActivity
                     @Override
                     public void onGlobalLayout() {
                         int recyclerWidth = mRecyclerView.getMeasuredWidth();
-                        int recyclerItemWidth = (int) Utils.dpToPixels(MovieStudioActivity.this, 126);
+                        int recyclerItemWidth = (int) Utils.dpToPixels(126);
                         int paddingLR = (recyclerWidth - recyclerItemWidth) / 2;
                         mRecyclerView.setPadding(paddingLR, 0, paddingLR, 0);
                     }
@@ -459,7 +460,7 @@ public class MovieStudioActivity extends BaseActivity
     }
 
     private void initWorkDir() {
-        mWorkDir = Utils.getCacheDir(this) + System.currentTimeMillis() + "/";
+        mWorkDir = Utils.getCacheDir() + System.currentTimeMillis() + "/";
         new Thread() {
             @Override
             public void run() {
@@ -567,7 +568,7 @@ public class MovieStudioActivity extends BaseActivity
         }
 
         public String generateThumb() {
-            com.koolew.mars.videotools.Utils.saveVideoFrame(
+            com.koolew.android.videotools.Utils.saveVideoFrame(
                     mAdapter.items.get(0).getVideoPath(), getThumbPath());
             return new File(getThumbPath()).exists() ? getThumbPath() : null;
         }
@@ -633,7 +634,7 @@ public class MovieStudioActivity extends BaseActivity
             for (int i = 0; i < endFramePoints.length; i++) {
                 endFramePoints[i] = mMovieTopicInfo.getFragments()[i].getEnd();
             }
-            com.koolew.mars.videotools.Utils.
+            com.koolew.android.videotools.Utils.
                     splitVideoByFrame(originVideoPath, endFramePoints, tempFiles);
 
             List<String> splitedAudioFiles = new ArrayList<>();

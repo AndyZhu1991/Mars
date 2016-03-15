@@ -19,3 +19,10 @@ allprojects {
         jcenter()
     }
 }
+
+ext {
+    COMPILE_SDK = 23
+    BUILD_TOOLS = "23.0.2"
+}
+
+apply from: 'supportLibrariesCentral/dependencies.gradle'

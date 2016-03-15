@@ -21,13 +21,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.koolew.android.downloadmanager.Downloader;
 import com.koolew.mars.MarsApplication;
 import com.koolew.mars.R;
 import com.koolew.mars.danmaku.DanmakuShowManager;
 import com.koolew.mars.danmaku.DanmakuThread;
 import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseVideoInfo;
-import com.koolew.mars.utils.Downloader;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.IOException;

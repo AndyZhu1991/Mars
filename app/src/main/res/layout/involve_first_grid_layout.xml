@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.koolew.mars.view.RatioLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.koolew.android.ratiolayout.RatioLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -45,4 +45,4 @@
             android:drawableLeft="@mipmap/ic_involve_new_movie"
             android:drawablePadding="5dp"/>
     </FrameLayout>
-</com.koolew.mars.view.RatioLinearLayout>
+</com.koolew.android.ratiolayout.RatioLinearLayout>

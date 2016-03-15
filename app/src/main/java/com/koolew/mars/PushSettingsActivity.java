@@ -5,10 +5,10 @@ import android.widget.ListView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.koolew.mars.preference.PreferenceAdapter;
-import com.koolew.mars.preference.PreferenceGroupTitle;
+import com.koolew.android.preference.PreferenceAdapter;
+import com.koolew.android.preference.PreferenceGroupTitle;
 import com.koolew.mars.preference.PreferenceHelper;
-import com.koolew.mars.preference.SwitchPreference;
+import com.koolew.android.preference.SwitchPreference;
 import com.koolew.mars.statistics.BaseActivity;
 import com.koolew.mars.webapi.ApiWorker;
 

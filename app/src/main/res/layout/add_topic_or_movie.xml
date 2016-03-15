@@ -18,7 +18,7 @@
         android:orientation="horizontal"
         android:padding="10dp">
 
-        <com.koolew.mars.view.RatioFrameLayout
+        <com.koolew.android.ratiolayout.RatioFrameLayout
             android:id="@+id/create_topic"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -37,9 +37,9 @@
                 android:text="@string/join_video_topic"
                 android:textColor="@android:color/white"
                 android:textSize="20sp" />
-        </com.koolew.mars.view.RatioFrameLayout>
+        </com.koolew.android.ratiolayout.RatioFrameLayout>
 
-        <com.koolew.mars.view.RatioFrameLayout
+        <com.koolew.android.ratiolayout.RatioFrameLayout
             android:id="@+id/join_movie"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -57,6 +57,6 @@
                 android:text="@string/be_an_actor"
                 android:textColor="@android:color/white"
                 android:textSize="20sp" />
-        </com.koolew.mars.view.RatioFrameLayout>
+        </com.koolew.android.ratiolayout.RatioFrameLayout>
     </LinearLayout>
 </LinearLayout>

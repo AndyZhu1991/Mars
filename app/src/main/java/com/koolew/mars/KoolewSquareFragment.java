@@ -18,7 +18,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.koolew.mars.mould.LoadMoreAdapter;
 import com.koolew.mars.mould.RecyclerListFragmentMould;
-import com.koolew.mars.utils.Downloader;
+import com.koolew.android.downloadmanager.Downloader;
 import com.koolew.mars.utils.JsonUtil;
 import com.koolew.mars.utils.UriProcessor;
 import com.koolew.mars.webapi.ApiWorker;

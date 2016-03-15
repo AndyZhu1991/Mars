@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">CameraPreview</string>
+    <string name="fail_to_open_camera">打开摄像头失败，可能是被安全软件阻止，或被其他应用占用。\n请检查。</string>
+    <string name="empty_string" translatable="false">""</string>
+
+    <!-- Filter names -->
+    <string name="filter_beauty001">颜</string>
+    <string name="filter_1988">遂</string>
+    <string name="filter_heart">谧</string>
+    <string name="filter_06">忆</string>
+    <string name="filter_beauty">樱</string>
+    <string name="filter_blend">晓</string>
+    <string name="filter_rise">时</string>
+    <string name="filter_whitecat">欣</string>
+    <string name="filter_live">寂</string>
+    <string name="filter_humming">穹</string>
+    <string name="filter_cold">质</string>
+    <string name="filter_bnw">光</string>
+    <string name="filter_banana">述</string>
+    <string name="filter_17">清</string>
+</resources>

@@ -15,7 +15,7 @@ import com.android.volley.VolleyError;
 import com.koolew.mars.infos.MyAccountInfo;
 import com.koolew.mars.infos.MyAccountInfo.LOGIN_TYPE;
 import com.koolew.mars.statistics.BaseActivity;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.webapi.ApiWorker;
 
 import org.json.JSONException;
@@ -81,7 +81,7 @@ public class FirstLoginActivity extends BaseActivity implements PlatformActionLi
         int paddingBottom = 0;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ||
                 Utils.hasNavigationBar()) {
-            paddingBottom = Utils.getNavigationBarHeightPixel(this);
+            paddingBottom = Utils.getNavigationBarHeightPixel();
         }
         mainLinear.setPadding(0, 0, 0, paddingBottom);
     }

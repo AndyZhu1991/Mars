@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.koolew.mars.R;
-import com.koolew.mars.utils.Utils;
+import com.koolew.android.utils.Utils;
 
 /**
  * Created by jinchangzhu on 7/25/15.
@@ -68,7 +68,7 @@ public class ShareChannelView extends LinearLayout {
 
     private void setupViews() {
         mIconView = new ImageView(getContext());
-        int iconViewSize = (int) Utils.dpToPixels(getContext(), 48);
+        int iconViewSize = (int) Utils.dpToPixels(48);
         addView(mIconView, new LayoutParams(iconViewSize, iconViewSize));
 
         mLabel = new TextView(getContext());
@@ -76,7 +76,7 @@ public class ShareChannelView extends LinearLayout {
         mLabel.setTextColor(0xFF9EADB7);
         LayoutParams labelLp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        labelLp.setMargins(0, (int) Utils.dpToPixels(getContext(), 8), 0, 0);
+        labelLp.setMargins(0, (int) Utils.dpToPixels(8), 0, 0);
         addView(mLabel, labelLp);
     }
 
