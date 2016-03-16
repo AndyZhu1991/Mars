@@ -53,6 +53,7 @@
 
     <!-- For MainActivity -->
     <string name="title_koolew">首页</string>
+    <string name="title_shop">商城</string>
     <string name="title_play">最佳视频评选</string>
     <string name="title_message">消息</string>
     <string name="title_friend">好友</string>
@@ -543,6 +544,12 @@
     <string name="green_danmaku_explain">1 个打赏 = 绿色弹幕</string>
     <string name="purple_danmaku_explain">5 个打赏 = 紫色弹幕</string>
     <string name="master_danmaku_explain">25 个打赏 = 橙色弹幕</string>
+
+    <!-- For ShopFragment -->
+    <string name="shop">商城</string>
+    <string name="coin">金币</string>
+    <string name="buy_coin">金币充值</string>
+    <string name="get_prices_failed">网络请求失败，是否重试？</string>
 
     <!-- Others -->
     <string name="sign_continuous" formatted="false">"已连续登陆 %d天"</string>

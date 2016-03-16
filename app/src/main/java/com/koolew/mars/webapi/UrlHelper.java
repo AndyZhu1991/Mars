@@ -24,6 +24,7 @@ public class UrlHelper {
     private static final String V3_URL = BASE_URL + "v3/";
     private static final String V4_URL = BASE_URL + "v4/";
     private static final String V5_URL = BASE_URL + "v5/";
+    private static final String V6_URL = BASE_URL + "v6/";
 
     // Account
     public static final String SNS_LOGIN_URL = V4_URL + "account/login/sns";
@@ -115,6 +116,9 @@ public class UrlHelper {
     // Tag
     public static final String VIDEO_TAG_URL = V5_URL + "tag?category=video";
     public static final String MOVIE_TAG_URL = V5_URL + "tag?category=movie";
+
+    // Shop
+    public static final String COIN_PRICES_URL = V6_URL + "market/price/coin";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;

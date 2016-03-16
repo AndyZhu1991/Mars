@@ -596,9 +596,10 @@ public class MainActivity extends BaseV4FragmentActivity
     }
 
     private static final int DRAWER_POSITION_MAIN = 0;
-    private static final int DRAWER_POSITION_MESSAGE = 1;
-    private static final int DRAWER_POSITION_FRIENDSHIP = 2;
-    private static final int DRAWER_POSITION_SETTINGS = 3;
+    private static final int DRAWER_POSITION_SHOP = 1;
+    private static final int DRAWER_POSITION_MESSAGE = 2;
+    private static final int DRAWER_POSITION_FRIENDSHIP = 3;
+    private static final int DRAWER_POSITION_SETTINGS = 4;
 
     class DrawerAdapter extends RecyclerView.Adapter<DrawerHolder> {
         private int checkedPosition;
@@ -609,6 +610,12 @@ public class MainActivity extends BaseV4FragmentActivity
                         R.string.title_koolew,
                         R.color.drawer_list_koolew_select,
                         KoolewFragment.class),
+
+                new DrawerItem(R.mipmap.ic_drawer_list_shop,
+                        R.mipmap.ic_drawer_list_shop_selected,
+                        R.string.title_shop,
+                        R.color.koolew_black,
+                        ShopFragment.class),
 
                 new DrawerItem(R.mipmap.ic_drawer_list_message,
                         R.mipmap.ic_drawer_list_message_selected,
