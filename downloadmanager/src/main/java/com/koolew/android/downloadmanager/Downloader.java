@@ -115,6 +115,7 @@ public class Downloader implements DownloadStatusListener {
                 for (int key: mDownloads.keySet()) {
                     DownloadEvent downloadEvent = mDownloads.get(key);
                     if (downloadEvent.downloadsBytes < minDownloadedBytes) {
+                        minDownloadedBytes = downloadEvent.downloadsBytes;
                         minDownloadKey = key;
                     }
                 }
@@ -289,6 +290,7 @@ public class Downloader implements DownloadStatusListener {
     public void onDownloadComplete(int id) {
         DownloadEvent downloadEvent = getDownloadEvent(id);
         if (downloadEvent != null) {
+            mDownloads.remove(id);
             DownloadDestination destination = downloadEvent.destination;
             String localPath = null;
             if (destination instanceof DownloadDestination.FileDestination) {
@@ -316,6 +318,7 @@ public class Downloader implements DownloadStatusListener {
     public void onDownloadFailed(int id, int errorCode, String errorMessage) {
         DownloadEvent downloadEvent = getDownloadEvent(id);
         if (downloadEvent != null) {
+            mDownloads.remove(id);
             if (downloadEvent.destination instanceof DownloadDestination.DiskLruCacheEditorDestination) {
                 try {
                     ((DownloadDestination.DiskLruCacheEditorDestination) downloadEvent.destination)

@@ -115,7 +115,7 @@ public class DownloadDispatcher extends Thread {
 
         try {
             conn = (HttpURLConnection) url.openConnection();
-            conn.setInstanceFollowRedirects(false);
+            conn.setInstanceFollowRedirects(true);
             conn.setConnectTimeout(mRequest.getRetryPolicy().getCurrentTimeout());
             conn.setReadTimeout(mRequest.getRetryPolicy().getCurrentTimeout());
 
