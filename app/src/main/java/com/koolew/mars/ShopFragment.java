@@ -155,7 +155,12 @@ public class ShopFragment extends MainBaseFragment implements SellCoinItemView.O
             }
             else {
                 mProgressDialog.dismiss();
-                mWeiboShareAPI.launchWeiboPay(getActivity(), order);
+                try {
+                    mWeiboShareAPI.launchWeiboPay(getActivity(), order);
+                } catch (Exception e) {
+                    Toast.makeText(getContext(), R.string.pay_failed_no_weibo_client,
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }

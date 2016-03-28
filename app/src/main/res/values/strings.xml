@@ -550,6 +550,7 @@
     <string name="coin">金币</string>
     <string name="buy_coin">金币充值</string>
     <string name="get_prices_failed">网络请求失败，是否重试？</string>
+    <string name="pay_failed_no_weibo_client">支付失败，可能是未安装微博客户端。</string>
 
     <!-- Pay -->
     <string name="pay_success">支付成功</string>
