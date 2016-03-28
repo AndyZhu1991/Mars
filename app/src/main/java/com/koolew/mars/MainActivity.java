@@ -21,9 +21,12 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.koolew.android.utils.ColorUtil;
+import com.koolew.android.utils.Utils;
 import com.koolew.mars.blur.DisplayBlurImage;
 import com.koolew.mars.blur.DisplayBlurImageAndPalette;
 import com.koolew.mars.infos.MyAccountInfo;
@@ -33,16 +36,17 @@ import com.koolew.mars.redpoint.RedPointView;
 import com.koolew.mars.remoteconfig.RemoteConfigManager;
 import com.koolew.mars.statistics.BaseV4FragmentActivity;
 import com.koolew.mars.update.Updater;
-import com.koolew.android.utils.ColorUtil;
 import com.koolew.mars.utils.PatchUtil;
 import com.koolew.mars.utils.ThreadUtil;
-import com.koolew.android.utils.Utils;
 import com.koolew.mars.view.DrawerToggleView;
 import com.koolew.mars.view.PhoneNumberView;
 import com.koolew.mars.view.UserNameView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.sina.weibo.sdk.api.share.BaseResponse;
+import com.sina.weibo.sdk.api.share.IWeiboHandler;
+import com.sina.weibo.sdk.constant.WBConstants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,7 +55,7 @@ import java.util.Date;
 
 
 public class MainActivity extends BaseV4FragmentActivity
-        implements MainBaseFragment.OnFragmentInteractionListener,
+        implements MainBaseFragment.OnFragmentInteractionListener, IWeiboHandler.Response,
         MainBaseFragment.ToolbarOperateInterface, View.OnClickListener,
         DrawerLayout.DrawerListener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -236,6 +240,14 @@ public class MainActivity extends BaseV4FragmentActivity
     protected void onResume() {
         super.onResume();
         syncLocalMyInfo();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (mCurFragment != null) {
+            mCurFragment.onNewIntent(intent);
+        }
     }
 
     @Override
@@ -509,6 +521,27 @@ public class MainActivity extends BaseV4FragmentActivity
         doRequestSelfInfo();
     }
 
+
+    @Override
+    public void onResponse(BaseResponse response) {
+        if(response != null) {
+            String toastMessage = null;
+            switch (response.errCode) {
+                case WBConstants.ErrorCode.ERR_OK:
+                    toastMessage = getString(R.string.pay_success);
+                    break;
+                case WBConstants.ErrorCode.ERR_CANCEL:
+                    toastMessage = getString(R.string.pay_cancel);
+                    break;
+                case WBConstants.ErrorCode.ERR_FAIL:
+                    toastMessage = getString(R.string.pay_failed) + ", Error message: " + response.errMsg;
+                    break;
+            }
+            if (toastMessage != null) {
+                Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
     private class UriProcessor extends com.koolew.mars.utils.UriProcessor {
         public UriProcessor(Context context) {

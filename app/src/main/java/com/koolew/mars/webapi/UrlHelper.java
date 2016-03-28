@@ -119,6 +119,7 @@ public class UrlHelper {
 
     // Shop
     public static final String COIN_PRICES_URL = V6_URL + "market/price/coin";
+    public static final String WEIBO_ORDER_URL = V6_URL + "market/weibo/order";
 
     public static final long REQUEST_TIMEOUT = 10;
     public static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;

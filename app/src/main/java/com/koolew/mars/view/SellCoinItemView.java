@@ -1,8 +1,6 @@
 package com.koolew.mars.view;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,14 +9,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.koolew.mars.R;
+import com.koolew.mars.shop.Subject;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * Created by jinchangzhu on 3/15/16.
  */
 public class SellCoinItemView extends RelativeLayout implements View.OnClickListener {
 
-    private int coinCount = 0;
-    private float price = 0.0f;
+    private Subject mSubject;
 
     private ImageView coinIconView;
     private TextView coinCountView;
@@ -44,30 +43,19 @@ public class SellCoinItemView extends RelativeLayout implements View.OnClickList
         coinCountView = (TextView) findViewById(R.id.coin_count);
         coinPriceView = (TextView) findViewById(R.id.coin_price);
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SellCoinItemView, 0, 0);
-        Drawable coinDrawable = a.getDrawable(R.styleable.SellCoinItemView_ic_coin);
-        coinIconView.setImageDrawable(coinDrawable);
-        a.recycle();
-
-        setOnClickListener(this);
+        super.setOnClickListener(this);
     }
 
-    public void setCoinCount(int count) {
-        this.coinCount = count;
-        coinCountView.setText(coinCount + getContext().getString(R.string.coin));
+    @Override
+    public void setOnClickListener(OnClickListener l) {
     }
 
-    public int getCoinCount() {
-        return coinCount;
-    }
+    public void setSubject(Subject subject) {
+        mSubject = subject;
 
-    public void setPrice(float price) {
-        this.price = price;
-        coinPriceView.setText(String.format("¥ %.2f", price));
-    }
-
-    public float getPrice() {
-        return price;
+        ImageLoader.getInstance().displayImage(subject.getIcon(), coinIconView);
+        coinCountView.setText(subject.getDesc());
+        coinPriceView.setText(String.format("￥%.2f", subject.getPrice()));
     }
 
     public void setOnBuyListener(OnBuyListener onBuyListener) {
@@ -77,11 +65,11 @@ public class SellCoinItemView extends RelativeLayout implements View.OnClickList
     @Override
     public void onClick(View v) {
         if (mOnBuyListener != null) {
-            mOnBuyListener.onBuy(coinCount, price);
+            mOnBuyListener.onBuy(mSubject);
         }
     }
 
     public interface OnBuyListener {
-        void onBuy(int coinCount, float price);
+        void onBuy(Subject subject);
     }
 }

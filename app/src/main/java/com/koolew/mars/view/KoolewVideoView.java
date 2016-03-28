@@ -30,6 +30,7 @@ import com.koolew.mars.imageloader.ImageLoaderHelper;
 import com.koolew.mars.infos.BaseVideoInfo;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -170,7 +171,8 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     public void startPlay() {
         if (mVideoInfo != null || mVideoUrl != null) {
             mProgressBar.setVisibility(VISIBLE);
-            mediaPlayerWorkHandler.post(startPlayRunnable);
+            //mediaPlayerWorkHandler.post(startPlayRunnable);
+            startPlayRunnable.run();
         }
     }
 
@@ -179,7 +181,13 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
         public void run() {
             postPlaying = true;
             try {
-                Downloader.getInstance().download(KoolewVideoView.this, mVideoUrl);
+                File file = Downloader.getInstance().tryToGetLocalFile(mVideoUrl);
+                if (file == null) {
+                    Downloader.getInstance().download(KoolewVideoView.this, mVideoUrl);
+                }
+                else {
+                    onComplete(mVideoUrl, file.getAbsolutePath());
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

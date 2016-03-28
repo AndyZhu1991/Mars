@@ -543,6 +543,11 @@
     <string name="buy_coin">金币充值</string>
     <string name="get_prices_failed">网络请求失败，是否重试？</string>
 
+    <!-- Pay -->
+    <string name="pay_success">支付成功</string>
+    <string name="pay_cancel">支付取消</string>
+    <string name="pay_failed">支付失败</string>
+
     <!-- Others -->
     <string name="sign_continuous" formatted="false">"已连续登陆 %d天"</string>
     <string name="coin_got" formatted="false">获得连续登陆奖励 %d金币</string>

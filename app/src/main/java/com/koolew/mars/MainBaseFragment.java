@@ -1,6 +1,7 @@
 package com.koolew.mars;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -60,6 +61,10 @@ public class MainBaseFragment extends BaseV4Fragment {
     // Override it while has ViewPager
     protected ViewPager getViewPager() {
         return null;
+    }
+
+    protected void onNewIntent(Intent intent) {
+        // Override it if you want handle the activity's onNewIntent
     }
 
     /**

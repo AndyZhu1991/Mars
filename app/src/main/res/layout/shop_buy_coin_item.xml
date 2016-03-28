@@ -9,8 +9,9 @@
 
     <ImageView
         android:id="@+id/coin_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:scaleType="centerInside"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

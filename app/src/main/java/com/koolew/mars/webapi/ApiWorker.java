@@ -487,7 +487,7 @@ public class ApiWorker {
         return future.get(SYNC_REQUEST_TIMEOUT, SYNC_REQUEST_TIME_UNIT);
     }
 
-    private JSONObject doPostRequestSync(String url, JSONObject requestObject)
+    public JSONObject doPostRequestSync(String url, JSONObject requestObject)
             throws InterruptedException, ExecutionException, TimeoutException {
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         queuePostRequest(url, requestObject, future, future);

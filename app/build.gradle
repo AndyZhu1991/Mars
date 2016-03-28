@@ -184,6 +184,7 @@ dependencies {
     compile 'com.tencent.bugly:crashreport:1.2.8'
     compile 'cn.jiajixin.nuwa:nuwa:1.0.0'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.11'
+    compile 'com.google.code.gson:gson:2.4'
 }
 
 dependencies {

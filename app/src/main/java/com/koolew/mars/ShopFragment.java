@@ -1,23 +1,39 @@
 package com.koolew.mars;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.koolew.mars.shop.Subject;
+import com.koolew.mars.utils.DialogUtil;
 import com.koolew.mars.view.SellCoinItemView;
 import com.koolew.mars.webapi.ApiWorker;
 import com.koolew.mars.webapi.UrlHelper;
+import com.sina.weibo.sdk.api.share.IWeiboHandler;
+import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
+import com.sina.weibo.sdk.api.share.WeiboShareSDK;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.net.URLEncoder;
+import java.util.List;
 
 /**
  * Created by jinchangzhu on 3/16/16.
@@ -33,6 +49,8 @@ public class ShopFragment extends MainBaseFragment implements SellCoinItemView.O
 
     private SellCoinItemView[] mSellCoinItemViews = new SellCoinItemView[4];
     private View mProgressLayout;
+
+    private IWeiboShareAPI mWeiboShareAPI;
 
     @Nullable
     @Override
@@ -60,6 +78,16 @@ public class ShopFragment extends MainBaseFragment implements SellCoinItemView.O
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mWeiboShareAPI = WeiboShareSDK.createWeiboAPI(getContext(), WeiboConstants.APP_KEY);
+        mWeiboShareAPI.registerApp();
+
+        mToolbarInterface.setToolbarTitle(getString(R.string.shop));
+        mToolbarInterface.setToolbarColor(getResources().getColor(R.color.koolew_black));
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (mGetPricesRequest != null) {
@@ -69,13 +97,73 @@ public class ShopFragment extends MainBaseFragment implements SellCoinItemView.O
     }
 
     @Override
-    public void onBuy(int coinCount, float price) {
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        mWeiboShareAPI.handleWeiboResponse(intent, (IWeiboHandler.Response) getActivity());
+    }
 
+    @Override
+    public void onBuy(Subject subject) {
+        new RequestOrderTask().execute(subject);
+    }
+
+    private class RequestOrderTask extends AsyncTask<Subject, Void, String> {
+        private Dialog mProgressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            mProgressDialog = DialogUtil.getGeneralProgressDialog(getContext(), R.string.please_wait_a_moment);
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(Subject... subjects) {
+            JSONObject paramJson = new JSONObject();
+            try {
+                paramJson.put("subject_id", subjects[0].getSubjectId());
+                paramJson.put("count", 1);
+                JSONObject returnJson = ApiWorker.getInstance().doPostRequestSync(
+                        UrlHelper.WEIBO_ORDER_URL, paramJson);
+                int code = returnJson.getInt("code");
+                if (code == 0) {
+                    JSONObject result = returnJson.getJSONObject("result");
+                    String sign = result.getString("sign");
+                    String signBefore = result.getString("sign_before");
+                    String signType = result.getString("sign_type");
+                    return new StringBuilder(signBefore)
+                            .append("&")
+                            .append("sign_type")
+                            .append("=")
+                            .append(signType)
+                            .append("&")
+                            .append("sign")
+                            .append("=")
+                            .append(URLEncoder.encode(sign, "UTF-8"))
+                            .toString();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String order) {
+            if (TextUtils.isEmpty(order)) {
+                mProgressDialog.dismiss();
+                Toast.makeText(getContext(), R.string.connect_server_failed, Toast.LENGTH_SHORT).show();
+            }
+            else {
+                mProgressDialog.dismiss();
+                mWeiboShareAPI.launchWeiboPay(getActivity(), order);
+            }
+        }
     }
 
     private JsonObjectRequest mGetPricesRequest;
     private void requestPrices() {
-        mGetPricesRequest = ApiWorker.getInstance().queueGetRequest(UrlHelper.COIN_PRICES_URL, this, this);
+        mGetPricesRequest = ApiWorker.getInstance().queueGetRequest(
+                UrlHelper.COIN_PRICES_URL, this, this);
     }
 
     @Override
@@ -105,19 +193,15 @@ public class ShopFragment extends MainBaseFragment implements SellCoinItemView.O
         try {
             int code = response.getInt("code");
             if (code == 0) {
-                JSONArray pricesArray = response.getJSONObject("result").getJSONArray("prices");
-                CoinPrice[] coinPrices = new CoinPrice[pricesArray.length()];
-                for (int i = 0; i < coinPrices.length; i++) {
-                    coinPrices[i] = new CoinPrice(pricesArray.getJSONObject(i));
-                }
+                JSONArray subjectsJson = response.getJSONObject("result").getJSONArray("subjects");
+                Gson gson = new Gson();
+                Type type = new TypeToken<List<Subject>>(){}.getType();
+                List<Subject> subjects = gson.fromJson(subjectsJson.toString(), type);
 
                 for (int i = 0; i < mSellCoinItemViews.length; i++) {
-                    if (coinPrices.length > i) {
-                        mSellCoinItemViews[i].setCoinCount(coinPrices[i].mCoinCount);
-                        mSellCoinItemViews[i].setPrice(coinPrices[i].mPrice);
-                    }
-                    else {
-                        mSellCoinItemViews[i].setVisibility(View.INVISIBLE);
+                    if (subjects.size() > i) {
+                        mSellCoinItemViews[i].setSubject(subjects.get(i));
+                        mSellCoinItemViews[i].setVisibility(View.VISIBLE);
                     }
                 }
 
@@ -125,20 +209,6 @@ public class ShopFragment extends MainBaseFragment implements SellCoinItemView.O
             }
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-    }
-
-    private static class CoinPrice {
-        private int mCoinCount;
-        private float mPrice;
-
-        private CoinPrice(JSONObject jsonObject) {
-            try {
-                mCoinCount = jsonObject.getInt("coin");
-                mPrice = (float) jsonObject.getDouble("price");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
