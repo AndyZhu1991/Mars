@@ -171,8 +171,7 @@ public class KoolewVideoView extends FrameLayout implements TextureView.SurfaceT
     public void startPlay() {
         if (mVideoInfo != null || mVideoUrl != null) {
             mProgressBar.setVisibility(VISIBLE);
-            //mediaPlayerWorkHandler.post(startPlayRunnable);
-            startPlayRunnable.run();
+            mediaPlayerWorkHandler.post(startPlayRunnable);
         }
     }
 
