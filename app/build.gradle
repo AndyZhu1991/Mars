@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'bugly'   //添加Bugly符号表插件
-apply plugin: "cn.jiajixin.nuwa"
 
 android {
     compileSdkVersion COMPILE_SDK
